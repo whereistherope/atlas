@@ -187,7 +187,7 @@ body[data-theme="night"] .fold[open]>summary{border-color:var(--line)}
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='0.9.2'; const DATA_VERSION=2; const DB_NAME='atlas_personal_os'; const DB_VERSION=2; const DB_STORE='state'; const BACKUP_STORE='backups'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.9.3'; const DATA_VERSION=2; const DB_NAME='atlas_personal_os'; const DB_VERSION=2; const DB_STORE='state'; const BACKUP_STORE='backups'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -199,7 +199,7 @@ const todayKey=()=>new Date().toLocaleDateString('en-CA');
 const demo={
   version:DATA_VERSION,
   meta:{createdAt:now(),lastSavedAt:now(),lastAppVersion:APP_VERSION},
-  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',mapDepth:4,selectedArea:'',editorTab:'structure',mapLayoutVersion:3,theme:'day'},
+  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',mapDepth:4,selectedArea:'',editorTab:'structure',mapLayoutVersion:4,theme:'day'},
   areas:[
     {id:'work',name:'Work',code:'WRK',space:'work',level:2,parentId:'atlas',description:'Professional operating picture, development and delivery.',x:600,y:90,status:'active'},
     {id:'lifestyle',name:'Lifestyle',code:'LIFE',space:'personal',level:2,parentId:'atlas',description:'Cars, technology, reading, style, finance and home.',x:165,y:330,status:'active'},
@@ -274,6 +274,68 @@ function applyWideMapLayout(s){
   s.settings=s.settings||{};s.settings.mapLayoutVersion=3;
   return s;
 }
+function organiseHierarchyLayout(s){
+  const cx=600, cy=340;
+  const radii={2:[235,135],3:[390,225],4:[535,292]};
+  const areas=(s.areas||[]);
+  const byId=Object.fromEntries(areas.map(a=>[a.id,a]));
+  const kids={};
+  areas.forEach(a=>{const p=a.parentId||'atlas';(kids[p]||(kids[p]=[])).push(a)});
+  const preferred=['work','lifestyle','creative','daily'];
+  const sortNodes=list=>list.sort((a,b)=>{
+    const ai=preferred.indexOf(a.id),bi=preferred.indexOf(b.id);
+    if(ai>=0||bi>=0){if(ai<0)return 1;if(bi<0)return -1;return ai-bi}
+    return String(a.name||a.id).localeCompare(String(b.name||b.id));
+  });
+  Object.values(kids).forEach(sortNodes);
+  const weight=id=>{
+    const c=kids[id]||[];
+    if(!c.length)return 1;
+    return Math.max(1,c.reduce((n,x)=>n+weight(x.id),0));
+  };
+  const roots=kids.atlas||[];
+  if(!roots.length){s.settings=s.settings||{};s.settings.mapLayoutVersion=4;return s}
+  // Stable quadrant-style sectors. With more/fewer domains the same rule still spreads them around Atlas.
+  const start=-Math.PI*0.78;
+  const full=Math.PI*2;
+  const rootGap=Math.min(.16, .55/Math.max(roots.length,1));
+  const rootSpan=full/roots.length;
+  const place=(node,angle)=>{
+    const r=radii[node.level]||radii[4];
+    node.x=Math.round(cx+r[0]*Math.cos(angle));
+    node.y=Math.round(cy+r[1]*Math.sin(angle));
+  };
+  const descend=(parentId,sectorStart,sectorEnd)=>{
+    const list=kids[parentId]||[];
+    if(!list.length)return;
+    const total=list.reduce((n,x)=>n+weight(x.id),0);
+    let cursor=sectorStart;
+    list.forEach((node,i)=>{
+      const share=(sectorEnd-sectorStart)*(weight(node.id)/total);
+      const a0=cursor, a1=cursor+share;
+      const angle=(a0+a1)/2;
+      place(node,angle);
+      const pad=Math.min(.10,share*.16);
+      descend(node.id,a0+pad,a1-pad);
+      cursor=a1;
+    });
+  };
+  roots.forEach((root,i)=>{
+    const a0=start+i*rootSpan+rootGap;
+    const a1=start+(i+1)*rootSpan-rootGap;
+    const angle=(a0+a1)/2;
+    place(root,angle);
+    descend(root.id,a0+.08,a1-.08);
+  });
+  // Any orphaned nodes get a predictable parking arc rather than piling up at one coordinate.
+  const reachable=new Set();
+  const walk=id=>{(kids[id]||[]).forEach(n=>{reachable.add(n.id);walk(n.id)})};walk('atlas');
+  const orphans=areas.filter(a=>!reachable.has(a.id));
+  orphans.forEach((a,i)=>{const ang=Math.PI*.12+(i/Math.max(1,orphans.length))*Math.PI*.76;const r=radii[a.level]||radii[4];a.x=Math.round(cx+r[0]*Math.cos(ang));a.y=Math.round(cy+r[1]*Math.sin(ang))});
+  s.settings=s.settings||{};
+  s.settings.mapLayoutVersion=4;
+  return s;
+}
 function makeNodeCode(name){
   const raw=String(name||'NODE').toUpperCase().replace(/&/g,' AND ').replace(/[^A-Z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
   const parts=raw.split(' ').filter(Boolean);
@@ -309,6 +371,7 @@ function ensureState(s){
   for(const k of ['areas','links','projects','notes','daily','activity']) if(!Array.isArray(s[k])) s[k]=[];
   s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day';
   if(Number(s.settings.mapLayoutVersion||0)<3) s=applyWideMapLayout(s);
+  if(Number(s.settings.mapLayoutVersion||0)<4) s=organiseHierarchyLayout(s);
   s=normaliseAreaCodes(s);
   return s;
 }
@@ -339,7 +402,7 @@ function queueHtml(items,title,code){return `<div class="panel"><div class="pane
 function getNext(scope){return visibleProjects(scope).filter(p=>p.status==='ACTIVE'||p.status==='WATCHING').slice(0,4).map(p=>({name:p.next||p.title,meta:p.title,status:p.status,badge:p.status}))}
 function getWatch(scope){return visibleProjects(scope).filter(p=>p.status!=='COMPLETE').flatMap(p=>(p.milestones||[]).filter(m=>m.current||(!m.done&&p.status==='WATCHING')).slice(0,1).map(m=>({name:m.title,meta:p.title,status:p.status,badge:m.current?'CURRENT':'WATCH'}))).slice(0,4)}
 
-function networkPanel(scope=null){const hero=!scope;return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2><span class="code">DRAG NODES · DRAG SPACE TO PAN</span></div>`:''}<div class="map-wrap"><svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="map-hud"><div class="zoom-controls" aria-label="Map zoom controls"><button type="button" data-map-zoom="out" aria-label="Zoom out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset" aria-label="Reset map zoom"><span id="zoomValue">100%</span></button><button type="button" data-map-zoom="in" aria-label="Zoom in">+</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}" /><strong id="depthValue">${state.settings.mapDepth}</strong></div></div><div class="legend"><span><i class="l2"></i>Domain</span><span><i class="l3"></i>Area</span><span><i class="l4"></i>Topic</span><span><i class="l5"></i>Note</span></div></div></div></section>`}
+function networkPanel(scope=null){const hero=!scope;return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2><span class="code">DRAG NODES · DRAG SPACE TO PAN</span></div>`:''}<div class="map-wrap"><svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="map-hud"><div class="zoom-controls" aria-label="Map zoom controls"><button type="button" data-map-zoom="out" aria-label="Zoom out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset" aria-label="Reset map zoom"><span id="zoomValue">100%</span></button><button type="button" data-map-zoom="in" aria-label="Zoom in">+</button></div><div class="zoom-controls" aria-label="Map layout controls"><button type="button" class="zoom-reset" data-map-layout="organise" aria-label="Organise network">Organise</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}" /><strong id="depthValue">${state.settings.mapDepth}</strong></div></div><div class="legend"><span><i class="l2"></i>Domain</span><span><i class="l3"></i>Area</span><span><i class="l4"></i>Topic</span><span><i class="l5"></i>Note</span></div></div></div></section>`}
 function foldPanel(title,code,body,open=false){return `<details class="fold" ${open?'open':''}><summary><span>${esc(title)}</span><span class="code">${esc(code)}</span></summary><div class="fold-body">${body}</div></details>`}
 function queueRows(items){return `<div class="queue">${items.length?items.map(i=>`<div class="qrow"><i class="dot ${statusDot(i.status)}"></i><div><div class="qname">${esc(i.name)}</div><div class="qmeta">${esc(i.meta)}</div></div><span class="badge">${esc(i.badge||'OPEN')}</span></div>`).join(''):'<div class="empty">Nothing here.</div>'}</div>`}
 function renderHome(){const app=document.getElementById('app');const activity=`<div class="notes-list">${state.activity.slice(0,8).map(a=>`<div class="note"><div class="meta">${fmtDate(a.time)} · ${fmtTime(a.time)}</div><div class="note-body">${esc(a.text)}</div></div>`).join('')}</div>`;app.innerHTML=`${networkPanel(null)}<section class="home-stack">${foldPanel('Dashboard','SNAPSHOT',metricsHtml(null),true)}${foldPanel('Active now','NEXT MOVES',queueRows(getNext(null)))}${foldPanel('Milestones','CURRENT / WATCH',queueRows(getWatch(null)))}${foldPanel('Projects','ALL SPACES',projectCards(null))}${foldPanel('Recent notes','KNOWLEDGE',notesHtml(visibleNotes(null).slice(0,8)))}${foldPanel('Recent activity','SYSTEM LOG',activity)}</section>`;drawNetwork(null)}
@@ -374,7 +437,7 @@ function applyMapView(svg,scope){const v=mapView(scope);svg.setAttribute('viewBo
 function zoomMap(scope,factor,clientX=null,clientY=null){const svg=document.getElementById('network');if(!svg)return;const c=mapCamera(scope),old=mapView(scope),nextZoom=Math.max(.55,Math.min(3,old.z*factor));if(Math.abs(nextZoom-old.z)<.001)return;const rect=svg.getBoundingClientRect();let px=.5,py=.5;if(clientX!==null&&clientY!==null&&rect.width&&rect.height){px=(clientX-rect.left)/rect.width;py=(clientY-rect.top)/rect.height}const anchorX=old.x+px*old.w,anchorY=old.y+py*old.h,newW=1200/nextZoom,newH=680/nextZoom;c.zoom=nextZoom;c.cx=anchorX+(0.5-px)*newW;c.cy=anchorY+(0.5-py)*newH;applyMapView(svg,scope)}
 function resetMapView(scope){mapCameras[scope||'home']={cx:600,cy:340,zoom:1};const svg=document.getElementById('network');if(svg)applyMapView(svg,scope)}
 function clientToSvg(svg,clientX,clientY){const p=svg.createSVGPoint();p.x=clientX;p.y=clientY;const ctm=svg.getScreenCTM();return ctm?p.matrixTransform(ctm.inverse()):{x:clientX,y:clientY}}
-function drawNetwork(scope){const svg=document.getElementById('network');if(!svg)return;svg.dataset.scope=scope||'';svg.innerHTML='';applyMapView(svg,scope);const {nodes,links}=graphData(scope);const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));links.forEach(l=>{const s=byId[l.source],t=byId[l.target];if(!s||!t)return;const line=document.createElementNS(SVG_NS,'line');line.setAttribute('x1',s.x);line.setAttribute('y1',s.y);line.setAttribute('x2',t.x);line.setAttribute('y2',t.y);line.setAttribute('class',`edge ${l.type==='cross'?'cross':''}`);line.dataset.source=l.source;line.dataset.target=l.target;svg.appendChild(line)});nodes.forEach(n=>{const g=document.createElementNS(SVG_NS,'g');g.setAttribute('class',`node level${n.level} ${n.id===scope?'active':''} ${n.note?'note':''}`);g.dataset.node=n.id;const c=document.createElementNS(SVG_NS,'circle');c.setAttribute('cx',n.x);c.setAttribute('cy',n.y);c.setAttribute('r',radius(n.level));g.appendChild(c);const title=document.createElementNS(SVG_NS,'title');title.textContent=n.name;g.appendChild(title);const tx=document.createElementNS(SVG_NS,'text');tx.setAttribute('x',n.x);tx.setAttribute('y',n.y+3);tx.setAttribute('class','label');tx.textContent=n.id==='atlas'?'ATLAS':(n.code||makeNodeCode(n.name));g.appendChild(tx);svg.appendChild(g)});bindNetwork(scope);const dr=document.getElementById('depthRange');if(dr){dr.oninput=e=>{state.settings.mapDepth=Number(e.target.value);document.getElementById('depthValue').textContent=e.target.value;drawNetwork(scope);save()}}document.querySelectorAll('[data-map-zoom]').forEach(b=>{b.onclick=()=>{const a=b.dataset.mapZoom;if(a==='in')zoomMap(scope,1.2);else if(a==='out')zoomMap(scope,1/1.2);else resetMapView(scope)}})}
+function drawNetwork(scope){const svg=document.getElementById('network');if(!svg)return;svg.dataset.scope=scope||'';svg.innerHTML='';applyMapView(svg,scope);const {nodes,links}=graphData(scope);const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));links.forEach(l=>{const s=byId[l.source],t=byId[l.target];if(!s||!t)return;const line=document.createElementNS(SVG_NS,'line');line.setAttribute('x1',s.x);line.setAttribute('y1',s.y);line.setAttribute('x2',t.x);line.setAttribute('y2',t.y);line.setAttribute('class',`edge ${l.type==='cross'?'cross':''}`);line.dataset.source=l.source;line.dataset.target=l.target;svg.appendChild(line)});nodes.forEach(n=>{const g=document.createElementNS(SVG_NS,'g');g.setAttribute('class',`node level${n.level} ${n.id===scope?'active':''} ${n.note?'note':''}`);g.dataset.node=n.id;const c=document.createElementNS(SVG_NS,'circle');c.setAttribute('cx',n.x);c.setAttribute('cy',n.y);c.setAttribute('r',radius(n.level));g.appendChild(c);const title=document.createElementNS(SVG_NS,'title');title.textContent=n.name;g.appendChild(title);const tx=document.createElementNS(SVG_NS,'text');tx.setAttribute('x',n.x);tx.setAttribute('y',n.y+3);tx.setAttribute('class','label');tx.textContent=n.id==='atlas'?'ATLAS':(n.code||makeNodeCode(n.name));g.appendChild(tx);svg.appendChild(g)});bindNetwork(scope);const dr=document.getElementById('depthRange');if(dr){dr.oninput=e=>{state.settings.mapDepth=Number(e.target.value);document.getElementById('depthValue').textContent=e.target.value;drawNetwork(scope);save()}}document.querySelectorAll('[data-map-zoom]').forEach(b=>{b.onclick=()=>{const a=b.dataset.mapZoom;if(a==='in')zoomMap(scope,1.2);else if(a==='out')zoomMap(scope,1/1.2);else resetMapView(scope)}});document.querySelectorAll('[data-map-layout]').forEach(b=>{b.onclick=()=>{organiseHierarchyLayout(state);resetMapView(scope);save();drawNetwork(scope);toast('Network organised')}})}
 function shortLabel(s,l){const lim={1:14,2:14,3:16,4:15,5:12}[l]||14;return String(s).length>lim?String(s).slice(0,lim-1)+'…':s}
 function bindNetwork(scope){const svg=document.getElementById('network');if(!svg||svg.dataset.bound==='yes')return;svg.dataset.bound='yes';svg.addEventListener('pointerdown',e=>{const g=e.target.closest?.('.node');if(!g){const cam=mapCamera(svg.dataset.scope||null);dragging={kind:'pan',startX:e.clientX,startY:e.clientY,origCx:cam.cx,origCy:cam.cy,moved:false,pointerId:e.pointerId};svg.classList.add('is-panning');svg.setPointerCapture(e.pointerId);return}const id=g.dataset.node;if(id==='atlas'||id.startsWith('n')){dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId);return}const a=areaById(id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY);dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,startSvgX:p.x,startSvgY:p.y,origX:a.x,origY:a.y,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId)});svg.addEventListener('pointermove',e=>{if(!dragging)return;if(dragging.kind==='pan'){const cam=mapCamera(svg.dataset.scope||null),v=mapView(svg.dataset.scope||null),rect=svg.getBoundingClientRect();const dx=(e.clientX-dragging.startX)*v.w/rect.width,dy=(e.clientY-dragging.startY)*v.h/rect.height;if(Math.abs(dx)+Math.abs(dy)>2)dragging.moved=true;cam.cx=dragging.origCx-dx;cam.cy=dragging.origCy-dy;applyMapView(svg,svg.dataset.scope||null);return}if(dragging.id==='atlas'||dragging.id.startsWith('n'))return;const a=areaById(dragging.id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY),dx=p.x-dragging.startSvgX,dy=p.y-dragging.startSvgY;if(Math.abs(e.clientX-dragging.startX)+Math.abs(e.clientY-dragging.startY)>3)dragging.moved=true;a.x=Math.max(55,Math.min(1145,dragging.origX+dx));a.y=Math.max(55,Math.min(625,dragging.origY+dy));drawNetwork(svg.dataset.scope||null)});svg.addEventListener('pointerup',e=>{if(!dragging)return;const d=dragging;try{svg.releasePointerCapture(d.pointerId)}catch(_){ }dragging=null;svg.classList.remove('is-panning');if(d.kind==='pan')return;const moved=d.moved,id=d.id;if(moved){save();return}if(id==='atlas'){state.settings.activeTab='home';renderAll();return}if(id.startsWith('n'))return;const a=areaById(id);if(a){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='overview';renderTabs();if(a.level>=3)renderArea(a.id);else renderAll();save()}});svg.addEventListener('pointercancel',()=>{dragging=null;svg.classList.remove('is-panning')});svg.addEventListener('wheel',e=>{if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();zoomMap(svg.dataset.scope||null,e.deltaY<0?1.12:1/1.12,e.clientX,e.clientY)},{passive:false})}
 function getTopDomain(a){let cur=a;while(cur&&cur.level>2)cur=areaById(cur.parentId);return cur}
@@ -393,7 +456,7 @@ const editorTabs=[['structure','Structure'],['projects','Projects'],['notes','No
 function openEditor(){renderEditor();openOverlay('editorOverlay')}
 function renderEditor(){document.getElementById('editorNav').innerHTML=editorTabs.map(([id,n])=>`<button class="btn ${state.settings.editorTab===id?'primary':''}" data-editor-tab="${id}">${n}</button>`).join('');const e=document.getElementById('editorPane');if(state.settings.editorTab==='structure')e.innerHTML=editorStructure();if(state.settings.editorTab==='projects')e.innerHTML=editorProjects();if(state.settings.editorTab==='notes')e.innerHTML=editorNotes();if(state.settings.editorTab==='links')e.innerHTML=editorLinks();if(state.settings.editorTab==='data')e.innerHTML=editorData()}
 function field(label,html){return `<div class="field"><label>${label}</label>${html}</div>`}
-function editorStructure(){return `<section class="editor-section"><div class="editor-section-head"><h4>Areas / Topics</h4><button class="btn small primary" data-ed-action="add-area">+ Add</button></div><div class="editor-section-body"><div class="table-list">${state.areas.map((a,i)=>`<div class="edit-row"><div>${field('Name',`<input data-area-edit="${i}" data-field="name" value="${esc(a.name)}">`)}</div><div>${field('Level',`<select data-area-edit="${i}" data-field="level">${[2,3,4].map(v=>`<option value="${v}" ${a.level===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div><div>${field('Parent',`<select data-area-edit="${i}" data-field="parentId"><option value="atlas">ATLAS</option>${state.areas.filter(x=>x.id!==a.id&&x.level<a.level).map(x=>`<option value="${x.id}" ${a.parentId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-area" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-area" data-index="${i}">×</button></div></div>`).join('')}</div></div></section><div class="code">Node positions can also be changed directly by dragging them on the network.</div>`}
+function editorStructure(){return `<section class="editor-section"><div class="editor-section-head"><h4>Areas / Topics</h4><button class="btn small primary" data-ed-action="add-area">+ Add</button></div><div class="editor-section-body"><div class="table-list">${state.areas.map((a,i)=>`<div class="edit-row"><div>${field('Name',`<input data-area-edit="${i}" data-field="name" value="${esc(a.name)}">`)}</div><div>${field('Level',`<select data-area-edit="${i}" data-field="level">${[2,3,4].map(v=>`<option value="${v}" ${a.level===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div><div>${field('Parent',`<select data-area-edit="${i}" data-field="parentId"><option value="atlas">ATLAS</option>${state.areas.filter(x=>x.id!==a.id&&x.level<a.level).map(x=>`<option value="${x.id}" ${a.parentId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-area" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-area" data-index="${i}">×</button></div></div>`).join('')}</div></div></section><div class="code">Atlas keeps a canonical hierarchy layout across devices. Drag nodes for local tweaks, or use Organise on the map to snap the hierarchy back into bundled branches.</div>`}
 function editorProjects(){return `<section class="editor-section"><div class="editor-section-head"><h4>Projects</h4><button class="btn small primary" data-ed-action="add-project">+ Project</button></div><div class="editor-section-body"><div class="table-list">${state.projects.map((p,i)=>`<div class="edit-row project-row"><div>${field('Title',`<input data-proj-edit="${i}" data-field="title" value="${esc(p.title)}">`)}</div><div>${field('Status',`<select data-proj-edit="${i}" data-field="status">${['ACTIVE','WATCHING','PAUSED','COMPLETE'].map(v=>`<option ${p.status===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div><div>${field('Area',`<select data-proj-edit="${i}" data-field="areaId">${state.areas.map(a=>`<option value="${a.id}" ${p.areaId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-project" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-project" data-index="${i}">×</button></div></div>`).join('')}</div></div></section>`}
 function editorNotes(){return `<section class="editor-section"><div class="editor-section-head"><h4>Notes</h4><button class="btn small primary" data-ed-action="add-note">+ Note</button></div><div class="editor-section-body"><div class="table-list">${state.notes.map((n,i)=>`<div class="edit-row note-row"><div>${field('Title',`<input data-note-edit="${i}" data-field="title" value="${esc(n.title)}">`)}</div><div>${field('Type',`<input data-note-edit="${i}" data-field="type" value="${esc(n.type)}">`)}</div><div>${field('Area',`<select data-note-edit="${i}" data-field="areaId"><option value="">Inbox</option>${state.areas.map(a=>`<option value="${a.id}" ${n.areaId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-note" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-note" data-index="${i}">×</button></div></div>`).join('')}</div></div></section>`}
 function editorLinks(){return `<section class="editor-section"><div class="editor-section-head"><h4>Cross-connections</h4><button class="btn small primary" data-ed-action="add-link">+ Connection</button></div><div class="editor-section-body"><div class="table-list">${state.links.map((l,i)=>`<div class="edit-row"><div>${field('From',`<select data-link-edit="${i}" data-field="source">${state.areas.map(a=>`<option value="${a.id}" ${l.source===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div>${field('To',`<select data-link-edit="${i}" data-field="target">${state.areas.map(a=>`<option value="${a.id}" ${l.target===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div>${field('Type',`<select data-link-edit="${i}" data-field="type"><option value="cross">Cross-link</option></select>`)}</div><button class="btn small danger" data-ed-action="remove-link" data-index="${i}">Remove</button></div>`).join('')}</div></div></section>`}
@@ -424,17 +487,17 @@ document.getElementById('importFile').addEventListener('change',e=>{const f=e.ta
 
 document.getElementById('editorPane').addEventListener('change',e=>{
   let t=e.target;
-  if(t.dataset.areaEdit!==undefined){let a=state.areas[Number(t.dataset.areaEdit)];if(a){a[t.dataset.field]=t.dataset.field==='level'?Number(t.value):t.value;if(t.dataset.field==='name')a.code=makeNodeCode(a.name);save();renderAll()}return}
+  if(t.dataset.areaEdit!==undefined){let a=state.areas[Number(t.dataset.areaEdit)];if(a){a[t.dataset.field]=t.dataset.field==='level'?Number(t.value):t.value;if(t.dataset.field==='name')a.code=makeNodeCode(a.name);if(t.dataset.field==='level'||t.dataset.field==='parentId')organiseHierarchyLayout(state);save();renderAll()}return}
   if(t.dataset.projEdit!==undefined){let p=state.projects[Number(t.dataset.projEdit)];if(p){p[t.dataset.field]=t.value;const ar=areaById(p.areaId);if(ar)p.space=ar.space;save();renderAll()}return}
   if(t.dataset.noteEdit!==undefined){let n=state.notes[Number(t.dataset.noteEdit)];if(n){n[t.dataset.field]=t.value;const ar=areaById(n.areaId);if(ar)n.space=ar.space;save();renderAll()}return}
   if(t.dataset.linkEdit!==undefined){let l=state.links[Number(t.dataset.linkEdit)];if(l){l[t.dataset.field]=t.value;save();renderAll()}return}
 });
 async function handleEditorAction(b){const a=b.dataset.edAction;
-  if(a==='add-area'){const parent=state.areas.find(x=>x.level===2)||state.areas[0];state.areas.push({id:uid('area'),name:'New Area',code:'NEW',space:parent?.space||'personal',level:3,parentId:parent?.id||'atlas',description:'',x:600,y:430,status:'default'});log('New Atlas area created.');save();renderEditor();renderAll()}
+  if(a==='add-area'){const parent=state.areas.find(x=>x.level===2)||state.areas[0];state.areas.push({id:uid('area'),name:'New Area',code:'NEW',space:parent?.space||'personal',level:3,parentId:parent?.id||'atlas',description:'',x:600,y:430,status:'default'});organiseHierarchyLayout(state);log('New Atlas area created.');save();renderEditor();renderAll()}
   if(a==='remove-area'){const i=Number(b.dataset.index),x=state.areas[i];if(x&&confirm(`Remove ${x.name}? Linked notes/projects will become unlinked.`)){state.projects.forEach(p=>{if(p.areaId===x.id)p.areaId='';if(p.topicId===x.id)p.topicId=''});state.notes.forEach(n=>{if(n.areaId===x.id)n.areaId='';if(n.topicId===x.id)n.topicId=''});state.areas.forEach(c=>{if(c.parentId===x.id)c.parentId='atlas'});state.links=state.links.filter(l=>l.source!==x.id&&l.target!==x.id);state.areas.splice(i,1);save();renderEditor();renderAll()}}
   if(a==='edit-area'){openAreaEditor(Number(b.dataset.index))}
   if(a==='back-structure'){state.settings.editorTab='structure';renderEditor()}
-  if(a==='save-area-detail'){const i=Number(b.dataset.index),x=state.areas[i];if(x){x.name=document.getElementById('eaName').value.trim()||x.name;x.code=makeNodeCode(x.name);x.space=document.getElementById('eaSpace').value;x.level=Number(document.getElementById('eaLevel').value);x.parentId=document.getElementById('eaParent').value;x.description=document.getElementById('eaDescription').value.trim();log(`Area edited: ${x.name}.`);save();openAreaEditor(i);renderAll();toast('Area saved')}}
+  if(a==='save-area-detail'){const i=Number(b.dataset.index),x=state.areas[i];if(x){x.name=document.getElementById('eaName').value.trim()||x.name;x.code=makeNodeCode(x.name);x.space=document.getElementById('eaSpace').value;x.level=Number(document.getElementById('eaLevel').value);x.parentId=document.getElementById('eaParent').value;x.description=document.getElementById('eaDescription').value.trim();organiseHierarchyLayout(state);log(`Area edited: ${x.name}.`);save();openAreaEditor(i);renderAll();toast('Area saved')}}
   if(a==='add-project'){state.projects.unshift({id:uid('p'),space:'personal',areaId:state.areas[0]?.id||'',topicId:'',code:`P-${String(state.projects.length+1).padStart(2,'0')}`,title:'New Project',status:'ACTIVE',objective:'',next:'',tags:[],createdAt:now(),milestones:[],tasks:[]});save();renderEditor();renderAll()}
   if(a==='remove-project'){state.projects.splice(Number(b.dataset.index),1);save();renderEditor();renderAll()}
   if(a==='edit-project'){openProjectEditor(Number(b.dataset.index))}
