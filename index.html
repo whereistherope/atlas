@@ -33,9 +33,15 @@ button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;letter-spacing:.055em}
 .shell{max-width:1660px;margin:0 auto;padding:18px 22px 34px;position:relative;z-index:1}
-.topbar{border-top:5px solid var(--green);border-bottom:1px solid var(--line);padding:14px 0 11px;display:flex;justify-content:space-between;gap:18px;align-items:flex-end}
-.brand h1{margin:4px 0 0;font-size:clamp(27px,4vw,44px);line-height:1;letter-spacing:-.045em}
-.actions,.tabs,.subtabs,.space-switch,.inline-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.topbar{border-top:5px solid var(--green);border-bottom:1px solid var(--line);padding:12px 0 10px;display:flex;justify-content:space-between;gap:18px;align-items:center}
+.brand-home{border:0;background:transparent;color:var(--ink);padding:0;margin:0;font-size:clamp(27px,4vw,44px);font-weight:780;line-height:1;letter-spacing:-.045em;text-align:left}
+.brand-home:hover{color:var(--green)}
+.actions,.tabs,.subtabs,.space-switch,.section-switch,.inline-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.utility-actions{display:flex;align-items:center;justify-content:flex-end;gap:2px;flex-wrap:wrap}
+.utility-btn,.utility-file{border:0;background:transparent;color:var(--muted);padding:6px 7px;border-radius:3px;font:800 8.5px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.055em;transition:.14s}
+.utility-btn:hover,.utility-file:hover{color:var(--green);background:rgba(52,75,58,.07)}
+.utility-accent{color:var(--green)}
+body[data-theme="night"] .utility-btn:hover,body[data-theme="night"] .utility-file:hover{background:rgba(23,147,209,.08)}
 .btn,.tab,.file-label{border:1px solid var(--muted);background:transparent;color:var(--ink);border-radius:4px;padding:9px 11px;font:800 10px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.055em;transition:.14s}
 .btn:hover,.tab:hover,.file-label:hover{background:var(--ink);color:var(--paper)}
 body[data-theme="night"] .btn:hover,body[data-theme="night"] .tab:hover,body[data-theme="night"] .file-label:hover{background:var(--green);color:#031018;border-color:var(--green)}
@@ -45,11 +51,12 @@ body[data-theme="night"] .btn.primary,body[data-theme="night"] .tab.active{color
 .btn.danger{color:var(--red);border-color:var(--red)}
 .btn.small{padding:7px 8px;font-size:9px}
 input[type=file]{display:none}
-.navline{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}
+.navline{display:flex;justify-content:flex-end;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0}
 .tabs{gap:4px}
 .tab{border-color:transparent;padding:8px 10px}
-.space-switch{font:800 9px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted)}
-.space-switch select{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:7px 28px 7px 8px;color:var(--ink);font:800 10px "SFMono-Regular",Consolas,monospace;text-transform:uppercase}
+.nav-switches{display:flex;justify-content:flex-end;gap:8px;align-items:center;flex-wrap:wrap}
+.space-switch,.section-switch{font:800 8px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted)}
+.space-switch select,.section-switch select{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:6px 28px 6px 8px;color:var(--ink);font:800 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase}
 .main{margin-top:14px}
 .panel{background:rgba(241,240,232,.94);border:1px solid #a6aaa2;border-radius:6px;box-shadow:var(--shadow)}
 .panel-head{padding:12px 14px;border-bottom:1px solid #b7bab2;display:flex;justify-content:space-between;gap:12px;align-items:center}
@@ -117,29 +124,29 @@ body[data-theme="night"] .fold[open]>summary{border-color:var(--line)}
 .toast{position:fixed;right:18px;bottom:18px;z-index:80;background:var(--ink);color:var(--paper);border-radius:4px;padding:9px 11px;font:750 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}.toast.show{opacity:1;transform:translateY(0)}
 
 @media(max-width:1050px){.hero-grid,.workspace-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.map-wrap{min-height:445px}#network{height:440px}.editor-grid{grid-template-columns:1fr}.editor-nav{display:flex;flex-wrap:wrap}.topic-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.shell{padding:12px}.topbar,.navline,.workspace-head{align-items:flex-start;flex-direction:column}.actions{justify-content:flex-start}.metrics,.cards,.topic-grid,.row2,.row3{grid-template-columns:1fr}.map-wrap{min-height:470px}#network{height:465px}.map-controls{position:absolute;padding:0;align-items:flex-start;flex-direction:column;left:8px;right:8px;bottom:8px}.legend{display:none}.edit-row,.edit-row.project-row,.edit-row.note-row{grid-template-columns:1fr}.modal{margin-top:0}.space-switch{width:100%;justify-content:space-between}}
+@media(max-width:700px){.shell{padding:12px}.topbar,.workspace-head{align-items:flex-start;flex-direction:column}.navline{justify-content:flex-start}.utility-actions{justify-content:flex-start}.nav-switches{justify-content:flex-start}.actions{justify-content:flex-start}.metrics,.cards,.topic-grid,.row2,.row3{grid-template-columns:1fr}.map-wrap{min-height:470px}#network{height:465px}.map-controls{position:absolute;padding:0;align-items:flex-start;flex-direction:column;left:8px;right:8px;bottom:8px}.legend{display:none}.edit-row,.edit-row.project-row,.edit-row.note-row{grid-template-columns:1fr}.modal{margin-top:0}.space-switch,.section-switch{justify-content:space-between}}
 </style>
 </head>
 <body>
 <div class="shell">
   <header class="topbar">
-    <div class="brand">
-      <h1>Atlas</h1>
-    </div>
-    <div class="actions">
-      <button class="btn primary" id="captureBtn">+ Capture</button>
-      <button class="btn" id="searchBtn">Search</button>
-      <button class="btn" id="editBtn">Edit Atlas</button>
-      <button class="btn" id="themeBtn" aria-label="Toggle night mode">Night</button>
-      <button class="btn ghost" id="exportBtn">Export</button>
-      <label class="file-label" for="importFile">Import</label>
+    <button class="brand-home" id="homeBtn" type="button" aria-label="Return to Atlas home">Atlas</button>
+    <div class="utility-actions" aria-label="Atlas utilities">
+      <button class="utility-btn utility-accent" id="captureBtn">+ Capture</button>
+      <button class="utility-btn" id="searchBtn">Search</button>
+      <button class="utility-btn" id="editBtn">Edit</button>
+      <button class="utility-btn" id="themeBtn" aria-label="Toggle night mode">Night</button>
+      <button class="utility-btn" id="exportBtn">Export</button>
+      <label class="utility-file" for="importFile">Import</label>
       <input id="importFile" type="file" accept="application/json" />
     </div>
   </header>
 
   <div class="navline">
-    <nav class="tabs" id="mainTabs"></nav>
-    <div class="space-switch">Data space <select id="spaceFilter"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select></div>
+    <div class="nav-switches">
+      <div class="section-switch">View <select id="sectionSelect" aria-label="Navigate Atlas"><option value="">Navigate</option></select></div>
+      <div class="space-switch">Data space <select id="spaceFilter"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select></div>
+    </div>
   </div>
 
   <main class="main" id="app"></main>
@@ -187,7 +194,7 @@ body[data-theme="night"] .fold[open]>summary{border-color:var(--line)}
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='0.9.3'; const DATA_VERSION=2; const DB_NAME='atlas_personal_os'; const DB_VERSION=2; const DB_STORE='state'; const BACKUP_STORE='backups'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.9.5'; const DATA_VERSION=2; const DB_NAME='atlas_personal_os'; const DB_VERSION=2; const DB_STORE='state'; const BACKUP_STORE='backups'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -199,7 +206,7 @@ const todayKey=()=>new Date().toLocaleDateString('en-CA');
 const demo={
   version:DATA_VERSION,
   meta:{createdAt:now(),lastSavedAt:now(),lastAppVersion:APP_VERSION},
-  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',mapDepth:4,selectedArea:'',editorTab:'structure',mapLayoutVersion:4,theme:'day'},
+  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',mapDepth:4,selectedArea:'',editorTab:'structure',mapLayoutVersion:6,theme:'day'},
   areas:[
     {id:'work',name:'Work',code:'WRK',space:'work',level:2,parentId:'atlas',description:'Professional operating picture, development and delivery.',x:600,y:90,status:'active'},
     {id:'lifestyle',name:'Lifestyle',code:'LIFE',space:'personal',level:2,parentId:'atlas',description:'Cars, technology, reading, style, finance and home.',x:165,y:330,status:'active'},
@@ -276,9 +283,7 @@ function applyWideMapLayout(s){
 }
 function organiseHierarchyLayout(s){
   const cx=600, cy=340;
-  const radii={2:[235,135],3:[390,225],4:[535,292]};
   const areas=(s.areas||[]);
-  const byId=Object.fromEntries(areas.map(a=>[a.id,a]));
   const kids={};
   areas.forEach(a=>{const p=a.parentId||'atlas';(kids[p]||(kids[p]=[])).push(a)});
   const preferred=['work','lifestyle','creative','daily'];
@@ -288,52 +293,94 @@ function organiseHierarchyLayout(s){
     return String(a.name||a.id).localeCompare(String(b.name||b.id));
   });
   Object.values(kids).forEach(sortNodes);
-  const weight=id=>{
-    const c=kids[id]||[];
-    if(!c.length)return 1;
-    return Math.max(1,c.reduce((n,x)=>n+weight(x.id),0));
+
+  // Reserve actual physical space for every subtree, not merely each node centre.
+  // Descendants keep the SAME outward direction as their top-level domain so the
+  // hierarchy stays bundled instead of curling back into neighbouring branches.
+  const NODE_PAD=42;
+  const SIBLING_GAP=34;
+  const nodeSpan=a=>radius(Number(a?.level||4))*2+NODE_PAD;
+  const spanMemo={};
+  const subtreeSpan=id=>{
+    if(spanMemo[id])return spanMemo[id];
+    const node=areas.find(a=>a.id===id);
+    const own=node?nodeSpan(node):90;
+    const children=kids[id]||[];
+    if(!children.length)return spanMemo[id]=own;
+    const childrenSpan=children.reduce((sum,c)=>sum+subtreeSpan(c.id),0)+Math.max(0,children.length-1)*SIBLING_GAP;
+    return spanMemo[id]=Math.max(own,childrenSpan);
   };
+
   const roots=kids.atlas||[];
-  if(!roots.length){s.settings=s.settings||{};s.settings.mapLayoutVersion=4;return s}
-  // Stable quadrant-style sectors. With more/fewer domains the same rule still spreads them around Atlas.
-  const start=-Math.PI*0.78;
-  const full=Math.PI*2;
-  const rootGap=Math.min(.16, .55/Math.max(roots.length,1));
-  const rootSpan=full/roots.length;
-  const place=(node,angle)=>{
-    const r=radii[node.level]||radii[4];
-    node.x=Math.round(cx+r[0]*Math.cos(angle));
-    node.y=Math.round(cy+r[1]*Math.sin(angle));
-  };
-  const descend=(parentId,sectorStart,sectorEnd)=>{
-    const list=kids[parentId]||[];
-    if(!list.length)return;
-    const total=list.reduce((n,x)=>n+weight(x.id),0);
-    let cursor=sectorStart;
-    list.forEach((node,i)=>{
-      const share=(sectorEnd-sectorStart)*(weight(node.id)/total);
-      const a0=cursor, a1=cursor+share;
-      const angle=(a0+a1)/2;
-      place(node,angle);
-      const pad=Math.min(.10,share*.16);
-      descend(node.id,a0+pad,a1-pad);
-      cursor=a1;
+  if(!roots.length){s.settings=s.settings||{};s.settings.mapLayoutVersion=6;return s}
+
+  const fixedAngles={work:-Math.PI/2,lifestyle:Math.PI,creative:0,daily:Math.PI/2};
+  const extraRoots=roots.filter(r=>fixedAngles[r.id]===undefined);
+  extraRoots.forEach((r,i)=>{fixedAngles[r.id]=(-Math.PI/2)+(i+1)*(Math.PI*2/(extraRoots.length+1))});
+
+  const baseForward={2:350,3:220,4:175,5:135};
+  const placeBranch=(parent,angle)=>{
+    const children=kids[parent.id]||[];
+    if(!children.length)return;
+    const ux=Math.cos(angle),uy=Math.sin(angle),vx=-uy,vy=ux;
+    const spans=children.map(c=>subtreeSpan(c.id));
+    const total=spans.reduce((a,b)=>a+b,0)+Math.max(0,children.length-1)*SIBLING_GAP;
+    let cursor=-total/2;
+    children.forEach((child,i)=>{
+      const span=spans[i];
+      const offset=cursor+span/2;
+      const minimum=radius(Number(parent.level||1))+radius(Number(child.level||4))+82;
+      const forward=Math.max(baseForward[Number(child.level)]||155,minimum);
+      child.x=parent.x+ux*forward+vx*offset;
+      child.y=parent.y+uy*forward+vy*offset;
+      placeBranch(child,angle);
+      cursor+=span+SIBLING_GAP;
     });
   };
-  roots.forEach((root,i)=>{
-    const a0=start+i*rootSpan+rootGap;
-    const a1=start+(i+1)*rootSpan-rootGap;
-    const angle=(a0+a1)/2;
-    place(root,angle);
-    descend(root.id,a0+.08,a1-.08);
+
+  roots.forEach(root=>{
+    const angle=fixedAngles[root.id]??0;
+    const span=subtreeSpan(root.id);
+    // A dense domain simply occupies more canvas. There is deliberately no maximum.
+    const rootDistance=(baseForward[2]||350)+Math.max(0,span-420)*0.22;
+    root.x=cx+Math.cos(angle)*rootDistance;
+    root.y=cy+Math.sin(angle)*rootDistance;
+    placeBranch(root,angle);
   });
-  // Any orphaned nodes get a predictable parking arc rather than piling up at one coordinate.
+
+  // Strict final separation. Large/homeward nodes behave like anchors while deeper
+  // nodes absorb most of the correction. Iterate until every circle has clear air.
+  const placed=areas.filter(a=>Number.isFinite(Number(a.x))&&Number.isFinite(Number(a.y)));
+  const mobility=a=>({2:.16,3:.48,4:.82,5:1}[Number(a.level)]||.7);
+  const CLEARANCE=34;
+  for(let iter=0;iter<1200;iter++){
+    let collisions=0;
+    for(let i=0;i<placed.length;i++){
+      for(let j=i+1;j<placed.length;j++){
+        const a=placed[i],b=placed[j];
+        let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
+        const min=radius(Number(a.level))+radius(Number(b.level))+CLEARANCE;
+        if(d>=min-.05)continue;
+        collisions++;
+        if(d<.001){const ang=((i+1)*37+(j+1)*61)*Math.PI/180;dx=Math.cos(ang);dy=Math.sin(ang);d=1}
+        const nx=dx/d,ny=dy/d,overlap=min-d+1.2;
+        const ma=mobility(a),mb=mobility(b),sum=ma+mb;
+        a.x-=nx*overlap*(ma/sum);a.y-=ny*overlap*(ma/sum);
+        b.x+=nx*overlap*(mb/sum);b.y+=ny*overlap*(mb/sum);
+      }
+    }
+    if(!collisions)break;
+  }
+
+  // Orphans use an expanding arc outside the main tree and are never clamped.
   const reachable=new Set();
   const walk=id=>{(kids[id]||[]).forEach(n=>{reachable.add(n.id);walk(n.id)})};walk('atlas');
   const orphans=areas.filter(a=>!reachable.has(a.id));
-  orphans.forEach((a,i)=>{const ang=Math.PI*.12+(i/Math.max(1,orphans.length))*Math.PI*.76;const r=radii[a.level]||radii[4];a.x=Math.round(cx+r[0]*Math.cos(ang));a.y=Math.round(cy+r[1]*Math.sin(ang))});
+  orphans.forEach((a,i)=>{const ang=Math.PI*.18+i*.48;const rr=620+Math.floor(i/10)*170;a.x=cx+rr*Math.cos(ang);a.y=cy+rr*Math.sin(ang)});
+
+  areas.forEach(a=>{a.x=Math.round(a.x);a.y=Math.round(a.y)});
   s.settings=s.settings||{};
-  s.settings.mapLayoutVersion=4;
+  s.settings.mapLayoutVersion=6;
   return s;
 }
 function makeNodeCode(name){
@@ -371,7 +418,7 @@ function ensureState(s){
   for(const k of ['areas','links','projects','notes','daily','activity']) if(!Array.isArray(s[k])) s[k]=[];
   s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day';
   if(Number(s.settings.mapLayoutVersion||0)<3) s=applyWideMapLayout(s);
-  if(Number(s.settings.mapLayoutVersion||0)<4) s=organiseHierarchyLayout(s);
+  if(Number(s.settings.mapLayoutVersion||0)<6) s=organiseHierarchyLayout(s);
   s=normaliseAreaCodes(s);
   return s;
 }
@@ -392,9 +439,9 @@ function visibleProjects(scope){return state.projects.filter(p=>spaceAllows(p.sp
 function isDescendant(id,parent){let a=areaById(id),guard=0;while(a&&guard++<12){if(a.parentId===parent)return true;a=areaById(a.parentId)}return false}
 function visibleNotes(scope){return state.notes.filter(n=>spaceAllows(n.space)&&(!scope||n.areaId===scope||n.topicId===scope||isDescendant(n.topicId||n.areaId,scope))).sort((a,b)=>b.createdAt-a.createdAt)}
 function statusDot(status){return status==='WATCHING'||status==='MONITOR'?'amber':status==='DORMANT'?'grey':''}
-function topTabs(){return [{id:'home',name:'Atlas'},{id:'work',name:'Work'},{id:'lifestyle',name:'Lifestyle'},{id:'creative',name:'Creative'},{id:'daily',name:'Daily'},{id:'inbox',name:`Inbox ${inboxCount()?`· ${inboxCount()}`:''}`}]} function inboxCount(){return state.notes.filter(n=>!n.areaId).length}
+function navItems(){return [{id:'work',name:'Work'},{id:'lifestyle',name:'Lifestyle'},{id:'creative',name:'Creative'},{id:'daily',name:'Daily'},{id:'inbox',name:`Inbox ${inboxCount()?`· ${inboxCount()}`:''}`}]} function inboxCount(){return state.notes.filter(n=>!n.areaId).length}
 
-function renderTabs(){const el=document.getElementById('mainTabs');el.innerHTML=topTabs().map(t=>`<button class="tab ${state.settings.activeTab===t.id?'active':''}" data-main-tab="${t.id}">${esc(t.name)}</button>`).join('');document.getElementById('spaceFilter').value=state.settings.spaceFilter}
+function renderTabs(){const el=document.getElementById('sectionSelect');if(el){el.innerHTML=`<option value="">Navigate</option>`+navItems().map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');el.value=state.settings.activeTab==='home'?'':state.settings.activeTab}document.getElementById('spaceFilter').value=state.settings.spaceFilter}
 function renderAll(){applyTheme();renderTabs();const tab=state.settings.activeTab;if(tab==='home')renderHome();else if(tab==='daily')renderDaily();else if(tab==='inbox')renderInbox();else{const selected=areaById(state.settings.selectedArea);const top=selected?getTopDomain(selected):null;renderArea(top?.id===tab?selected.id:tab)}save()}
 function metric(label,value,detail){return `<div class="panel metric"><div class="tiny">${esc(label)}</div><div class="value">${esc(value)}</div><div class="label">${esc(detail)}</div></div>`}
 function metricsHtml(scope){const ps=visibleProjects(scope),ns=visibleNotes(scope);const active=ps.filter(p=>p.status==='ACTIVE').length;const milestones=ps.flatMap(p=>p.milestones||[]),openM=milestones.filter(m=>!m.done).length;const topics=state.areas.filter(a=>spaceAllows(a.space)&&(!scope? a.level>=3 : a.parentId===scope)).length;return `<section class="grid metrics">${metric('Active projects',active,'currently moving')}${metric('Open milestones',openM,'across visible projects')}${metric('Linked notes',ns.length,'knowledge records')}${metric('Topics',topics,'visible knowledge nodes')}</section>`}
@@ -402,7 +449,7 @@ function queueHtml(items,title,code){return `<div class="panel"><div class="pane
 function getNext(scope){return visibleProjects(scope).filter(p=>p.status==='ACTIVE'||p.status==='WATCHING').slice(0,4).map(p=>({name:p.next||p.title,meta:p.title,status:p.status,badge:p.status}))}
 function getWatch(scope){return visibleProjects(scope).filter(p=>p.status!=='COMPLETE').flatMap(p=>(p.milestones||[]).filter(m=>m.current||(!m.done&&p.status==='WATCHING')).slice(0,1).map(m=>({name:m.title,meta:p.title,status:p.status,badge:m.current?'CURRENT':'WATCH'}))).slice(0,4)}
 
-function networkPanel(scope=null){const hero=!scope;return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2><span class="code">DRAG NODES · DRAG SPACE TO PAN</span></div>`:''}<div class="map-wrap"><svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="map-hud"><div class="zoom-controls" aria-label="Map zoom controls"><button type="button" data-map-zoom="out" aria-label="Zoom out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset" aria-label="Reset map zoom"><span id="zoomValue">100%</span></button><button type="button" data-map-zoom="in" aria-label="Zoom in">+</button></div><div class="zoom-controls" aria-label="Map layout controls"><button type="button" class="zoom-reset" data-map-layout="organise" aria-label="Organise network">Organise</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}" /><strong id="depthValue">${state.settings.mapDepth}</strong></div></div><div class="legend"><span><i class="l2"></i>Domain</span><span><i class="l3"></i>Area</span><span><i class="l4"></i>Topic</span><span><i class="l5"></i>Note</span></div></div></div></section>`}
+function networkPanel(scope=null){const hero=!scope;return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2><span class="code">OPEN CANVAS · DRAG NODES · DRAG SPACE TO PAN</span></div>`:''}<div class="map-wrap"><svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="map-hud"><div class="zoom-controls" aria-label="Map zoom controls"><button type="button" data-map-zoom="out" aria-label="Zoom out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset" aria-label="Reset map zoom"><span id="zoomValue">FIT</span></button><button type="button" data-map-zoom="in" aria-label="Zoom in">+</button></div><div class="zoom-controls" aria-label="Map layout controls"><button type="button" class="zoom-reset" data-map-layout="organise" aria-label="Organise network">Organise</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}" /><strong id="depthValue">${state.settings.mapDepth}</strong></div></div><div class="legend"><span><i class="l2"></i>Domain</span><span><i class="l3"></i>Area</span><span><i class="l4"></i>Topic</span><span><i class="l5"></i>Note</span></div></div></div></section>`}
 function foldPanel(title,code,body,open=false){return `<details class="fold" ${open?'open':''}><summary><span>${esc(title)}</span><span class="code">${esc(code)}</span></summary><div class="fold-body">${body}</div></details>`}
 function queueRows(items){return `<div class="queue">${items.length?items.map(i=>`<div class="qrow"><i class="dot ${statusDot(i.status)}"></i><div><div class="qname">${esc(i.name)}</div><div class="qmeta">${esc(i.meta)}</div></div><span class="badge">${esc(i.badge||'OPEN')}</span></div>`).join(''):'<div class="empty">Nothing here.</div>'}</div>`}
 function renderHome(){const app=document.getElementById('app');const activity=`<div class="notes-list">${state.activity.slice(0,8).map(a=>`<div class="note"><div class="meta">${fmtDate(a.time)} · ${fmtTime(a.time)}</div><div class="note-body">${esc(a.text)}</div></div>`).join('')}</div>`;app.innerHTML=`${networkPanel(null)}<section class="home-stack">${foldPanel('Dashboard','SNAPSHOT',metricsHtml(null),true)}${foldPanel('Active now','NEXT MOVES',queueRows(getNext(null)))}${foldPanel('Milestones','CURRENT / WATCH',queueRows(getWatch(null)))}${foldPanel('Projects','ALL SPACES',projectCards(null))}${foldPanel('Recent notes','KNOWLEDGE',notesHtml(visibleNotes(null).slice(0,8)))}${foldPanel('Recent activity','SYSTEM LOG',activity)}</section>`;drawNetwork(null)}
@@ -426,20 +473,22 @@ function graphData(scope){
   let areas=state.areas.filter(a=>spaceAllows(a.space)&&a.level<=max);
   if(scope){const include=new Set([scope]);let cur=areaById(scope);while(cur){include.add(cur.id);cur=areaById(cur.parentId)}state.areas.forEach(a=>{if(a.id===scope||isDescendant(a.id,scope))include.add(a.id)});areas=areas.filter(a=>include.has(a.id))}
   nodes.push(...areas);
-  if(max>=5){state.notes.filter(n=>n.showOnMap&&spaceAllows(n.space)&&(!scope||n.areaId===scope||n.topicId===scope||isDescendant(n.topicId||n.areaId,scope))).forEach((n,i)=>{const par=areaById(n.topicId)||areaById(n.areaId);nodes.push({id:n.id,name:n.title,code:makeNodeCode(n.title),space:n.space,level:5,parentId:par?.id||'',description:'',x:(par?.x||600)+72+((i%3)*24),y:(par?.y||340)+62+((i%2)*24),status:'default',note:true})})}
+  if(max>=5){const noteGroups={};state.notes.filter(n=>n.showOnMap&&spaceAllows(n.space)&&(!scope||n.areaId===scope||n.topicId===scope||isDescendant(n.topicId||n.areaId,scope))).forEach(n=>{const par=areaById(n.topicId)||areaById(n.areaId);const pid=par?.id||'';(noteGroups[pid]||(noteGroups[pid]=[])).push({n,par})});Object.values(noteGroups).forEach(group=>{group.sort((a,b)=>String(a.n.title||'').localeCompare(String(b.n.title||'')));const par=group[0]?.par;if(!par)return;const ang=Math.atan2((par.y||340)-340,(par.x||600)-600);const ux=Math.cos(ang),uy=Math.sin(ang),vx=-uy,vy=ux;const spacing=42;group.forEach(({n},i)=>{const off=(i-(group.length-1)/2)*spacing;nodes.push({id:n.id,name:n.title,code:makeNodeCode(n.title),space:n.space,level:5,parentId:par.id,description:'',x:Math.round(par.x+ux*92+vx*off),y:Math.round(par.y+uy*92+vy*off),status:'default',note:true})})})}
   const ids=new Set(nodes.map(n=>n.id));const links=[];nodes.forEach(n=>{if(n.parentId&&ids.has(n.parentId))links.push({source:n.parentId,target:n.id,type:'tree'})});state.links.forEach(l=>{if(ids.has(l.source)&&ids.has(l.target))links.push(l)});return {nodes,links}
 }
 function radius(level){return({1:54,2:43,3:33,4:24,5:15})[level]||20}
 const mapCameras={};
-function mapCamera(scope){const key=scope||'home';if(!mapCameras[key])mapCameras[key]={cx:600,cy:340,zoom:1};return mapCameras[key]}
-function mapView(scope){const c=mapCamera(scope),z=Math.max(.55,Math.min(3,c.zoom||1));c.zoom=z;const w=1200/z,h=680/z;return{x:c.cx-w/2,y:c.cy-h/2,w,h,z}}
+function mapCamera(scope){const key=scope||'home';if(!mapCameras[key])mapCameras[key]={cx:600,cy:340,zoom:1,needsFit:true};return mapCameras[key]}
+function mapView(scope){const c=mapCamera(scope),z=Math.max(.15,Math.min(6,c.zoom||1));c.zoom=z;const w=1200/z,h=680/z;return{x:c.cx-w/2,y:c.cy-h/2,w,h,z}}
 function applyMapView(svg,scope){const v=mapView(scope);svg.setAttribute('viewBox',`${v.x} ${v.y} ${v.w} ${v.h}`);const zv=document.getElementById('zoomValue');if(zv)zv.textContent=`${Math.round(v.z*100)}%`}
-function zoomMap(scope,factor,clientX=null,clientY=null){const svg=document.getElementById('network');if(!svg)return;const c=mapCamera(scope),old=mapView(scope),nextZoom=Math.max(.55,Math.min(3,old.z*factor));if(Math.abs(nextZoom-old.z)<.001)return;const rect=svg.getBoundingClientRect();let px=.5,py=.5;if(clientX!==null&&clientY!==null&&rect.width&&rect.height){px=(clientX-rect.left)/rect.width;py=(clientY-rect.top)/rect.height}const anchorX=old.x+px*old.w,anchorY=old.y+py*old.h,newW=1200/nextZoom,newH=680/nextZoom;c.zoom=nextZoom;c.cx=anchorX+(0.5-px)*newW;c.cy=anchorY+(0.5-py)*newH;applyMapView(svg,scope)}
-function resetMapView(scope){mapCameras[scope||'home']={cx:600,cy:340,zoom:1};const svg=document.getElementById('network');if(svg)applyMapView(svg,scope)}
+function setFitCamera(scope,nodes){const c=mapCamera(scope);if(!nodes?.length){c.cx=600;c.cy=340;c.zoom=1;c.needsFit=false;return}let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;nodes.forEach(n=>{const r=radius(n.level)+34;minX=Math.min(minX,n.x-r);maxX=Math.max(maxX,n.x+r);minY=Math.min(minY,n.y-r);maxY=Math.max(maxY,n.y+r)});const bw=Math.max(300,maxX-minX),bh=Math.max(220,maxY-minY);c.cx=(minX+maxX)/2;c.cy=(minY+maxY)/2;c.zoom=Math.max(.15,Math.min(1.15,Math.min(1200/(bw+110),680/(bh+110))));c.needsFit=false}
+function fitMap(scope){const svg=document.getElementById('network');const gd=graphData(scope);setFitCamera(scope,gd.nodes);if(svg)applyMapView(svg,scope)}
+function zoomMap(scope,factor,clientX=null,clientY=null){const svg=document.getElementById('network');if(!svg)return;const c=mapCamera(scope),old=mapView(scope),nextZoom=Math.max(.15,Math.min(6,old.z*factor));if(Math.abs(nextZoom-old.z)<.001)return;const rect=svg.getBoundingClientRect();let px=.5,py=.5;if(clientX!==null&&clientY!==null&&rect.width&&rect.height){px=(clientX-rect.left)/rect.width;py=(clientY-rect.top)/rect.height}const anchorX=old.x+px*old.w,anchorY=old.y+py*old.h,newW=1200/nextZoom,newH=680/nextZoom;c.zoom=nextZoom;c.cx=anchorX+(0.5-px)*newW;c.cy=anchorY+(0.5-py)*newH;c.needsFit=false;applyMapView(svg,scope)}
+function resetMapView(scope){fitMap(scope)}
 function clientToSvg(svg,clientX,clientY){const p=svg.createSVGPoint();p.x=clientX;p.y=clientY;const ctm=svg.getScreenCTM();return ctm?p.matrixTransform(ctm.inverse()):{x:clientX,y:clientY}}
-function drawNetwork(scope){const svg=document.getElementById('network');if(!svg)return;svg.dataset.scope=scope||'';svg.innerHTML='';applyMapView(svg,scope);const {nodes,links}=graphData(scope);const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));links.forEach(l=>{const s=byId[l.source],t=byId[l.target];if(!s||!t)return;const line=document.createElementNS(SVG_NS,'line');line.setAttribute('x1',s.x);line.setAttribute('y1',s.y);line.setAttribute('x2',t.x);line.setAttribute('y2',t.y);line.setAttribute('class',`edge ${l.type==='cross'?'cross':''}`);line.dataset.source=l.source;line.dataset.target=l.target;svg.appendChild(line)});nodes.forEach(n=>{const g=document.createElementNS(SVG_NS,'g');g.setAttribute('class',`node level${n.level} ${n.id===scope?'active':''} ${n.note?'note':''}`);g.dataset.node=n.id;const c=document.createElementNS(SVG_NS,'circle');c.setAttribute('cx',n.x);c.setAttribute('cy',n.y);c.setAttribute('r',radius(n.level));g.appendChild(c);const title=document.createElementNS(SVG_NS,'title');title.textContent=n.name;g.appendChild(title);const tx=document.createElementNS(SVG_NS,'text');tx.setAttribute('x',n.x);tx.setAttribute('y',n.y+3);tx.setAttribute('class','label');tx.textContent=n.id==='atlas'?'ATLAS':(n.code||makeNodeCode(n.name));g.appendChild(tx);svg.appendChild(g)});bindNetwork(scope);const dr=document.getElementById('depthRange');if(dr){dr.oninput=e=>{state.settings.mapDepth=Number(e.target.value);document.getElementById('depthValue').textContent=e.target.value;drawNetwork(scope);save()}}document.querySelectorAll('[data-map-zoom]').forEach(b=>{b.onclick=()=>{const a=b.dataset.mapZoom;if(a==='in')zoomMap(scope,1.2);else if(a==='out')zoomMap(scope,1/1.2);else resetMapView(scope)}});document.querySelectorAll('[data-map-layout]').forEach(b=>{b.onclick=()=>{organiseHierarchyLayout(state);resetMapView(scope);save();drawNetwork(scope);toast('Network organised')}})}
+function drawNetwork(scope){const svg=document.getElementById('network');if(!svg)return;svg.dataset.scope=scope||'';svg.innerHTML='';const {nodes,links}=graphData(scope);const cam=mapCamera(scope);if(cam.needsFit)setFitCamera(scope,nodes);applyMapView(svg,scope);const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));links.forEach(l=>{const s=byId[l.source],t=byId[l.target];if(!s||!t)return;const line=document.createElementNS(SVG_NS,'line');line.setAttribute('x1',s.x);line.setAttribute('y1',s.y);line.setAttribute('x2',t.x);line.setAttribute('y2',t.y);line.setAttribute('class',`edge ${l.type==='cross'?'cross':''}`);line.dataset.source=l.source;line.dataset.target=l.target;svg.appendChild(line)});nodes.forEach(n=>{const g=document.createElementNS(SVG_NS,'g');g.setAttribute('class',`node level${n.level} ${n.id===scope?'active':''} ${n.note?'note':''}`);g.dataset.node=n.id;const c=document.createElementNS(SVG_NS,'circle');c.setAttribute('cx',n.x);c.setAttribute('cy',n.y);c.setAttribute('r',radius(n.level));g.appendChild(c);const title=document.createElementNS(SVG_NS,'title');title.textContent=n.name;g.appendChild(title);const tx=document.createElementNS(SVG_NS,'text');tx.setAttribute('x',n.x);tx.setAttribute('y',n.y+3);tx.setAttribute('class','label');tx.textContent=n.id==='atlas'?'ATLAS':(n.code||makeNodeCode(n.name));g.appendChild(tx);svg.appendChild(g)});bindNetwork(scope);const dr=document.getElementById('depthRange');if(dr){dr.oninput=e=>{state.settings.mapDepth=Number(e.target.value);document.getElementById('depthValue').textContent=e.target.value;drawNetwork(scope);save()}}document.querySelectorAll('[data-map-zoom]').forEach(b=>{b.onclick=()=>{const a=b.dataset.mapZoom;if(a==='in')zoomMap(scope,1.2);else if(a==='out')zoomMap(scope,1/1.2);else resetMapView(scope)}});document.querySelectorAll('[data-map-layout]').forEach(b=>{b.onclick=()=>{organiseHierarchyLayout(state);const gd=graphData(scope);setFitCamera(scope,gd.nodes);save();drawNetwork(scope);toast('Network organised')}})}
 function shortLabel(s,l){const lim={1:14,2:14,3:16,4:15,5:12}[l]||14;return String(s).length>lim?String(s).slice(0,lim-1)+'…':s}
-function bindNetwork(scope){const svg=document.getElementById('network');if(!svg||svg.dataset.bound==='yes')return;svg.dataset.bound='yes';svg.addEventListener('pointerdown',e=>{const g=e.target.closest?.('.node');if(!g){const cam=mapCamera(svg.dataset.scope||null);dragging={kind:'pan',startX:e.clientX,startY:e.clientY,origCx:cam.cx,origCy:cam.cy,moved:false,pointerId:e.pointerId};svg.classList.add('is-panning');svg.setPointerCapture(e.pointerId);return}const id=g.dataset.node;if(id==='atlas'||id.startsWith('n')){dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId);return}const a=areaById(id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY);dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,startSvgX:p.x,startSvgY:p.y,origX:a.x,origY:a.y,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId)});svg.addEventListener('pointermove',e=>{if(!dragging)return;if(dragging.kind==='pan'){const cam=mapCamera(svg.dataset.scope||null),v=mapView(svg.dataset.scope||null),rect=svg.getBoundingClientRect();const dx=(e.clientX-dragging.startX)*v.w/rect.width,dy=(e.clientY-dragging.startY)*v.h/rect.height;if(Math.abs(dx)+Math.abs(dy)>2)dragging.moved=true;cam.cx=dragging.origCx-dx;cam.cy=dragging.origCy-dy;applyMapView(svg,svg.dataset.scope||null);return}if(dragging.id==='atlas'||dragging.id.startsWith('n'))return;const a=areaById(dragging.id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY),dx=p.x-dragging.startSvgX,dy=p.y-dragging.startSvgY;if(Math.abs(e.clientX-dragging.startX)+Math.abs(e.clientY-dragging.startY)>3)dragging.moved=true;a.x=Math.max(55,Math.min(1145,dragging.origX+dx));a.y=Math.max(55,Math.min(625,dragging.origY+dy));drawNetwork(svg.dataset.scope||null)});svg.addEventListener('pointerup',e=>{if(!dragging)return;const d=dragging;try{svg.releasePointerCapture(d.pointerId)}catch(_){ }dragging=null;svg.classList.remove('is-panning');if(d.kind==='pan')return;const moved=d.moved,id=d.id;if(moved){save();return}if(id==='atlas'){state.settings.activeTab='home';renderAll();return}if(id.startsWith('n'))return;const a=areaById(id);if(a){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='overview';renderTabs();if(a.level>=3)renderArea(a.id);else renderAll();save()}});svg.addEventListener('pointercancel',()=>{dragging=null;svg.classList.remove('is-panning')});svg.addEventListener('wheel',e=>{if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();zoomMap(svg.dataset.scope||null,e.deltaY<0?1.12:1/1.12,e.clientX,e.clientY)},{passive:false})}
+function bindNetwork(scope){const svg=document.getElementById('network');if(!svg||svg.dataset.bound==='yes')return;svg.dataset.bound='yes';svg.addEventListener('pointerdown',e=>{const g=e.target.closest?.('.node');if(!g){const cam=mapCamera(svg.dataset.scope||null);dragging={kind:'pan',startX:e.clientX,startY:e.clientY,origCx:cam.cx,origCy:cam.cy,moved:false,pointerId:e.pointerId};svg.classList.add('is-panning');svg.setPointerCapture(e.pointerId);return}const id=g.dataset.node;if(id==='atlas'||id.startsWith('n')){dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId);return}const a=areaById(id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY);dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,startSvgX:p.x,startSvgY:p.y,origX:a.x,origY:a.y,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId)});svg.addEventListener('pointermove',e=>{if(!dragging)return;if(dragging.kind==='pan'){const cam=mapCamera(svg.dataset.scope||null),v=mapView(svg.dataset.scope||null),rect=svg.getBoundingClientRect();const dx=(e.clientX-dragging.startX)*v.w/rect.width,dy=(e.clientY-dragging.startY)*v.h/rect.height;if(Math.abs(dx)+Math.abs(dy)>2)dragging.moved=true;cam.cx=dragging.origCx-dx;cam.cy=dragging.origCy-dy;applyMapView(svg,svg.dataset.scope||null);return}if(dragging.id==='atlas'||dragging.id.startsWith('n'))return;const a=areaById(dragging.id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY),dx=p.x-dragging.startSvgX,dy=p.y-dragging.startSvgY;if(Math.abs(e.clientX-dragging.startX)+Math.abs(e.clientY-dragging.startY)>3)dragging.moved=true;a.x=dragging.origX+dx;a.y=dragging.origY+dy;mapCamera(svg.dataset.scope||null).needsFit=false;drawNetwork(svg.dataset.scope||null)});svg.addEventListener('pointerup',e=>{if(!dragging)return;const d=dragging;try{svg.releasePointerCapture(d.pointerId)}catch(_){ }dragging=null;svg.classList.remove('is-panning');if(d.kind==='pan')return;const moved=d.moved,id=d.id;if(moved){save();return}if(id==='atlas'){state.settings.activeTab='home';renderAll();return}if(id.startsWith('n'))return;const a=areaById(id);if(a){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='overview';renderTabs();if(a.level>=3)renderArea(a.id);else renderAll();save()}});svg.addEventListener('pointercancel',()=>{dragging=null;svg.classList.remove('is-panning')});svg.addEventListener('wheel',e=>{if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();zoomMap(svg.dataset.scope||null,e.deltaY<0?1.12:1/1.12,e.clientX,e.clientY)},{passive:false})}
 function getTopDomain(a){let cur=a;while(cur&&cur.level>2)cur=areaById(cur.parentId);return cur}
 
 function openProject(id){const p=projectById(id);if(!p)return;activeProjectId=id;document.getElementById('projectCode').textContent=`${p.code} / ${p.status}`;document.getElementById('projectTitle').textContent=p.title;document.getElementById('projectBody').innerHTML=`<div class="form"><div class="row2"><div><div class="code">OBJECTIVE</div><p style="font-size:12px;line-height:1.5">${esc(p.objective)}</p></div><div><div class="code">NEXT MOVE</div><p style="font-size:12px;line-height:1.5">${esc(p.next)}</p></div></div><div><div class="code">MILESTONES</div>${milestonesHtmlForProject(p)}</div><div><div class="code">TASKS</div><div class="mini-list">${(p.tasks||[]).map(t=>`<label class="mini-row"><input type="checkbox" data-project-task="${t.id}" ${t.done?'checked':''}/><span>${esc(t.title)}</span><span class="badge">${t.done?'DONE':'OPEN'}</span></label>`).join('')}</div></div><div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></div>`;openOverlay('projectOverlay')}
@@ -480,7 +529,8 @@ document.addEventListener('click',e=>{
   const et=e.target.closest('[data-editor-tab]');if(et){state.settings.editorTab=et.dataset.editorTab;renderEditor();save();return}
   const act=e.target.closest('[data-ed-action]');if(act)handleEditorAction(act)
 });
-document.getElementById('captureBtn').addEventListener('click',()=>openCapture());document.getElementById('searchBtn').addEventListener('click',()=>{openOverlay('searchOverlay');renderSearch();setTimeout(()=>document.getElementById('searchInput').focus(),80)});document.getElementById('editBtn').addEventListener('click',openEditor);document.getElementById('themeBtn').addEventListener('click',()=>{state.settings.theme=state.settings.theme==='night'?'day':'night';applyTheme();save()});document.getElementById('saveCapture').addEventListener('click',saveCapture);document.getElementById('searchInput').addEventListener('input',renderSearch);document.getElementById('exportBtn').addEventListener('click',exportData);
+document.getElementById('homeBtn').addEventListener('click',()=>{state.settings.activeTab='home';state.settings.selectedArea='';state.settings.subtab='overview';renderAll()});document.getElementById('captureBtn').addEventListener('click',()=>openCapture());document.getElementById('searchBtn').addEventListener('click',()=>{openOverlay('searchOverlay');renderSearch();setTimeout(()=>document.getElementById('searchInput').focus(),80)});document.getElementById('editBtn').addEventListener('click',openEditor);document.getElementById('themeBtn').addEventListener('click',()=>{state.settings.theme=state.settings.theme==='night'?'day':'night';applyTheme();save()});document.getElementById('saveCapture').addEventListener('click',saveCapture);document.getElementById('searchInput').addEventListener('input',renderSearch);document.getElementById('exportBtn').addEventListener('click',exportData);
+document.getElementById('sectionSelect').addEventListener('change',e=>{const tab=e.target.value;if(!tab){state.settings.activeTab='home';state.settings.selectedArea='';state.settings.subtab='overview';renderAll();return}state.settings.activeTab=tab;state.settings.selectedArea=['daily','inbox'].includes(tab)?'':tab;state.settings.subtab='overview';renderAll()});
 document.getElementById('spaceFilter').addEventListener('change',e=>{state.settings.spaceFilter=e.target.value;renderAll()});
 document.getElementById('projectBody').addEventListener('change',e=>{const p=projectById(activeProjectId);if(!p)return;if(e.target.dataset.projectTask){const t=p.tasks.find(x=>x.id===e.target.dataset.projectTask);if(t)t.done=e.target.checked}if(e.target.dataset.projectMilestone){const m=p.milestones.find(x=>x.id===e.target.dataset.projectMilestone);if(m)m.done=e.target.checked}log(`Project progress updated: ${p.title}.`);save();openProject(p.id);renderAll()});
 document.getElementById('importFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{try{await idbBackup(state,'before JSON import');state=ensureState(JSON.parse(r.result));log('Atlas data imported.');await save();renderAll();toast('Atlas data imported')}catch(err){alert('That file could not be imported.')}};r.readAsText(f);e.target.value=''})
