@@ -428,6 +428,105 @@ body{font-feature-settings:"kern" 1,"liga" 1;-webkit-font-smoothing:antialiased;
 @media(max-width:900px){.home-network .map-wrap{min-height:590px}.home-network #network{height:590px}.map-meta{top:9px;left:9px;gap:9px}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0!important}.metric:nth-child(-n+2){border-bottom:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important}}
 @media(max-width:700px){.shell{padding:10px 12px 24px}.brand-home{width:108px;height:34px}.atlas-wordmark{width:106px;height:34px}.utility-actions{gap:0}.utility-btn,.utility-file{padding:6px!important;font-size:9px!important}.header-switch{font-size:8px!important}.home-network .map-wrap{min-height:520px}.home-network #network{height:520px}.map-meta span:nth-child(2),.map-meta span:nth-child(3){display:none}.metrics{grid-template-columns:1fr 1fr}.metric{min-height:86px!important}.metric .value{font-size:28px!important}}
 
+
+
+/* Atlas 0.10.6 · operational workspace redesign */
+:root{
+  --surface-0:#e8e5dd;--surface-1:#efede6;--surface-2:#f5f2eb;--surface-3:#d9d6ce;
+  --ink:#20231f;--muted:#6d716b;--line:#bbb7ae;--line-strong:#918f88;
+  --accent:#647b86;--accent-soft:#7f9199;--warm:#8e877b;
+  --map-label:#4d5350;--map-label-strong:#1e2421;--map-edge:#7a817d;
+  --graph-hue-1:#63757d;--graph-hue-2:#81796c;--graph-hue-3:#6f7f78;--graph-hue-4:#6e7d87;--graph-hue-5:#7d7973;--graph-hue-6:#727b7f;
+  --bg:var(--surface-0);--paper:var(--surface-1);--paper2:var(--surface-2);--green:var(--accent);--blue:var(--accent);
+  --shadow-soft:0 18px 44px rgba(48,48,43,.08),0 1px 0 rgba(255,255,255,.42) inset;
+}
+body[data-theme="night"]{
+  --surface-0:#0b1014;--surface-1:#11171c;--surface-2:#171e24;--surface-3:#20282f;
+  --ink:#e5e2db;--muted:#879098;--line:#28323a;--line-strong:#3b4852;
+  --accent:#7894a3;--accent-soft:#91a6b1;--warm:#9b9386;
+  --map-label:#a9b2b6;--map-label-strong:#eef0ec;--map-edge:#53636d;
+  --graph-hue-1:#8499a4;--graph-hue-2:#a1998c;--graph-hue-3:#879b91;--graph-hue-4:#8297a4;--graph-hue-5:#9a928a;--graph-hue-6:#8d979c;
+  --bg:var(--surface-0);--paper:var(--surface-1);--paper2:var(--surface-2);--green:var(--accent);--blue:var(--accent);
+  --shadow-soft:0 20px 54px rgba(0,0,0,.24),0 1px 0 rgba(255,255,255,.025) inset;
+}
+html,body{background:var(--surface-0)!important}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
+.shell{max-width:1780px!important;padding:12px 18px 28px!important}
+
+/* Header: brand, context, commands. No control pile-up. */
+.topbar{display:grid!important;grid-template-columns:150px minmax(420px,1fr) auto!important;align-items:center!important;gap:22px!important;min-height:58px!important;padding:7px 0 9px!important;border-top:0!important;border-bottom:1px solid var(--line)!important;background:transparent!important}
+.brand-home{width:136px!important;height:38px!important;color:var(--ink)!important}
+.atlas-wordmark{width:132px!important;height:38px!important}
+.top-context{min-width:0;display:flex;align-items:center;justify-content:center;gap:0;border:1px solid color-mix(in srgb,var(--line) 78%,transparent);background:color-mix(in srgb,var(--surface-1) 84%,transparent);box-shadow:0 1px 0 rgba(255,255,255,.025) inset}
+.context-switch{display:grid;grid-template-columns:auto minmax(88px,auto);align-items:center;gap:7px;min-height:34px;padding:0 10px;border-right:1px solid color-mix(in srgb,var(--line) 66%,transparent);font:600 8px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;text-transform:uppercase;letter-spacing:.045em;color:var(--muted);white-space:nowrap}
+.context-switch:last-child{border-right:0}.context-switch select{appearance:auto;border:0!important;background:transparent!important;color:var(--ink)!important;padding:4px 18px 4px 0!important;font:650 9.5px/1.2 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace!important;text-transform:uppercase;outline:none;min-width:92px}
+.top-actions{display:flex;align-items:center;justify-content:flex-end;gap:6px;white-space:nowrap}
+.command-btn,.system-menu>summary,.system-item{border:1px solid transparent;background:transparent;color:var(--muted);font:650 9.5px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;text-transform:uppercase;letter-spacing:.035em}
+.command-btn{height:34px;padding:0 10px}.command-btn:hover,.system-menu>summary:hover{color:var(--ink);border-color:var(--line);background:var(--surface-1)}
+.command-primary{color:var(--ink);border-color:color-mix(in srgb,var(--accent) 56%,var(--line));background:color-mix(in srgb,var(--accent) 7%,var(--surface-1))}
+.system-menu{position:relative}.system-menu>summary{list-style:none;height:34px;display:flex;align-items:center;padding:0 10px;cursor:pointer}.system-menu>summary::-webkit-details-marker{display:none}.system-menu>summary:after{content:" ···";letter-spacing:.14em;color:var(--muted)}
+.system-menu-panel{position:absolute;right:0;top:calc(100% + 7px);z-index:50;min-width:180px;padding:5px;background:var(--surface-2);border:1px solid var(--line-strong);box-shadow:var(--shadow-soft)}
+.system-item{display:block;width:100%;padding:10px 11px;text-align:left;cursor:pointer}.system-item:hover{color:var(--ink);background:color-mix(in srgb,var(--accent) 7%,var(--surface-2))}
+
+/* Home layout: operational sidecar on wide screens; map-first stack on tall/narrow screens. */
+.home-layout{display:grid;grid-template-areas:"map" "dash";gap:12px;align-items:start}
+.home-map{grid-area:map;min-width:0}.home-stack{grid-area:dash;margin:0!important;border:1px solid var(--line)!important;background:var(--surface-1)!important;box-shadow:var(--shadow-soft);min-width:0}
+.home-network{margin:0!important}.home-network .map-wrap{min-height:690px!important;height:690px!important;background:
+  radial-gradient(ellipse at 52% 46%,color-mix(in srgb,var(--accent) 10%,transparent) 0%,color-mix(in srgb,var(--accent) 4%,transparent) 30%,transparent 62%),
+  linear-gradient(180deg,color-mix(in srgb,var(--surface-1) 90%,transparent),color-mix(in srgb,var(--surface-0) 96%,transparent))!important;
+  border:1px solid color-mix(in srgb,var(--line) 70%,transparent);box-shadow:var(--shadow-soft);overflow:hidden}
+.home-network #network{height:690px!important}
+body[data-theme="night"] .home-network .map-wrap{background:
+  radial-gradient(ellipse at 52% 46%,rgba(99,132,151,.12) 0%,rgba(99,132,151,.055) 30%,transparent 62%),
+  linear-gradient(180deg,#10171c 0%,#0c1216 100%)!important}
+
+/* True map styling: crisp nodes, readable codes, subdued group hues. */
+.edge,body[data-theme="night"] .edge{stroke:var(--map-edge)!important;stroke-width:.9!important;opacity:.42!important}
+.edge.cross,body[data-theme="night"] .edge.cross{stroke-width:1.05!important;stroke-dasharray:2.5 4.5!important;opacity:.64!important}
+.node .node-disc,body[data-theme="night"] .node .node-disc{stroke:var(--node-hue,var(--accent))!important;fill:color-mix(in srgb,var(--node-hue,var(--accent)) 8%,var(--surface-1))!important;stroke-width:1.2!important;opacity:1!important}
+.node.level2 .node-disc{stroke-width:1.55!important}.node.level3 .node-disc{stroke-width:1.35!important}.node.level4 .node-disc{stroke-width:1.15!important}.node.level5 .node-disc{stroke-width:1!important}
+.node:hover .node-disc,.node.active .node-disc,body[data-theme="night"] .node:hover .node-disc,body[data-theme="night"] .node.active .node-disc{fill:color-mix(in srgb,var(--node-hue,var(--accent)) 18%,var(--surface-2))!important;stroke:var(--map-label-strong)!important;stroke-width:1.8!important}
+.node text,body[data-theme="night"] .node text{fill:var(--map-label)!important;stroke:var(--surface-1)!important;stroke-width:3.2px!important;paint-order:stroke fill!important;font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono",monospace!important;font-weight:650!important;letter-spacing:.045em!important}
+.node.level2 text{font-size:10.8px!important}.node.level3 text{font-size:9.9px!important}.node.level4 text{font-size:9px!important}.node.level5 text{font-size:8px!important}
+.node:hover text,.node.active text,#network.has-focus .node.focus-near text{fill:var(--map-label-strong)!important}
+.node.is-back{opacity:.76!important}.node.is-front{opacity:1!important}
+#network.has-focus .node{opacity:.18!important}#network.has-focus .edge{opacity:.06!important}#network.has-focus .node.focus-near{opacity:1!important}#network.has-focus .edge.focus-near{opacity:.82!important;stroke-width:1.4!important}
+.map-meta{top:13px!important;left:15px!important;padding:6px 8px;background:color-mix(in srgb,var(--surface-1) 78%,transparent);border:1px solid color-mix(in srgb,var(--line) 60%,transparent);backdrop-filter:blur(8px);font-size:8.5px!important}
+.map-controls{left:14px!important;right:14px!important;bottom:13px!important}.depth,.zoom-controls{background:color-mix(in srgb,var(--surface-2) 86%,transparent)!important;border-color:color-mix(in srgb,var(--line) 78%,transparent)!important;box-shadow:0 8px 24px rgba(0,0,0,.08);backdrop-filter:blur(8px)}
+
+/* Dashboard: denser control surface, not a stack of generic cards. */
+.home-stack .fold{background:transparent!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important}
+.home-stack .fold:last-child{border-bottom:0!important}.home-stack .fold>summary{min-height:44px!important;padding:0 13px!important;font-size:10px!important;color:var(--ink)!important}.home-stack .fold>summary:after{right:13px!important}
+.home-stack .fold[open]>summary{background:color-mix(in srgb,var(--surface-2) 42%,transparent)!important;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent)!important}
+.home-stack .metrics{grid-template-columns:repeat(4,minmax(0,1fr))!important;background:var(--surface-2)!important}
+.home-stack .metric{min-height:92px!important;padding:15px 14px!important;border-right:1px solid var(--line)!important}.home-stack .metric:last-child{border-right:0!important}.home-stack .metric .tiny{font-size:8.5px!important}.home-stack .metric .value{font-size:30px!important;margin-top:10px!important}
+.home-stack .queue,.home-stack .notes-list,.home-stack .cards{padding:8px 12px 12px!important}
+.home-stack .card{background:var(--surface-2)!important;border:1px solid color-mix(in srgb,var(--line) 75%,transparent)!important;border-radius:2px!important}.home-stack .card:hover{border-color:var(--line-strong)!important;background:color-mix(in srgb,var(--accent) 5%,var(--surface-2))!important}
+
+/* Other surfaces use restrained layering instead of flat monochrome. */
+.panel,.editor-section,.profile-card,.modal,body[data-theme="night"] .panel,body[data-theme="night"] .editor-section,body[data-theme="night"] .profile-card,body[data-theme="night"] .modal{background:var(--surface-1)!important;border-color:var(--line)!important;box-shadow:var(--shadow-soft)!important}
+.card,.topic,.edit-row,body[data-theme="night"] .card,body[data-theme="night"] .topic,body[data-theme="night"] .edit-row{background:var(--surface-2)!important;border-color:color-mix(in srgb,var(--line) 78%,transparent)!important}
+.utility-rail,.utility-pane,body[data-theme="night"] .utility-rail,body[data-theme="night"] .utility-pane{background:color-mix(in srgb,var(--surface-1) 92%,transparent)!important;backdrop-filter:blur(12px)!important}
+.utility-rail{border-right:1px solid var(--line)!important;box-shadow:4px 0 20px rgba(0,0,0,.045)!important}.utility-pane{border-right:1px solid var(--line-strong)!important;box-shadow:var(--shadow-soft)!important}
+
+/* Responsive orientation rule. */
+@media (min-width:1180px) and (min-aspect-ratio: 1.34/1){
+  .home-layout{grid-template-columns:minmax(300px,340px) minmax(0,1fr);grid-template-areas:"dash map";gap:14px}
+  .home-stack{position:sticky;top:72px;max-height:calc(100vh - 86px);overflow:auto}
+  .home-stack .metrics{grid-template-columns:1fr 1fr!important}.home-stack .metric:nth-child(2){border-right:0!important}.home-stack .metric:nth-child(-n+2){border-bottom:1px solid var(--line)!important}
+  .home-network .map-wrap{min-height:calc(100vh - 82px)!important;height:calc(100vh - 82px)!important}.home-network #network{height:calc(100vh - 82px)!important}
+}
+@media (max-width:1179px), (max-aspect-ratio: 1.339/1){
+  .home-layout{grid-template-columns:1fr;grid-template-areas:"map" "dash"}
+  .home-stack{position:static;max-height:none;overflow:visible}
+}
+@media(max-width:1040px){
+  .topbar{grid-template-columns:132px 1fr auto!important;gap:12px!important}.top-context{justify-self:stretch}.context-switch{padding:0 7px;gap:5px}.context-switch span{display:none}.context-switch select{min-width:72px}.command-btn{padding:0 8px}
+}
+@media(max-width:760px){
+  .shell{padding:9px 10px 24px!important}.topbar{grid-template-columns:112px 1fr!important;grid-template-areas:"brand actions" "context context";row-gap:7px!important}.brand-home{grid-area:brand}.top-actions{grid-area:actions}.top-context{grid-area:context;justify-content:stretch}.context-switch{flex:1;display:flex;justify-content:space-between}.context-switch span{display:block}.context-switch select{min-width:0;max-width:120px}.home-network .map-wrap,.home-network #network{height:560px!important;min-height:560px!important}.home-stack .metrics{grid-template-columns:1fr 1fr!important}.system-menu-panel{right:0}
+}
+
 </style>
 </head>
 <body>
@@ -440,18 +539,25 @@ body{font-feature-settings:"kern" 1,"liga" 1;-webkit-font-smoothing:antialiased;
 <div class="shell">
   <header class="topbar">
     <button class="brand-home" id="homeBtn" type="button" aria-label="Return to Atlas home"><svg class="atlas-wordmark" viewBox="0 0 6165 2384" aria-hidden="true" focusable="false" preserveAspectRatio="xMinYMid meet"><g transform="translate(0 1901) scale(1 -1)"><path d="M616 1223 477 612H756ZM436 1493H797L1200 0H905L813 369H418L328 0H33Z" transform="translate(0 0)"/><path d="M690 1438V1120H1073V895H690V365Q690 290 726.5 257.5Q763 225 848 225H1073V0H827Q575 0 486.0 80.5Q397 161 397 379V895H111V1120H397V1438Z" transform="translate(1233 0)"/><path d="M387 467V1331H90V1556H680V467Q680 335 721.0 280.0Q762 225 860 225H1094V0H778Q569 0 478.0 108.0Q387 216 387 467Z" transform="translate(2466 0)"/><path d="M700 526Q536 526 471.0 484.0Q406 442 406 340Q406 264 451.0 219.0Q496 174 573 174Q689 174 753.0 261.5Q817 349 817 506V526ZM1108 639V0H817V125Q764 51 681.0 11.0Q598 -29 498 -29Q307 -29 200.5 72.0Q94 173 94 354Q94 550 221.0 643.5Q348 737 614 737H817V786Q817 857 765.5 893.5Q714 930 614 930Q509 930 410.5 903.5Q312 877 205 819V1069Q302 1109 402.0 1128.0Q502 1147 614 1147Q887 1147 997.5 1036.0Q1108 925 1108 639Z" transform="translate(3699 0)"/><path d="M991 1085V829Q910 881 822.5 907.5Q735 934 647 934Q549 934 499.0 905.5Q449 877 449 821Q449 741 663 691L674 688L758 668Q918 630 992.5 545.5Q1067 461 1067 317Q1067 144 953.5 57.5Q840 -29 612 -29Q511 -29 405.0 -11.5Q299 6 190 41V297Q287 242 387.5 213.0Q488 184 582 184Q685 184 738.0 214.0Q791 244 791 301Q791 357 753.5 387.0Q716 417 575 451L494 469Q326 507 249.0 588.0Q172 669 172 805Q172 967 289.0 1057.0Q406 1147 618 1147Q713 1147 807.5 1131.5Q902 1116 991 1085Z" transform="translate(4932 0)"/></g></svg></button>
-    <div class="utility-actions" aria-label="Atlas utilities and navigation">
-      <button class="utility-btn utility-accent" id="captureBtn">+ Capture</button>
-      <button class="utility-btn" id="searchBtn">Search</button>
-      <button class="utility-btn" id="editBtn">Edit</button>
-      <button class="utility-btn" id="themeBtn" aria-label="Toggle night mode">Night</button>
-      <button class="utility-btn" id="lockBtn" aria-label="Lock Atlas now">Lock</button>
-      <button class="utility-btn" id="exportBtn">Export</button>
-      <label class="utility-file" for="importFile">Import</label>
-      <input id="importFile" type="file" accept="application/json" />
-      <div class="header-switch">Profile <select id="profileSelect" aria-label="Atlas profile"></select></div>
-      <div class="header-switch">View <select id="sectionSelect" aria-label="Navigate Atlas"><option value="">Navigate</option></select></div>
-      <div class="header-switch">Space <select id="spaceFilter"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select></div>
+    <div class="top-context" aria-label="Atlas context">
+      <div class="context-switch"><span>Profile</span><select id="profileSelect" aria-label="Atlas profile"></select></div>
+      <div class="context-switch"><span>View</span><select id="sectionSelect" aria-label="Navigate Atlas"><option value="">Navigate</option></select></div>
+      <div class="context-switch"><span>Space</span><select id="spaceFilter"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select></div>
+    </div>
+    <div class="top-actions" aria-label="Atlas primary actions">
+      <button class="command-btn command-primary" id="captureBtn">+ Capture</button>
+      <button class="command-btn" id="searchBtn">Search</button>
+      <details class="system-menu">
+        <summary aria-label="Open system menu">System</summary>
+        <div class="system-menu-panel">
+          <button class="system-item" id="editBtn">Edit Atlas</button>
+          <button class="system-item" id="themeBtn" aria-label="Toggle night mode">Night</button>
+          <button class="system-item" id="lockBtn" aria-label="Lock Atlas now">Lock</button>
+          <button class="system-item" id="exportBtn">Export data</button>
+          <label class="system-item" for="importFile">Import data</label>
+          <input id="importFile" type="file" accept="application/json" />
+        </div>
+      </details>
     </div>
   </header>
 
@@ -528,7 +634,7 @@ body{font-feature-settings:"kern" 1,"liga" 1;-webkit-font-smoothing:antialiased;
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='0.10.5'; const DATA_VERSION=5; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.10.6'; const DATA_VERSION=5; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -916,7 +1022,7 @@ function networkPanel(scope=null){const hero=!scope;const count=graphData(scope)
 function foldPanel(title,code,body,open=false){return `<details class="fold" ${open?'open':''}><summary><span>${esc(title)}</span></summary><div class="fold-body">${body}</div></details>`}
 function queueRows(items){return `<div class="queue">${items.length?items.map(i=>`<div class="qrow"><i class="dot ${statusDot(i.status)}"></i><div><div class="qname">${esc(i.name)}</div><div class="qmeta">${esc(i.meta)}</div></div><span class="badge">${esc(i.badge||'OPEN')}</span></div>`).join(''):'<div class="empty">Nothing here.</div>'}</div>`}
 function upcomingCalendarHtml(){const start=todayKey();const end=new Date();end.setDate(end.getDate()+30);const endKey=end.toLocaleDateString('en-CA');const ev=state.calendar.filter(e=>profileAllows(e.profile)&&e.date>=start&&e.date<=endKey).sort((a,b)=>(a.date+(a.startTime||'')).localeCompare(b.date+(b.startTime||''))).slice(0,8);return `<div class="queue">${ev.length?ev.map(e=>`<div class="qrow"><i class="dot" style="background:${eventHue(e)}"></i><div><div class="qname">${esc(e.title)}${e.entangledId||e.sourceEventId?' ⟷':''}</div><div class="qmeta">${esc(e.date)}${e.startTime?` · ${esc(e.startTime)}`:''}${e.areaId?` · ${esc(areaById(e.areaId)?.name||'')}`:e.sourceAreaLabel?` · ${esc(e.sourceAreaLabel)}`:''}</div></div><span class="badge">${esc(profileById(e.profile).name)}</span></div>`).join(''):'<div class="empty">Nothing scheduled in the next 30 days.</div>'}</div>`}
-function renderHome(){const app=document.getElementById('app');const activity=`<div class="notes-list">${state.activity.filter(a=>profileAllows(a.profile)).slice(0,8).map(a=>`<div class="note"><div class="meta">${fmtDate(a.time)} · ${fmtTime(a.time)}</div><div class="note-body">${esc(a.text)}</div></div>`).join('')}</div>`;app.innerHTML=`${networkPanel(null)}<section class="home-stack">${foldPanel('Dashboard','SNAPSHOT',metricsHtml(null),true)}${foldPanel('Upcoming','CALENDAR · 30 DAYS',upcomingCalendarHtml())}${foldPanel('Active now','NEXT MOVES',queueRows(getNext(null)))}${foldPanel('Milestones','CURRENT / WATCH',queueRows(getWatch(null)))}${foldPanel('Projects','ALL SPACES',projectCards(null))}${foldPanel('Recent notes','KNOWLEDGE',notesHtml(visibleNotes(null).slice(0,8)))}${foldPanel('Recent activity','SYSTEM LOG',activity)}</section>`;drawNetwork(null)}
+function renderHome(){const app=document.getElementById('app');const activity=`<div class="notes-list">${state.activity.filter(a=>profileAllows(a.profile)).slice(0,8).map(a=>`<div class="note"><div class="meta">${fmtDate(a.time)} · ${fmtTime(a.time)}</div><div class="note-body">${esc(a.text)}</div></div>`).join('')}</div>`;const dash=`<aside class="home-stack">${foldPanel('Dashboard','',metricsHtml(null),true)}${foldPanel('Upcoming','',upcomingCalendarHtml())}${foldPanel('Active now','',queueRows(getNext(null)))}${foldPanel('Milestones','',queueRows(getWatch(null)))}${foldPanel('Projects','',projectCards(null))}${foldPanel('Recent notes','',notesHtml(visibleNotes(null).slice(0,8)))}${foldPanel('Recent activity','',activity)}</aside>`;app.innerHTML=`<section class="home-layout"><div class="home-map">${networkPanel(null)}</div>${dash}</section>`;drawNetwork(null)}
 function childAreas(id){return profileAreas().filter(a=>a.parentId===id&&spaceAllows(a.space))}
 function renderArea(id){const a=areaById(id);if(!a){state.settings.activeTab='home';return renderAll()}const subs=['overview','notes','projects','milestones','map'];const app=document.getElementById('app');app.innerHTML=`<div class="workspace-head"><div class="workspace-title"><div class="crumb">ATLAS / ${esc(activeProfile().name.toUpperCase())} / ${esc(a.code)}</div><h2>${esc(a.name)}</h2><p>${esc(a.description)}</p></div><div class="inline-actions"><button class="btn primary" data-quick-add="note" data-area="${a.id}">+ Note</button><button class="btn" data-quick-add="project" data-area="${a.id}">+ Project</button></div></div><nav class="subtabs">${subs.map(s=>`<button class="tab ${state.settings.subtab===s?'active':''}" data-subtab="${s}">${s}</button>`).join('')}</nav><div class="workspace" id="workspace"></div>`;renderWorkspace(a.id)}
 function renderWorkspace(id){const el=document.getElementById('workspace');if(!el)return;const st=state.settings.subtab;if(st==='overview'){el.innerHTML=`${metricsHtml(id)}<section class="grid workspace-grid"><div class="panel"><div class="panel-head"><h3>Projects</h3><span class="code">ACTIVE / WATCHING</span></div>${projectCards(id)}</div><div class="side">${queueHtml(getNext(id),'Next moves','PROJECT QUEUE')}${queueHtml(getWatch(id),'Milestones','CURRENT')}</div></section><section class="grid workspace-grid section"><div class="panel"><div class="panel-head"><h3>Recent Notes</h3><span class="code">LINKED</span></div>${notesHtml(visibleNotes(id).slice(0,8))}</div><div class="panel"><div class="panel-head"><h3>Topics</h3><span class="code">CHILD NODES</span></div>${topicsHtml(id)}</div></section>`}
@@ -999,7 +1105,7 @@ function svgEl(tag,attrs={}){const el=document.createElementNS(SVG_NS,tag);Objec
 function curvePath(a,b,type='tree'){const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;let cx=mx+(mx-600)*.06,cy=my+(my-340)*.06;if(type==='cross'){const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1;const side=stableOffset(a.id+'|'+b.id,1)>=0?1:-1;cx=mx+(-dy/d)*44*side;cy=my+(dx/d)*44*side}return `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`}
 function drawNetwork(scope){const svg=document.getElementById('network');if(!svg)return;svg.dataset.scope=scope||'';svg.innerHTML='';const{nodes,links}=graphData(scope);const cam=mapCamera(scope);if(cam.needsFit)setFitCamera(scope,nodes);applyMapView(svg,scope);const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
   links.slice().sort((l1,l2)=>{const z1=((byId[l1.source]?.z||0)+(byId[l1.target]?.z||0))/2,z2=((byId[l2.source]?.z||0)+(byId[l2.target]?.z||0))/2;return z1-z2}).forEach(l=>{const a=byId[l.source],b=byId[l.target];if(!a||!b)return;const path=svgEl('path',{d:curvePath(a,b,l.type),class:`edge ${l.type==='cross'?'cross':'tree'}`,'data-source':l.source,'data-target':l.target});if(l.type==='cross')path.style.stroke=a.hue||domainHueFor(a);svg.appendChild(path)});
-  nodes.slice().sort((a,b)=>(a.z||0)-(b.z||0)).forEach(n=>{const hue=n.hue||domainHueFor(n),r=visualRadius(n),zNorm=Math.max(-1,Math.min(1,(n.z||0)/280));const g=svgEl('g',{class:`node level${n.level} ${n.id===scope?'active':''} ${n.note?'note':''} ${zNorm<-.18?'is-back':zNorm>.18?'is-front':''}`});g.dataset.node=n.id;const disc=svgEl('circle',{cx:n.x,cy:n.y,r:r.toFixed(2),class:'node-disc'});disc.style.stroke=hue;g.appendChild(disc);const title=svgEl('title');title.textContent=n.name;g.appendChild(title);const tx=svgEl('text',{x:n.x.toFixed(2),y:(n.y+r+7.5+(n.level===2?1:0)).toFixed(2),class:'label'});tx.textContent=n.code||makeNodeCode(n.name);g.appendChild(tx);svg.appendChild(g)});
+  nodes.slice().sort((a,b)=>(a.z||0)-(b.z||0)).forEach(n=>{const hue=n.hue||domainHueFor(n),r=visualRadius(n),zNorm=Math.max(-1,Math.min(1,(n.z||0)/280));const g=svgEl('g',{class:`node level${n.level} ${n.id===scope?'active':''} ${n.note?'note':''} ${zNorm<-.18?'is-back':zNorm>.18?'is-front':''}`});g.dataset.node=n.id;g.style.setProperty('--node-hue',hue);const disc=svgEl('circle',{cx:n.x,cy:n.y,r:r.toFixed(2),class:'node-disc'});g.appendChild(disc);const title=svgEl('title');title.textContent=n.name;g.appendChild(title);const gap=({2:11,3:10,4:9,5:8}[n.level]||9);const tx=svgEl('text',{x:n.x.toFixed(2),y:(n.y+r+gap).toFixed(2),class:'label','dominant-baseline':'hanging'});tx.textContent=n.code||makeNodeCode(n.name);g.appendChild(tx);svg.appendChild(g)});
   const inspect=document.getElementById('mapInspect');
   const focusNode=(id)=>{const connected=new Set([id]);svg.querySelectorAll('.edge').forEach(e=>{if(e.dataset.source===id)connected.add(e.dataset.target);if(e.dataset.target===id)connected.add(e.dataset.source)});svg.classList.add('has-focus');svg.querySelectorAll('.node').forEach(el=>el.classList.toggle('focus-near',connected.has(el.dataset.node)));svg.querySelectorAll('.edge').forEach(el=>el.classList.toggle('focus-near',el.dataset.source===id||el.dataset.target===id));const n=byId[id];if(inspect&&n)inspect.textContent=`${n.code||makeNodeCode(n.name)} / ${String(n.name||'').toUpperCase()}`};
   const clearFocus=()=>{svg.classList.remove('has-focus');svg.querySelectorAll('.focus-near').forEach(el=>el.classList.remove('focus-near'));if(inspect)inspect.textContent=''};
