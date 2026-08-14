@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Atlas</title>
 <link rel="manifest" href="./manifest.webmanifest" />
-<meta name="theme-color" content="#05080c" />
+<meta name="theme-color" content="#202120" />
 <meta name="application-name" content="Atlas" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -243,18 +243,132 @@ body[data-theme="night"] .edge{stroke:#686c68!important;opacity:.22!important}
 .recovery-key{border:1px solid #3b3e39;background:transparent;color:#c4c1b9;font:500 11px/1.5 "Courier New",Courier,monospace}
 .lock-note{border-top:0;color:#646861;font-size:8.5px}
 
+
+/* Atlas 0.10.4 · restrained Life OS interface */
+:root{
+  --bg:#e6e2da;--paper:#e6e2da;--paper2:#e6e2da;--ink:#282925;--muted:#777871;--line:#aaa79f;
+  --green:#858b88;--green2:#8f9491;--sand:#918a80;--amber:#8f877d;--red:#82736f;--blue:#818b90;
+  --graph-hue-1:#7f8583;--graph-hue-2:#8b867e;--graph-hue-3:#7e888c;--graph-hue-4:#898780;--graph-hue-5:#858a86;--graph-hue-6:#83888a;
+  --shadow:none
+}
+body[data-theme="night"]{
+  --bg:#202120;--paper:#202120;--paper2:#202120;--ink:#e4e1d9;--muted:#85857f;--line:#4a4a46;
+  --green:#929794;--green2:#999d99;--sand:#9a9287;--amber:#958e84;--red:#8f807b;--blue:#8c969b;
+  --graph-hue-1:#8e9391;--graph-hue-2:#9b9489;--graph-hue-3:#89949a;--graph-hue-4:#96928a;--graph-hue-5:#909590;--graph-hue-6:#8d9497;
+  --shadow:none
+}
+html,body{background:var(--bg)!important}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.shell{max-width:1660px;padding-top:16px}
+.topbar{
+  border-top:1px solid color-mix(in srgb,var(--line) 88%,transparent)!important;
+  border-bottom:1px dotted color-mix(in srgb,var(--line) 82%,transparent)!important;
+  padding:8px 0 10px!important;
+  min-height:55px;
+}
+.brand-home{width:118px;height:38px;color:var(--ink)!important;opacity:.98}
+.atlas-wordmark{display:block;width:116px;height:37px;fill:currentColor!important}
+.atlas-wordmark-lock{width:124px;height:40px}
+.utility-actions{gap:2px}
+.utility-btn,.utility-file{
+  color:var(--muted)!important;opacity:.8!important;padding:7px 8px!important;
+  font:600 9.5px/1 "Courier New",Courier,monospace!important;letter-spacing:.075em!important;
+}
+.utility-btn:hover,.utility-file:hover,.utility-accent:hover{color:var(--ink)!important;background:transparent!important;opacity:1!important}
+.utility-accent{color:var(--muted)!important;opacity:.88!important}
+.header-switch{font:600 8px/1 "Courier New",Courier,monospace!important;color:var(--muted)!important;letter-spacing:.055em}
+.header-switch select,.space-switch select,.section-switch select{
+  border:0!important;border-bottom:1px solid color-mix(in srgb,var(--line) 78%,transparent)!important;
+  border-radius:0!important;background:transparent!important;color:var(--ink)!important;
+  padding:5px 22px 5px 5px!important;font:600 9px "Courier New",Courier,monospace!important;
+}
+.header-switch select:hover,.header-switch select:focus{border-color:var(--ink)!important;outline:none}
+
+/* Every main surface uses the same material; hierarchy comes from lines and spacing, not colour blocks. */
+.panel,.fold,.card,.topic,.editor-section,.profile-card,.edit-row,.modal,.modal-head,
+body[data-theme="night"] .panel,body[data-theme="night"] .fold,body[data-theme="night"] .card,
+body[data-theme="night"] .topic,body[data-theme="night"] .editor-section,body[data-theme="night"] .modal,
+body[data-theme="night"] .modal-head,body[data-theme="night"] .profile-card{
+  background:var(--bg)!important;box-shadow:none!important;border-color:var(--line)!important;
+}
+.panel,.fold,.card,.topic,.editor-section,.profile-card,.modal,.edit-row{border-radius:3px!important}
+.panel-head,.fold[open]>summary,.editor-section-head,.modal-head{border-color:var(--line)!important}
+.card:hover,.topic:hover,.clickable:hover,body[data-theme="night"] .card:hover,body[data-theme="night"] .topic:hover{
+  background:color-mix(in srgb,var(--ink) 2.5%,transparent)!important;border-color:color-mix(in srgb,var(--ink) 45%,var(--line))!important;
+}
+.metric .tiny,.workspace-title .crumb,.note-type,.topic .k{color:var(--muted)!important}
+.metric .value{color:var(--ink)}
+.note-body,body[data-theme="night"] .note-body{color:color-mix(in srgb,var(--ink) 82%,var(--muted))!important}
+.qrow,.note,.mrow,.daily-entry,.mini-row{border-color:color-mix(in srgb,var(--line) 72%,transparent)!important}
+.progress{background:transparent!important;border-color:var(--line)!important}.bar{background:var(--muted)!important}
+.mark.done,.dot{background:var(--muted)!important;border-color:var(--muted)!important}.dot.amber{background:var(--sand)!important}
+.btn,.tab,.file-label{border-color:var(--line)!important;color:var(--muted)!important;background:transparent!important;border-radius:2px!important}
+.btn:hover,.tab:hover,.file-label:hover,body[data-theme="night"] .btn:hover,body[data-theme="night"] .tab:hover,body[data-theme="night"] .file-label:hover{
+  color:var(--ink)!important;background:transparent!important;border-color:var(--ink)!important
+}
+.btn.primary,.tab.active,body[data-theme="night"] .btn.primary,body[data-theme="night"] .tab.active{
+  color:var(--ink)!important;background:transparent!important;border-color:var(--ink)!important
+}
+
+/* Graph: no special night-only blue. The same restrained palette remaps with the theme variables above. */
+.edge,body[data-theme="night"] .edge{stroke:color-mix(in srgb,var(--muted) 68%,transparent)!important;opacity:.26!important}
+.edge.cross,body[data-theme="night"] .edge.cross{opacity:.44!important}
+.node .node-disc,body[data-theme="night"] .node .node-disc{fill:var(--bg)!important;stroke-width:.82!important}
+.node:hover .node-disc,.node.active .node-disc,body[data-theme="night"] .node:hover .node-disc,body[data-theme="night"] .node.active .node-disc{stroke:var(--ink)!important}
+.node text,body[data-theme="night"] .node text{
+  fill:var(--muted)!important;stroke:var(--bg)!important;stroke-width:2px!important;
+  font-family:"Courier New",Courier,monospace!important;font-weight:500!important;letter-spacing:.07em!important
+}
+.node.level2 text{font-size:8.2px!important}.node.level3 text{font-size:7.7px!important}.node.level4 text{font-size:7.1px!important}.node.level5 text{font-size:6.4px!important}
+.constellation-legend{color:var(--muted)!important}.constellation-legend i{box-shadow:none!important;opacity:.72}
+
+.depth,.zoom-controls,.legend,body[data-theme="night"] .depth,body[data-theme="night"] .zoom-controls,body[data-theme="night"] .legend{
+  background:var(--bg)!important;border-color:var(--line)!important;backdrop-filter:none!important;border-radius:2px!important;color:var(--muted)!important
+}
+.zoom-controls button{color:var(--muted)!important}.zoom-controls button:hover{color:var(--ink)!important;background:transparent!important}
+.depth input{accent-color:var(--muted)!important}
+
+.utility-rail,.utility-pane,body[data-theme="night"] .utility-rail,body[data-theme="night"] .utility-pane{
+  background:var(--bg)!important;border-color:var(--line)!important;backdrop-filter:none!important;box-shadow:none!important;border-radius:2px!important
+}
+.utility-rail button:hover,.utility-rail button.active{color:var(--ink)!important;background:transparent!important}
+.utility-pane-close:hover,.utility-actions-row button:hover{color:var(--ink)!important;border-color:var(--ink)!important}
+.scratch-area,.quick-add input,.field input,.field select,.field textarea,.edit-row input,.edit-row select,.mini-row input[type=text],
+body[data-theme="night"] .field input,body[data-theme="night"] .field select,body[data-theme="night"] .field textarea{
+  background:transparent!important;color:var(--ink)!important;border-color:var(--line)!important;border-radius:2px!important
+}
+.quick-add button,.utility-actions-row button{color:var(--muted)!important;border-color:var(--line)!important;background:transparent!important}
+.quick-event,.cal-event,.entangle-row{background:transparent!important}
+.calendar-grid{background:transparent!important}.cal-cell.today{background:color-mix(in srgb,var(--ink) 3%,transparent)!important}
+.profile-card .profile-glyph{color:var(--muted)!important;border-color:var(--line)!important}
+
+/* Lock screen becomes the visual reference for Atlas itself. */
+.lock-screen{background:#202120!important;color:#e4e1d9!important}
+.lock-card{width:min(320px,90vw)!important;text-align:left!important}
+.lock-brand{justify-content:flex-start!important;color:#e4e1d9!important;margin-bottom:38px!important}
+.lock-field input.pin-input{width:100%!important;text-align:left!important;text-indent:0!important;letter-spacing:.62em!important;font-size:22px!important;border-bottom:1px dotted #686863!important}
+.lock-field select{width:100%!important;border:0!important;border-bottom:1px dotted #5b5b56!important;border-radius:0!important;text-align:left}
+.lock-actions{justify-content:flex-start!important}.lock-primary,.lock-secondary{padding-left:0!important;padding-right:16px!important}
+.lock-title{font:500 9px/1.3 "Courier New",Courier,monospace!important;letter-spacing:.18em!important;color:#8b8b85!important;text-transform:lowercase!important}
+.lock-copy,.lock-message{font-family:"Courier New",Courier,monospace!important}
+.recovery-key{border:0!important;border-bottom:1px dotted #686863!important;text-align:left!important;padding-left:0!important}
+
+@media(max-width:700px){
+  .topbar{flex-direction:row!important;align-items:center!important;gap:8px!important}.brand-home{width:102px}.atlas-wordmark{width:100px}.utility-actions{justify-content:flex-end!important}
+}
+
 </style>
 </head>
 <body>
 <div class="lock-screen" id="lockScreen" aria-live="polite">
   <section class="lock-card" aria-label="Atlas Lock">
-    <div class="lock-brand" aria-label="Atlas"><svg class="atlas-wordmark atlas-wordmark-lock" viewBox="0 0 135.000 37.155" aria-hidden="true" focusable="false"><path d="M25.41 30.097 L11.303 30.097 L9.075 36.472 L0 36.472 L12.96 1.477 L23.722 1.477 L36.682 36.472 L27.615 36.472 L25.41 30.097 Z M13.553 23.602 L23.137 23.602 L18.352 9.682 L13.553 23.602 Z M50.108 2.767 L50.108 10.222 L58.763 10.222 L58.763 16.222 L50.108 16.222 L50.108 27.352 Q50.108 29.182 50.836 29.827 Q51.563 30.472 53.723 30.472 L58.036 30.472 L58.036 36.472 L50.836 36.472 Q45.871 36.472 43.793 34.402 Q41.723 32.325 41.723 27.352 L41.723 16.222 L37.546 16.222 L37.546 10.222 L41.723 10.222 L41.723 2.767 L50.108 2.767 Z M63.896 0 L72.281 0 L72.281 36.472 L63.896 36.472 L63.896 0 Z M92.109 24.66 Q89.484 24.66 88.157 25.552 Q86.837 26.437 86.837 28.177 Q86.837 29.767 87.902 30.675 Q88.974 31.575 90.872 31.575 Q93.234 31.575 94.854 29.88 Q96.474 28.177 96.474 25.62 L96.474 24.66 L92.109 24.66 Z M104.934 21.495 L104.934 36.472 L96.474 36.472 L96.474 32.58 Q94.787 34.972 92.672 36.067 Q90.564 37.155 87.542 37.155 Q83.462 37.155 80.919 34.777 Q78.377 32.392 78.377 28.597 Q78.377 23.977 81.549 21.825 Q84.729 19.665 91.524 19.665 L96.474 19.665 L96.474 19.012 Q96.474 17.017 94.899 16.095 Q93.332 15.165 90.002 15.165 Q87.309 15.165 84.984 15.705 Q82.667 16.245 80.672 17.325 L80.672 10.927 Q83.372 10.267 86.087 9.93 Q88.809 9.592 91.524 9.592 Q98.627 9.592 101.777 12.39 Q104.934 15.187 104.934 21.495 Z M133.245 11.04 L133.245 17.415 Q130.553 16.29 128.04 15.727 Q125.535 15.165 123.307 15.165 Q120.915 15.165 119.752 15.765 Q118.597 16.365 118.597 17.602 Q118.597 18.615 119.475 19.155 Q120.352 19.687 122.625 19.95 L124.102 20.16 Q130.553 20.977 132.773 22.852 Q135 24.727 135 28.74 Q135 32.932 131.903 35.047 Q128.812 37.155 122.677 37.155 Q120.075 37.155 117.292 36.742 Q114.517 36.33 111.585 35.512 L111.585 29.137 Q114.097 30.352 116.73 30.967 Q119.37 31.575 122.085 31.575 Q124.552 31.575 125.79 30.9 Q127.035 30.217 127.035 28.875 Q127.035 27.75 126.18 27.202 Q125.325 26.655 122.767 26.347 L121.29 26.16 Q115.688 25.455 113.438 23.557 Q111.188 21.66 111.188 17.79 Q111.188 13.62 114.045 11.61 Q116.91 9.592 122.812 9.592 Q125.137 9.592 127.688 9.945 Q130.245 10.29 133.245 11.04 Z"/></svg></div>
+    <div class="lock-brand" aria-label="Atlas"><svg class="atlas-wordmark atlas-wordmark-lock" viewBox="0 180 6145 1600" aria-hidden="true" focusable="false" preserveAspectRatio="xMinYMid meet"><path d="M1229 1705H935L843 1375H387L295 1705H0L443 356H787ZM615 538Q607 580 585.5 663.5Q564 747 449 1153H781Q664 741 643.5 660.0Q623 579 615 538Z"/><path d="M1557 813H1390V623H1571L1659 341H1835V623H2220V813H1835V1343Q1835 1431 1851.5 1461.5Q1868 1492 1905.0 1509.5Q1942 1527 2009 1527Q2133 1527 2264 1500V1686Q2122 1709 2063.0 1713.5Q2004 1718 1940 1718Q1813 1718 1727.5 1683.5Q1642 1649 1598.5 1575.5Q1555 1502 1555 1369Z"/><path d="M3388 1513 3605 1515V1705L3256 1700Q3157 1683 3065 1612Q3022 1579 2996 1499Q2973 1431 2971 1329V411H2681V221H3252V1361Q3254 1447 3275 1471Q3302 1502 3388 1513Z"/><path d="M4126 1725Q3969 1725 3881.0 1639.5Q3793 1554 3793 1399Q3793 1231 3897.5 1143.5Q4002 1056 4210 1053L4433 1049V994Q4433 891 4398.0 838.0Q4363 785 4285 785Q4212 785 4177.5 821.5Q4143 858 4135 938L3842 924Q3896 603 4297 603Q4499 603 4606.5 702.0Q4714 801 4714 993V1385Q4714 1476 4734.5 1510.5Q4755 1545 4803 1545Q4835 1545 4865 1539V1691Q4840 1697 4820.0 1702.0Q4800 1707 4780.0 1710.0Q4760 1713 4737.5 1715.0Q4715 1717 4685 1717Q4579 1717 4528.5 1665.0Q4478 1613 4468 1512H4462Q4399 1625 4318.5 1675.0Q4238 1725 4126 1725ZM4433 1204 4299 1206Q4209 1208 4168.5 1224.5Q4128 1241 4107.0 1277.5Q4086 1314 4086 1377Q4086 1529 4206 1529Q4303 1529 4368.0 1452.5Q4433 1376 4433 1259Z"/><path d="M6020 1389Q6020 1546 5891.5 1635.5Q5763 1725 5536 1725Q5313 1725 5194.5 1654.5Q5076 1584 5037 1435L5284 1398Q5305 1475 5356.5 1507.0Q5408 1539 5536 1539Q5654 1539 5708.0 1509.0Q5762 1479 5762 1415Q5762 1363 5718.5 1332.5Q5675 1302 5571 1281Q5333 1234 5250.0 1193.5Q5167 1153 5123.5 1088.5Q5080 1024 5080 930Q5080 775 5199.5 688.5Q5319 602 5538 602Q5731 602 5848.5 677.0Q5966 752 5995 894L5746 920Q5734 854 5687.0 821.5Q5640 789 5538 789Q5438 789 5388.0 814.5Q5338 840 5338 900Q5338 947 5376.5 974.5Q5415 1002 5506 1020Q5633 1046 5731.5 1073.5Q5830 1101 5889.5 1139.0Q5949 1177 5984.5 1236.5Q6020 1296 6020 1389Z"/></svg></div>
     <div id="lockContent"></div>
   </section>
 </div>
 <div class="shell">
   <header class="topbar">
-    <button class="brand-home" id="homeBtn" type="button" aria-label="Return to Atlas home"><svg class="atlas-wordmark" viewBox="0 0 135.000 37.155" aria-hidden="true" focusable="false"><path d="M25.41 30.097 L11.303 30.097 L9.075 36.472 L0 36.472 L12.96 1.477 L23.722 1.477 L36.682 36.472 L27.615 36.472 L25.41 30.097 Z M13.553 23.602 L23.137 23.602 L18.352 9.682 L13.553 23.602 Z M50.108 2.767 L50.108 10.222 L58.763 10.222 L58.763 16.222 L50.108 16.222 L50.108 27.352 Q50.108 29.182 50.836 29.827 Q51.563 30.472 53.723 30.472 L58.036 30.472 L58.036 36.472 L50.836 36.472 Q45.871 36.472 43.793 34.402 Q41.723 32.325 41.723 27.352 L41.723 16.222 L37.546 16.222 L37.546 10.222 L41.723 10.222 L41.723 2.767 L50.108 2.767 Z M63.896 0 L72.281 0 L72.281 36.472 L63.896 36.472 L63.896 0 Z M92.109 24.66 Q89.484 24.66 88.157 25.552 Q86.837 26.437 86.837 28.177 Q86.837 29.767 87.902 30.675 Q88.974 31.575 90.872 31.575 Q93.234 31.575 94.854 29.88 Q96.474 28.177 96.474 25.62 L96.474 24.66 L92.109 24.66 Z M104.934 21.495 L104.934 36.472 L96.474 36.472 L96.474 32.58 Q94.787 34.972 92.672 36.067 Q90.564 37.155 87.542 37.155 Q83.462 37.155 80.919 34.777 Q78.377 32.392 78.377 28.597 Q78.377 23.977 81.549 21.825 Q84.729 19.665 91.524 19.665 L96.474 19.665 L96.474 19.012 Q96.474 17.017 94.899 16.095 Q93.332 15.165 90.002 15.165 Q87.309 15.165 84.984 15.705 Q82.667 16.245 80.672 17.325 L80.672 10.927 Q83.372 10.267 86.087 9.93 Q88.809 9.592 91.524 9.592 Q98.627 9.592 101.777 12.39 Q104.934 15.187 104.934 21.495 Z M133.245 11.04 L133.245 17.415 Q130.553 16.29 128.04 15.727 Q125.535 15.165 123.307 15.165 Q120.915 15.165 119.752 15.765 Q118.597 16.365 118.597 17.602 Q118.597 18.615 119.475 19.155 Q120.352 19.687 122.625 19.95 L124.102 20.16 Q130.553 20.977 132.773 22.852 Q135 24.727 135 28.74 Q135 32.932 131.903 35.047 Q128.812 37.155 122.677 37.155 Q120.075 37.155 117.292 36.742 Q114.517 36.33 111.585 35.512 L111.585 29.137 Q114.097 30.352 116.73 30.967 Q119.37 31.575 122.085 31.575 Q124.552 31.575 125.79 30.9 Q127.035 30.217 127.035 28.875 Q127.035 27.75 126.18 27.202 Q125.325 26.655 122.767 26.347 L121.29 26.16 Q115.688 25.455 113.438 23.557 Q111.188 21.66 111.188 17.79 Q111.188 13.62 114.045 11.61 Q116.91 9.592 122.812 9.592 Q125.137 9.592 127.688 9.945 Q130.245 10.29 133.245 11.04 Z"/></svg></button>
+    <button class="brand-home" id="homeBtn" type="button" aria-label="Return to Atlas home"><svg class="atlas-wordmark" viewBox="0 180 6145 1600" aria-hidden="true" focusable="false" preserveAspectRatio="xMinYMid meet"><path d="M1229 1705H935L843 1375H387L295 1705H0L443 356H787ZM615 538Q607 580 585.5 663.5Q564 747 449 1153H781Q664 741 643.5 660.0Q623 579 615 538Z"/><path d="M1557 813H1390V623H1571L1659 341H1835V623H2220V813H1835V1343Q1835 1431 1851.5 1461.5Q1868 1492 1905.0 1509.5Q1942 1527 2009 1527Q2133 1527 2264 1500V1686Q2122 1709 2063.0 1713.5Q2004 1718 1940 1718Q1813 1718 1727.5 1683.5Q1642 1649 1598.5 1575.5Q1555 1502 1555 1369Z"/><path d="M3388 1513 3605 1515V1705L3256 1700Q3157 1683 3065 1612Q3022 1579 2996 1499Q2973 1431 2971 1329V411H2681V221H3252V1361Q3254 1447 3275 1471Q3302 1502 3388 1513Z"/><path d="M4126 1725Q3969 1725 3881.0 1639.5Q3793 1554 3793 1399Q3793 1231 3897.5 1143.5Q4002 1056 4210 1053L4433 1049V994Q4433 891 4398.0 838.0Q4363 785 4285 785Q4212 785 4177.5 821.5Q4143 858 4135 938L3842 924Q3896 603 4297 603Q4499 603 4606.5 702.0Q4714 801 4714 993V1385Q4714 1476 4734.5 1510.5Q4755 1545 4803 1545Q4835 1545 4865 1539V1691Q4840 1697 4820.0 1702.0Q4800 1707 4780.0 1710.0Q4760 1713 4737.5 1715.0Q4715 1717 4685 1717Q4579 1717 4528.5 1665.0Q4478 1613 4468 1512H4462Q4399 1625 4318.5 1675.0Q4238 1725 4126 1725ZM4433 1204 4299 1206Q4209 1208 4168.5 1224.5Q4128 1241 4107.0 1277.5Q4086 1314 4086 1377Q4086 1529 4206 1529Q4303 1529 4368.0 1452.5Q4433 1376 4433 1259Z"/><path d="M6020 1389Q6020 1546 5891.5 1635.5Q5763 1725 5536 1725Q5313 1725 5194.5 1654.5Q5076 1584 5037 1435L5284 1398Q5305 1475 5356.5 1507.0Q5408 1539 5536 1539Q5654 1539 5708.0 1509.0Q5762 1479 5762 1415Q5762 1363 5718.5 1332.5Q5675 1302 5571 1281Q5333 1234 5250.0 1193.5Q5167 1153 5123.5 1088.5Q5080 1024 5080 930Q5080 775 5199.5 688.5Q5319 602 5538 602Q5731 602 5848.5 677.0Q5966 752 5995 894L5746 920Q5734 854 5687.0 821.5Q5640 789 5538 789Q5438 789 5388.0 814.5Q5338 840 5338 900Q5338 947 5376.5 974.5Q5415 1002 5506 1020Q5633 1046 5731.5 1073.5Q5830 1101 5889.5 1139.0Q5949 1177 5984.5 1236.5Q6020 1296 6020 1389Z"/></svg></button>
     <div class="utility-actions" aria-label="Atlas utilities and navigation">
       <button class="utility-btn utility-accent" id="captureBtn">+ Capture</button>
       <button class="utility-btn" id="searchBtn">Search</button>
@@ -343,7 +457,7 @@ body[data-theme="night"] .edge{stroke:#686c68!important;opacity:.22!important}
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='0.10.3'; const DATA_VERSION=5; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.10.4'; const DATA_VERSION=5; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -762,7 +876,7 @@ function deleteCalendarEvent(){const e=state.calendar.find(x=>x.id===activeCalen
 
 
 function domainKeyForArea(a){if(!a)return'';let cur=a,guard=0;while(cur&&Number(cur.level)>2&&guard++<12)cur=areaById(cur.parentId);return cur?.id||a.id||''}
-const GRAPH_PALETTE=['#7f8a8f','#918b80','#858589','#8c8882','#818b87','#828990'];
+const GRAPH_PALETTE=['var(--graph-hue-1)','var(--graph-hue-2)','var(--graph-hue-3)','var(--graph-hue-4)','var(--graph-hue-5)','var(--graph-hue-6)'];
 function stableOffset(text,range=18){let h=0;for(const c of String(text||''))h=(Math.imul(h,31)+c.charCodeAt(0))|0;return ((Math.abs(h)%1000)/999*2-1)*range}
 function domainHueDeg(a){const rootId=domainKeyForArea(a);const roots=profileAreas(a?.profile||state.settings.activeProfile||'me').filter(x=>x.level===2).sort((x,y)=>x.name.localeCompare(y.name));return Math.max(0,roots.findIndex(x=>x.id===rootId))}
 function domainHueFor(n){const a=n?.id?areaById(n.id)||areaById(n.parentId):null;if(!a)return'#858984';const idx=domainHueDeg(a);return GRAPH_PALETTE[idx%GRAPH_PALETTE.length]}
