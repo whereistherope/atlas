@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Atlas</title>
+<style>
+:root{
+  --bg:#dfdfd6;--paper:#efeee6;--paper2:#e7e6dd;--ink:#1d241f;--muted:#697169;--line:#9da39a;
+  --green:#344b3a;--green2:#566b59;--sand:#b4a787;--amber:#a36f2c;--red:#82483f;--blue:#53656c;
+  --shadow:0 10px 28px rgba(29,36,31,.08)
+}
+body[data-theme="night"]{
+  --bg:#070b10;--paper:#0c1219;--paper2:#101821;--ink:#d9edf8;--muted:#7892a3;--line:#253746;
+  --green:#1793d1;--green2:#33a9e6;--sand:#6f8797;--amber:#d7a84a;--red:#d46d67;--blue:#1793d1;
+  --shadow:0 12px 34px rgba(0,0,0,.34)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#d8dad2 0,#e8e7df 100%);transition:background .2s,color .2s}
+body[data-theme="night"]{background:radial-gradient(circle at 50% -10%,rgba(23,147,209,.10),transparent 34%),linear-gradient(180deg,#05080c 0,#080d12 100%)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:linear-gradient(rgba(29,36,31,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(29,36,31,.07) 1px,transparent 1px);background-size:24px 24px}
+body[data-theme="night"]:before{opacity:.22;background-image:linear-gradient(rgba(23,147,209,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(23,147,209,.055) 1px,transparent 1px)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;letter-spacing:.055em}
+.shell{max-width:1660px;margin:0 auto;padding:18px 22px 34px;position:relative;z-index:1}
+.topbar{border-top:5px solid var(--green);border-bottom:1px solid var(--line);padding:14px 0 11px;display:flex;justify-content:space-between;gap:18px;align-items:flex-end}
+.brand h1{margin:4px 0 0;font-size:clamp(27px,4vw,44px);line-height:1;letter-spacing:-.045em}
+.actions,.tabs,.subtabs,.space-switch,.inline-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.btn,.tab,.file-label{border:1px solid var(--muted);background:transparent;color:var(--ink);border-radius:4px;padding:9px 11px;font:800 10px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.055em;transition:.14s}
+.btn:hover,.tab:hover,.file-label:hover{background:var(--ink);color:var(--paper)}
+body[data-theme="night"] .btn:hover,body[data-theme="night"] .tab:hover,body[data-theme="night"] .file-label:hover{background:var(--green);color:#031018;border-color:var(--green)}
+.btn.primary,.tab.active{background:var(--green);border-color:var(--green);color:#f3f1e8}
+body[data-theme="night"] .btn.primary,body[data-theme="night"] .tab.active{color:#031018}
+.btn.ghost{border-color:#9aa096;color:var(--muted)}
+.btn.danger{color:var(--red);border-color:var(--red)}
+.btn.small{padding:7px 8px;font-size:9px}
+input[type=file]{display:none}
+.navline{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid var(--line);padding:10px 0}
+.tabs{gap:4px}
+.tab{border-color:transparent;padding:8px 10px}
+.space-switch{font:800 9px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted)}
+.space-switch select{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:7px 28px 7px 8px;color:var(--ink);font:800 10px "SFMono-Regular",Consolas,monospace;text-transform:uppercase}
+.main{margin-top:14px}
+.panel{background:rgba(241,240,232,.94);border:1px solid #a6aaa2;border-radius:6px;box-shadow:var(--shadow)}
+.panel-head{padding:12px 14px;border-bottom:1px solid #b7bab2;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.panel-head h2,.panel-head h3{margin:0;font:850 11px/1.15 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.07em}
+body[data-theme="night"] .panel{background:rgba(12,18,25,.95);border-color:var(--line)}
+body[data-theme="night"] .panel-head{border-color:var(--line)}
+body[data-theme="night"] .card,body[data-theme="night"] .topic,body[data-theme="night"] .editor-section{background:var(--paper2);border-color:var(--line)}
+body[data-theme="night"] .card:hover,body[data-theme="night"] .topic:hover{background:#111e28;border-color:var(--green)}
+body[data-theme="night"] .note-body{color:#aec5d3}
+body[data-theme="night"] .qrow,body[data-theme="night"] .note,body[data-theme="night"] .mrow,body[data-theme="night"] .daily-entry{border-color:var(--line)}
+body[data-theme="night"] .modal,body[data-theme="night"] .modal-head{background:var(--paper);border-color:var(--line)}
+body[data-theme="night"] .field input,body[data-theme="night"] .field select,body[data-theme="night"] .field textarea{background:#080d12;color:var(--ink);border-color:var(--line)}
+body[data-theme="night"] .depth,body[data-theme="night"] .legend{background:rgba(7,12,17,.94);border-color:var(--line)}
+.code{font:800 9px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted)}
+.grid{display:grid;gap:13px}.metrics{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:13px}.metric{padding:13px 14px;min-height:92px}.metric .tiny{font:800 9px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--green)}.metric .value{font-size:30px;font-weight:780;letter-spacing:-.045em;margin-top:8px}.metric .label{font-size:11px;color:var(--muted);margin-top:2px}
+.hero-grid{grid-template-columns:minmax(0,1.75fr) minmax(300px,.65fr)}
+.map-wrap{position:relative;padding:6px;min-height:625px;overflow:hidden;background:linear-gradient(180deg,rgba(239,238,230,.45),rgba(229,229,220,.35))}
+.home-network .map-wrap{min-height:760px}
+.home-network #network{height:755px}
+body[data-theme="night"] .map-wrap{background:radial-gradient(circle at 50% 48%,rgba(23,147,209,.055),transparent 38%),linear-gradient(180deg,rgba(7,12,17,.9),rgba(8,14,20,.82))}
+#network{width:100%;height:620px;display:block;touch-action:none}
+.edge{stroke:#878e86;stroke-width:1.1;opacity:.54}.edge.cross{stroke:var(--green);stroke-dasharray:4 4;stroke-width:1.4;opacity:.75}
+.node{cursor:pointer}.node circle{fill:#eeede5;stroke:#697169;stroke-width:1.4;transition:.15s}.node:hover circle{fill:#d8ddd5;stroke:var(--green);stroke-width:2}.node.active circle{fill:#d7e0d5;stroke:var(--green);stroke-width:2.4}.node.project circle{fill:#e8e0d0;stroke:var(--amber)}.node.note circle{fill:#e5e5dc;stroke:#8d938a}
+body[data-theme="night"] .edge{stroke:#30546a;opacity:.62}
+body[data-theme="night"] .edge.cross{stroke:var(--green);opacity:.9}
+body[data-theme="night"] .node circle{fill:#091019;stroke:#31566c}
+body[data-theme="night"] .node:hover circle{fill:#0d1b26;stroke:var(--green)}
+body[data-theme="night"] .node.active circle{fill:#0b2331;stroke:var(--green)}
+body[data-theme="night"] .node.note circle{fill:#081017;stroke:#365e74}
+body[data-theme="night"] .node text{fill:#bfe9ff}.node text{pointer-events:none;text-anchor:middle;font-family:"SFMono-Regular",Consolas,monospace;fill:var(--ink);font-weight:800;letter-spacing:.02em}.node .sub{fill:var(--muted);font-weight:650}.node.level1 .label{font-size:14px}.node.level2 .label{font-size:11px}.node.level3 .label{font-size:9.8px}.node.level4 .label{font-size:8.3px}.node.level5 .label{font-size:7.2px}.node .sub{font-size:7px}
+.map-controls{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;gap:10px;align-items:end;pointer-events:none}.map-controls>*{pointer-events:auto}.depth{background:rgba(239,238,230,.93);border:1px solid #a4aaa1;border-radius:5px;padding:8px 9px;display:flex;align-items:center;gap:8px;font:800 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase}.depth input{width:115px;accent-color:var(--green)}.legend{display:flex;gap:9px;flex-wrap:wrap;background:rgba(239,238,230,.9);border:1px solid #a4aaa1;border-radius:5px;padding:8px;font:750 8px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted)}.legend i{display:inline-block;border:1.5px solid var(--green);border-radius:50%;vertical-align:middle;margin-right:4px}.legend .l2{width:14px;height:14px}.legend .l3{width:11px;height:11px}.legend .l4{width:8px;height:8px}.legend .l5{width:6px;height:6px}
+.side{display:grid;gap:13px;align-content:start}.queue{padding:7px 11px 11px}.qrow{display:grid;grid-template-columns:auto 1fr auto;gap:9px;padding:10px 2px;border-bottom:1px solid #d0d3cb;align-items:start}.qrow:last-child{border-bottom:0}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);margin-top:4px}.dot.amber{background:var(--amber)}.dot.grey{background:#8d938b}.qname{font-size:12px;font-weight:750}.qmeta{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.35}.badge{font:800 8px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;border:1px solid #939a91;padding:4px 5px;border-radius:3px;color:var(--muted)}
+.section{margin-top:13px}.workspace-head{display:flex;justify-content:space-between;gap:16px;align-items:end;padding:2px 0 12px}.workspace-title .crumb{font:800 9px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--green)}.workspace-title h2{margin:5px 0 3px;font-size:28px;letter-spacing:-.035em}.workspace-title p{margin:0;color:var(--muted);font-size:12px}.subtabs{border-bottom:1px solid var(--line);padding-bottom:8px}.subtabs .tab{padding:7px 9px;font-size:9px}.workspace{margin-top:12px}.workspace-grid{grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr)}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:11px}.card{border:1px solid #a9aea6;background:#ecebe3;border-radius:5px;padding:13px}.clickable{cursor:pointer}.clickable:hover{border-color:var(--green);background:#e8eae1}.card-top{display:flex;justify-content:space-between;gap:10px;align-items:start}.card h4{margin:0;font-size:14px;letter-spacing:-.015em}.card p{font-size:11px;line-height:1.45;color:var(--muted);margin:6px 0 0}.progress{height:7px;background:#d0d3cb;border:1px solid #b4b9b0;border-radius:2px;overflow:hidden;margin-top:12px}.bar{height:100%;background:var(--green)}.card-foot{display:flex;justify-content:space-between;gap:10px;margin-top:7px;font:750 9px/1.35 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted)}
+.milestones{padding:9px 13px 13px}.mrow{display:grid;grid-template-columns:18px 1fr auto;gap:8px;padding:9px 0;border-bottom:1px solid #d0d3cb;align-items:center}.mrow:last-child{border-bottom:0}.mark{width:12px;height:12px;border:1.5px solid #818880;border-radius:50%}.mark.done{background:var(--green);border-color:var(--green)}.mark.current{border:3px solid var(--amber)}.mname{font-size:12px}.mmeta{font:750 8px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted)}
+.notes-list{padding:8px 12px 12px}.note{padding:11px 2px;border-bottom:1px solid #d0d3cb}.note:last-child{border-bottom:0}.note-top{display:flex;justify-content:space-between;gap:9px}.note-title{font-size:13px;font-weight:760}.note-type{font:800 8px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--green)}.note-body{font-size:11.5px;color:#3e463f;line-height:1.5;margin-top:5px;white-space:pre-wrap}.meta{font:750 8.5px "SFMono-Regular",Consolas,monospace;color:var(--muted);text-transform:uppercase;margin-top:7px}.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.tag{font:750 8px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;border:1px solid #9ca299;border-radius:3px;padding:3px 5px;color:var(--muted)}
+.topic-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding:10px}.topic{border:1px solid #b0b4ac;background:#ecebe3;border-radius:5px;padding:11px;cursor:pointer}.topic:hover{border-color:var(--green)}.topic .k{font:800 8px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--green)}.topic strong{display:block;margin-top:4px;font-size:12px}.topic span{display:block;color:var(--muted);font-size:10.5px;margin-top:3px}
+.daily{padding:13px}.day-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.day-title{font-size:18px;font-weight:780}.daily-entry{padding:10px 0;border-bottom:1px solid #d0d3cb}.daily-entry:last-child{border-bottom:0}.daily-time{font:800 8px "SFMono-Regular",Consolas,monospace;color:var(--muted);text-transform:uppercase}.daily-text{font-size:12px;line-height:1.45;margin-top:3px}
+.empty{padding:22px;color:var(--muted);text-align:center;border:1px dashed #adb2aa;border-radius:5px;font-size:11px}
+.footer{text-align:right;color:var(--muted);font:750 8px/1.5 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;padding-top:16px}
+
+.home-stack{display:grid;gap:10px;margin-top:13px}
+.fold{border:1px solid #a6aaa2;border-radius:6px;background:rgba(241,240,232,.94);box-shadow:var(--shadow);overflow:hidden}
+.fold>summary{list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 14px;cursor:pointer;font:850 10px/1.2 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.07em}
+.fold>summary::-webkit-details-marker{display:none}
+.fold>summary:after{content:"+";font-size:16px;line-height:1;color:var(--muted)}
+.fold[open]>summary:after{content:"−";color:var(--green)}
+.fold[open]>summary{border-bottom:1px solid #b7bab2}
+.fold-body{padding:11px}
+.fold-body .metrics{margin-bottom:0}
+body[data-theme="night"] .fold{background:rgba(12,18,25,.95);border-color:var(--line)}
+body[data-theme="night"] .fold[open]>summary{border-color:var(--line)}
+.home-queues{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:850px){.home-queues{grid-template-columns:1fr}.home-network .map-wrap{min-height:580px}.home-network #network{height:575px}}
+
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(18,23,19,.34);display:none;align-items:flex-start;justify-content:center;padding:5vh 12px;overflow:auto}.overlay.open{display:flex}.modal{width:min(760px,96vw);background:#efeee6;border:1px solid #666e66;border-radius:6px;box-shadow:0 24px 70px rgba(17,22,18,.3)}.modal.wide{width:min(1260px,97vw)}.modal-head{padding:14px 15px;border-bottom:1px solid #b3b7af;display:flex;justify-content:space-between;gap:10px;align-items:start;position:sticky;top:0;background:#efeee6;z-index:2}.modal-head h3{margin:4px 0 0;font-size:22px;letter-spacing:-.025em}.modal-body{padding:15px}.form{display:grid;gap:11px}.field label{display:block;font:800 8.5px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted);margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid #969d94;border-radius:4px;background:#f6f5ee;color:var(--ink);padding:9px 10px;font-size:12px}.field textarea{min-height:96px;resize:vertical}.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.checkline{display:flex;gap:8px;align-items:center;font-size:11px}.checkline input{accent-color:var(--green)}
+.editor-grid{display:grid;grid-template-columns:210px minmax(0,1fr);gap:13px}.editor-nav{display:grid;gap:5px;align-content:start}.editor-nav button{text-align:left}.editor-pane{min-width:0}.editor-section{border:1px solid #adb2aa;border-radius:5px;background:#eae9e1;margin-bottom:10px}.editor-section-head{padding:10px 11px;border-bottom:1px solid #b9bdb5;display:flex;justify-content:space-between;gap:8px;align-items:center}.editor-section-head h4{margin:0;font:800 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase}.editor-section-body{padding:10px}.table-list{display:grid;gap:7px}.edit-row{display:grid;grid-template-columns:1.1fr .7fr .7fr auto;gap:7px;align-items:end;border:1px solid #bdc1b9;border-radius:4px;padding:8px;background:#efeee7}.edit-row.project-row{grid-template-columns:1.4fr .65fr .75fr auto}.edit-row.note-row{grid-template-columns:1.2fr .6fr .75fr auto}.edit-row input,.edit-row select{width:100%;border:1px solid #9da39a;background:#f6f5ee;border-radius:3px;padding:7px;font-size:10px}.edit-row label{display:block;font:750 7.5px "SFMono-Regular",Consolas,monospace;color:var(--muted);text-transform:uppercase;margin-bottom:3px}.project-editor{display:grid;gap:10px}.mini-list{display:grid;gap:6px}.mini-row{display:grid;grid-template-columns:auto 1fr auto;gap:7px;align-items:center;border-bottom:1px solid #d0d3cb;padding:6px 0}.mini-row input[type=text]{width:100%;border:1px solid #a0a69d;border-radius:3px;background:#f7f6ef;padding:7px;font-size:10px}.mini-row input[type=checkbox]{accent-color:var(--green)}
+.toast{position:fixed;right:18px;bottom:18px;z-index:80;background:var(--ink);color:var(--paper);border-radius:4px;padding:9px 11px;font:750 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}.toast.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:1050px){.hero-grid,.workspace-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.map-wrap{min-height:445px}#network{height:440px}.editor-grid{grid-template-columns:1fr}.editor-nav{display:flex;flex-wrap:wrap}.topic-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.shell{padding:12px}.topbar,.navline,.workspace-head{align-items:flex-start;flex-direction:column}.actions{justify-content:flex-start}.metrics,.cards,.topic-grid,.row2,.row3{grid-template-columns:1fr}.map-wrap{min-height:470px}#network{height:465px}.map-controls{position:static;padding:8px;align-items:flex-start;flex-direction:column}.legend{display:none}.edit-row,.edit-row.project-row,.edit-row.note-row{grid-template-columns:1fr}.modal{margin-top:0}.space-switch{width:100%;justify-content:space-between}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <h1>Atlas</h1>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="captureBtn">+ Capture</button>
+      <button class="btn" id="searchBtn">Search</button>
+      <button class="btn" id="editBtn">Edit Atlas</button>
+      <button class="btn" id="themeBtn" aria-label="Toggle night mode">Night</button>
+      <button class="btn ghost" id="exportBtn">Export</button>
+      <label class="file-label" for="importFile">Import</label>
+      <input id="importFile" type="file" accept="application/json" />
+    </div>
+  </header>
+
+  <div class="navline">
+    <nav class="tabs" id="mainTabs"></nav>
+    <div class="space-switch">Data space <select id="spaceFilter"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select></div>
+  </div>
+
+  <main class="main" id="app"></main>
+  <div class="footer">ATLAS // LOCAL DATA · JSON BACKUP</div>
+</div>
+
+<div class="overlay" id="captureOverlay">
+  <section class="modal">
+    <div class="modal-head"><div><div class="code">UNIVERSAL INPUT</div><h3>Quick Capture</h3></div><button class="btn" data-close="captureOverlay">Close</button></div>
+    <div class="modal-body">
+      <div class="form">
+        <div class="row2">
+          <div class="field"><label>Type</label><select id="capType"><option value="note">Note</option><option value="idea">Idea</option><option value="task">Task</option><option value="project">Project</option><option value="reference">Reference</option><option value="daily">Daily entry</option></select></div>
+          <div class="field"><label>Area</label><select id="capArea"></select></div>
+        </div>
+        <div class="field"><label>Title / thought</label><input id="capTitle" type="text" placeholder="What are you thinking?" /></div>
+        <div class="field"><label>Detail</label><textarea id="capBody" placeholder="Optional context, observation, decision, research note…"></textarea></div>
+        <div class="row2"><div class="field"><label>Tags</label><input id="capTags" type="text" placeholder="comma, separated, tags" /></div><div class="field"><label>Map</label><select id="capMap"><option value="false">Keep off map</option><option value="true">Show as small node</option></select></div></div>
+        <div class="inline-actions"><button class="btn primary" id="saveCapture">Save to Atlas</button><span class="code">Blank area = Inbox</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="overlay" id="searchOverlay">
+  <section class="modal">
+    <div class="modal-head"><div><div class="code">GLOBAL RETRIEVAL</div><h3>Search Atlas</h3></div><button class="btn" data-close="searchOverlay">Close</button></div>
+    <div class="modal-body"><div class="field"><label>Search</label><input id="searchInput" type="text" placeholder="Project, note, topic, tag…" /></div><div id="searchResults" style="margin-top:12px"></div></div>
+  </section>
+</div>
+
+<div class="overlay" id="projectOverlay">
+  <section class="modal">
+    <div class="modal-head"><div><div class="code" id="projectCode">PROJECT</div><h3 id="projectTitle">Project</h3></div><button class="btn" data-close="projectOverlay">Close</button></div>
+    <div class="modal-body" id="projectBody"></div>
+  </section>
+</div>
+
+<div class="overlay" id="editorOverlay">
+  <section class="modal wide">
+    <div class="modal-head"><div><div class="code">CONFIG / BACK PAGE</div><h3>Atlas Editor</h3><div class="sub" style="color:var(--muted);font-size:11px;margin-top:4px">Manage the records that drive the front-end views.</div></div><button class="btn primary" data-close="editorOverlay">Return to Atlas</button></div>
+    <div class="modal-body"><div class="editor-grid"><aside class="editor-nav" id="editorNav"></aside><div class="editor-pane" id="editorPane"></div></div></div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DB_NAME='atlas_personal_os'; const DB_STORE='state'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
+const clone=v=>JSON.parse(JSON.stringify(v));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const slug=s=>String(s||'item').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'item';
+const fmtDate=t=>new Intl.DateTimeFormat('en-AU',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(t));
+const fmtTime=t=>new Intl.DateTimeFormat('en-AU',{hour:'2-digit',minute:'2-digit'}).format(new Date(t));
+const todayKey=()=>new Date().toLocaleDateString('en-CA');
+
+const demo={
+  version:1,
+  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',mapDepth:4,selectedArea:'',editorTab:'structure',mapLayoutVersion:3,theme:'day'},
+  areas:[
+    {id:'work',name:'Work',code:'WRK',space:'work',level:2,parentId:'atlas',description:'Professional operating picture, development and delivery.',x:600,y:90,status:'active'},
+    {id:'lifestyle',name:'Lifestyle',code:'LIFE',space:'personal',level:2,parentId:'atlas',description:'Cars, technology, reading, style, finance and home.',x:165,y:330,status:'active'},
+    {id:'creative',name:'Creative',code:'CRTV',space:'personal',level:2,parentId:'atlas',description:'Ideas, writing and long-form creative projects.',x:1035,y:330,status:'active'},
+    {id:'daily',name:'Daily',code:'DAIL',space:'personal',level:2,parentId:'atlas',description:'Daily capture, context and open loops.',x:600,y:595,status:'active'},
+    {id:'ground-ops',name:'Ground Operations',code:'GOPS',space:'work',level:3,parentId:'work',description:'Ground operations oversight, guidance, surveillance and industry interfaces.',x:425,y:190,status:'active'},
+    {id:'career',name:'Career',code:'CARE',space:'work',level:3,parentId:'work',description:'Progression, development and professional positioning.',x:775,y:190,status:'default'},
+    {id:'cars',name:'Cars',code:'AUTO',space:'personal',level:3,parentId:'lifestyle',description:'Current car, future purchase research and automotive ideas.',x:105,y:470,status:'active'},
+    {id:'technology',name:'Technology',code:'TECH',space:'personal',level:3,parentId:'lifestyle',description:'Devices, home server and software projects.',x:255,y:535,status:'default'},
+    {id:'reading',name:'Reading',code:'READ',space:'personal',level:3,parentId:'lifestyle',description:'Books, reading list and notes.',x:350,y:405,status:'default'},
+    {id:'quantum-story',name:'Quantum Story',code:'QNTM',space:'personal',level:3,parentId:'creative',description:'Causality, quantum computation and the novella project.',x:1090,y:470,status:'active'},
+    {id:'ideas',name:'Ideas',code:'IDEA',space:'personal',level:3,parentId:'creative',description:'Loose concepts worth keeping alive.',x:920,y:520,status:'default'},
+    {id:'rcp2635',name:'RCP 2635',code:'RCP26',space:'work',level:4,parentId:'ground-ops',description:'Ground handling guidance and operational-interface work.',x:220,y:285,status:'active'},
+    {id:'surveillance',name:'Surveillance',code:'SURV',space:'work',level:4,parentId:'ground-ops',description:'Ground operations surveillance framework and evidence.',x:390,y:335,status:'active'},
+    {id:'airports',name:'Airports',code:'APT',space:'work',level:4,parentId:'ground-ops',description:'Airport engagement and shared operational boundaries.',x:550,y:270,status:'default'},
+    {id:'ghsp',name:'GHSPs',code:'GHSP',space:'work',level:4,parentId:'ground-ops',description:'Ground handling service provider ecosystem.',x:315,y:435,status:'default'},
+    {id:'reg-framework',name:'Regulatory Frameworks',code:'REG',space:'work',level:4,parentId:'ground-ops',description:'CASA, ICAO and related ground operations frameworks.',x:535,y:425,status:'default'},
+    {id:'x5',name:'BMW X5',code:'BMWX5',space:'personal',level:4,parentId:'cars',description:'Current benchmark for a future SUV purchase.',x:55,y:610,status:'default'},
+    {id:'xtrail',name:'X-Trail T30',code:'XT30',space:'personal',level:4,parentId:'cars',description:'Current vehicle and maintenance/project notes.',x:185,y:615,status:'default'},
+    {id:'decoherence',name:'Decoherence',code:'DECO',space:'personal',level:4,parentId:'quantum-story',description:'Narrative mechanism for environmental suppression of causal superposition.',x:1160,y:605,status:'active'}
+  ],
+  links:[
+    {id:'lnk1',source:'rcp2635',target:'reg-framework',type:'cross'},{id:'lnk2',source:'rcp2635',target:'airports',type:'cross'},{id:'lnk3',source:'surveillance',target:'airports',type:'cross'},{id:'lnk4',source:'rcp2635',target:'ghsp',type:'cross'},
+    {id:'lnk5',source:'x5',target:'career',type:'cross'}
+  ],
+  projects:[
+    {id:'p-rcp',space:'work',areaId:'ground-ops',topicId:'rcp2635',code:'GO-P01',title:'RCP 2635 · Ground Handling Guidance',status:'ACTIVE',objective:'Build a coherent picture of ground handling roles, interfaces and assurance mechanisms to support practical guidance development.',next:'Consolidate airport and GHSP interface findings into the guidance architecture.',tags:['RCP2635','Guidance','GHSP','Airports'],createdAt:now()-86400000*20,milestones:[
+      {id:'m1',title:'Regulatory landscape reviewed',done:true},{id:'m2',title:'Initial airport engagement',done:true},{id:'m3',title:'GHSP / airline engagement',done:false,current:true},{id:'m4',title:'Draft guidance architecture',done:false},{id:'m5',title:'Internal review',done:false},{id:'m6',title:'Industry validation',done:false}
+    ],tasks:[{id:'t1',title:'Map GHSP operating models',done:true},{id:'t2',title:'Capture airport interface themes',done:true},{id:'t3',title:'Consolidate international approaches',done:false},{id:'t4',title:'Draft guidance structure',done:false}]},
+    {id:'p-surv',space:'work',areaId:'ground-ops',topicId:'surveillance',code:'GO-P02',title:'Ground Operations Surveillance Model',status:'ACTIVE',objective:'Create a repeatable surveillance model focused on operational interfaces, procedures, assurance and evidence.',next:'Refine evidence expectations and trial question structure.',tags:['Surveillance','Evidence'],createdAt:now()-86400000*14,milestones:[{id:'sm1',title:'Training transition',done:true},{id:'sm2',title:'Draft surveillance themes',done:true},{id:'sm3',title:'Trial question set',done:false,current:true},{id:'sm4',title:'Reusable surveillance pack',done:false}],tasks:[{id:'st1',title:'Catalogue evidence approach',done:true},{id:'st2',title:'Refine finding prompts',done:false}]},
+    {id:'p-quantum',space:'personal',areaId:'creative',topicId:'quantum-story',code:'CRT-P01',title:'Quantum Causality Novella',status:'ACTIVE',objective:'Develop the quantum-causality story into a coherent novella with a grounded scientific metaphor and slow-burn conspiracy structure.',next:'Lock the opening act and causal discovery sequence.',tags:['Writing','Quantum','Story'],createdAt:now()-86400000*25,milestones:[{id:'qm1',title:'Core causality model',done:true},{id:'qm2',title:'Agency / Cold War premise',done:true},{id:'qm3',title:'Opening act architecture',done:false,current:true},{id:'qm4',title:'First complete draft',done:false}],tasks:[{id:'qt1',title:'Resolve protagonist name',done:false},{id:'qt2',title:'Draft revised Chapter 1',done:false}]},
+    {id:'p-car',space:'personal',areaId:'lifestyle',topicId:'cars',code:'LIFE-P01',title:'Future SUV Purchase',status:'WATCHING',objective:'Narrow a future SUV purchase around luxury, estate-utility feel and realistic ownership cost.',next:'Compare G05 X5 against Discovery 5 and Patrol alternatives.',tags:['Cars','Finance','SUV'],createdAt:now()-86400000*10,milestones:[{id:'cm1',title:'Define use-case and feel',done:true},{id:'cm2',title:'Build shortlist',done:true},{id:'cm3',title:'Finance / lease comparison',done:false,current:true},{id:'cm4',title:'Purchase decision',done:false}],tasks:[{id:'ct1',title:'Track suitable G05 X5 listings',done:false}]}
+  ],
+  notes:[
+    {id:'n1',space:'work',areaId:'ground-ops',topicId:'rcp2635',type:'meeting',title:'Airport engagement theme',body:'Focus discussion on operational boundaries, shared turnaround risks and how airports assure interfaces with airlines and GHSPs.',tags:['Airports','Interfaces'],createdAt:now()-3600000*6,showOnMap:false},
+    {id:'n2',space:'work',areaId:'ground-ops',topicId:'surveillance',type:'training',title:'Finding due input',body:'When adding a new finding, the finding due input is completed by an STO; inspector does not need to fill it.',tags:['EAP','Finding'],createdAt:now()-3600000*28,showOnMap:false},
+    {id:'n3',space:'personal',areaId:'creative',topicId:'decoherence',type:'idea',title:'Decoherence as social normalisation',body:'Treat consciousness as part of the environment: most people become part of the mechanism that suppresses awareness of causal superposition rather than noticing it directly.',tags:['Decoherence','Causality'],createdAt:now()-3600000*18,showOnMap:true},
+    {id:'n4',space:'personal',areaId:'lifestyle',topicId:'cars',type:'reference',title:'G05 X5 benchmark',body:'2019 X5 xDrive30d M Sport remains the benchmark for luxury SUV feel and proportions.',tags:['BMW','X5'],createdAt:now()-3600000*34,showOnMap:false}
+  ],
+  daily:[
+    {id:'d1',date:todayKey(),createdAt:now()-3600000*1.5,text:'Atlas concept expanded from the Ground Ops Control Board into a full second-brain operating system.',areaId:'ideas'},
+    {id:'d2',date:todayKey(),createdAt:now()-3600000*.5,text:'Keep the network as the hero and let projects / notes / milestones sit behind each area.',areaId:'ideas'}
+  ],
+  activity:[{id:'a1',time:now()-3600000*2,text:'Atlas initialised from the Ground Operations Control Board concept.'}]
+};
+
+let state=clone(demo); let activeProjectId=''; let db=null; let dragging=null;
+
+function migrateLegacy(raw){
+  if(!raw||!Array.isArray(raw.workstreams))return raw;
+  const s=clone(demo);
+  s.projects=s.projects.filter(p=>p.space!=='work');
+  s.projects.push(...raw.workstreams.map((w,i)=>({id:w.id||uid('p'),space:'work',areaId:'ground-ops',topicId:String(w.id||'').includes('rcp')?'rcp2635':String(w.id||'').includes('surv')?'surveillance':String(w.id||'').includes('airport')?'airports':'',code:w.code||`GO-P${String(i+1).padStart(2,'0')}`,title:w.title||'Ground Ops Project',status:w.status||'ACTIVE',objective:w.objective||w.description||'',next:w.next||'',tags:Array.isArray(w.tags)?w.tags:[],createdAt:now(),milestones:(w.tasks||[]).map((t,mi)=>({id:uid('m'),title:Array.isArray(t)?t[0]:t.title||'Milestone',done:Array.isArray(t)?!!t[1]:!!t.done,current:false})),tasks:[]})));
+  if(Array.isArray(raw.notes))s.notes.push(...raw.notes.map(n=>({id:n.id||uid('n'),space:'work',areaId:'ground-ops',topicId:'',type:n.category||'note',title:String(n.text||'Ground Ops note').slice(0,70),body:n.text||'',tags:[n.tag].filter(Boolean),createdAt:n.time||now(),showOnMap:false})));
+  s.activity.unshift({id:uid('a'),time:now(),text:'Legacy Ground Operations Control Board migrated into Atlas.'});
+  return s;
+}
+function applyWideMapLayout(s){
+  const W=1200,H=680;
+  const anchors={
+    work:[600,90],lifestyle:[165,330],creative:[1035,330],daily:[600,595],
+    'ground-ops':[425,190],career:[775,190],cars:[105,470],technology:[255,535],reading:[350,405],
+    'quantum-story':[1090,470],ideas:[920,520],rcp2635:[220,285],surveillance:[390,335],airports:[550,270],
+    ghsp:[315,435],'reg-framework':[535,425],x5:[55,610],xtrail:[185,615],decoherence:[1160,605]
+  };
+  (s.areas||[]).forEach(a=>{
+    if(anchors[a.id]){[a.x,a.y]=anchors[a.id];return}
+    const ox=Number.isFinite(Number(a.x))?Number(a.x):450, oy=Number.isFinite(Number(a.y))?Number(a.y):260;
+    a.x=Math.max(55,Math.min(W-55,70+(ox/900)*(W-140)));
+    a.y=Math.max(55,Math.min(H-55,55+(oy/520)*(H-110)));
+  });
+  s.settings=s.settings||{};s.settings.mapLayoutVersion=3;
+  return s;
+}
+function makeNodeCode(name){
+  const raw=String(name||'NODE').toUpperCase().replace(/&/g,' AND ').replace(/[^A-Z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
+  const parts=raw.split(' ').filter(Boolean);
+  if(!parts.length)return 'NODE';
+  const joined=parts.join('');
+  if(joined.length>=3&&joined.length<=5)return joined;
+  if(parts.length===1)return (parts[0].slice(0,4)+(parts[0].length<3?'X':'')).slice(0,5);
+  if(parts[0].length<=3&&/\d/.test(parts.slice(1).join('')))return (parts[0]+parts.slice(1).join('').replace(/[^0-9A-Z]/g,'')).slice(0,5);
+  let code=parts.map(p=>p[0]).join('');
+  if(code.length<3){code=(parts[0].slice(0,2)+parts[1].slice(0,2)+parts.slice(2).map(p=>p[0]).join('')).slice(0,5)}
+  if(code.length<3)code=(joined+'XXX').slice(0,3);
+  return code.slice(0,5);
+}
+function normaliseAreaCodes(s){(s.areas||[]).forEach(a=>{const c=String(a.code||'').toUpperCase().replace(/[^A-Z0-9]/g,'');a.code=(c.length>=3&&c.length<=5)?c:makeNodeCode(a.name)});return s}
+function applyTheme(){const theme=state?.settings?.theme==='night'?'night':'day';document.body.dataset.theme=theme;const b=document.getElementById('themeBtn');if(b)b.textContent=theme==='night'?'Day':'Night'}
+function ensureState(s){
+  s=migrateLegacy(s);
+  if(!s||typeof s!=='object') s=clone(demo); if(!s.settings)s.settings=clone(demo.settings);
+  for(const k of ['areas','links','projects','notes','daily','activity']) if(!Array.isArray(s[k])) s[k]=[];
+  s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day';
+  if(Number(s.settings.mapLayoutVersion||0)<3) s=applyWideMapLayout(s);
+  s=normaliseAreaCodes(s);
+  return s;
+}
+function openDB(){return new Promise((resolve,reject)=>{try{const req=indexedDB.open(DB_NAME,1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(DB_STORE))req.result.createObjectStore(DB_STORE)};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error)}catch(e){reject(e)}})}
+function idbGet(){return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readonly');const r=tx.objectStore(DB_STORE).get(DB_KEY);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+function idbSet(v){return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(v,DB_KEY);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
+async function load(){try{await openDB();const v=await idbGet();if(v){state=ensureState(v);await save();}else{let legacy=null;try{legacy=localStorage.getItem('groundOpsControlBoard_v2')||localStorage.getItem('groundOpsControlBoard_v1')}catch(_){ }if(legacy){state=ensureState(JSON.parse(legacy));log('Previous Ground Ops browser data imported into Atlas.')}await save()}}catch(e){try{const v=localStorage.getItem(FALLBACK_KEY)||localStorage.getItem('groundOpsControlBoard_v2');if(v)state=ensureState(JSON.parse(v))}catch(_){}} renderAll()}
+async function save(){try{if(db)await idbSet(state);else localStorage.setItem(FALLBACK_KEY,JSON.stringify(state))}catch(e){try{localStorage.setItem(FALLBACK_KEY,JSON.stringify(state))}catch(_){}}}
+function log(text){state.activity.unshift({id:uid('a'),time:now(),text});state.activity=state.activity.slice(0,80)}
+function toast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1600)}
+function areaById(id){return state.areas.find(a=>a.id===id)} function projectById(id){return state.projects.find(p=>p.id===id)}
+function spaceAllows(space){return state.settings.spaceFilter==='all'||state.settings.spaceFilter===space}
+function projectProgress(p){const ms=p.milestones||[]; if(ms.length)return Math.round(ms.filter(m=>m.done).length/ms.length*100);const ts=p.tasks||[];return ts.length?Math.round(ts.filter(t=>t.done).length/ts.length*100):0}
+function visibleProjects(scope){return state.projects.filter(p=>spaceAllows(p.space)&&(!scope||p.areaId===scope||p.topicId===scope||isDescendant(p.topicId||p.areaId,scope)))}
+function isDescendant(id,parent){let a=areaById(id),guard=0;while(a&&guard++<12){if(a.parentId===parent)return true;a=areaById(a.parentId)}return false}
+function visibleNotes(scope){return state.notes.filter(n=>spaceAllows(n.space)&&(!scope||n.areaId===scope||n.topicId===scope||isDescendant(n.topicId||n.areaId,scope))).sort((a,b)=>b.createdAt-a.createdAt)}
+function statusDot(status){return status==='WATCHING'||status==='MONITOR'?'amber':status==='DORMANT'?'grey':''}
+function topTabs(){return [{id:'home',name:'Atlas'},{id:'work',name:'Work'},{id:'lifestyle',name:'Lifestyle'},{id:'creative',name:'Creative'},{id:'daily',name:'Daily'},{id:'inbox',name:`Inbox ${inboxCount()?`· ${inboxCount()}`:''}`}]} function inboxCount(){return state.notes.filter(n=>!n.areaId).length}
+
+function renderTabs(){const el=document.getElementById('mainTabs');el.innerHTML=topTabs().map(t=>`<button class="tab ${state.settings.activeTab===t.id?'active':''}" data-main-tab="${t.id}">${esc(t.name)}</button>`).join('');document.getElementById('spaceFilter').value=state.settings.spaceFilter}
+function renderAll(){applyTheme();renderTabs();const tab=state.settings.activeTab;if(tab==='home')renderHome();else if(tab==='daily')renderDaily();else if(tab==='inbox')renderInbox();else{const selected=areaById(state.settings.selectedArea);const top=selected?getTopDomain(selected):null;renderArea(top?.id===tab?selected.id:tab)}save()}
+function metric(label,value,detail){return `<div class="panel metric"><div class="tiny">${esc(label)}</div><div class="value">${esc(value)}</div><div class="label">${esc(detail)}</div></div>`}
+function metricsHtml(scope){const ps=visibleProjects(scope),ns=visibleNotes(scope);const active=ps.filter(p=>p.status==='ACTIVE').length;const milestones=ps.flatMap(p=>p.milestones||[]),openM=milestones.filter(m=>!m.done).length;const topics=state.areas.filter(a=>spaceAllows(a.space)&&(!scope? a.level>=3 : a.parentId===scope)).length;return `<section class="grid metrics">${metric('Active projects',active,'currently moving')}${metric('Open milestones',openM,'across visible projects')}${metric('Linked notes',ns.length,'knowledge records')}${metric('Topics',topics,'visible knowledge nodes')}</section>`}
+function queueHtml(items,title,code){return `<div class="panel"><div class="panel-head"><h3>${title}</h3><span class="code">${code}</span></div><div class="queue">${items.length?items.map(i=>`<div class="qrow"><i class="dot ${statusDot(i.status)}"></i><div><div class="qname">${esc(i.name)}</div><div class="qmeta">${esc(i.meta)}</div></div><span class="badge">${esc(i.badge||'OPEN')}</span></div>`).join(''):'<div class="empty">Nothing here.</div>'}</div></div>`}
+function getNext(scope){return visibleProjects(scope).filter(p=>p.status==='ACTIVE'||p.status==='WATCHING').slice(0,4).map(p=>({name:p.next||p.title,meta:p.title,status:p.status,badge:p.status}))}
+function getWatch(scope){return visibleProjects(scope).filter(p=>p.status!=='COMPLETE').flatMap(p=>(p.milestones||[]).filter(m=>m.current||(!m.done&&p.status==='WATCHING')).slice(0,1).map(m=>({name:m.title,meta:p.title,status:p.status,badge:m.current?'CURRENT':'WATCH'}))).slice(0,4)}
+
+function networkPanel(scope=null){const hero=!scope;return `<section class="panel ${hero?'home-network':''}"><div class="panel-head"><h2>${scope?esc(areaById(scope)?.name||'Area'):'Atlas'} Network</h2><span class="code">DRAG NODES · CLICK TO OPEN</span></div><div class="map-wrap"><svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}" /><strong id="depthValue">${state.settings.mapDepth}</strong></div><div class="legend"><span><i class="l2"></i>Domain</span><span><i class="l3"></i>Area</span><span><i class="l4"></i>Topic</span><span><i class="l5"></i>Note</span></div></div></div></section>`}
+function foldPanel(title,code,body,open=false){return `<details class="fold" ${open?'open':''}><summary><span>${esc(title)}</span><span class="code">${esc(code)}</span></summary><div class="fold-body">${body}</div></details>`}
+function queueRows(items){return `<div class="queue">${items.length?items.map(i=>`<div class="qrow"><i class="dot ${statusDot(i.status)}"></i><div><div class="qname">${esc(i.name)}</div><div class="qmeta">${esc(i.meta)}</div></div><span class="badge">${esc(i.badge||'OPEN')}</span></div>`).join(''):'<div class="empty">Nothing here.</div>'}</div>`}
+function renderHome(){const app=document.getElementById('app');const activity=`<div class="notes-list">${state.activity.slice(0,8).map(a=>`<div class="note"><div class="meta">${fmtDate(a.time)} · ${fmtTime(a.time)}</div><div class="note-body">${esc(a.text)}</div></div>`).join('')}</div>`;app.innerHTML=`${networkPanel(null)}<section class="home-stack">${foldPanel('Dashboard','SNAPSHOT',metricsHtml(null),true)}${foldPanel('Active now','NEXT MOVES',queueRows(getNext(null)))}${foldPanel('Milestones','CURRENT / WATCH',queueRows(getWatch(null)))}${foldPanel('Projects','ALL SPACES',projectCards(null))}${foldPanel('Recent notes','KNOWLEDGE',notesHtml(visibleNotes(null).slice(0,8)))}${foldPanel('Recent activity','SYSTEM LOG',activity)}</section>`;drawNetwork(null)}
+function childAreas(id){return state.areas.filter(a=>a.parentId===id&&spaceAllows(a.space))}
+function renderArea(id){const a=areaById(id);if(!a){state.settings.activeTab='home';return renderAll()}const subs=['overview','notes','projects','milestones','map'];const app=document.getElementById('app');app.innerHTML=`<div class="workspace-head"><div class="workspace-title"><div class="crumb">ATLAS / ${esc(a.space)} / ${esc(a.code)}</div><h2>${esc(a.name)}</h2><p>${esc(a.description)}</p></div><div class="inline-actions"><button class="btn primary" data-quick-add="note" data-area="${a.id}">+ Note</button><button class="btn" data-quick-add="project" data-area="${a.id}">+ Project</button></div></div><nav class="subtabs">${subs.map(s=>`<button class="tab ${state.settings.subtab===s?'active':''}" data-subtab="${s}">${s}</button>`).join('')}</nav><div class="workspace" id="workspace"></div>`;renderWorkspace(a.id)}
+function renderWorkspace(id){const el=document.getElementById('workspace');if(!el)return;const st=state.settings.subtab;if(st==='overview'){el.innerHTML=`${metricsHtml(id)}<section class="grid workspace-grid"><div class="panel"><div class="panel-head"><h3>Projects</h3><span class="code">ACTIVE / WATCHING</span></div>${projectCards(id)}</div><div class="side">${queueHtml(getNext(id),'Next moves','PROJECT QUEUE')}${queueHtml(getWatch(id),'Milestones','CURRENT')}</div></section><section class="grid workspace-grid section"><div class="panel"><div class="panel-head"><h3>Recent Notes</h3><span class="code">LINKED</span></div>${notesHtml(visibleNotes(id).slice(0,8))}</div><div class="panel"><div class="panel-head"><h3>Topics</h3><span class="code">CHILD NODES</span></div>${topicsHtml(id)}</div></section>`}
+else if(st==='notes')el.innerHTML=`<section class="panel"><div class="panel-head"><h3>Notes</h3><button class="btn small primary" data-quick-add="note" data-area="${id}">+ Add Note</button></div>${notesHtml(visibleNotes(id))}</section>`;
+else if(st==='projects')el.innerHTML=`<section class="panel"><div class="panel-head"><h3>Projects</h3><button class="btn small primary" data-quick-add="project" data-area="${id}">+ New Project</button></div>${projectCards(id)}</section>`;
+else if(st==='milestones')el.innerHTML=`<section class="panel"><div class="panel-head"><h3>Milestones</h3><span class="code">ALL LINKED PROJECTS</span></div>${milestonesHtml(id)}</section>`;
+else if(st==='map'){el.innerHTML=networkPanel(id);drawNetwork(id)}}
+function topicsHtml(id){const kids=childAreas(id);return `<div class="topic-grid">${kids.length?kids.map(k=>`<div class="topic" data-open-area="${k.id}"><div class="k">${esc(k.code)} · L${k.level}</div><strong>${esc(k.name)}</strong><span>${esc(k.description)}</span></div>`).join(''):'<div class="empty">No child topics yet.</div>'}</div>`}
+function projectCards(scope){const ps=visibleProjects(scope);return `<div class="cards">${ps.length?ps.map(p=>{const pc=projectProgress(p);return `<article class="card clickable" data-project="${p.id}"><div class="card-top"><div><div class="code">${esc(p.code)}</div><h4>${esc(p.title)}</h4></div><span class="badge">${esc(p.status)}</span></div><p>${esc(p.next||p.objective)}</p><div class="progress"><div class="bar" style="width:${pc}%"></div></div><div class="card-foot"><span>${pc}% milestone progress</span><span>${(p.milestones||[]).filter(m=>!m.done).length} open</span></div></article>`}).join(''):'<div class="empty" style="grid-column:1/-1">No projects in this area yet.</div>'}</div>`}
+function notesHtml(notes){return `<div class="notes-list">${notes.length?notes.map(n=>`<article class="note"><div class="note-top"><div class="note-title">${esc(n.title||'Untitled')}</div><span class="note-type">${esc(n.type)}</span></div><div class="note-body">${esc(n.body||'')}</div><div class="tags">${(n.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div><div class="meta">${fmtDate(n.createdAt)} · ${esc(areaById(n.topicId)?.name||areaById(n.areaId)?.name||'Inbox')}</div></article>`).join(''):'<div class="empty">No notes yet.</div>'}</div>`}
+function milestonesHtml(scope){const ps=visibleProjects(scope);const rows=ps.flatMap(p=>(p.milestones||[]).map(m=>({m,p})));return `<div class="milestones">${rows.length?rows.map(({m,p})=>`<div class="mrow"><i class="mark ${m.done?'done':m.current?'current':''}"></i><div><div class="mname">${esc(m.title)}</div><div class="mmeta">${esc(p.title)}</div></div><span class="badge">${m.done?'DONE':m.current?'CURRENT':'OPEN'}</span></div>`).join(''):'<div class="empty">No milestones yet.</div>'}</div>`}
+
+function renderDaily(){const entries=state.daily.filter(d=>d.date===todayKey()).sort((a,b)=>b.createdAt-a.createdAt);document.getElementById('app').innerHTML=`<div class="workspace-head"><div class="workspace-title"><div class="crumb">ATLAS / DAILY</div><h2>${new Intl.DateTimeFormat('en-AU',{weekday:'long',day:'numeric',month:'long'}).format(new Date())}</h2><p>Capture first. Organise later.</p></div><button class="btn primary" data-quick-add="daily">+ Daily entry</button></div>${metricsHtml(null)}<section class="grid workspace-grid"><div class="panel"><div class="panel-head"><h3>Today</h3><span class="code">${todayKey()}</span></div><div class="daily">${entries.length?entries.map(d=>`<div class="daily-entry"><div class="daily-time">${fmtTime(d.createdAt)} · ${esc(areaById(d.areaId)?.name||'Unlinked')}</div><div class="daily-text">${esc(d.text)}</div></div>`).join(''):'<div class="empty">Nothing captured today.</div>'}</div></div><div class="side">${queueHtml(getNext(null),'Open loops','PROJECTS')}${queueHtml(getWatch(null),'Current milestones','MILESTONES')}</div></section>`}
+function renderInbox(){const notes=state.notes.filter(n=>!n.areaId).sort((a,b)=>b.createdAt-a.createdAt);document.getElementById('app').innerHTML=`<div class="workspace-head"><div class="workspace-title"><div class="crumb">ATLAS / INBOX</div><h2>Inbox</h2><p>Unsorted notes and ideas. Link them to an area when their home becomes clear.</p></div><button class="btn primary" data-quick-add="note">+ Capture</button></div><section class="panel"><div class="panel-head"><h3>Unsorted</h3><span class="code">${notes.length} ITEMS</span></div>${notesHtml(notes)}</section>`}
+
+function graphData(scope){
+  const max=state.settings.mapDepth; const nodes=[{id:'atlas',name:'Atlas',code:'ATLAS',space:'core',level:1,parentId:'',description:'',x:600,y:340,status:'active'}];
+  let areas=state.areas.filter(a=>spaceAllows(a.space)&&a.level<=max);
+  if(scope){const include=new Set([scope]);let cur=areaById(scope);while(cur){include.add(cur.id);cur=areaById(cur.parentId)}state.areas.forEach(a=>{if(a.id===scope||isDescendant(a.id,scope))include.add(a.id)});areas=areas.filter(a=>include.has(a.id))}
+  nodes.push(...areas);
+  if(max>=5){state.notes.filter(n=>n.showOnMap&&spaceAllows(n.space)&&(!scope||n.areaId===scope||n.topicId===scope||isDescendant(n.topicId||n.areaId,scope))).forEach((n,i)=>{const par=areaById(n.topicId)||areaById(n.areaId);nodes.push({id:n.id,name:n.title,code:makeNodeCode(n.title),space:n.space,level:5,parentId:par?.id||'',description:'',x:(par?.x||600)+72+((i%3)*24),y:(par?.y||340)+62+((i%2)*24),status:'default',note:true})})}
+  const ids=new Set(nodes.map(n=>n.id));const links=[];nodes.forEach(n=>{if(n.parentId&&ids.has(n.parentId))links.push({source:n.parentId,target:n.id,type:'tree'})});state.links.forEach(l=>{if(ids.has(l.source)&&ids.has(l.target))links.push(l)});return {nodes,links}
+}
+function radius(level){return({1:54,2:43,3:33,4:24,5:15})[level]||20}
+function drawNetwork(scope){const svg=document.getElementById('network');if(!svg)return;svg.dataset.scope=scope||'';svg.innerHTML='';const {nodes,links}=graphData(scope);const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));links.forEach(l=>{const s=byId[l.source],t=byId[l.target];if(!s||!t)return;const line=document.createElementNS(SVG_NS,'line');line.setAttribute('x1',s.x);line.setAttribute('y1',s.y);line.setAttribute('x2',t.x);line.setAttribute('y2',t.y);line.setAttribute('class',`edge ${l.type==='cross'?'cross':''}`);line.dataset.source=l.source;line.dataset.target=l.target;svg.appendChild(line)});nodes.forEach(n=>{const g=document.createElementNS(SVG_NS,'g');g.setAttribute('class',`node level${n.level} ${n.id===scope?'active':''} ${n.note?'note':''}`);g.dataset.node=n.id;const c=document.createElementNS(SVG_NS,'circle');c.setAttribute('cx',n.x);c.setAttribute('cy',n.y);c.setAttribute('r',radius(n.level));g.appendChild(c);const title=document.createElementNS(SVG_NS,'title');title.textContent=n.name;g.appendChild(title);const tx=document.createElementNS(SVG_NS,'text');tx.setAttribute('x',n.x);tx.setAttribute('y',n.y+3);tx.setAttribute('class','label');tx.textContent=n.id==='atlas'?'ATLAS':(n.code||makeNodeCode(n.name));g.appendChild(tx);svg.appendChild(g)});bindNetwork(scope);const dr=document.getElementById('depthRange');if(dr){dr.oninput=e=>{state.settings.mapDepth=Number(e.target.value);document.getElementById('depthValue').textContent=e.target.value;drawNetwork(scope);save()}}}
+function shortLabel(s,l){const lim={1:14,2:14,3:16,4:15,5:12}[l]||14;return String(s).length>lim?String(s).slice(0,lim-1)+'…':s}
+function bindNetwork(scope){const svg=document.getElementById('network');if(!svg||svg.dataset.bound==='yes')return;svg.dataset.bound='yes';svg.addEventListener('pointerdown',e=>{const g=e.target.closest?.('.node');if(!g)return;const id=g.dataset.node;if(id==='atlas'||id.startsWith('n')){dragging={id,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId);return}const a=areaById(id);if(!a)return;dragging={id,startX:e.clientX,startY:e.clientY,origX:a.x,origY:a.y,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId)});svg.addEventListener('pointermove',e=>{if(!dragging||dragging.id==='atlas'||dragging.id.startsWith('n'))return;const a=areaById(dragging.id);if(!a)return;const rect=svg.getBoundingClientRect();const dx=(e.clientX-dragging.startX)*1200/rect.width,dy=(e.clientY-dragging.startY)*680/rect.height;if(Math.abs(dx)+Math.abs(dy)>3)dragging.moved=true;a.x=Math.max(55,Math.min(1145,dragging.origX+dx));a.y=Math.max(55,Math.min(625,dragging.origY+dy));drawNetwork(svg.dataset.scope||null)});svg.addEventListener('pointerup',e=>{if(!dragging)return;const moved=dragging.moved,id=dragging.id;try{svg.releasePointerCapture(dragging.pointerId)}catch(_){ }dragging=null;if(moved){save();return}if(id==='atlas'){state.settings.activeTab='home';renderAll();return}if(id.startsWith('n'))return;const a=areaById(id);if(a){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='overview';renderTabs();if(a.level>=3)renderArea(a.id);else renderAll();save()}});}
+function getTopDomain(a){let cur=a;while(cur&&cur.level>2)cur=areaById(cur.parentId);return cur}
+
+function openProject(id){const p=projectById(id);if(!p)return;activeProjectId=id;document.getElementById('projectCode').textContent=`${p.code} / ${p.status}`;document.getElementById('projectTitle').textContent=p.title;document.getElementById('projectBody').innerHTML=`<div class="form"><div class="row2"><div><div class="code">OBJECTIVE</div><p style="font-size:12px;line-height:1.5">${esc(p.objective)}</p></div><div><div class="code">NEXT MOVE</div><p style="font-size:12px;line-height:1.5">${esc(p.next)}</p></div></div><div><div class="code">MILESTONES</div>${milestonesHtmlForProject(p)}</div><div><div class="code">TASKS</div><div class="mini-list">${(p.tasks||[]).map(t=>`<label class="mini-row"><input type="checkbox" data-project-task="${t.id}" ${t.done?'checked':''}/><span>${esc(t.title)}</span><span class="badge">${t.done?'DONE':'OPEN'}</span></label>`).join('')}</div></div><div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></div>`;openOverlay('projectOverlay')}
+function milestonesHtmlForProject(p){return `<div class="milestones" style="padding-left:0;padding-right:0">${(p.milestones||[]).map(m=>`<label class="mrow"><input type="checkbox" data-project-milestone="${m.id}" ${m.done?'checked':''} style="accent-color:var(--green)"/><div><div class="mname">${esc(m.title)}</div><div class="mmeta">${m.current?'CURRENT':''}</div></div><span class="badge">${m.done?'DONE':m.current?'CURRENT':'OPEN'}</span></label>`).join('')}</div>`}
+
+function openCapture(type='note',areaId=''){document.getElementById('capType').value=type;populateAreaSelect(document.getElementById('capArea'),areaId);document.getElementById('capTitle').value='';document.getElementById('capBody').value='';document.getElementById('capTags').value='';document.getElementById('capMap').value='false';openOverlay('captureOverlay');setTimeout(()=>document.getElementById('capTitle').focus(),80)}
+function populateAreaSelect(sel,value=''){const opts=state.areas.filter(a=>a.level>=2&&spaceAllows(a.space)).sort((a,b)=>a.name.localeCompare(b.name));sel.innerHTML=`<option value="">Inbox / unlinked</option>`+opts.map(a=>`<option value="${a.id}" ${a.id===value?'selected':''}>${esc(a.name)} · ${esc(a.code)}</option>`).join('')}
+function saveCapture(){const type=document.getElementById('capType').value,areaId=document.getElementById('capArea').value,title=document.getElementById('capTitle').value.trim(),body=document.getElementById('capBody').value.trim(),tags=document.getElementById('capTags').value.split(',').map(s=>s.trim()).filter(Boolean),show=document.getElementById('capMap').value==='true';if(!title&&!body)return toast('Add some content first');const area=areaById(areaId);const space=area?.space||(state.settings.spaceFilter==='work'?'work':'personal');if(type==='project'){const p={id:uid('p'),space,areaId:areaId||'',topicId:'',code:`P-${String(state.projects.length+1).padStart(2,'0')}`,title:title||'New Project',status:'ACTIVE',objective:body,next:'',tags,createdAt:now(),milestones:[],tasks:[]};state.projects.unshift(p);log(`Project created: ${p.title}.`)}else if(type==='task'){let p=visibleProjects(areaId)[0];if(p){p.tasks.push({id:uid('t'),title:title||body,done:false});log(`Task added to ${p.title}: ${title||body}.`)}else{state.notes.unshift({id:uid('n'),space,areaId:areaId||'',topicId:'',type:'task',title:title||'Task',body,tags,createdAt:now(),showOnMap:show});log(`Unassigned task captured: ${title}.`)}}else if(type==='daily'){state.daily.unshift({id:uid('d'),date:todayKey(),createdAt:now(),text:[title,body].filter(Boolean).join(' — '),areaId});log('Daily entry captured.')}else{state.notes.unshift({id:uid('n'),space,areaId:areaId||'',topicId:area?.level>=4?area.id:'',type,title:title||body.slice(0,70)||'Untitled',body,tags,createdAt:now(),showOnMap:show});log(`${type} captured: ${title||'Untitled'}.`)}save();closeOverlay('captureOverlay');renderAll();toast('Saved to Atlas')}
+
+function search(q){q=q.trim().toLowerCase();if(!q)return[];const res=[];state.areas.forEach(a=>{if([a.name,a.code,a.description].join(' ').toLowerCase().includes(q))res.push({kind:'AREA',title:a.name,meta:a.description,id:a.id})});state.projects.forEach(p=>{if([p.title,p.code,p.objective,p.next,...(p.tags||[])].join(' ').toLowerCase().includes(q))res.push({kind:'PROJECT',title:p.title,meta:p.next,id:p.id})});state.notes.forEach(n=>{if([n.title,n.body,...(n.tags||[])].join(' ').toLowerCase().includes(q))res.push({kind:'NOTE',title:n.title,meta:n.body,id:n.id,areaId:n.areaId})});return res.slice(0,30)}
+function renderSearch(){const q=document.getElementById('searchInput').value;const r=search(q);document.getElementById('searchResults').innerHTML=q?`<div class="notes-list">${r.length?r.map(x=>`<div class="note clickable" data-search-kind="${x.kind}" data-search-id="${x.id}" data-search-area="${x.areaId||''}"><div class="note-top"><strong class="note-title">${esc(x.title)}</strong><span class="note-type">${x.kind}</span></div><div class="note-body">${esc(String(x.meta||'').slice(0,180))}</div></div>`).join(''):'<div class="empty">No matches.</div>'}</div>`:'<div class="empty">Search projects, notes, topics, codes or tags.</div>'}
+
+const editorTabs=[['structure','Structure'],['projects','Projects'],['notes','Notes'],['links','Connections'],['data','Data / Reset']];
+function openEditor(){renderEditor();openOverlay('editorOverlay')}
+function renderEditor(){document.getElementById('editorNav').innerHTML=editorTabs.map(([id,n])=>`<button class="btn ${state.settings.editorTab===id?'primary':''}" data-editor-tab="${id}">${n}</button>`).join('');const e=document.getElementById('editorPane');if(state.settings.editorTab==='structure')e.innerHTML=editorStructure();if(state.settings.editorTab==='projects')e.innerHTML=editorProjects();if(state.settings.editorTab==='notes')e.innerHTML=editorNotes();if(state.settings.editorTab==='links')e.innerHTML=editorLinks();if(state.settings.editorTab==='data')e.innerHTML=editorData()}
+function field(label,html){return `<div class="field"><label>${label}</label>${html}</div>`}
+function editorStructure(){return `<section class="editor-section"><div class="editor-section-head"><h4>Areas / Topics</h4><button class="btn small primary" data-ed-action="add-area">+ Add</button></div><div class="editor-section-body"><div class="table-list">${state.areas.map((a,i)=>`<div class="edit-row"><div>${field('Name',`<input data-area-edit="${i}" data-field="name" value="${esc(a.name)}">`)}</div><div>${field('Level',`<select data-area-edit="${i}" data-field="level">${[2,3,4].map(v=>`<option value="${v}" ${a.level===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div><div>${field('Parent',`<select data-area-edit="${i}" data-field="parentId"><option value="atlas">ATLAS</option>${state.areas.filter(x=>x.id!==a.id&&x.level<a.level).map(x=>`<option value="${x.id}" ${a.parentId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-area" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-area" data-index="${i}">×</button></div></div>`).join('')}</div></div></section><div class="code">Node positions can also be changed directly by dragging them on the network.</div>`}
+function editorProjects(){return `<section class="editor-section"><div class="editor-section-head"><h4>Projects</h4><button class="btn small primary" data-ed-action="add-project">+ Project</button></div><div class="editor-section-body"><div class="table-list">${state.projects.map((p,i)=>`<div class="edit-row project-row"><div>${field('Title',`<input data-proj-edit="${i}" data-field="title" value="${esc(p.title)}">`)}</div><div>${field('Status',`<select data-proj-edit="${i}" data-field="status">${['ACTIVE','WATCHING','PAUSED','COMPLETE'].map(v=>`<option ${p.status===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div><div>${field('Area',`<select data-proj-edit="${i}" data-field="areaId">${state.areas.map(a=>`<option value="${a.id}" ${p.areaId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-project" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-project" data-index="${i}">×</button></div></div>`).join('')}</div></div></section>`}
+function editorNotes(){return `<section class="editor-section"><div class="editor-section-head"><h4>Notes</h4><button class="btn small primary" data-ed-action="add-note">+ Note</button></div><div class="editor-section-body"><div class="table-list">${state.notes.map((n,i)=>`<div class="edit-row note-row"><div>${field('Title',`<input data-note-edit="${i}" data-field="title" value="${esc(n.title)}">`)}</div><div>${field('Type',`<input data-note-edit="${i}" data-field="type" value="${esc(n.type)}">`)}</div><div>${field('Area',`<select data-note-edit="${i}" data-field="areaId"><option value="">Inbox</option>${state.areas.map(a=>`<option value="${a.id}" ${n.areaId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-note" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-note" data-index="${i}">×</button></div></div>`).join('')}</div></div></section>`}
+function editorLinks(){return `<section class="editor-section"><div class="editor-section-head"><h4>Cross-connections</h4><button class="btn small primary" data-ed-action="add-link">+ Connection</button></div><div class="editor-section-body"><div class="table-list">${state.links.map((l,i)=>`<div class="edit-row"><div>${field('From',`<select data-link-edit="${i}" data-field="source">${state.areas.map(a=>`<option value="${a.id}" ${l.source===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div>${field('To',`<select data-link-edit="${i}" data-field="target">${state.areas.map(a=>`<option value="${a.id}" ${l.target===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div>${field('Type',`<select data-link-edit="${i}" data-field="type"><option value="cross">Cross-link</option></select>`)}</div><button class="btn small danger" data-ed-action="remove-link" data-index="${i}">Remove</button></div>`).join('')}</div></div></section>`}
+function editorData(){return `<section class="editor-section"><div class="editor-section-head"><h4>Data</h4></div><div class="editor-section-body"><p style="font-size:11px;line-height:1.5;color:var(--muted)">Atlas stores its working state in IndexedDB in this browser. Export JSON regularly if you want a portable backup or to move between machines.</p><div class="inline-actions"><button class="btn" data-ed-action="export">Export JSON</button><button class="btn danger" data-ed-action="reset">Reset Demo Data</button></div></div></section>`}
+function openAreaEditor(i){const a=state.areas[i];if(!a)return;document.getElementById('editorPane').innerHTML=`<button class="btn small" data-ed-action="back-structure">← Structure</button><section class="editor-section" style="margin-top:9px"><div class="editor-section-head"><h4>${esc(a.code)} · Area Detail</h4></div><div class="editor-section-body"><div class="project-editor"><div class="row3">${field('Name',`<input id="eaName" value="${esc(a.name)}">`)}${field('Map code · auto',`<input id="eaCode" value="${esc(a.code)}" readonly title="Generated from the node name · 3–5 characters">`)}${field('Space',`<select id="eaSpace"><option value="work" ${a.space==='work'?'selected':''}>Work</option><option value="personal" ${a.space==='personal'?'selected':''}>Personal</option></select>`)}</div><div class="row2">${field('Level',`<select id="eaLevel">${[2,3,4].map(v=>`<option value="${v}" ${a.level===v?'selected':''}>${v}</option>`).join('')}</select>`)}${field('Parent',`<select id="eaParent"><option value="atlas">ATLAS</option>${state.areas.filter(x=>x.id!==a.id&&x.level<a.level).map(x=>`<option value="${x.id}" ${a.parentId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`)}</div>${field('Description',`<textarea id="eaDescription">${esc(a.description||'')}</textarea>`)}<button class="btn primary" data-ed-action="save-area-detail" data-index="${i}">Save Area</button></div></div></section>`}
+function openNoteEditor(i){const n=state.notes[i];if(!n)return;document.getElementById('editorPane').innerHTML=`<button class="btn small" data-ed-action="back-notes">← Notes</button><section class="editor-section" style="margin-top:9px"><div class="editor-section-head"><h4>Note Detail</h4></div><div class="editor-section-body"><div class="project-editor"><div class="row2">${field('Title',`<input id="enTitle" value="${esc(n.title)}">`)}${field('Type',`<input id="enType" value="${esc(n.type)}">`)}</div><div class="row2">${field('Area',`<select id="enArea"><option value="">Inbox</option>${state.areas.map(a=>`<option value="${a.id}" ${n.areaId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}${field('Topic',`<select id="enTopic"><option value="">None</option>${state.areas.filter(a=>a.level>=3).map(a=>`<option value="${a.id}" ${n.topicId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div>${field('Body',`<textarea id="enBody" style="min-height:180px">${esc(n.body||'')}</textarea>`)}<div class="row2">${field('Tags',`<input id="enTags" value="${esc((n.tags||[]).join(', '))}">`)}${field('Map',`<select id="enMap"><option value="false" ${!n.showOnMap?'selected':''}>Keep off map</option><option value="true" ${n.showOnMap?'selected':''}>Show as level 5 node</option></select>`)}</div><button class="btn primary" data-ed-action="save-note-detail" data-index="${i}">Save Note</button></div></div></section>`}
+function openProjectEditor(i){const p=state.projects[i];if(!p)return;document.getElementById('editorPane').innerHTML=`<button class="btn small" data-ed-action="back-projects">← Projects</button><section class="editor-section" style="margin-top:9px"><div class="editor-section-head"><h4>${esc(p.code)} · Project Detail</h4></div><div class="editor-section-body"><div class="project-editor"><div class="row2">${field('Title',`<input id="epTitle" value="${esc(p.title)}">`)}${field('Status',`<select id="epStatus">${['ACTIVE','WATCHING','PAUSED','COMPLETE'].map(v=>`<option ${p.status===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div>${field('Objective',`<textarea id="epObjective">${esc(p.objective)}</textarea>`)}${field('Next move',`<textarea id="epNext">${esc(p.next)}</textarea>`)}${field('Tags',`<input id="epTags" value="${esc((p.tags||[]).join(', '))}">`)}<div><div class="editor-section-head" style="padding-left:0;padding-right:0"><h4>Milestones</h4><button class="btn small" data-ed-action="add-milestone" data-index="${i}">+ Milestone</button></div><div class="mini-list">${(p.milestones||[]).map((m,mi)=>`<div class="mini-row"><input type="checkbox" data-ep-milestone="${mi}" ${m.done?'checked':''}><input type="text" data-ep-milestone-title="${mi}" value="${esc(m.title)}"><button class="btn small danger" data-ed-action="remove-milestone" data-index="${i}" data-subindex="${mi}">×</button></div>`).join('')}</div></div><div><div class="editor-section-head" style="padding-left:0;padding-right:0"><h4>Tasks</h4><button class="btn small" data-ed-action="add-task" data-index="${i}">+ Task</button></div><div class="mini-list">${(p.tasks||[]).map((t,ti)=>`<div class="mini-row"><input type="checkbox" data-ep-task="${ti}" ${t.done?'checked':''}><input type="text" data-ep-task-title="${ti}" value="${esc(t.title)}"><button class="btn small danger" data-ed-action="remove-task" data-index="${i}" data-subindex="${ti}">×</button></div>`).join('')}</div></div><button class="btn primary" data-ed-action="save-project-detail" data-index="${i}">Save Project</button></div></div></section>`}
+
+function exportData(){const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`atlas-backup-${todayKey()}.json`;a.click();URL.revokeObjectURL(url)}
+function openOverlay(id){document.getElementById(id).classList.add('open')} function closeOverlay(id){document.getElementById(id).classList.remove('open')}
+
+// Global click handling
+document.addEventListener('click',e=>{
+  const close=e.target.closest('[data-close]');if(close){closeOverlay(close.dataset.close);return}
+  const mt=e.target.closest('[data-main-tab]');if(mt){state.settings.activeTab=mt.dataset.mainTab;state.settings.selectedArea=['home','daily','inbox'].includes(mt.dataset.mainTab)?'':mt.dataset.mainTab;state.settings.subtab='overview';renderAll();return}
+  const st=e.target.closest('[data-subtab]');if(st){state.settings.subtab=st.dataset.subtab;renderArea(state.settings.selectedArea||state.settings.activeTab);save();return}
+  const oa=e.target.closest('[data-open-area]');if(oa){const a=areaById(oa.dataset.openArea);if(a){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='overview';renderTabs();renderArea(a.id);save()}return}
+  const pc=e.target.closest('[data-project]');if(pc){openProject(pc.dataset.project);return}
+  const qa=e.target.closest('[data-quick-add]');if(qa){openCapture(qa.dataset.quickAdd,qa.dataset.area||'');return}
+  const sk=e.target.closest('[data-search-kind]');if(sk){closeOverlay('searchOverlay');if(sk.dataset.searchKind==='PROJECT')openProject(sk.dataset.searchId);else if(sk.dataset.searchKind==='AREA'){const a=areaById(sk.dataset.searchId);if(a){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='overview';renderTabs();renderArea(a.id);save()}}else if(sk.dataset.searchArea){const a=areaById(sk.dataset.searchArea);if(a){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='notes';renderTabs();renderArea(a.id);save()}}return}
+  const et=e.target.closest('[data-editor-tab]');if(et){state.settings.editorTab=et.dataset.editorTab;renderEditor();save();return}
+  const act=e.target.closest('[data-ed-action]');if(act)handleEditorAction(act)
+});
+document.getElementById('captureBtn').addEventListener('click',()=>openCapture());document.getElementById('searchBtn').addEventListener('click',()=>{openOverlay('searchOverlay');renderSearch();setTimeout(()=>document.getElementById('searchInput').focus(),80)});document.getElementById('editBtn').addEventListener('click',openEditor);document.getElementById('themeBtn').addEventListener('click',()=>{state.settings.theme=state.settings.theme==='night'?'day':'night';applyTheme();save()});document.getElementById('saveCapture').addEventListener('click',saveCapture);document.getElementById('searchInput').addEventListener('input',renderSearch);document.getElementById('exportBtn').addEventListener('click',exportData);
+document.getElementById('spaceFilter').addEventListener('change',e=>{state.settings.spaceFilter=e.target.value;renderAll()});
+document.getElementById('projectBody').addEventListener('change',e=>{const p=projectById(activeProjectId);if(!p)return;if(e.target.dataset.projectTask){const t=p.tasks.find(x=>x.id===e.target.dataset.projectTask);if(t)t.done=e.target.checked}if(e.target.dataset.projectMilestone){const m=p.milestones.find(x=>x.id===e.target.dataset.projectMilestone);if(m)m.done=e.target.checked}log(`Project progress updated: ${p.title}.`);save();openProject(p.id);renderAll()});
+document.getElementById('importFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{try{state=ensureState(JSON.parse(r.result));log('Atlas data imported.');await save();renderAll();toast('Atlas data imported')}catch(err){alert('That file could not be imported.')}};r.readAsText(f);e.target.value=''})
+
+document.getElementById('editorPane').addEventListener('change',e=>{
+  let t=e.target;
+  if(t.dataset.areaEdit!==undefined){let a=state.areas[Number(t.dataset.areaEdit)];if(a){a[t.dataset.field]=t.dataset.field==='level'?Number(t.value):t.value;if(t.dataset.field==='name')a.code=makeNodeCode(a.name);save();renderAll()}return}
+  if(t.dataset.projEdit!==undefined){let p=state.projects[Number(t.dataset.projEdit)];if(p){p[t.dataset.field]=t.value;const ar=areaById(p.areaId);if(ar)p.space=ar.space;save();renderAll()}return}
+  if(t.dataset.noteEdit!==undefined){let n=state.notes[Number(t.dataset.noteEdit)];if(n){n[t.dataset.field]=t.value;const ar=areaById(n.areaId);if(ar)n.space=ar.space;save();renderAll()}return}
+  if(t.dataset.linkEdit!==undefined){let l=state.links[Number(t.dataset.linkEdit)];if(l){l[t.dataset.field]=t.value;save();renderAll()}return}
+});
+function handleEditorAction(b){const a=b.dataset.edAction;
+  if(a==='add-area'){const parent=state.areas.find(x=>x.level===2)||state.areas[0];state.areas.push({id:uid('area'),name:'New Area',code:'NEW',space:parent?.space||'personal',level:3,parentId:parent?.id||'atlas',description:'',x:600,y:430,status:'default'});log('New Atlas area created.');save();renderEditor();renderAll()}
+  if(a==='remove-area'){const i=Number(b.dataset.index),x=state.areas[i];if(x&&confirm(`Remove ${x.name}? Linked notes/projects will become unlinked.`)){state.projects.forEach(p=>{if(p.areaId===x.id)p.areaId='';if(p.topicId===x.id)p.topicId=''});state.notes.forEach(n=>{if(n.areaId===x.id)n.areaId='';if(n.topicId===x.id)n.topicId=''});state.areas.forEach(c=>{if(c.parentId===x.id)c.parentId='atlas'});state.links=state.links.filter(l=>l.source!==x.id&&l.target!==x.id);state.areas.splice(i,1);save();renderEditor();renderAll()}}
+  if(a==='edit-area'){openAreaEditor(Number(b.dataset.index))}
+  if(a==='back-structure'){state.settings.editorTab='structure';renderEditor()}
+  if(a==='save-area-detail'){const i=Number(b.dataset.index),x=state.areas[i];if(x){x.name=document.getElementById('eaName').value.trim()||x.name;x.code=makeNodeCode(x.name);x.space=document.getElementById('eaSpace').value;x.level=Number(document.getElementById('eaLevel').value);x.parentId=document.getElementById('eaParent').value;x.description=document.getElementById('eaDescription').value.trim();log(`Area edited: ${x.name}.`);save();openAreaEditor(i);renderAll();toast('Area saved')}}
+  if(a==='add-project'){state.projects.unshift({id:uid('p'),space:'personal',areaId:state.areas[0]?.id||'',topicId:'',code:`P-${String(state.projects.length+1).padStart(2,'0')}`,title:'New Project',status:'ACTIVE',objective:'',next:'',tags:[],createdAt:now(),milestones:[],tasks:[]});save();renderEditor();renderAll()}
+  if(a==='remove-project'){state.projects.splice(Number(b.dataset.index),1);save();renderEditor();renderAll()}
+  if(a==='edit-project'){openProjectEditor(Number(b.dataset.index))}
+  if(a==='back-projects'){state.settings.editorTab='projects';renderEditor()}
+  if(a==='add-note'){openCapture('note');closeOverlay('editorOverlay')}
+  if(a==='remove-note'){state.notes.splice(Number(b.dataset.index),1);save();renderEditor();renderAll()}
+  if(a==='edit-note'){openNoteEditor(Number(b.dataset.index))}
+  if(a==='back-notes'){state.settings.editorTab='notes';renderEditor()}
+  if(a==='save-note-detail'){const i=Number(b.dataset.index),n=state.notes[i];if(n){n.title=document.getElementById('enTitle').value.trim()||n.title;n.type=document.getElementById('enType').value.trim()||'note';n.areaId=document.getElementById('enArea').value;n.topicId=document.getElementById('enTopic').value;n.body=document.getElementById('enBody').value;n.tags=document.getElementById('enTags').value.split(',').map(s=>s.trim()).filter(Boolean);n.showOnMap=document.getElementById('enMap').value==='true';const ar=areaById(n.topicId)||areaById(n.areaId);if(ar)n.space=ar.space;log(`Note edited: ${n.title}.`);save();openNoteEditor(i);renderAll();toast('Note saved')}}
+  if(a==='add-link'){if(state.areas.length>1)state.links.push({id:uid('link'),source:state.areas[0].id,target:state.areas[1].id,type:'cross'});save();renderEditor();renderAll()}
+  if(a==='remove-link'){state.links.splice(Number(b.dataset.index),1);save();renderEditor();renderAll()}
+  if(a==='export')exportData();
+  if(a==='reset'){if(confirm('Reset Atlas to the demo structure? This replaces the data currently stored in this browser.')){state=clone(demo);save();renderEditor();renderAll();toast('Atlas reset')}}
+  if(['add-milestone','remove-milestone','add-task','remove-task','save-project-detail'].includes(a)){const i=Number(b.dataset.index),p=state.projects[i];if(!p)return;if(a==='add-milestone'){p.milestones.push({id:uid('m'),title:'New milestone',done:false})}if(a==='remove-milestone'){p.milestones.splice(Number(b.dataset.subindex),1)}if(a==='add-task'){p.tasks.push({id:uid('t'),title:'New task',done:false})}if(a==='remove-task'){p.tasks.splice(Number(b.dataset.subindex),1)}if(a==='save-project-detail'){p.title=document.getElementById('epTitle').value.trim()||p.title;p.status=document.getElementById('epStatus').value;p.objective=document.getElementById('epObjective').value.trim();p.next=document.getElementById('epNext').value.trim();p.tags=document.getElementById('epTags').value.split(',').map(s=>s.trim()).filter(Boolean);document.querySelectorAll('[data-ep-milestone]').forEach(x=>{if(p.milestones[Number(x.dataset.epMilestone)])p.milestones[Number(x.dataset.epMilestone)].done=x.checked});document.querySelectorAll('[data-ep-milestone-title]').forEach(x=>{if(p.milestones[Number(x.dataset.epMilestoneTitle)])p.milestones[Number(x.dataset.epMilestoneTitle)].title=x.value});document.querySelectorAll('[data-ep-task]').forEach(x=>{if(p.tasks[Number(x.dataset.epTask)])p.tasks[Number(x.dataset.epTask)].done=x.checked});document.querySelectorAll('[data-ep-task-title]').forEach(x=>{if(p.tasks[Number(x.dataset.epTaskTitle)])p.tasks[Number(x.dataset.epTaskTitle)].title=x.value});log(`Project edited: ${p.title}.`);toast('Project saved')}save();openProjectEditor(i);renderAll()}
+}
+
+load();
+</script>
+</body>
+</html>
