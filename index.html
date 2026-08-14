@@ -33,14 +33,14 @@ button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;letter-spacing:.055em}
 .shell{max-width:1660px;margin:0 auto;padding:18px 22px 34px;position:relative;z-index:1}
-.topbar{border-top:5px solid var(--green);border-bottom:1px solid var(--line);padding:12px 0 10px;display:flex;justify-content:space-between;gap:18px;align-items:center}
-.brand-home{border:0;background:transparent;color:var(--ink);padding:0;margin:0;font-size:clamp(27px,4vw,44px);font-weight:780;line-height:1;letter-spacing:-.045em;text-align:left}
+.topbar{border-top:4px solid var(--green);border-bottom:1px solid var(--line);padding:8px 0 7px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.brand-home{border:0;background:transparent;color:var(--ink);padding:0;margin:0;font-size:clamp(28px,3vw,36px);font-weight:780;line-height:1;letter-spacing:-.045em;text-align:left;flex:0 0 auto}
 .brand-home:hover{color:var(--green)}
 .actions,.tabs,.subtabs,.space-switch,.section-switch,.inline-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.utility-actions{display:flex;align-items:center;justify-content:flex-end;gap:2px;flex-wrap:wrap}
-.utility-btn,.utility-file{border:0;background:transparent;color:var(--muted);padding:6px 7px;border-radius:3px;font:800 8.5px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.055em;transition:.14s}
-.utility-btn:hover,.utility-file:hover{color:var(--green);background:rgba(52,75,58,.07)}
-.utility-accent{color:var(--green)}
+.utility-actions{display:flex;align-items:center;justify-content:flex-end;gap:4px;flex-wrap:wrap;min-width:0}
+.utility-btn,.utility-file{border:0;background:transparent;color:var(--ink);opacity:.62;padding:7px 8px;border-radius:3px;font:800 9.5px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.05em;transition:.14s}
+.utility-btn:hover,.utility-file:hover{color:var(--green);background:rgba(52,75,58,.07);opacity:1}
+.utility-accent{color:var(--green);opacity:.92}
 body[data-theme="night"] .utility-btn:hover,body[data-theme="night"] .utility-file:hover{background:rgba(23,147,209,.08)}
 .btn,.tab,.file-label{border:1px solid var(--muted);background:transparent;color:var(--ink);border-radius:4px;padding:9px 11px;font:800 10px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.055em;transition:.14s}
 .btn:hover,.tab:hover,.file-label:hover{background:var(--ink);color:var(--paper)}
@@ -55,9 +55,10 @@ input[type=file]{display:none}
 .tabs{gap:4px}
 .tab{border-color:transparent;padding:8px 10px}
 .nav-switches{display:flex;justify-content:flex-end;gap:8px;align-items:center;flex-wrap:wrap}
+.header-switch{display:flex;align-items:center;gap:5px;margin-left:3px;font:800 8px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted);white-space:nowrap}.header-switch select{border:1px solid color-mix(in srgb,var(--line) 78%,transparent);background:transparent;border-radius:4px;padding:6px 25px 6px 7px;color:var(--ink);font:800 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;opacity:.78}.header-switch select:hover,.header-switch select:focus{opacity:1;border-color:var(--green)}
 .space-switch,.section-switch{font:800 8px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted)}
 .space-switch select,.section-switch select{border:1px solid var(--line);background:var(--paper);border-radius:4px;padding:6px 28px 6px 8px;color:var(--ink);font:800 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase}
-.main{margin-top:14px}
+.main{margin-top:6px}
 .panel{background:rgba(241,240,232,.94);border:1px solid #a6aaa2;border-radius:6px;box-shadow:var(--shadow)}
 .panel-head{padding:12px 14px;border-bottom:1px solid #b7bab2;display:flex;justify-content:space-between;gap:12px;align-items:center}
 .panel-head h2,.panel-head h3{margin:0;font:850 11px/1.15 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.07em}
@@ -121,33 +122,37 @@ body[data-theme="night"] .fold[open]>summary{border-color:var(--line)}
 /* overlays */
 .overlay{position:fixed;inset:0;z-index:40;background:rgba(18,23,19,.34);display:none;align-items:flex-start;justify-content:center;padding:5vh 12px;overflow:auto}.overlay.open{display:flex}.modal{width:min(760px,96vw);background:#efeee6;border:1px solid #666e66;border-radius:6px;box-shadow:0 24px 70px rgba(17,22,18,.3)}.modal.wide{width:min(1260px,97vw)}.modal-head{padding:14px 15px;border-bottom:1px solid #b3b7af;display:flex;justify-content:space-between;gap:10px;align-items:start;position:sticky;top:0;background:#efeee6;z-index:2}.modal-head h3{margin:4px 0 0;font-size:22px;letter-spacing:-.025em}.modal-body{padding:15px}.form{display:grid;gap:11px}.field label{display:block;font:800 8.5px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted);margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid #969d94;border-radius:4px;background:#f6f5ee;color:var(--ink);padding:9px 10px;font-size:12px}.field textarea{min-height:96px;resize:vertical}.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.checkline{display:flex;gap:8px;align-items:center;font-size:11px}.checkline input{accent-color:var(--green)}
 .editor-grid{display:grid;grid-template-columns:210px minmax(0,1fr);gap:13px}.editor-nav{display:grid;gap:5px;align-content:start}.editor-nav button{text-align:left}.editor-pane{min-width:0}.editor-section{border:1px solid #adb2aa;border-radius:5px;background:#eae9e1;margin-bottom:10px}.editor-section-head{padding:10px 11px;border-bottom:1px solid #b9bdb5;display:flex;justify-content:space-between;gap:8px;align-items:center}.editor-section-head h4{margin:0;font:800 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase}.editor-section-body{padding:10px}.table-list{display:grid;gap:7px}.edit-row{display:grid;grid-template-columns:1.1fr .7fr .7fr auto;gap:7px;align-items:end;border:1px solid #bdc1b9;border-radius:4px;padding:8px;background:#efeee7}.edit-row.project-row{grid-template-columns:1.4fr .65fr .75fr auto}.edit-row.note-row{grid-template-columns:1.2fr .6fr .75fr auto}.edit-row input,.edit-row select{width:100%;border:1px solid #9da39a;background:#f6f5ee;border-radius:3px;padding:7px;font-size:10px}.edit-row label{display:block;font:750 7.5px "SFMono-Regular",Consolas,monospace;color:var(--muted);text-transform:uppercase;margin-bottom:3px}.project-editor{display:grid;gap:10px}.mini-list{display:grid;gap:6px}.mini-row{display:grid;grid-template-columns:auto 1fr auto;gap:7px;align-items:center;border-bottom:1px solid #d0d3cb;padding:6px 0}.mini-row input[type=text]{width:100%;border:1px solid #a0a69d;border-radius:3px;background:#f7f6ef;padding:7px;font-size:10px}.mini-row input[type=checkbox]{accent-color:var(--green)}
+
+.lock-screen{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;background:#05080c;color:#d9edf8;overflow:auto}.lock-screen.open{display:flex}.lock-card{width:min(420px,94vw);padding:28px 26px 24px;border-top:3px solid #1793d1;background:#080d12;border-bottom:1px solid #253746}.lock-brand{font-size:38px;font-weight:780;letter-spacing:-.045em;line-height:1;margin:0 0 28px;color:#d9edf8}.lock-kicker{font:800 9px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.08em;color:#1793d1;margin-bottom:7px}.lock-title{font-size:20px;font-weight:720;letter-spacing:-.025em;margin:0 0 7px}.lock-copy{font-size:11px;line-height:1.55;color:#7892a3;margin:0 0 18px}.lock-field{margin:0 0 11px}.lock-field label{display:block;font:800 8.5px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#7892a3;margin:0 0 5px}.lock-field input,.lock-field select{width:100%;border:1px solid #253746;border-radius:4px;background:#05080c;color:#d9edf8;padding:11px 12px;font-size:13px;outline:none}.lock-field input:focus,.lock-field select:focus{border-color:#1793d1}.lock-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:15px}.lock-primary,.lock-secondary{border:1px solid #1793d1;border-radius:4px;padding:10px 12px;font:800 9.5px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.055em}.lock-primary{background:#1793d1;color:#031018}.lock-secondary{background:transparent;color:#9fcfe7;border-color:#31566c}.lock-primary:disabled{opacity:.42;cursor:not-allowed}.lock-check{display:flex;gap:8px;align-items:center;color:#7892a3;font-size:10px;margin-top:10px}.lock-check input{accent-color:#1793d1}.lock-message{min-height:16px;margin-top:10px;font:750 9px/1.45 "SFMono-Regular",Consolas,monospace;color:#d7a84a}.recovery-key{display:block;width:100%;margin:12px 0;padding:12px;border:1px dashed #1793d1;background:#05080c;color:#bfe9ff;font:800 12px/1.5 "SFMono-Regular",Consolas,monospace;letter-spacing:.08em;text-align:center}.lock-note{margin-top:16px;padding-top:12px;border-top:1px solid #1b2a35;color:#607b8c;font-size:9px;line-height:1.5}.atlas-locked{overflow:hidden}
 .toast{position:fixed;right:18px;bottom:18px;z-index:80;background:var(--ink);color:var(--paper);border-radius:4px;padding:9px 11px;font:750 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}.toast.show{opacity:1;transform:translateY(0)}
 
 @media(max-width:1050px){.hero-grid,.workspace-grid{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.map-wrap{min-height:445px}#network{height:440px}.editor-grid{grid-template-columns:1fr}.editor-nav{display:flex;flex-wrap:wrap}.topic-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.shell{padding:12px}.topbar,.workspace-head{align-items:flex-start;flex-direction:column}.navline{justify-content:flex-start}.utility-actions{justify-content:flex-start}.nav-switches{justify-content:flex-start}.actions{justify-content:flex-start}.metrics,.cards,.topic-grid,.row2,.row3{grid-template-columns:1fr}.map-wrap{min-height:470px}#network{height:465px}.map-controls{position:absolute;padding:0;align-items:flex-start;flex-direction:column;left:8px;right:8px;bottom:8px}.legend{display:none}.edit-row,.edit-row.project-row,.edit-row.note-row{grid-template-columns:1fr}.modal{margin-top:0}.space-switch,.section-switch{justify-content:space-between}}
+@media(max-width:700px){.shell{padding:12px}.topbar{align-items:flex-start;flex-direction:column}.workspace-head{align-items:flex-start;flex-direction:column}.navline{justify-content:flex-start}.utility-actions{justify-content:flex-start;width:100%}.nav-switches{justify-content:flex-start}.actions{justify-content:flex-start}.metrics,.cards,.topic-grid,.row2,.row3{grid-template-columns:1fr}.map-wrap{min-height:470px}#network{height:465px}.map-controls{position:absolute;padding:0;align-items:flex-start;flex-direction:column;left:8px;right:8px;bottom:8px}.legend{display:none}.edit-row,.edit-row.project-row,.edit-row.note-row{grid-template-columns:1fr}.modal{margin-top:0}.space-switch,.section-switch{justify-content:space-between}}
 </style>
 </head>
 <body>
+<div class="lock-screen" id="lockScreen" aria-live="polite">
+  <section class="lock-card" aria-label="Atlas Lock">
+    <div class="lock-brand">Atlas</div>
+    <div id="lockContent"></div>
+  </section>
+</div>
 <div class="shell">
   <header class="topbar">
     <button class="brand-home" id="homeBtn" type="button" aria-label="Return to Atlas home">Atlas</button>
-    <div class="utility-actions" aria-label="Atlas utilities">
+    <div class="utility-actions" aria-label="Atlas utilities and navigation">
       <button class="utility-btn utility-accent" id="captureBtn">+ Capture</button>
       <button class="utility-btn" id="searchBtn">Search</button>
       <button class="utility-btn" id="editBtn">Edit</button>
       <button class="utility-btn" id="themeBtn" aria-label="Toggle night mode">Night</button>
+      <button class="utility-btn" id="lockBtn" aria-label="Lock Atlas now">Lock</button>
       <button class="utility-btn" id="exportBtn">Export</button>
       <label class="utility-file" for="importFile">Import</label>
       <input id="importFile" type="file" accept="application/json" />
+      <div class="header-switch">View <select id="sectionSelect" aria-label="Navigate Atlas"><option value="">Navigate</option></select></div>
+      <div class="header-switch">Space <select id="spaceFilter"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select></div>
     </div>
   </header>
-
-  <div class="navline">
-    <div class="nav-switches">
-      <div class="section-switch">View <select id="sectionSelect" aria-label="Navigate Atlas"><option value="">Navigate</option></select></div>
-      <div class="space-switch">Data space <select id="spaceFilter"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select></div>
-    </div>
-  </div>
 
   <main class="main" id="app"></main>
   <div class="footer">ATLAS // LOCAL DATA · JSON BACKUP</div>
@@ -194,7 +199,7 @@ body[data-theme="night"] .fold[open]>summary{border-color:var(--line)}
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='0.9.5'; const DATA_VERSION=2; const DB_NAME='atlas_personal_os'; const DB_VERSION=2; const DB_STORE='state'; const BACKUP_STORE='backups'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.9.7'; const DATA_VERSION=2; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -206,7 +211,7 @@ const todayKey=()=>new Date().toLocaleDateString('en-CA');
 const demo={
   version:DATA_VERSION,
   meta:{createdAt:now(),lastSavedAt:now(),lastAppVersion:APP_VERSION},
-  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',mapDepth:4,selectedArea:'',editorTab:'structure',mapLayoutVersion:6,theme:'day'},
+  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',mapDepth:4,selectedArea:'',editorTab:'structure',mapLayoutVersion:7,theme:'day'},
   areas:[
     {id:'work',name:'Work',code:'WRK',space:'work',level:2,parentId:'atlas',description:'Professional operating picture, development and delivery.',x:600,y:90,status:'active'},
     {id:'lifestyle',name:'Lifestyle',code:'LIFE',space:'personal',level:2,parentId:'atlas',description:'Cars, technology, reading, style, finance and home.',x:165,y:330,status:'active'},
@@ -282,8 +287,9 @@ function applyWideMapLayout(s){
   return s;
 }
 function organiseHierarchyLayout(s){
-  const cx=600, cy=340;
+  const cx=600,cy=340;
   const areas=(s.areas||[]);
+  const byId=Object.fromEntries(areas.map(a=>[a.id,a]));
   const kids={};
   areas.forEach(a=>{const p=a.parentId||'atlas';(kids[p]||(kids[p]=[])).push(a)});
   const preferred=['work','lifestyle','creative','daily'];
@@ -293,94 +299,131 @@ function organiseHierarchyLayout(s){
     return String(a.name||a.id).localeCompare(String(b.name||b.id));
   });
   Object.values(kids).forEach(sortNodes);
-
-  // Reserve actual physical space for every subtree, not merely each node centre.
-  // Descendants keep the SAME outward direction as their top-level domain so the
-  // hierarchy stays bundled instead of curling back into neighbouring branches.
-  const NODE_PAD=42;
-  const SIBLING_GAP=34;
-  const nodeSpan=a=>radius(Number(a?.level||4))*2+NODE_PAD;
-  const spanMemo={};
-  const subtreeSpan=id=>{
-    if(spanMemo[id])return spanMemo[id];
-    const node=areas.find(a=>a.id===id);
-    const own=node?nodeSpan(node):90;
-    const children=kids[id]||[];
-    if(!children.length)return spanMemo[id]=own;
-    const childrenSpan=children.reduce((sum,c)=>sum+subtreeSpan(c.id),0)+Math.max(0,children.length-1)*SIBLING_GAP;
-    return spanMemo[id]=Math.max(own,childrenSpan);
-  };
-
   const roots=kids.atlas||[];
-  if(!roots.length){s.settings=s.settings||{};s.settings.mapLayoutVersion=6;return s}
+  if(!roots.length){s.settings=s.settings||{};s.settings.mapLayoutVersion=7;return s}
 
-  const fixedAngles={work:-Math.PI/2,lifestyle:Math.PI,creative:0,daily:Math.PI/2};
-  const extraRoots=roots.filter(r=>fixedAngles[r.id]===undefined);
-  extraRoots.forEach((r,i)=>{fixedAngles[r.id]=(-Math.PI/2)+(i+1)*(Math.PI*2/(extraRoots.length+1))});
-
-  const baseForward={2:350,3:220,4:175,5:135};
-  const placeBranch=(parent,angle)=>{
-    const children=kids[parent.id]||[];
-    if(!children.length)return;
-    const ux=Math.cos(angle),uy=Math.sin(angle),vx=-uy,vy=ux;
-    const spans=children.map(c=>subtreeSpan(c.id));
-    const total=spans.reduce((a,b)=>a+b,0)+Math.max(0,children.length-1)*SIBLING_GAP;
-    let cursor=-total/2;
-    children.forEach((child,i)=>{
-      const span=spans[i];
-      const offset=cursor+span/2;
-      const minimum=radius(Number(parent.level||1))+radius(Number(child.level||4))+82;
-      const forward=Math.max(baseForward[Number(child.level)]||155,minimum);
-      child.x=parent.x+ux*forward+vx*offset;
-      child.y=parent.y+uy*forward+vy*offset;
-      placeBranch(child,angle);
-      cursor+=span+SIBLING_GAP;
-    });
-  };
+  // Compact radial-tree seed. Each domain owns an outward sector, but descendants
+  // fan around their parent rather than lining up on a grid.
+  const rootAngles={work:-Math.PI/2,lifestyle:Math.PI,creative:0,daily:Math.PI/2};
+  const extra=roots.filter(r=>rootAngles[r.id]===undefined);
+  extra.forEach((r,i)=>rootAngles[r.id]=-Math.PI/2+(i+1)*(Math.PI*2/(extra.length+1)));
+  const rootDist=215;
+  const levelDist={3:145,4:108,5:76};
+  const inheritedRoot={};
+  const ideal={};
+  const subtreeCount=id=>1+(kids[id]||[]).reduce((n,c)=>n+subtreeCount(c.id),0);
 
   roots.forEach(root=>{
-    const angle=fixedAngles[root.id]??0;
-    const span=subtreeSpan(root.id);
-    // A dense domain simply occupies more canvas. There is deliberately no maximum.
-    const rootDistance=(baseForward[2]||350)+Math.max(0,span-420)*0.22;
-    root.x=cx+Math.cos(angle)*rootDistance;
-    root.y=cy+Math.sin(angle)*rootDistance;
-    placeBranch(root,angle);
+    const a=rootAngles[root.id]??0;
+    root.x=cx+Math.cos(a)*rootDist;root.y=cy+Math.sin(a)*rootDist;
+    ideal[root.id]={x:root.x,y:root.y};inheritedRoot[root.id]=root.id;
   });
 
-  // Strict final separation. Large/homeward nodes behave like anchors while deeper
-  // nodes absorb most of the correction. Iterate until every circle has clear air.
-  const placed=areas.filter(a=>Number.isFinite(Number(a.x))&&Number.isFinite(Number(a.y)));
-  const mobility=a=>({2:.16,3:.48,4:.82,5:1}[Number(a.level)]||.7);
-  const CLEARANCE=34;
-  for(let iter=0;iter<1200;iter++){
-    let collisions=0;
-    for(let i=0;i<placed.length;i++){
-      for(let j=i+1;j<placed.length;j++){
-        const a=placed[i],b=placed[j];
-        let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
-        const min=radius(Number(a.level))+radius(Number(b.level))+CLEARANCE;
-        if(d>=min-.05)continue;
-        collisions++;
-        if(d<.001){const ang=((i+1)*37+(j+1)*61)*Math.PI/180;dx=Math.cos(ang);dy=Math.sin(ang);d=1}
-        const nx=dx/d,ny=dy/d,overlap=min-d+1.2;
-        const ma=mobility(a),mb=mobility(b),sum=ma+mb;
-        a.x-=nx*overlap*(ma/sum);a.y-=ny*overlap*(ma/sum);
-        b.x+=nx*overlap*(mb/sum);b.y+=ny*overlap*(mb/sum);
-      }
+  const placeChildren=(parent,heading,fan)=>{
+    const children=kids[parent.id]||[];
+    if(!children.length)return;
+    const n=children.length;
+    const childLevel=Number(children[0]?.level||4);
+    const maxR=Math.max(...children.map(c=>radius(Number(c.level||4))));
+    const base=levelDist[childLevel]||96;
+    // Work out how much arc we need to keep siblings clear, but cap the fan so
+    // branches remain visually bundled. If needed, radius grows modestly instead.
+    const maxFan=Number(parent.level)<=2?Math.PI*.92:Number(parent.level)===3?Math.PI*.72:Math.PI*.58;
+    let dist=base;
+    let step=n>1?Math.min(maxFan/(n-1),Math.PI/3):0;
+    if(n>1){
+      const need=2*maxR+26;
+      const minStep=Math.max(.12,Math.min(.72,2*Math.asin(Math.min(.94,need/(2*dist)))));
+      if(step<minStep){step=minStep;dist=Math.max(dist,need/(2*Math.sin(step/2)))}
+      const actualFan=Math.min(maxFan,step*(n-1));
+      step=n>1?actualFan/(n-1):0;
+      const required=need/(2*Math.sin(Math.max(.08,step/2)));
+      dist=Math.max(dist,Math.min(required,base+82));
     }
-    if(!collisions)break;
-  }
+    const weights=children.map(c=>Math.max(1,Math.sqrt(subtreeCount(c.id))));
+    const totalW=weights.reduce((a,b)=>a+b,0);
+    let acc=0;
+    children.forEach((child,i)=>{
+      const centred=n===1?0:((acc+weights[i]/2)/totalW-.5)*(step*(n-1));
+      const angle=heading+centred;
+      // small deterministic stagger prevents the graph feeling mechanically circular
+      const stagger=((i%2)*2-1)*Math.min(10,Number(child.level)*2);
+      const d=dist+stagger;
+      child.x=parent.x+Math.cos(angle)*d;
+      child.y=parent.y+Math.sin(angle)*d;
+      ideal[child.id]={x:child.x,y:child.y};
+      inheritedRoot[child.id]=inheritedRoot[parent.id]||parent.id;
+      const nextFan=Math.max(Math.PI*.24,fan*.64);
+      placeChildren(child,angle,nextFan);
+      acc+=weights[i];
+    });
+  };
+  roots.forEach(root=>placeChildren(root,rootAngles[root.id]??0,Math.PI*.9));
 
-  // Orphans use an expanding arc outside the main tree and are never clamped.
+  // Orphans sit on a compact outer arc. They remain part of the open canvas.
   const reachable=new Set();
   const walk=id=>{(kids[id]||[]).forEach(n=>{reachable.add(n.id);walk(n.id)})};walk('atlas');
-  const orphans=areas.filter(a=>!reachable.has(a.id));
-  orphans.forEach((a,i)=>{const ang=Math.PI*.18+i*.48;const rr=620+Math.floor(i/10)*170;a.x=cx+rr*Math.cos(ang);a.y=cy+rr*Math.sin(ang)});
+  areas.filter(a=>!reachable.has(a.id)).forEach((a,i)=>{
+    const ang=-.25+i*.46,rr=420+Math.floor(i/9)*115;
+    a.x=cx+rr*Math.cos(ang);a.y=cy+rr*Math.sin(ang);ideal[a.id]={x:a.x,y:a.y};
+  });
+
+  // Organic relaxation: tree links behave like springs, nodes repel only when they
+  // are genuinely crowded, and a weak pull toward the radial seed preserves domains.
+  const mobility=a=>({2:.20,3:.56,4:.84,5:1}[Number(a.level)]||.72);
+  const targetLength=child=>({2:rootDist,3:145,4:108,5:76}[Number(child.level)]||100);
+  const CLEAR=22;
+  for(let iter=0;iter<420;iter++){
+    const force=Object.fromEntries(areas.map(a=>[a.id,{x:0,y:0}]));
+    // tree springs only; dotted cross-links never influence layout
+    areas.forEach(child=>{
+      const parent=child.parentId==='atlas'?{id:'atlas',x:cx,y:cy,level:1}:byId[child.parentId];
+      if(!parent)return;
+      let dx=child.x-parent.x,dy=child.y-parent.y,d=Math.hypot(dx,dy)||1;
+      const want=targetLength(child),err=d-want,k=.030;
+      const fx=(dx/d)*err*k,fy=(dy/d)*err*k;
+      force[child.id].x-=fx;force[child.id].y-=fy;
+      if(parent.id!=='atlas'&&force[parent.id]){force[parent.id].x+=fx*.45;force[parent.id].y+=fy*.45}
+    });
+    // collisions + a tiny comfort halo
+    for(let i=0;i<areas.length;i++)for(let j=i+1;j<areas.length;j++){
+      const a=areas[i],b=areas[j];let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
+      if(d<.001){const q=(i*53+j*97)*Math.PI/180;dx=Math.cos(q);dy=Math.sin(q);d=1}
+      const min=radius(Number(a.level))+radius(Number(b.level))+CLEAR;
+      const halo=min+24;
+      if(d<halo){
+        const nx=dx/d,ny=dy/d;
+        const push=d<min?(min-d)*.18:(halo-d)*.018;
+        force[a.id].x-=nx*push;force[a.id].y-=ny*push;
+        force[b.id].x+=nx*push;force[b.id].y+=ny*push;
+      }
+    }
+    areas.forEach(a=>{
+      const f=force[a.id],home=ideal[a.id];
+      if(home){f.x+=(home.x-a.x)*.012;f.y+=(home.y-a.y)*.012}
+      const m=mobility(a);a.x+=f.x*m;a.y+=f.y*m;
+    });
+  }
+
+  // Hard final collision guarantee. Resolve only actual circle intersections and
+  // use the minimum displacement necessary, preventing the old grid-like drift.
+  for(let iter=0;iter<500;iter++){
+    let hit=false;
+    for(let i=0;i<areas.length;i++)for(let j=i+1;j<areas.length;j++){
+      const a=areas[i],b=areas[j];let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy);
+      const min=radius(Number(a.level))+radius(Number(b.level))+18;
+      if(d>=min-.2)continue;hit=true;
+      if(d<.001){const q=(i*41+j*73)*Math.PI/180;dx=Math.cos(q);dy=Math.sin(q);d=1}
+      const nx=dx/d,ny=dy/d,over=min-d+.5;
+      const ma=mobility(a),mb=mobility(b),sum=ma+mb;
+      a.x-=nx*over*(ma/sum);a.y-=ny*over*(ma/sum);
+      b.x+=nx*over*(mb/sum);b.y+=ny*over*(mb/sum);
+    }
+    if(!hit)break;
+  }
 
   areas.forEach(a=>{a.x=Math.round(a.x);a.y=Math.round(a.y)});
-  s.settings=s.settings||{};
-  s.settings.mapLayoutVersion=6;
+  s.settings=s.settings||{};s.settings.mapLayoutVersion=7;
   return s;
 }
 function makeNodeCode(name){
@@ -418,17 +461,44 @@ function ensureState(s){
   for(const k of ['areas','links','projects','notes','daily','activity']) if(!Array.isArray(s[k])) s[k]=[];
   s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day';
   if(Number(s.settings.mapLayoutVersion||0)<3) s=applyWideMapLayout(s);
-  if(Number(s.settings.mapLayoutVersion||0)<6) s=organiseHierarchyLayout(s);
+  if(Number(s.settings.mapLayoutVersion||0)<7) s=organiseHierarchyLayout(s);
   s=normaliseAreaCodes(s);
   return s;
 }
-function openDB(){return new Promise((resolve,reject)=>{try{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(DB_STORE))d.createObjectStore(DB_STORE);if(!d.objectStoreNames.contains(BACKUP_STORE))d.createObjectStore(BACKUP_STORE,{keyPath:'id'})};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error)}catch(e){reject(e)}})}
+function openDB(){return new Promise((resolve,reject)=>{try{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(DB_STORE))d.createObjectStore(DB_STORE);if(!d.objectStoreNames.contains(BACKUP_STORE))d.createObjectStore(BACKUP_STORE,{keyPath:'id'});if(!d.objectStoreNames.contains(AUTH_STORE))d.createObjectStore(AUTH_STORE)};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error)}catch(e){reject(e)}})}
 function idbGet(){return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readonly');const r=tx.objectStore(DB_STORE).get(DB_KEY);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 function idbSet(v){return new Promise((resolve,reject)=>{const tx=db.transaction(DB_STORE,'readwrite');tx.objectStore(DB_STORE).put(v,DB_KEY);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
 function idbBackup(snapshot,reason='manual'){return new Promise((resolve,reject)=>{if(!db||!snapshot)return resolve();const tx=db.transaction(BACKUP_STORE,'readwrite');const store=tx.objectStore(BACKUP_STORE);const stamp=now();store.put({id:`${stamp}-${Math.random().toString(36).slice(2,7)}`,createdAt:stamp,reason,appVersion:APP_VERSION,dataVersion:Number(snapshot.version||1),data:clone(snapshot)});tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error)})}
 function idbBackups(){return new Promise((resolve,reject)=>{if(!db)return resolve([]);const tx=db.transaction(BACKUP_STORE,'readonly');const r=tx.objectStore(BACKUP_STORE).getAll();r.onsuccess=()=>resolve((r.result||[]).sort((a,b)=>b.createdAt-a.createdAt));r.onerror=()=>reject(r.error)})}
+function authGet(){return new Promise((resolve)=>{if(!db){try{return resolve(JSON.parse(localStorage.getItem(AUTH_FALLBACK_KEY)||'null'))}catch(_){return resolve(null)}}try{const tx=db.transaction(AUTH_STORE,'readonly');const r=tx.objectStore(AUTH_STORE).get(AUTH_KEY);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>resolve(null)}catch(_){resolve(null)}})}
+function authSet(v){return new Promise((resolve)=>{if(!db){try{localStorage.setItem(AUTH_FALLBACK_KEY,JSON.stringify(v))}catch(_){}return resolve()}try{const tx=db.transaction(AUTH_STORE,'readwrite');tx.objectStore(AUTH_STORE).put(v,AUTH_KEY);tx.oncomplete=()=>resolve();tx.onerror=()=>resolve()}catch(_){resolve()}})}
+function bytesToB64(bytes){let s='';bytes.forEach(b=>s+=String.fromCharCode(b));return btoa(s)}
+function b64ToBytes(v){const s=atob(v);return Uint8Array.from(s,c=>c.charCodeAt(0))}
+function secureBytes(n=16){const b=new Uint8Array(n);crypto.getRandomValues(b);return b}
+async function deriveVerifier(secret,saltB64,iterations=210000){if(!crypto?.subtle)throw new Error('Web Crypto unavailable');const enc=new TextEncoder();const key=await crypto.subtle.importKey('raw',enc.encode(secret),'PBKDF2',false,['deriveBits']);const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:b64ToBytes(saltB64),iterations,hash:'SHA-256'},key,256);return bytesToB64(new Uint8Array(bits))}
+async function makeVerifier(secret,iterations=210000){const salt=bytesToB64(secureBytes(16));return {salt,verifier:await deriveVerifier(secret,salt,iterations),iterations}}
+function safeEqual(a,b){if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length)return false;let out=0;for(let i=0;i<a.length;i++)out|=a.charCodeAt(i)^b.charCodeAt(i);return out===0}
+function generateRecoveryKey(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';const b=secureBytes(20);let s='';for(let i=0;i<20;i++)s+=chars[b[i]%chars.length];return `ATLS-${s.slice(0,4)}-${s.slice(4,8)}-${s.slice(8,12)}-${s.slice(12,16)}-${s.slice(16,20)}`}
+let authConfig=null,atlasUnlocked=false,recoveryAuthenticated=false,idleTimer=null,lastActivity=Date.now(),failedAttempts=Number(sessionStorage.getItem('atlas_lock_failures')||0),lockoutUntil=Number(sessionStorage.getItem('atlas_lock_until')||0);
+function lockOpen(){document.body.classList.add('atlas-locked');document.getElementById('lockScreen').classList.add('open')}
+function lockClose(){document.body.classList.remove('atlas-locked');document.getElementById('lockScreen').classList.remove('open')}
+function resetIdleTimer(){lastActivity=Date.now();clearTimeout(idleTimer);if(!atlasUnlocked||!authConfig)return;const mins=Number(authConfig.idleMinutes||0);if(mins>0)idleTimer=setTimeout(()=>lockAtlas('idle'),mins*60000)}
+function unlockAtlas(remember=false){atlasUnlocked=true;if(remember)sessionStorage.setItem('atlas_session_unlocked','1');failedAttempts=0;lockoutUntil=0;sessionStorage.removeItem('atlas_lock_failures');sessionStorage.removeItem('atlas_lock_until');lockClose();resetIdleTimer()}
+function lockAtlas(reason='manual'){if(!authConfig?.enabled){showSetupScreen();return}atlasUnlocked=false;recoveryAuthenticated=false;sessionStorage.removeItem('atlas_session_unlocked');clearTimeout(idleTimer);showUnlockScreen(reason)}
+function authMessage(msg){const e=document.getElementById('lockMessage');if(e)e.textContent=msg||''}
+function currentLockoutSeconds(){return Math.max(0,Math.ceil((lockoutUntil-Date.now())/1000))}
+function recordFailedAttempt(){failedAttempts+=1;sessionStorage.setItem('atlas_lock_failures',String(failedAttempts));let seconds=0;if(failedAttempts>=5)seconds=30;else if(failedAttempts>=3)seconds=5;if(seconds){lockoutUntil=Date.now()+seconds*1000;sessionStorage.setItem('atlas_lock_until',String(lockoutUntil))}return seconds}
+function showSetupScreen(){lockOpen();document.getElementById('lockContent').innerHTML=`<div class="lock-kicker">LOCAL SECURITY</div><h2 class="lock-title">Create Atlas Lock</h2><p class="lock-copy">Set a local password for this device. Atlas content remains stored in this browser; the lock prevents normal access to the interface when Atlas is closed or locked.</p><div class="lock-field"><label>Password</label><input id="setupPassword" type="password" autocomplete="new-password"></div><div class="lock-field"><label>Confirm password</label><input id="setupConfirm" type="password" autocomplete="new-password"></div><div class="lock-field"><label>Auto-lock after inactivity</label><select id="setupIdle"><option value="5">5 minutes</option><option value="15" selected>15 minutes</option><option value="30">30 minutes</option><option value="60">1 hour</option><option value="0">Never</option></select></div><div class="lock-actions"><button class="lock-primary" id="createLockBtn">Create Lock</button></div><div class="lock-message" id="lockMessage"></div><div class="lock-note">This version protects the Atlas interface, not the underlying IndexedDB with encryption. Full at-rest encryption is planned as a separate migration.</div>`;document.getElementById('createLockBtn').addEventListener('click',createAtlasLock);setTimeout(()=>document.getElementById('setupPassword')?.focus(),60)}
+async function createAtlasLock(){const p=document.getElementById('setupPassword').value,c=document.getElementById('setupConfirm').value;if(p.length<8){authMessage('Use at least 8 characters.');return}if(p!==c){authMessage('Passwords do not match.');return}const btn=document.getElementById('createLockBtn');btn.disabled=true;authMessage('Creating lock…');try{const pv=await makeVerifier(p,210000);const recovery=generateRecoveryKey();const rv=await makeVerifier(recovery,160000);authConfig={enabled:true,password:pv,recovery:rv,idleMinutes:Number(document.getElementById('setupIdle').value),createdAt:Date.now(),updatedAt:Date.now()};await authSet(authConfig);showRecoveryScreen(recovery)}catch(e){authMessage('Atlas Lock could not be created in this browser.');btn.disabled=false}}
+function showRecoveryScreen(key){lockOpen();document.getElementById('lockContent').innerHTML=`<div class="lock-kicker">RECOVERY</div><h2 class="lock-title">Save your recovery key</h2><p class="lock-copy">This key can unlock Atlas if you forget the password. It is shown once. Store it somewhere separate from this browser.</p><div class="recovery-key">${key}</div><div class="lock-actions"><button class="lock-primary" id="recoverySavedBtn">I saved it</button></div><div class="lock-note">Atlas does not store the recovery key itself—only a verifier used to check it.</div>`;document.getElementById('recoverySavedBtn').addEventListener('click',()=>unlockAtlas(false))}
+function showUnlockScreen(reason='startup'){lockOpen();const why=reason==='idle'?'Locked after inactivity.':reason==='manual'?'Atlas locked.':'';document.getElementById('lockContent').innerHTML=`<div class="lock-kicker">ATLAS LOCK</div><h2 class="lock-title">Unlock Atlas</h2><p class="lock-copy">${why}</p><div class="lock-field"><label>Password</label><input id="unlockPassword" type="password" autocomplete="current-password"></div><label class="lock-check"><input type="checkbox" id="rememberSession"> Keep unlocked until this browser session closes</label><div class="lock-actions"><button class="lock-primary" id="unlockBtn">Unlock</button><button class="lock-secondary" id="recoveryModeBtn">Recovery key</button></div><div class="lock-message" id="lockMessage"></div>`;document.getElementById('unlockBtn').addEventListener('click',attemptUnlock);document.getElementById('recoveryModeBtn').addEventListener('click',showRecoveryUnlock);document.getElementById('unlockPassword').addEventListener('keydown',e=>{if(e.key==='Enter')attemptUnlock()});setTimeout(()=>{const wait=currentLockoutSeconds();if(wait){const b=document.getElementById('unlockBtn');if(b)b.disabled=true;authMessage(`Try again in ${wait}s.`);setTimeout(()=>showUnlockScreen(reason),wait*1000+100)}else document.getElementById('unlockPassword')?.focus()},50)}
+async function attemptUnlock(){const wait=currentLockoutSeconds();if(wait){authMessage(`Try again in ${wait}s.`);return}const p=document.getElementById('unlockPassword').value;if(!p)return authMessage('Enter your password.');const btn=document.getElementById('unlockBtn');btn.disabled=true;authMessage('Checking…');try{const v=await deriveVerifier(p,authConfig.password.salt,authConfig.password.iterations);if(safeEqual(v,authConfig.password.verifier)){recoveryAuthenticated=false;unlockAtlas(document.getElementById('rememberSession').checked);return}const delay=recordFailedAttempt();authMessage(delay?`Incorrect password. Try again in ${delay}s.`:'Incorrect password.');setTimeout(()=>showUnlockScreen('startup'),delay?delay*1000+100:550)}catch(e){authMessage('Unable to verify password.');btn.disabled=false}}
+function showRecoveryUnlock(){document.getElementById('lockContent').innerHTML=`<div class="lock-kicker">RECOVERY</div><h2 class="lock-title">Use recovery key</h2><p class="lock-copy">Enter the recovery key created when Atlas Lock was set up.</p><div class="lock-field"><label>Recovery key</label><input id="recoveryInput" type="text" autocomplete="off" spellcheck="false"></div><div class="lock-actions"><button class="lock-primary" id="recoveryUnlockBtn">Unlock</button><button class="lock-secondary" id="backUnlockBtn">Back</button></div><div class="lock-message" id="lockMessage"></div>`;document.getElementById('recoveryUnlockBtn').addEventListener('click',attemptRecoveryUnlock);document.getElementById('backUnlockBtn').addEventListener('click',()=>showUnlockScreen('startup'));document.getElementById('recoveryInput').addEventListener('keydown',e=>{if(e.key==='Enter')attemptRecoveryUnlock()});setTimeout(()=>document.getElementById('recoveryInput')?.focus(),50)}
+async function attemptRecoveryUnlock(){const raw=document.getElementById('recoveryInput').value.trim().toUpperCase();if(!raw)return authMessage('Enter the recovery key.');try{const v=await deriveVerifier(raw,authConfig.recovery.salt,authConfig.recovery.iterations);if(safeEqual(v,authConfig.recovery.verifier)){recoveryAuthenticated=true;unlockAtlas(false);toast('Unlocked with recovery · change password in Edit › Security');return}authMessage('Recovery key not recognised.')}catch(e){authMessage('Unable to verify recovery key.')}}
+async function initAtlasLock(){authConfig=await authGet();if(!authConfig){showSetupScreen();return}if(authConfig.enabled===false){atlasUnlocked=true;lockClose();return}if(sessionStorage.getItem('atlas_session_unlocked')==='1'){unlockAtlas(true);return}showUnlockScreen('startup')}
+['pointerdown','keydown','touchstart','wheel'].forEach(evt=>window.addEventListener(evt,()=>{if(atlasUnlocked&&Date.now()-lastActivity>1000)resetIdleTimer()},{passive:true}));
 async function snapshotBeforeUpdate(raw){if(!raw||!db)return;const last=raw.meta?.lastAppVersion||'pre-versioning';if(last!==APP_VERSION||Number(raw.version||1)<DATA_VERSION){await idbBackup(raw,`before Atlas ${APP_VERSION} update`)}}
-async function load(){try{await openDB();const v=await idbGet();if(v){await snapshotBeforeUpdate(v);state=ensureState(v);state.meta.lastAppVersion=APP_VERSION;await save();}else{let legacy=null;try{legacy=localStorage.getItem('groundOpsControlBoard_v2')||localStorage.getItem('groundOpsControlBoard_v1')}catch(_){ }if(legacy){const parsed=JSON.parse(legacy);await idbBackup(parsed,'before legacy import');state=ensureState(parsed);log('Previous Ground Ops browser data imported into Atlas.')}else{state=clone(demo)}state.meta.lastAppVersion=APP_VERSION;await save()}}catch(e){try{const v=localStorage.getItem(FALLBACK_KEY)||localStorage.getItem('groundOpsControlBoard_v2');if(v)state=ensureState(JSON.parse(v));else state=clone(demo)}catch(_){state=clone(demo)}} renderAll()}
+async function load(){try{await openDB();const v=await idbGet();if(v){await snapshotBeforeUpdate(v);state=ensureState(v);state.meta.lastAppVersion=APP_VERSION;await save();}else{let legacy=null;try{legacy=localStorage.getItem('groundOpsControlBoard_v2')||localStorage.getItem('groundOpsControlBoard_v1')}catch(_){ }if(legacy){const parsed=JSON.parse(legacy);await idbBackup(parsed,'before legacy import');state=ensureState(parsed);log('Previous Ground Ops browser data imported into Atlas.')}else{state=clone(demo)}state.meta.lastAppVersion=APP_VERSION;await save()}}catch(e){try{const v=localStorage.getItem(FALLBACK_KEY)||localStorage.getItem('groundOpsControlBoard_v2');if(v)state=ensureState(JSON.parse(v));else state=clone(demo)}catch(_){state=clone(demo)}} renderAll();await initAtlasLock()}
 async function save(){state.meta=state.meta||{};state.meta.lastSavedAt=now();state.meta.lastAppVersion=APP_VERSION;state.version=DATA_VERSION;try{if(db)await idbSet(state);else localStorage.setItem(FALLBACK_KEY,JSON.stringify(state))}catch(e){try{localStorage.setItem(FALLBACK_KEY,JSON.stringify(state))}catch(_){}}}
 function log(text){state.activity.unshift({id:uid('a'),time:now(),text});state.activity=state.activity.slice(0,80)}
 function toast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1600)}
@@ -501,14 +571,18 @@ function saveCapture(){const type=document.getElementById('capType').value,areaI
 function search(q){q=q.trim().toLowerCase();if(!q)return[];const res=[];state.areas.forEach(a=>{if([a.name,a.code,a.description].join(' ').toLowerCase().includes(q))res.push({kind:'AREA',title:a.name,meta:a.description,id:a.id})});state.projects.forEach(p=>{if([p.title,p.code,p.objective,p.next,...(p.tags||[])].join(' ').toLowerCase().includes(q))res.push({kind:'PROJECT',title:p.title,meta:p.next,id:p.id})});state.notes.forEach(n=>{if([n.title,n.body,...(n.tags||[])].join(' ').toLowerCase().includes(q))res.push({kind:'NOTE',title:n.title,meta:n.body,id:n.id,areaId:n.areaId})});return res.slice(0,30)}
 function renderSearch(){const q=document.getElementById('searchInput').value;const r=search(q);document.getElementById('searchResults').innerHTML=q?`<div class="notes-list">${r.length?r.map(x=>`<div class="note clickable" data-search-kind="${x.kind}" data-search-id="${x.id}" data-search-area="${x.areaId||''}"><div class="note-top"><strong class="note-title">${esc(x.title)}</strong><span class="note-type">${x.kind}</span></div><div class="note-body">${esc(String(x.meta||'').slice(0,180))}</div></div>`).join(''):'<div class="empty">No matches.</div>'}</div>`:'<div class="empty">Search projects, notes, topics, codes or tags.</div>'}
 
-const editorTabs=[['structure','Structure'],['projects','Projects'],['notes','Notes'],['links','Connections'],['data','Data / Reset']];
+const editorTabs=[['structure','Structure'],['projects','Projects'],['notes','Notes'],['links','Connections'],['security','Security'],['data','Data / Reset']];
 function openEditor(){renderEditor();openOverlay('editorOverlay')}
-function renderEditor(){document.getElementById('editorNav').innerHTML=editorTabs.map(([id,n])=>`<button class="btn ${state.settings.editorTab===id?'primary':''}" data-editor-tab="${id}">${n}</button>`).join('');const e=document.getElementById('editorPane');if(state.settings.editorTab==='structure')e.innerHTML=editorStructure();if(state.settings.editorTab==='projects')e.innerHTML=editorProjects();if(state.settings.editorTab==='notes')e.innerHTML=editorNotes();if(state.settings.editorTab==='links')e.innerHTML=editorLinks();if(state.settings.editorTab==='data')e.innerHTML=editorData()}
+function renderEditor(){document.getElementById('editorNav').innerHTML=editorTabs.map(([id,n])=>`<button class="btn ${state.settings.editorTab===id?'primary':''}" data-editor-tab="${id}">${n}</button>`).join('');const e=document.getElementById('editorPane');if(state.settings.editorTab==='structure')e.innerHTML=editorStructure();if(state.settings.editorTab==='projects')e.innerHTML=editorProjects();if(state.settings.editorTab==='notes')e.innerHTML=editorNotes();if(state.settings.editorTab==='links')e.innerHTML=editorLinks();if(state.settings.editorTab==='security')e.innerHTML=editorSecurity();if(state.settings.editorTab==='data')e.innerHTML=editorData()}
 function field(label,html){return `<div class="field"><label>${label}</label>${html}</div>`}
-function editorStructure(){return `<section class="editor-section"><div class="editor-section-head"><h4>Areas / Topics</h4><button class="btn small primary" data-ed-action="add-area">+ Add</button></div><div class="editor-section-body"><div class="table-list">${state.areas.map((a,i)=>`<div class="edit-row"><div>${field('Name',`<input data-area-edit="${i}" data-field="name" value="${esc(a.name)}">`)}</div><div>${field('Level',`<select data-area-edit="${i}" data-field="level">${[2,3,4].map(v=>`<option value="${v}" ${a.level===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div><div>${field('Parent',`<select data-area-edit="${i}" data-field="parentId"><option value="atlas">ATLAS</option>${state.areas.filter(x=>x.id!==a.id&&x.level<a.level).map(x=>`<option value="${x.id}" ${a.parentId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-area" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-area" data-index="${i}">×</button></div></div>`).join('')}</div></div></section><div class="code">Atlas keeps a canonical hierarchy layout across devices. Drag nodes for local tweaks, or use Organise on the map to snap the hierarchy back into bundled branches.</div>`}
+function editorStructure(){return `<section class="editor-section"><div class="editor-section-head"><h4>Areas / Topics</h4><button class="btn small primary" data-ed-action="add-area">+ Add</button></div><div class="editor-section-body"><div class="table-list">${state.areas.map((a,i)=>`<div class="edit-row"><div>${field('Name',`<input data-area-edit="${i}" data-field="name" value="${esc(a.name)}">`)}</div><div>${field('Level',`<select data-area-edit="${i}" data-field="level">${[2,3,4].map(v=>`<option value="${v}" ${a.level===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div><div>${field('Parent',`<select data-area-edit="${i}" data-field="parentId"><option value="atlas">ATLAS</option>${state.areas.filter(x=>x.id!==a.id&&x.level<a.level).map(x=>`<option value="${x.id}" ${a.parentId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-area" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-area" data-index="${i}">×</button></div></div>`).join('')}</div></div></section><div class="code">Atlas uses a compact radial hierarchy across devices. Drag nodes for local tweaks, or use Organise to rebuild the bundled, collision-free layout.</div>`}
 function editorProjects(){return `<section class="editor-section"><div class="editor-section-head"><h4>Projects</h4><button class="btn small primary" data-ed-action="add-project">+ Project</button></div><div class="editor-section-body"><div class="table-list">${state.projects.map((p,i)=>`<div class="edit-row project-row"><div>${field('Title',`<input data-proj-edit="${i}" data-field="title" value="${esc(p.title)}">`)}</div><div>${field('Status',`<select data-proj-edit="${i}" data-field="status">${['ACTIVE','WATCHING','PAUSED','COMPLETE'].map(v=>`<option ${p.status===v?'selected':''}>${v}</option>`).join('')}</select>`)}</div><div>${field('Area',`<select data-proj-edit="${i}" data-field="areaId">${state.areas.map(a=>`<option value="${a.id}" ${p.areaId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-project" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-project" data-index="${i}">×</button></div></div>`).join('')}</div></div></section>`}
 function editorNotes(){return `<section class="editor-section"><div class="editor-section-head"><h4>Notes</h4><button class="btn small primary" data-ed-action="add-note">+ Note</button></div><div class="editor-section-body"><div class="table-list">${state.notes.map((n,i)=>`<div class="edit-row note-row"><div>${field('Title',`<input data-note-edit="${i}" data-field="title" value="${esc(n.title)}">`)}</div><div>${field('Type',`<input data-note-edit="${i}" data-field="type" value="${esc(n.type)}">`)}</div><div>${field('Area',`<select data-note-edit="${i}" data-field="areaId"><option value="">Inbox</option>${state.areas.map(a=>`<option value="${a.id}" ${n.areaId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div class="inline-actions"><button class="btn small" data-ed-action="edit-note" data-index="${i}">Detail</button><button class="btn small danger" data-ed-action="remove-note" data-index="${i}">×</button></div></div>`).join('')}</div></div></section>`}
 function editorLinks(){return `<section class="editor-section"><div class="editor-section-head"><h4>Cross-connections</h4><button class="btn small primary" data-ed-action="add-link">+ Connection</button></div><div class="editor-section-body"><div class="table-list">${state.links.map((l,i)=>`<div class="edit-row"><div>${field('From',`<select data-link-edit="${i}" data-field="source">${state.areas.map(a=>`<option value="${a.id}" ${l.source===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div>${field('To',`<select data-link-edit="${i}" data-field="target">${state.areas.map(a=>`<option value="${a.id}" ${l.target===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div><div>${field('Type',`<select data-link-edit="${i}" data-field="type"><option value="cross">Cross-link</option></select>`)}</div><button class="btn small danger" data-ed-action="remove-link" data-index="${i}">Remove</button></div>`).join('')}</div></div></section>`}
+function editorSecurity(){if(authConfig?.enabled===false)return `<section class="editor-section"><div class="editor-section-head"><h4>Atlas Lock</h4><span class="code">DISABLED</span></div><div class="editor-section-body"><p style="font-size:11px;line-height:1.5;color:var(--muted)">Atlas Lock is disabled on this device.</p><div class="inline-actions"><button class="btn primary" data-ed-action="enable-lock">Enable Atlas Lock</button></div></div></section>`;const idle=Number(authConfig?.idleMinutes??15);return `<section class="editor-section"><div class="editor-section-head"><h4>Atlas Lock</h4><span class="code">${authConfig?.enabled?'ENABLED':'NOT CONFIGURED'}</span></div><div class="editor-section-body"><p style="font-size:11px;line-height:1.5;color:var(--muted)">Atlas Lock is local to this device and works offline. Password and recovery-key verifiers are stored separately from normal Atlas exports.</p>${recoveryAuthenticated?'<p style="font-size:10px;line-height:1.5;color:var(--amber);margin:0 0 10px">Recovery access is active. You can change the password below without entering the forgotten password.</p>':''}<div class="row2">${field('Auto-lock',`<select id="secIdle"><option value="5" ${idle===5?'selected':''}>5 minutes</option><option value="15" ${idle===15?'selected':''}>15 minutes</option><option value="30" ${idle===30?'selected':''}>30 minutes</option><option value="60" ${idle===60?'selected':''}>1 hour</option><option value="0" ${idle===0?'selected':''}>Never</option></select>`)}${field('Current password',`<input id="secCurrent" type="password" autocomplete="current-password" placeholder="${recoveryAuthenticated?'Recovery access active':'Required for security changes'}" ${recoveryAuthenticated?'disabled':''}>`)}</div><div class="row2">${field('New password',`<input id="secNew" type="password" autocomplete="new-password" placeholder="8+ characters">`)}${field('Confirm new password',`<input id="secConfirm" type="password" autocomplete="new-password">`)}</div><div class="inline-actions"><button class="btn primary" data-ed-action="save-security">Save Auto-lock</button><button class="btn" data-ed-action="change-password">Change Password</button><button class="btn" data-ed-action="new-recovery">New Recovery Key</button><button class="btn danger" data-ed-action="disable-lock">Disable Lock</button></div><p id="securityMessage" style="font:750 9px/1.5 SFMono-Regular,Consolas,monospace;color:var(--amber);margin-top:11px"></p><p style="font-size:10px;line-height:1.5;color:var(--muted);margin-top:12px">Current protection is an interface lock. Atlas records in IndexedDB are not yet encrypted at rest; that will be a separate security migration.</p></div></section>`}
+async function verifyCurrentSecurityPassword(){if(recoveryAuthenticated)return true;const el=document.getElementById('secCurrent');const p=el?.value||'';if(!p)return false;try{const v=await deriveVerifier(p,authConfig.password.salt,authConfig.password.iterations);return safeEqual(v,authConfig.password.verifier)}catch(_){return false}}
+function securityMsg(t){const e=document.getElementById('securityMessage');if(e)e.textContent=t||''}
+
 function editorData(){const saved=state.meta?.lastSavedAt?`${fmtDate(state.meta.lastSavedAt)} · ${fmtTime(state.meta.lastSavedAt)}`:'—';return `<section class="editor-section"><div class="editor-section-head"><h4>Data</h4><span class="code">APP ${APP_VERSION} · DATA v${DATA_VERSION}</span></div><div class="editor-section-body"><p style="font-size:11px;line-height:1.5;color:var(--muted)">Atlas keeps your records separate from the interface code. On a fixed hosted Atlas URL, application updates reuse the same IndexedDB database and create an automatic snapshot before a new app/data version is applied.</p><div class="meta" style="margin:8px 0 12px">Last saved ${saved}</div><div class="inline-actions"><button class="btn" data-ed-action="snapshot">Create Snapshot</button><button class="btn" data-ed-action="restore-latest">Restore Latest Snapshot</button><button class="btn" data-ed-action="export">Export JSON</button><button class="btn danger" data-ed-action="reset">Reset Demo Data</button></div><p style="font-size:10px;line-height:1.5;color:var(--muted);margin-top:12px">Local downloaded <code>file://</code> copies are not a reliable update channel because browsers may treat different local file locations as different storage origins. Until Atlas is hosted at one stable URL, export JSON before replacing the local file.</p></div></section>`}
 function openAreaEditor(i){const a=state.areas[i];if(!a)return;document.getElementById('editorPane').innerHTML=`<button class="btn small" data-ed-action="back-structure">← Structure</button><section class="editor-section" style="margin-top:9px"><div class="editor-section-head"><h4>${esc(a.code)} · Area Detail</h4></div><div class="editor-section-body"><div class="project-editor"><div class="row3">${field('Name',`<input id="eaName" value="${esc(a.name)}">`)}${field('Map code · auto',`<input id="eaCode" value="${esc(a.code)}" readonly title="Generated from the node name · 3–5 characters">`)}${field('Space',`<select id="eaSpace"><option value="work" ${a.space==='work'?'selected':''}>Work</option><option value="personal" ${a.space==='personal'?'selected':''}>Personal</option></select>`)}</div><div class="row2">${field('Level',`<select id="eaLevel">${[2,3,4].map(v=>`<option value="${v}" ${a.level===v?'selected':''}>${v}</option>`).join('')}</select>`)}${field('Parent',`<select id="eaParent"><option value="atlas">ATLAS</option>${state.areas.filter(x=>x.id!==a.id&&x.level<a.level).map(x=>`<option value="${x.id}" ${a.parentId===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`)}</div>${field('Description',`<textarea id="eaDescription">${esc(a.description||'')}</textarea>`)}<button class="btn primary" data-ed-action="save-area-detail" data-index="${i}">Save Area</button></div></div></section>`}
 function openNoteEditor(i){const n=state.notes[i];if(!n)return;document.getElementById('editorPane').innerHTML=`<button class="btn small" data-ed-action="back-notes">← Notes</button><section class="editor-section" style="margin-top:9px"><div class="editor-section-head"><h4>Note Detail</h4></div><div class="editor-section-body"><div class="project-editor"><div class="row2">${field('Title',`<input id="enTitle" value="${esc(n.title)}">`)}${field('Type',`<input id="enType" value="${esc(n.type)}">`)}</div><div class="row2">${field('Area',`<select id="enArea"><option value="">Inbox</option>${state.areas.map(a=>`<option value="${a.id}" ${n.areaId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}${field('Topic',`<select id="enTopic"><option value="">None</option>${state.areas.filter(a=>a.level>=3).map(a=>`<option value="${a.id}" ${n.topicId===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`)}</div>${field('Body',`<textarea id="enBody" style="min-height:180px">${esc(n.body||'')}</textarea>`)}<div class="row2">${field('Tags',`<input id="enTags" value="${esc((n.tags||[]).join(', '))}">`)}${field('Map',`<select id="enMap"><option value="false" ${!n.showOnMap?'selected':''}>Keep off map</option><option value="true" ${n.showOnMap?'selected':''}>Show as level 5 node</option></select>`)}</div><button class="btn primary" data-ed-action="save-note-detail" data-index="${i}">Save Note</button></div></div></section>`}
@@ -529,7 +603,7 @@ document.addEventListener('click',e=>{
   const et=e.target.closest('[data-editor-tab]');if(et){state.settings.editorTab=et.dataset.editorTab;renderEditor();save();return}
   const act=e.target.closest('[data-ed-action]');if(act)handleEditorAction(act)
 });
-document.getElementById('homeBtn').addEventListener('click',()=>{state.settings.activeTab='home';state.settings.selectedArea='';state.settings.subtab='overview';renderAll()});document.getElementById('captureBtn').addEventListener('click',()=>openCapture());document.getElementById('searchBtn').addEventListener('click',()=>{openOverlay('searchOverlay');renderSearch();setTimeout(()=>document.getElementById('searchInput').focus(),80)});document.getElementById('editBtn').addEventListener('click',openEditor);document.getElementById('themeBtn').addEventListener('click',()=>{state.settings.theme=state.settings.theme==='night'?'day':'night';applyTheme();save()});document.getElementById('saveCapture').addEventListener('click',saveCapture);document.getElementById('searchInput').addEventListener('input',renderSearch);document.getElementById('exportBtn').addEventListener('click',exportData);
+document.getElementById('homeBtn').addEventListener('click',()=>{state.settings.activeTab='home';state.settings.selectedArea='';state.settings.subtab='overview';renderAll()});document.getElementById('captureBtn').addEventListener('click',()=>openCapture());document.getElementById('searchBtn').addEventListener('click',()=>{openOverlay('searchOverlay');renderSearch();setTimeout(()=>document.getElementById('searchInput').focus(),80)});document.getElementById('editBtn').addEventListener('click',openEditor);document.getElementById('themeBtn').addEventListener('click',()=>{state.settings.theme=state.settings.theme==='night'?'day':'night';applyTheme();save()});document.getElementById('lockBtn').addEventListener('click',()=>lockAtlas('manual'));document.getElementById('saveCapture').addEventListener('click',saveCapture);document.getElementById('searchInput').addEventListener('input',renderSearch);document.getElementById('exportBtn').addEventListener('click',exportData);
 document.getElementById('sectionSelect').addEventListener('change',e=>{const tab=e.target.value;if(!tab){state.settings.activeTab='home';state.settings.selectedArea='';state.settings.subtab='overview';renderAll();return}state.settings.activeTab=tab;state.settings.selectedArea=['daily','inbox'].includes(tab)?'':tab;state.settings.subtab='overview';renderAll()});
 document.getElementById('spaceFilter').addEventListener('change',e=>{state.settings.spaceFilter=e.target.value;renderAll()});
 document.getElementById('projectBody').addEventListener('change',e=>{const p=projectById(activeProjectId);if(!p)return;if(e.target.dataset.projectTask){const t=p.tasks.find(x=>x.id===e.target.dataset.projectTask);if(t)t.done=e.target.checked}if(e.target.dataset.projectMilestone){const m=p.milestones.find(x=>x.id===e.target.dataset.projectMilestone);if(m)m.done=e.target.checked}log(`Project progress updated: ${p.title}.`);save();openProject(p.id);renderAll()});
@@ -559,6 +633,11 @@ async function handleEditorAction(b){const a=b.dataset.edAction;
   if(a==='save-note-detail'){const i=Number(b.dataset.index),n=state.notes[i];if(n){n.title=document.getElementById('enTitle').value.trim()||n.title;n.type=document.getElementById('enType').value.trim()||'note';n.areaId=document.getElementById('enArea').value;n.topicId=document.getElementById('enTopic').value;n.body=document.getElementById('enBody').value;n.tags=document.getElementById('enTags').value.split(',').map(s=>s.trim()).filter(Boolean);n.showOnMap=document.getElementById('enMap').value==='true';const ar=areaById(n.topicId)||areaById(n.areaId);if(ar)n.space=ar.space;log(`Note edited: ${n.title}.`);save();openNoteEditor(i);renderAll();toast('Note saved')}}
   if(a==='add-link'){if(state.areas.length>1)state.links.push({id:uid('link'),source:state.areas[0].id,target:state.areas[1].id,type:'cross'});save();renderEditor();renderAll()}
   if(a==='remove-link'){state.links.splice(Number(b.dataset.index),1);save();renderEditor();renderAll()}
+  if(a==='enable-lock'){closeOverlay('editorOverlay');showSetupScreen();return}
+  if(a==='save-security'){authConfig.idleMinutes=Number(document.getElementById('secIdle')?.value||15);authConfig.updatedAt=Date.now();await authSet(authConfig);resetIdleTimer();securityMsg('Auto-lock setting saved.');toast('Security setting saved')}
+  if(a==='change-password'){if(!(await verifyCurrentSecurityPassword())){securityMsg('Current password is incorrect.');return}const np=document.getElementById('secNew').value,nc=document.getElementById('secConfirm').value;if(np.length<8){securityMsg('New password must be at least 8 characters.');return}if(np!==nc){securityMsg('New passwords do not match.');return}authConfig.password=await makeVerifier(np,210000);authConfig.updatedAt=Date.now();await authSet(authConfig);recoveryAuthenticated=false;securityMsg('Password changed.');toast('Password changed')}
+  if(a==='new-recovery'){if(!(await verifyCurrentSecurityPassword())){securityMsg('Current password is required.');return}const key=generateRecoveryKey();authConfig.recovery=await makeVerifier(key,160000);authConfig.updatedAt=Date.now();await authSet(authConfig);securityMsg(`New recovery key: ${key} — save it now; it will not be shown again.`)}
+  if(a==='disable-lock'){if(!(await verifyCurrentSecurityPassword())){securityMsg('Current password is required.');return}if(confirm('Disable Atlas Lock on this device?')){authConfig={enabled:false,updatedAt:Date.now()};recoveryAuthenticated=false;await authSet(authConfig);sessionStorage.removeItem('atlas_session_unlocked');securityMsg('Atlas Lock disabled on this device.');toast('Atlas Lock disabled')}}
   if(a==='snapshot'){await idbBackup(state,'manual snapshot');toast('Snapshot created')}
   if(a==='restore-latest'){const backups=await idbBackups();const latest=backups[0];if(!latest){toast('No snapshots yet');return}if(confirm(`Restore snapshot from ${fmtDate(latest.createdAt)} ${fmtTime(latest.createdAt)}? Current data will be snapshotted first.`)){await idbBackup(state,'before snapshot restore');state=ensureState(clone(latest.data));log(`Snapshot restored from ${fmtDate(latest.createdAt)}.`);await save();renderEditor();renderAll();toast('Snapshot restored')}}
   if(a==='export')exportData();
