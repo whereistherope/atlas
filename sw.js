@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atlas-shell-0.10.9';
+const CACHE_NAME = 'atlas-shell-0.10.10';
 const APP_SHELL = [
   './',
   './index.html',
