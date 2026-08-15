@@ -1,17 +1,12 @@
-# Atlas 0.10.10
+# Atlas v0.11.0
 
-UI/workspace update. Existing IndexedDB data is preserved.
+Major workspace update:
+- Multi-widget modular home workspace
+- Widgets: Scratch, To-do, Upcoming, Calendar, Active Now, Milestones, Projects, Recent Notes, System Log
+- Drag widgets to float; snap to Top / Left / Right / Bottom
+- Zone layouts adapt automatically to the number of open widgets
+- Map toggles between Nodes and Branch List
+- Melbourne and UTC live clock/date strip
+- Refined Onyx / Pale Ivory / Blue Slate palette
 
-## Deploy
-Replace the files in the root of the GitHub Pages repository:
-- `index.html`
-- `sw.js`
-- `manifest.webmanifest`
-
-## Changes
-- Profile, View, Space, Tools and System now use one consistent dropdown-menu pattern.
-- Context/control menus live together at the right side of the Atlas command rail.
-- Utility panes support Top, Left, Right and Float positions.
-- Floating utility panes can be dragged; dragging near the top/left/right edge previews a snap target and docks on release.
-- Top dock works in landscape and portrait and gives Scratch/To-do/Upcoming a wide workspace.
-- Fixed Atlas wordmark is embedded as a device-independent image asset inside `index.html`.
+Upload `index.html`, `sw.js`, `manifest.webmanifest`, `atlas-192.png`, and `atlas-512.png` to the GitHub Pages repository root.

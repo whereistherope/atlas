@@ -717,6 +717,89 @@ body.tool-dragging[data-snap-target="top"] .tool-snap-hint{display:block;left:8p
   }
 }
 
+
+
+/* Atlas 0.11.0 · modular Life OS workspace */
+:root{
+  --onyx:#0a0a0a;--charcoal:#2a2529;--ivory:#f3f0e7;--slate:#536878;--sand:#b9a27a;
+  --widget-gap:10px;--widget-side:320px;
+}
+body[data-theme="night"]{
+  --bg:#090b0c!important;--surface-1:#0f1214!important;--surface-2:#15191c!important;--surface-3:#1b2024!important;
+  --ink:#e5e4e2!important;--muted:#8b9294!important;--line:#273037!important;--line-strong:#3b474f!important;
+  --accent:#70899a!important;--green:#70899a!important;--blue:#536878!important;--sand:#b9a27a!important;
+}
+body:not([data-theme="night"]){
+  --bg:#e9e6dc!important;--surface-1:#f3f0e7!important;--surface-2:#ece8de!important;--surface-3:#e1ddd3!important;
+  --ink:#252326!important;--muted:#747677!important;--line:#c2beb4!important;--line-strong:#a9a49a!important;
+  --accent:#536878!important;--green:#536878!important;--blue:#536878!important;--sand:#9d8764!important;
+}
+body,body[data-theme="night"]{background:var(--bg)!important;background-attachment:fixed!important}
+body[data-theme="night"]:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 60% 34%,rgba(83,104,120,.10),transparent 33%),radial-gradient(ellipse at 34% 68%,rgba(185,162,122,.035),transparent 28%)}
+.shell{max-width:1720px!important;padding:14px 18px 34px!important;position:relative;z-index:1}
+.topbar{border-top:0!important;min-height:48px!important;padding:4px 0 8px!important;background:transparent!important}
+.chrono-strip{height:30px;display:flex;align-items:center;justify-content:flex-end;gap:12px;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);color:var(--muted);margin-bottom:8px;padding:0 2px;font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace}
+.chrono-strip>i{width:1px;height:15px;background:var(--line)}
+.chrono-block{display:grid;grid-template-columns:auto auto;column-gap:7px;align-items:baseline;white-space:nowrap}
+.chrono-block span{grid-row:1/3;align-self:center;font-size:7px;letter-spacing:.12em;color:color-mix(in srgb,var(--muted) 80%,transparent)}
+.chrono-block strong{font-size:11px;font-weight:650;letter-spacing:.07em;color:var(--ink)}
+.chrono-block em{font-style:normal;font-size:7px;letter-spacing:.055em;text-transform:uppercase}
+.widget-menu-panel{min-width:190px!important;max-height:min(520px,70vh);overflow:auto}
+.widget-menu-panel .system-item:after{content:"";position:absolute;right:9px;top:50%;width:6px;height:6px;border-radius:50%;border:1px solid var(--line-strong);transform:translateY(-50%)}
+.widget-menu-panel .system-item.is-open:after{background:var(--accent);border-color:var(--accent)}
+.utility-pane{display:none!important}
+.tool-snap-hint{display:none!important}
+
+/* Main home workspace: map + snap zones. */
+.atlas-board{display:grid;gap:var(--widget-gap);min-width:0;position:relative}
+.widget-zone{display:grid;gap:var(--widget-gap);min-width:0}
+.widget-zone:empty{display:none}
+.widget-zone.zone-top,.widget-zone.zone-bottom{grid-template-columns:repeat(var(--zone-cols,1),minmax(0,1fr))}
+.board-middle{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--widget-gap);align-items:start;min-width:0}
+.widget-zone.zone-left,.widget-zone.zone-right{width:var(--widget-side);grid-template-columns:minmax(0,1fr);align-content:start}
+.board-map{min-width:0;position:relative}
+.atlas-widget{min-width:0;border:1px solid color-mix(in srgb,var(--line) 86%,transparent);background:color-mix(in srgb,var(--surface-1) 94%,transparent);box-shadow:0 10px 30px rgba(0,0,0,.045);overflow:hidden;position:relative}
+body[data-theme="night"] .atlas-widget{background:color-mix(in srgb,var(--surface-1) 91%,transparent);box-shadow:0 15px 40px rgba(0,0,0,.16)}
+.widget-head{min-height:38px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;gap:9px;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);cursor:grab;user-select:none}
+.widget-head:active{cursor:grabbing}.widget-ident{display:flex;align-items:baseline;gap:8px;min-width:0}.widget-ident strong{font:650 9px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;text-transform:uppercase;letter-spacing:.055em;color:var(--ink)}.widget-ident span{font:550 7px/1 ui-monospace,monospace;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.widget-actions{display:flex;align-items:center;gap:1px}.widget-actions button,.widget-actions summary{border:0;background:transparent;color:var(--muted);padding:7px;font:600 8px/1 ui-monospace,monospace;text-transform:uppercase;list-style:none}.widget-actions summary::-webkit-details-marker{display:none}.widget-actions button:hover,.widget-actions summary:hover{color:var(--ink)}
+.widget-position{position:relative}.widget-position-panel{position:absolute;right:0;top:100%;z-index:130;min-width:118px;padding:4px;background:var(--surface-2);border:1px solid var(--line-strong);box-shadow:0 18px 44px rgba(0,0,0,.18)}.widget-position-panel button{display:block;width:100%;text-align:left;padding:8px}.widget-position-panel button.active{color:var(--ink);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.widget-body{padding:10px;min-height:82px}.widget-body.flush{padding:0}.widget-empty{padding:18px 10px;color:var(--muted);font-size:10px}
+.widget-zone.zone-top .atlas-widget,.widget-zone.zone-bottom .atlas-widget{min-height:170px}.widget-zone.zone-left .atlas-widget,.widget-zone.zone-right .atlas-widget{min-height:170px}
+.atlas-widget[data-widget="scratch"] .scratch-area{min-height:155px}
+.atlas-widget.widget-floating{position:fixed!important;z-index:120;width:min(390px,calc(100vw - 18px));max-height:min(680px,calc(100vh - 76px));overflow:auto;box-shadow:0 28px 80px rgba(0,0,0,.30)!important}
+.widget-snap-preview{position:fixed;z-index:119;pointer-events:none;border:1px solid color-mix(in srgb,var(--accent) 64%,transparent);background:color-mix(in srgb,var(--accent) 8%,transparent);display:none}
+body.widget-dragging[data-widget-snap="top"] .widget-snap-preview{display:block;left:18px;right:18px;top:82px;height:190px}
+body.widget-dragging[data-widget-snap="bottom"] .widget-snap-preview{display:block;left:18px;right:18px;bottom:18px;height:190px}
+body.widget-dragging[data-widget-snap="left"] .widget-snap-preview{display:block;left:18px;top:82px;bottom:18px;width:min(340px,30vw)}
+body.widget-dragging[data-widget-snap="right"] .widget-snap-preview{display:block;right:18px;top:82px;bottom:18px;width:min(340px,30vw)}
+
+/* Widget internals: compact operational surfaces, not consumer cards. */
+.widget-kpi{display:flex;align-items:end;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent)}.widget-kpi:last-child{border-bottom:0}.widget-kpi b{font-size:22px;line-height:1;font-weight:600;letter-spacing:-.04em}.widget-kpi span{font:600 7px/1.2 ui-monospace,monospace;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}
+.widget-list{display:grid}.widget-row{display:grid;grid-template-columns:7px minmax(0,1fr) auto;gap:8px;align-items:start;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)}.widget-row:last-child{border-bottom:0}.widget-row>i{width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:5px;opacity:.72}.widget-row strong{display:block;font-size:10px;font-weight:620;line-height:1.35}.widget-row small{display:block;color:var(--muted);font:550 7.5px/1.45 ui-monospace,monospace;margin-top:2px}.widget-row em{font-style:normal;font:600 7px/1 ui-monospace,monospace;color:var(--muted);border:1px solid var(--line);padding:3px 4px;text-transform:uppercase}
+.widget-project{padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)}.widget-project:last-child{border-bottom:0}.widget-project-head{display:flex;justify-content:space-between;gap:8px}.widget-project strong{font-size:10px;font-weight:620}.widget-project small{font:600 7px ui-monospace,monospace;color:var(--muted)}.micro-bar{height:3px;background:color-mix(in srgb,var(--line) 58%,transparent);margin-top:8px;overflow:hidden}.micro-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--slate),color-mix(in srgb,var(--sand) 74%,var(--slate)));opacity:.78}
+.widget-note{padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)}.widget-note:last-child{border-bottom:0}.widget-note strong{font-size:10px;font-weight:620}.widget-note p{margin:3px 0 0;color:var(--muted);font-size:9px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.widget-log{display:grid;grid-template-columns:68px minmax(0,1fr);gap:8px;padding:7px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 42%,transparent);font-size:9px;line-height:1.4}.widget-log:last-child{border-bottom:0}.widget-log time{font:550 7px ui-monospace,monospace;color:var(--muted)}
+
+/* Calendar widget */
+.mini-calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.mini-calendar-head strong{font:650 9px ui-monospace,monospace;text-transform:uppercase}.mini-calendar-head button{border:0;background:transparent;color:var(--muted);padding:3px 5px}.mini-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px}.mini-cal .dow{font:600 6.5px ui-monospace,monospace;color:var(--muted);text-align:center;padding:3px 0}.mini-day{position:relative;min-height:27px;border:1px solid transparent;display:grid;place-items:center;font:550 8px ui-monospace,monospace;color:var(--muted);background:transparent}.mini-day.today{border-color:color-mix(in srgb,var(--accent) 62%,transparent);color:var(--ink)}.mini-day.has-event:after{content:"";position:absolute;bottom:3px;width:3px;height:3px;border-radius:50%;background:var(--sand)}.mini-day:hover{background:color-mix(in srgb,var(--accent) 7%,transparent);color:var(--ink)}
+
+/* Map/list is one primary instrument. */
+.home-network .map-wrap{height:clamp(560px,68vh,860px)!important;min-height:560px!important;border:1px solid color-mix(in srgb,var(--line) 74%,transparent);background:radial-gradient(ellipse at 52% 46%,color-mix(in srgb,var(--slate) 9%,transparent),transparent 44%),color-mix(in srgb,var(--surface-1) 84%,transparent)!important;box-shadow:0 16px 46px rgba(0,0,0,.05)}
+body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(ellipse at 52% 46%,rgba(83,104,120,.15),transparent 46%),rgba(12,15,17,.72)!important;box-shadow:0 18px 56px rgba(0,0,0,.22)}
+.home-network #network{height:100%!important}.map-topline{position:absolute;z-index:8;left:10px;right:10px;top:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;pointer-events:none}.map-topline>*{pointer-events:auto}.map-view-toggle{display:flex;border:1px solid color-mix(in srgb,var(--line) 78%,transparent);background:color-mix(in srgb,var(--surface-1) 88%,transparent)}.map-view-toggle button{border:0;background:transparent;color:var(--muted);padding:7px 9px;font:600 7.5px/1 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.05em}.map-view-toggle button.active{background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--ink)}
+.map-meta{position:static!important}.branch-view{position:absolute;inset:48px 18px 18px;overflow:auto;padding:18px 22px;color:var(--ink)}.branch-tree,.branch-tree ul{list-style:none;margin:0;padding-left:0}.branch-tree ul{margin-left:24px;padding-left:18px;border-left:1px solid color-mix(in srgb,var(--line) 72%,transparent)}.branch-tree li{position:relative;margin:0;padding:6px 0}.branch-tree ul>li:before{content:"";position:absolute;left:-18px;top:15px;width:13px;border-top:1px solid color-mix(in srgb,var(--line) 72%,transparent)}.branch-node{display:inline-grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:baseline;cursor:pointer}.branch-code{font:650 9px ui-monospace,monospace;letter-spacing:.055em;color:var(--ink)}.branch-name{font-size:10px;color:var(--muted)}.branch-node:hover .branch-code,.branch-node:hover .branch-name{color:var(--accent)}
+
+/* Map pucks: same material family; parents get a tonal ring. */
+.node .node-disc{fill:color-mix(in srgb,var(--slate) 44%,var(--surface-2))!important;stroke:none!important;opacity:.94!important}.node.has-children .node-disc{stroke:color-mix(in srgb,var(--sand) 44%,var(--slate))!important;stroke-width:1.15!important}.node:hover .node-disc,.node.active .node-disc{fill:color-mix(in srgb,var(--slate) 64%,var(--surface-2))!important;stroke:var(--ink)!important;stroke-width:1.1!important}.node text{font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono",monospace!important;font-weight:560!important;letter-spacing:.06em!important;stroke:none!important;paint-order:normal!important}.edge{stroke-width:.72!important}.edge.cross{stroke-width:.82!important}
+
+/* Snap zones react to widget count. */
+.widget-zone[data-count="1"]{--zone-cols:1}.widget-zone[data-count="2"]{--zone-cols:2}.widget-zone[data-count="3"]{--zone-cols:3}.widget-zone[data-count="4"],.widget-zone[data-count="5"],.widget-zone[data-count="6"]{--zone-cols:2}
+@media(max-width:1120px){:root{--widget-side:280px}.widget-zone.zone-top,.widget-zone.zone-bottom{--zone-cols:2!important}}
+@media(max-width:820px){
+  .chrono-strip{justify-content:flex-start}.board-middle{grid-template-columns:minmax(0,1fr)}.widget-zone.zone-left,.widget-zone.zone-right{width:auto;grid-template-columns:repeat(var(--zone-cols,1),minmax(0,1fr))}.widget-zone.zone-left{order:1}.board-map{order:2}.widget-zone.zone-right{order:3}.widget-zone.zone-top,.widget-zone.zone-bottom,.widget-zone.zone-left,.widget-zone.zone-right{--zone-cols:1!important}.home-network .map-wrap{height:560px!important;min-height:520px!important}.widget-zone.zone-top .atlas-widget,.widget-zone.zone-bottom .atlas-widget{min-height:150px}
+}
+
 </style>
 </head>
 <body>
@@ -746,11 +829,17 @@ body.tool-dragging[data-snap-target="top"] .tool-snap-hint{display:block;left:8p
           <nav class="system-menu-panel" id="spaceMenuPanel"></nav>
         </details>
         <details class="system-menu tools-menu" id="toolsMenu">
-          <summary aria-label="Open quick tools">Tools</summary>
-          <nav class="system-menu-panel tool-menu-panel" id="utilityRail" aria-label="Quick utilities">
-            <button type="button" class="system-item" data-side-tab="scratch">Scratch</button>
-            <button type="button" class="system-item" data-side-tab="todo">To-do</button>
-            <button type="button" class="system-item" data-side-tab="upcoming">Upcoming</button>
+          <summary aria-label="Open widgets">Widgets</summary>
+          <nav class="system-menu-panel widget-menu-panel" id="utilityRail" aria-label="Atlas widgets">
+            <button type="button" class="system-item" data-widget-toggle="scratch">Scratch</button>
+            <button type="button" class="system-item" data-widget-toggle="todo">To-do</button>
+            <button type="button" class="system-item" data-widget-toggle="upcoming">Upcoming</button>
+            <button type="button" class="system-item" data-widget-toggle="calendar">Calendar</button>
+            <button type="button" class="system-item" data-widget-toggle="active">Active now</button>
+            <button type="button" class="system-item" data-widget-toggle="milestones">Milestones</button>
+            <button type="button" class="system-item" data-widget-toggle="projects">Projects</button>
+            <button type="button" class="system-item" data-widget-toggle="notes">Recent notes</button>
+            <button type="button" class="system-item" data-widget-toggle="log">System log</button>
           </nav>
         </details>
         <details class="system-menu" id="systemMenu">
@@ -770,7 +859,12 @@ body.tool-dragging[data-snap-target="top"] .tool-snap-hint{display:block;left:8p
       <select id="spaceFilter" class="native-context-select" aria-label="Data space"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select>
     </div>
   </header>
-  <aside class="utility-pane" id="utilityPane" aria-live="polite"><div id="utilityPaneContent"></div></aside><div class="tool-snap-hint" aria-hidden="true"></div>
+  <div class="chrono-strip" id="chronoStrip" aria-label="Melbourne and UTC time">
+    <div class="chrono-block"><span>MEL</span><strong id="melClock">--:--:--</strong><em id="melDate">---</em></div>
+    <i></i>
+    <div class="chrono-block"><span>UTC</span><strong id="utcClock">--:--:--</strong><em id="utcDate">---</em></div>
+  </div>
+  <aside class="utility-pane" id="utilityPane" aria-live="polite"><div id="utilityPaneContent"></div></aside><div class="tool-snap-hint" aria-hidden="true"></div><div class="widget-snap-preview" aria-hidden="true"></div>
 
   <main class="main" id="app"></main>
   
@@ -838,7 +932,7 @@ body.tool-dragging[data-snap-target="top"] .tool-snap-hint{display:block;left:8p
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='0.10.10'; const DATA_VERSION=5; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.11.0'; const DATA_VERSION=6; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -850,7 +944,7 @@ const todayKey=()=>new Date().toLocaleDateString('en-CA');
 const demo={
   version:DATA_VERSION,
   meta:{createdAt:now(),lastSavedAt:now(),lastAppVersion:APP_VERSION},
-  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',activeProfile:'me',mapDepth:4,mapLabelOpacity:.72,mapEdgeOpacity:.32,toolPaneFloating:false,toolPaneDock:'top',toolPaneX:0,toolPaneY:0,selectedArea:'',editorTab:'structure',mapLayoutVersion:10,theme:'day',calendarCursor:''},
+  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',activeProfile:'me',mapDepth:4,mapLabelOpacity:.72,mapEdgeOpacity:.32,mapViewMode:'nodes',selectedArea:'',editorTab:'structure',mapLayoutVersion:10,theme:'day',calendarCursor:'',widgetLayout:{},widgetFloat:{}},
   profiles:[{id:'me',name:'Me',kind:'person'},{id:'alyssa',name:'Alyssa',kind:'person'},{id:'us',name:'Us',kind:'shared'}],
   areas:[
     {id:'work',name:'Work',code:'WRK',space:'work',level:2,parentId:'atlas',description:'Professional operating picture, development and delivery.',x:600,y:90,status:'active'},
@@ -1128,6 +1222,13 @@ function migrateData(s){
     (s.profiles||[]).forEach(p=>{if(typeof s.scratch[p.id]!=='string')s.scratch[p.id]=''});
     s.settings=s.settings||{};if(typeof s.settings.sidePane!=='string')s.settings.sidePane='';
   }
+  if(from<6){
+    s.settings=s.settings||{};
+    if(!s.settings.widgetLayout||typeof s.settings.widgetLayout!=='object')s.settings.widgetLayout={};
+    if(!s.settings.widgetFloat||typeof s.settings.widgetFloat!=='object')s.settings.widgetFloat={};
+    if(!['nodes','list'].includes(s.settings.mapViewMode))s.settings.mapViewMode='nodes';
+    s.settings.sidePane='';
+  }
   s.version=DATA_VERSION;
   return s;
 }
@@ -1140,7 +1241,7 @@ function ensureState(s){
   if(!s.settings)s.settings=clone(demo.settings);
   for(const k of ['areas','links','projects','notes','daily','calendar','profiles','quickTodos','activity']) if(!Array.isArray(s[k])) s[k]=[];
   s.profiles.forEach(p=>{if(!s.areas.some(a=>(a.profile||'me')===p.id))s.areas.push(...profileStarterAreas(p.id,p.kind))});if(!s.scratch||typeof s.scratch!=='object'||Array.isArray(s.scratch))s.scratch={};s.profiles.forEach(p=>{if(typeof s.scratch[p.id]!=='string')s.scratch[p.id]=''});
-  s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.sidePane=typeof s.settings.sidePane==='string'?s.settings.sidePane:''; s.settings.toolPaneFloating=!!s.settings.toolPaneFloating; s.settings.toolPaneDock=['top','left','right','float'].includes(s.settings.toolPaneDock)?s.settings.toolPaneDock:(s.settings.toolPaneFloating?'float':'top'); s.settings.toolPaneFloating=s.settings.toolPaneDock==='float'; s.settings.toolPaneX=Number.isFinite(Number(s.settings.toolPaneX))?Number(s.settings.toolPaneX):0; s.settings.toolPaneY=Number.isFinite(Number(s.settings.toolPaneY))?Number(s.settings.toolPaneY):0; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.activeProfile=s.settings.activeProfile||'me'; s.settings.calendarCursor=s.settings.calendarCursor||''; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.mapLabelOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapLabelOpacity))?Number(s.settings.mapLabelOpacity):.72)); s.settings.mapEdgeOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapEdgeOpacity))?Number(s.settings.mapEdgeOpacity):.32)); s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day';
+  s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.sidePane=typeof s.settings.sidePane==='string'?s.settings.sidePane:''; s.settings.toolPaneFloating=!!s.settings.toolPaneFloating; s.settings.toolPaneDock=['top','left','right','float'].includes(s.settings.toolPaneDock)?s.settings.toolPaneDock:(s.settings.toolPaneFloating?'float':'top'); s.settings.toolPaneFloating=s.settings.toolPaneDock==='float'; s.settings.toolPaneX=Number.isFinite(Number(s.settings.toolPaneX))?Number(s.settings.toolPaneX):0; s.settings.toolPaneY=Number.isFinite(Number(s.settings.toolPaneY))?Number(s.settings.toolPaneY):0; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.activeProfile=s.settings.activeProfile||'me'; s.settings.calendarCursor=s.settings.calendarCursor||''; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.mapLabelOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapLabelOpacity))?Number(s.settings.mapLabelOpacity):.72)); s.settings.mapEdgeOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapEdgeOpacity))?Number(s.settings.mapEdgeOpacity):.32)); s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day'; s.settings.mapViewMode=['nodes','list'].includes(s.settings.mapViewMode)?s.settings.mapViewMode:'nodes'; if(!s.settings.widgetLayout||typeof s.settings.widgetLayout!=='object')s.settings.widgetLayout={}; if(!s.settings.widgetFloat||typeof s.settings.widgetFloat!=='object')s.settings.widgetFloat={}; s.settings.sidePane='';
   if(Number(s.settings.mapLayoutVersion||0)<3) s=applyWideMapLayout(s);
   const needsSphere=Number(s.settings.mapLayoutVersion||0)<10||s.areas.some(a=>!Number.isFinite(Number(a.x))||!Number.isFinite(Number(a.y))||!Number.isFinite(Number(a.mapZ)));
   if(needsSphere){s.profiles.forEach(p=>organiseSphericalLayout(s,p.id));s.settings.mapLayoutVersion=10}
@@ -1510,6 +1611,78 @@ async function handleEditorAction(b){const a=b.dataset.edAction;
   if(a==='reset'){if(confirm('Reset Atlas to the demo structure? This replaces the data currently stored in this browser.')){await idbBackup(state,'before demo reset');state=ensureState(clone(demo));await save();renderEditor();renderAll();toast('Atlas reset')}}
   if(['add-milestone','remove-milestone','add-task','remove-task','save-project-detail'].includes(a)){const i=Number(b.dataset.index),p=state.projects[i];if(!p)return;if(a==='add-milestone'){p.milestones.push({id:uid('m'),title:'New milestone',done:false})}if(a==='remove-milestone'){p.milestones.splice(Number(b.dataset.subindex),1)}if(a==='add-task'){p.tasks.push({id:uid('t'),title:'New task',done:false})}if(a==='remove-task'){p.tasks.splice(Number(b.dataset.subindex),1)}if(a==='save-project-detail'){p.title=document.getElementById('epTitle').value.trim()||p.title;p.status=document.getElementById('epStatus').value;p.objective=document.getElementById('epObjective').value.trim();p.next=document.getElementById('epNext').value.trim();p.tags=document.getElementById('epTags').value.split(',').map(s=>s.trim()).filter(Boolean);document.querySelectorAll('[data-ep-milestone]').forEach(x=>{if(p.milestones[Number(x.dataset.epMilestone)])p.milestones[Number(x.dataset.epMilestone)].done=x.checked});document.querySelectorAll('[data-ep-milestone-title]').forEach(x=>{if(p.milestones[Number(x.dataset.epMilestoneTitle)])p.milestones[Number(x.dataset.epMilestoneTitle)].title=x.value});document.querySelectorAll('[data-ep-task]').forEach(x=>{if(p.tasks[Number(x.dataset.epTask)])p.tasks[Number(x.dataset.epTask)].done=x.checked});document.querySelectorAll('[data-ep-task-title]').forEach(x=>{if(p.tasks[Number(x.dataset.epTaskTitle)])p.tasks[Number(x.dataset.epTaskTitle)].title=x.value});log(`Project edited: ${p.title}.`);toast('Project saved')}save();openProjectEditor(i);renderAll()}
 }
+
+
+/* Atlas 0.11.0 · Widget workspace + branch list + dual clocks */
+const ATLAS_WIDGETS={
+  scratch:{title:'Scratch',code:'NTS',zone:'top'},todo:{title:'To-do',code:'TODO',zone:'left'},upcoming:{title:'Upcoming',code:'UP',zone:'left'},calendar:{title:'Calendar',code:'CAL',zone:'right'},
+  active:{title:'Active now',code:'NOW',zone:'left'},milestones:{title:'Milestones',code:'MILE',zone:'bottom'},projects:{title:'Projects',code:'PROJ',zone:'bottom'},notes:{title:'Recent notes',code:'NOTE',zone:'right'},log:{title:'System log',code:'LOG',zone:'right'}
+};
+function defaultWidgetLayout(){return{scratch:{open:true,zone:'top',order:0},active:{open:true,zone:'left',order:0},upcoming:{open:true,zone:'left',order:1},calendar:{open:false,zone:'right',order:0},todo:{open:false,zone:'left',order:2},milestones:{open:false,zone:'bottom',order:0},projects:{open:false,zone:'bottom',order:1},notes:{open:false,zone:'right',order:1},log:{open:false,zone:'right',order:2}}}
+function ensureWidgetSettings(){
+  if(!state?.settings)return; if(!state.settings.widgetLayout||typeof state.settings.widgetLayout!=='object')state.settings.widgetLayout={}; if(!state.settings.widgetFloat||typeof state.settings.widgetFloat!=='object')state.settings.widgetFloat={};
+  const defs=defaultWidgetLayout();Object.keys(ATLAS_WIDGETS).forEach(id=>{const cur=state.settings.widgetLayout[id]||{};state.settings.widgetLayout[id]={open:typeof cur.open==='boolean'?cur.open:defs[id].open,zone:['top','left','right','bottom','float'].includes(cur.zone)?cur.zone:defs[id].zone,order:Number.isFinite(Number(cur.order))?Number(cur.order):defs[id].order}});
+  state.settings.mapViewMode=['nodes','list'].includes(state.settings.mapViewMode)?state.settings.mapViewMode:'nodes';state.settings.sidePane='';
+}
+function renderUtilityPane(){const pane=document.getElementById('utilityPane');if(pane){pane.classList.remove('open','floating');pane.innerHTML='<div id="utilityPaneContent"></div>'}document.body.classList.remove('tool-pane-open');document.body.dataset.toolDock=''}
+function widgetCfg(id){ensureWidgetSettings();return state.settings.widgetLayout[id]}
+function widgetIsOpen(id){return !!widgetCfg(id)?.open}
+function widgetZoneItems(zone){return Object.keys(ATLAS_WIDGETS).filter(id=>{const c=widgetCfg(id);return c.open&&c.zone===zone}).sort((a,b)=>widgetCfg(a).order-widgetCfg(b).order)}
+function setZoneOrder(zone){widgetZoneItems(zone).forEach((id,i)=>state.settings.widgetLayout[id].order=i)}
+function toggleWidget(id){if(!ATLAS_WIDGETS[id])return;ensureWidgetSettings();const c=widgetCfg(id);c.open=!c.open;if(c.open&&!c.zone)c.zone=ATLAS_WIDGETS[id].zone;setZoneOrder(c.zone);save();renderTabs();if(state.settings.activeTab!=='home'){state.settings.activeTab='home';state.settings.selectedArea=''}renderHome()}
+function closeWidget(id){if(!ATLAS_WIDGETS[id])return;widgetCfg(id).open=false;save();renderTabs();renderHome()}
+function moveWidget(id,zone){if(!ATLAS_WIDGETS[id])return;ensureWidgetSettings();const old=widgetCfg(id).zone;widgetCfg(id).zone=zone;widgetCfg(id).open=true;widgetCfg(id).order=widgetZoneItems(zone).length;setZoneOrder(old);setZoneOrder(zone);if(zone==='float'&&!state.settings.widgetFloat[id])state.settings.widgetFloat[id]={x:Math.max(16,window.innerWidth-410),y:92};save();renderTabs();renderHome()}
+function widgetPositionMenu(id){const z=widgetCfg(id).zone;return `<details class="widget-position"><summary>${z==='float'?'Dock':'Position'}</summary><div class="widget-position-panel">${[['top','Top'],['left','Left'],['right','Right'],['bottom','Bottom'],['float','Float']].map(([v,t])=>`<button type="button" data-widget-move="${id}" data-zone="${v}" class="${z===v?'active':''}">${t}</button>`).join('')}</div></details>`}
+function widgetShell(id,body,meta=''){const c=widgetCfg(id),w=ATLAS_WIDGETS[id],float=c.zone==='float',pos=state.settings.widgetFloat[id]||{x:40,y:100};return `<section class="atlas-widget ${float?'widget-floating':''}" data-widget="${id}" data-zone="${c.zone}" ${float?`style="left:${Math.round(pos.x)}px;top:${Math.round(pos.y)}px"`:''}><header class="widget-head" data-widget-drag="${id}"><div class="widget-ident"><strong>${w.title}</strong><span>${meta||w.code} · ${esc(activeProfile().name)}</span></div><div class="widget-actions">${widgetPositionMenu(id)}<button type="button" data-widget-close="${id}" aria-label="Close ${w.title}">×</button></div></header><div class="widget-body ${id==='calendar'?'flush':''}">${body}</div></section>`}
+function scratchWidget(){return widgetShell('scratch',`<textarea class="scratch-area" id="widgetScratch" placeholder="Fast, unstructured thinking…">${esc(activeScratch())}</textarea><div class="utility-help">Autosaves locally. Commit when it becomes worth keeping.</div><div class="utility-actions-row"><button type="button" data-widget-action="commit-scratch">Commit to Inbox</button><button type="button" data-widget-action="clear-scratch">Clear</button></div>`)}
+function todoWidget(){const todos=profileQuickTodos();return widgetShell('todo',`<div class="quick-add"><input id="widgetTodoInput" type="text" placeholder="Add a quick task…"><button type="button" data-widget-action="add-todo">Add</button></div><div class="quick-list">${todos.length?todos.map(t=>`<label class="quick-todo ${t.done?'done':''}"><input type="checkbox" data-widget-todo="${t.id}" ${t.done?'checked':''}><span>${esc(t.text)}</span><button type="button" data-widget-delete-todo="${t.id}">×</button></label>`).join(''):'<div class="widget-empty">No quick tasks.</div>'}</div>`)}
+function upcomingWidget(){const events=quickUpcoming(30);return widgetShell('upcoming',`<div class="widget-list">${events.length?events.slice(0,8).map(e=>`<button type="button" class="widget-row" data-calendar-id="${e.id}" style="border:0;background:transparent;color:inherit;text-align:left;width:100%"><i></i><div><strong>${esc(e.title)}${e.entangledId||e.sourceEventId?' ↔':''}</strong><small>${esc(e.date)}${e.startTime?` · ${esc(e.startTime)}`:''}${e.areaId?` · ${esc(areaById(e.areaId)?.code||'')}`:''}</small></div><em>${esc(profileById(e.profile).name)}</em></button>`).join(''):'<div class="widget-empty">Nothing scheduled.</div>'}</div>`,`${events.length} / 30D`)}
+function activeWidget(){const rows=getNext(null);return widgetShell('active',`<div class="widget-list">${rows.length?rows.map(i=>`<div class="widget-row"><i></i><div><strong>${esc(i.name)}</strong><small>${esc(i.meta)}</small></div><em>${esc(i.badge||'OPEN')}</em></div>`).join(''):'<div class="widget-empty">No active moves.</div>'}</div>`,`${rows.length} OPEN`)}
+function milestonesWidget(){const rows=visibleProjects(null).flatMap(p=>(p.milestones||[]).filter(m=>!m.done).map(m=>({m,p}))).slice(0,10);return widgetShell('milestones',`<div class="widget-list">${rows.length?rows.map(({m,p})=>`<div class="widget-row"><i></i><div><strong>${esc(m.title)}</strong><small>${esc(p.code)} · ${esc(p.title)}</small></div><em>${m.current?'CURRENT':'OPEN'}</em></div>`).join(''):'<div class="widget-empty">No open milestones.</div>'}</div>`,`${rows.length} OPEN`)}
+function projectsWidget(){const ps=visibleProjects(null).slice(0,8);return widgetShell('projects',ps.length?ps.map(p=>{const pc=projectProgress(p);return `<button type="button" class="widget-project" data-project="${p.id}" style="border-left:0;border-right:0;border-top:0;background:transparent;color:inherit;text-align:left;width:100%"><div class="widget-project-head"><strong>${esc(p.code)} · ${esc(p.title)}</strong><small>${pc}%</small></div><div class="micro-bar"><i style="width:${pc}%"></i></div></button>`}).join(''):'<div class="widget-empty">No projects.</div>',`${ps.length} VISIBLE`)}
+function notesWidget(){const ns=visibleNotes(null).slice(0,8);return widgetShell('notes',ns.length?ns.map(n=>`<div class="widget-note"><strong>${esc(n.title||'Untitled')}</strong><p>${esc(n.body||'')}</p><small class="code">${fmtDate(n.createdAt)} · ${esc(areaById(n.topicId)?.code||areaById(n.areaId)?.code||'INBOX')}</small></div>`).join(''):'<div class="widget-empty">No notes.</div>',`${ns.length} RECENT`)}
+function logWidget(){const rows=state.activity.filter(a=>profileAllows(a.profile)).slice(0,12);return widgetShell('log',rows.length?rows.map(a=>`<div class="widget-log"><time>${fmtDate(a.time)}<br>${fmtTime(a.time)}</time><span>${esc(a.text)}</span></div>`).join(''):'<div class="widget-empty">No system activity.</div>',`${rows.length} EVENTS`)}
+function calendarWidget(){const d=monthCursorDate(),year=d.getFullYear(),month=d.getMonth(),first=new Date(year,month,1),start=new Date(year,month,1-first.getDay()),events=calendarEvents();let cells='';for(let i=0;i<42;i++){const day=new Date(start);day.setDate(start.getDate()+i);const key=day.toLocaleDateString('en-CA'),out=day.getMonth()!==month,today=key===todayKey(),ev=events.some(e=>e.date===key);cells+=`<button type="button" class="mini-day ${out?'out':''} ${today?'today':''} ${ev?'has-event':''}" data-widget-cal-date="${key}">${day.getDate()}</button>`}const title=new Intl.DateTimeFormat('en-AU',{month:'short',year:'numeric'}).format(first);return widgetShell('calendar',`<div style="padding:10px"><div class="mini-calendar-head"><button type="button" data-widget-cal-nav="prev">←</button><strong>${esc(title)}</strong><button type="button" data-widget-cal-nav="next">→</button></div><div class="mini-cal">${['S','M','T','W','T','F','S'].map(x=>`<div class="dow">${x}</div>`).join('')}${cells}</div><div class="utility-actions-row" style="margin-top:10px"><button type="button" data-widget-action="open-calendar">Open Calendar</button></div></div>`,`${events.filter(e=>e.date.slice(0,7)===`${year}-${String(month+1).padStart(2,'0')}`).length} EVENTS`)}
+function renderWidget(id){if(id==='scratch')return scratchWidget();if(id==='todo')return todoWidget();if(id==='upcoming')return upcomingWidget();if(id==='calendar')return calendarWidget();if(id==='active')return activeWidget();if(id==='milestones')return milestonesWidget();if(id==='projects')return projectsWidget();if(id==='notes')return notesWidget();if(id==='log')return logWidget();return''}
+function zoneHtml(zone){const ids=widgetZoneItems(zone);return `<div class="widget-zone zone-${zone}" data-widget-zone="${zone}" data-count="${Math.min(6,ids.length)}">${ids.map(renderWidget).join('')}</div>`}
+function floatingWidgets(){return widgetZoneItems('float').map(renderWidget).join('')}
+function widgetMenuState(){const rail=document.getElementById('utilityRail');if(!rail)return;rail.querySelectorAll('[data-widget-toggle]').forEach(b=>b.classList.toggle('is-open',widgetIsOpen(b.dataset.widgetToggle)))}
+function renderTabs(){
+  const items=navItems(),activeTab=state.settings.activeTab==='home'?'':state.settings.activeTab,activeProfileId=state.settings.activeProfile||'me',space=state.settings.spaceFilter||'all';
+  const el=document.getElementById('sectionSelect');if(el){el.innerHTML=`<option value="">Navigate</option>`+items.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');el.value=activeTab}
+  const ps=document.getElementById('profileSelect');if(ps){ps.innerHTML=state.profiles.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');ps.value=activeProfileId}
+  const sf=document.getElementById('spaceFilter');if(sf)sf.value=space;
+  const pp=document.getElementById('profileMenuPanel'),pv=document.getElementById('profileMenuValue');if(pp){pp.innerHTML=state.profiles.map(p=>`<button type="button" class="system-item" data-profile-id="${p.id}" aria-current="${p.id===activeProfileId}">${esc(p.name)}</button>`).join('')}if(pv)pv.textContent=profileById(activeProfileId).name;
+  const vp=document.getElementById('viewMenuPanel'),vv=document.getElementById('viewMenuValue');if(vp){vp.innerHTML=`<button type="button" class="system-item" data-view-id="" aria-current="${!activeTab}">Home</button>`+items.map(t=>`<button type="button" class="system-item" data-view-id="${t.id}" aria-current="${t.id===activeTab}">${esc(t.name)}</button>`).join('')}if(vv){const t=items.find(x=>x.id===activeTab);vv.textContent=t?t.name:'Navigate'}
+  const sp=document.getElementById('spaceMenuPanel'),sv=document.getElementById('spaceMenuValue');const spaces=[['all','All spaces'],['work','Work only'],['personal','Personal only']];if(sp){sp.innerHTML=spaces.map(([id,name])=>`<button type="button" class="system-item" data-space-id="${id}" aria-current="${id===space}">${name}</button>`).join('')}if(sv)sv.textContent=(spaces.find(x=>x[0]===space)||spaces[0])[1];ensureWidgetSettings();widgetMenuState();
+}
+function branchTreeHtml(scope=null){const max=state.settings.mapDepth,areas=profileAreas().filter(a=>spaceAllows(a.space)&&a.level<=max),byParent={};areas.forEach(a=>(byParent[a.parentId||'atlas']??=[]).push(a));Object.values(byParent).forEach(arr=>arr.sort((a,b)=>a.name.localeCompare(b.name)));const noteKids={};if(max>=5)state.notes.filter(n=>profileAllows(n.profile)&&spaceAllows(n.space)&&n.showOnMap&&(n.topicId||n.areaId)).forEach(n=>(noteKids[n.topicId||n.areaId]??=[]).push(n));const relevant=scope?new Set([scope,...areas.filter(a=>isDescendant(a.id,scope)).map(a=>a.id)]):null;function one(a){if(relevant&&!relevant.has(a.id))return'';const kids=(byParent[a.id]||[]).map(one).join('');const notes=(noteKids[a.id]||[]).slice(0,20).map(n=>`<li><span class="branch-node"><b class="branch-code">${esc(makeNodeCode(n.title||'NOTE'))}</b><span class="branch-name">${esc(n.title||'Untitled')}</span></span></li>`).join('');return `<li><span class="branch-node" data-open-area="${a.id}"><b class="branch-code">${esc(a.code)}</b><span class="branch-name">${esc(a.name)}</span></span>${kids||notes?`<ul>${kids}${notes}</ul>`:''}</li>`}const roots=scope?[areaById(scope)].filter(Boolean):(byParent['atlas']||[]);return `<ul class="branch-tree">${roots.map(one).join('')||'<li class="widget-empty">No visible branches.</li>'}</ul>`}
+function networkPanel(scope=null){const hero=!scope,count=graphData(scope).nodes.length,mode=state.settings.mapViewMode||'nodes';return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2></div>`:''}<div class="map-wrap"><div class="map-topline"><div class="map-meta"><span>${mode==='nodes'?'MAP':'LIST'}</span><span>${esc(activeProfile().name.toUpperCase())}</span><span>${count} NODES</span><span id="mapInspect"></span></div><div class="map-view-toggle"><button type="button" data-map-view="nodes" class="${mode==='nodes'?'active':''}">Nodes</button><button type="button" data-map-view="list" class="${mode==='list'?'active':''}">List</button></div></div>${mode==='nodes'?`<svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="map-hud"><div class="zoom-controls"><button type="button" data-map-zoom="out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset"><span id="zoomValue">FIT</span></button><button type="button" data-map-zoom="in">+</button></div><div class="zoom-controls"><button type="button" class="zoom-reset" data-map-layout="organise">Reform</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}"/><strong id="depthValue">${state.settings.mapDepth}</strong></div><div class="depth map-opacity">Type <input id="labelOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapLabelOpacity||.72)*100)}"/><strong id="labelOpacityValue">${Math.round((state.settings.mapLabelOpacity||.72)*100)}</strong></div><div class="depth map-opacity">Links <input id="edgeOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapEdgeOpacity||.32)*100)}"/><strong id="edgeOpacityValue">${Math.round((state.settings.mapEdgeOpacity||.32)*100)}</strong></div></div></div>`:`<div class="branch-view">${branchTreeHtml(scope)}</div>`}</div></section>`}
+function renderHome(){ensureWidgetSettings();const app=document.getElementById('app');app.innerHTML=`<section class="atlas-board" id="atlasBoard">${zoneHtml('top')}<div class="board-middle">${zoneHtml('left')}<div class="board-map">${networkPanel(null)}</div>${zoneHtml('right')}</div>${zoneHtml('bottom')}${floatingWidgets()}</section>`;if(state.settings.mapViewMode==='nodes')drawNetwork(null);widgetMenuState()}
+function updateAtlasClock(){const nowD=new Date(),tf=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),df=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',weekday:'short',day:'2-digit',month:'short',year:'numeric'}),utf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),udf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',weekday:'short',day:'2-digit',month:'short',year:'numeric'});const mel=document.getElementById('melClock'),md=document.getElementById('melDate'),utc=document.getElementById('utcClock'),ud=document.getElementById('utcDate');if(mel)mel.textContent=tf.format(nowD);if(md)md.textContent=df.format(nowD);if(utc)utc.textContent=utf.format(nowD);if(ud)ud.textContent=udf.format(nowD)}
+setInterval(updateAtlasClock,1000);setTimeout(updateAtlasClock,0);
+
+let atlasWidgetDrag=null;
+function beginWidgetDrag(id,e){if(!ATLAS_WIDGETS[id])return;const el=document.querySelector(`.atlas-widget[data-widget="${CSS.escape(id)}"]`);if(!el)return;const rect=el.getBoundingClientRect(),c=widgetCfg(id);if(c.zone!=='float'){c.zone='float';state.settings.widgetFloat[id]={x:rect.left,y:rect.top};renderHome();requestAnimationFrame(()=>{const fresh=document.querySelector(`.atlas-widget[data-widget="${CSS.escape(id)}"]`);if(fresh){const r=fresh.getBoundingClientRect();atlasWidgetDrag={id,pointerId:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};document.body.classList.add('widget-dragging')}})}else{atlasWidgetDrag={id,pointerId:e.pointerId,dx:e.clientX-rect.left,dy:e.clientY-rect.top};document.body.classList.add('widget-dragging')}e.preventDefault()}
+function widgetSnapTarget(x,y){if(y<105)return'top';if(y>window.innerHeight-80)return'bottom';if(x<90)return'left';if(x>window.innerWidth-90)return'right';return''}
+document.addEventListener('pointerdown',e=>{const h=e.target.closest('[data-widget-drag]');if(h&&!e.target.closest('button,summary,details,input,textarea'))beginWidgetDrag(h.dataset.widgetDrag,e)});
+document.addEventListener('pointermove',e=>{if(!atlasWidgetDrag)return;const id=atlasWidgetDrag.id,pos=state.settings.widgetFloat[id]||(state.settings.widgetFloat[id]={x:20,y:100}),el=document.querySelector(`.atlas-widget[data-widget="${CSS.escape(id)}"]`),w=el?.offsetWidth||380,h=el?.offsetHeight||240;pos.x=Math.max(8,Math.min(window.innerWidth-w-8,e.clientX-atlasWidgetDrag.dx));pos.y=Math.max(64,Math.min(window.innerHeight-Math.min(80,h),e.clientY-atlasWidgetDrag.dy));if(el){el.style.left=pos.x+'px';el.style.top=pos.y+'px'}document.body.dataset.widgetSnap=widgetSnapTarget(e.clientX,e.clientY)});
+document.addEventListener('pointerup',e=>{if(!atlasWidgetDrag)return;const id=atlasWidgetDrag.id,snap=document.body.dataset.widgetSnap||'';atlasWidgetDrag=null;document.body.classList.remove('widget-dragging');document.body.dataset.widgetSnap='';if(snap){widgetCfg(id).zone=snap;widgetCfg(id).order=widgetZoneItems(snap).length;setZoneOrder(snap)}save();renderHome()});
+
+document.addEventListener('input',e=>{if(e.target.id==='widgetScratch'){state.scratch[state.settings.activeProfile||'me']=e.target.value;save()}});
+document.addEventListener('keydown',e=>{if(e.target.id==='widgetTodoInput'&&e.key==='Enter'){e.preventDefault();const val=e.target.value.trim();if(val){state.quickTodos.unshift({id:uid('qt'),profile:state.settings.activeProfile||'me',text:val,done:false,createdAt:now()});save();renderHome()}}});
+document.addEventListener('change',e=>{if(e.target.dataset.widgetTodo){const t=state.quickTodos.find(x=>x.id===e.target.dataset.widgetTodo);if(t){t.done=e.target.checked;save();renderHome()}}});
+document.addEventListener('click',e=>{
+  const wt=e.target.closest('[data-widget-toggle]');if(wt){toggleWidget(wt.dataset.widgetToggle);const d=wt.closest('details');if(d)d.removeAttribute('open');return}
+  const wc=e.target.closest('[data-widget-close]');if(wc){closeWidget(wc.dataset.widgetClose);return}
+  const wm=e.target.closest('[data-widget-move]');if(wm){moveWidget(wm.dataset.widgetMove,wm.dataset.zone);return}
+  const md=e.target.closest('[data-map-view]');if(md){state.settings.mapViewMode=md.dataset.mapView;save();if(state.settings.activeTab==='home')renderHome();else renderAll();return}
+  const del=e.target.closest('[data-widget-delete-todo]');if(del){state.quickTodos=state.quickTodos.filter(t=>t.id!==del.dataset.widgetDeleteTodo);save();renderHome();return}
+  const wa=e.target.closest('[data-widget-action]');if(wa){const a=wa.dataset.widgetAction;if(a==='commit-scratch'){commitScratch();renderHome()}else if(a==='clear-scratch'){state.scratch[state.settings.activeProfile||'me']='';save();renderHome()}else if(a==='add-todo'){const inp=document.getElementById('widgetTodoInput'),v=(inp?.value||'').trim();if(v){state.quickTodos.unshift({id:uid('qt'),profile:state.settings.activeProfile||'me',text:v,done:false,createdAt:now()});save();renderHome()}}else if(a==='open-calendar'){state.settings.activeTab='calendar';state.settings.selectedArea='';renderAll()}return}
+  const cnav=e.target.closest('[data-widget-cal-nav]');if(cnav){let d=monthCursorDate();d.setMonth(d.getMonth()+(cnav.dataset.widgetCalNav==='next'?1:-1));setCalendarCursor(new Date(d.getFullYear(),d.getMonth(),1));save();renderHome();return}
+  const cday=e.target.closest('[data-widget-cal-date]');if(cday){openCalendarEvent('',cday.dataset.widgetCalDate);return}
+});
+
 
 load();
 </script>
