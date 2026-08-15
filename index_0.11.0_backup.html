@@ -719,7 +719,7 @@ body.tool-dragging[data-snap-target="top"] .tool-snap-hint{display:block;left:8p
 
 
 
-/* Atlas 0.11.2 · prediction inspector + adaptive widget packing */
+/* Atlas 0.11.0 · modular Life OS workspace */
 :root{
   --onyx:#0a0a0a;--charcoal:#2a2529;--ivory:#f3f0e7;--slate:#536878;--sand:#b9a27a;
   --widget-gap:10px;--widget-side:320px;
@@ -800,26 +800,6 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
   .chrono-strip{justify-content:flex-start}.board-middle{grid-template-columns:minmax(0,1fr)}.widget-zone.zone-left,.widget-zone.zone-right{width:auto;grid-template-columns:repeat(var(--zone-cols,1),minmax(0,1fr))}.widget-zone.zone-left{order:1}.board-map{order:2}.widget-zone.zone-right{order:3}.widget-zone.zone-top,.widget-zone.zone-bottom,.widget-zone.zone-left,.widget-zone.zone-right{--zone-cols:1!important}.home-network .map-wrap{height:560px!important;min-height:520px!important}.widget-zone.zone-top .atlas-widget,.widget-zone.zone-bottom .atlas-widget{min-height:150px}
 }
 
-
-/* Atlas 0.11.1 · branch list / clustered map / prediction view */
-.chrono-bottom{margin:12px 0 0!important;border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important;border-bottom:0!important;justify-content:flex-end!important;min-height:32px}
-.edge.cross,body[data-theme="night"] .edge.cross{opacity:var(--map-cross-opacity,.22)!important}
-.branch-view{padding:58px 26px 28px!important}
-.branch-root-list{display:grid;gap:28px;max-width:1180px;margin:0 auto}.branch-root{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:28px;align-items:start;padding-bottom:24px;border-bottom:1px solid color-mix(in srgb,var(--line) 52%,transparent)}.branch-root:last-child{border-bottom:0}.branch-root-title{border:0;background:transparent;color:var(--ink);padding:5px 0;text-align:left;font:600 10px/1.45 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;letter-spacing:.025em}.branch-root-title:hover{color:var(--accent)}.branch-root-tree{min-width:0;position:relative}.branch-root-code{display:inline-block;margin:0 0 8px;font:600 8px/1 ui-monospace,monospace;letter-spacing:.08em;color:var(--muted)}.branch-tree.root-children{margin-left:0!important}.branch-node{grid-template-columns:60px minmax(0,1fr)!important}.branch-code{font-size:8px!important}.branch-name{font-size:10px!important;color:color-mix(in srgb,var(--ink) 72%,var(--muted))!important}.branch-note .branch-name{opacity:.72}
-.prediction-mode{background:radial-gradient(ellipse at 50% 48%,color-mix(in srgb,var(--slate) 12%,transparent),transparent 52%),var(--surface-1)!important}.prediction-mode .edge.prediction{fill:none;stroke:color-mix(in srgb,var(--ink) 58%,transparent);stroke-width:.62;opacity:.34;vector-effect:non-scaling-stroke}.prediction-mode .prediction-node .node-disc{fill:color-mix(in srgb,var(--ink) 80%,var(--surface-1));stroke:none!important}.prediction-mode .prediction-node.is-actual .node-disc{fill:var(--surface-3);stroke:color-mix(in srgb,var(--ink) 54%,transparent)!important;stroke-width:.8!important}.prediction-mode .prediction-node.minor{opacity:.62}.prediction-mode .prediction-node text{font-size:6.6px!important;font-weight:540!important;opacity:.62}.prediction-mode .prediction-node.is-actual text{font-size:8px!important;opacity:.82}.predict-note{align-self:center;font:550 7px/1 ui-monospace,monospace;letter-spacing:.07em;color:var(--muted);white-space:nowrap}
-@media(max-width:760px){.branch-root{grid-template-columns:112px minmax(0,1fr);gap:16px}.branch-root-title{font-size:10px}.chrono-bottom{justify-content:flex-start!important}}
-/* 0.11.2 refinements */
-.chrono-top{margin-bottom:10px!important;border-top:0!important;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important;justify-content:flex-end!important}
-.chrono-bottom{margin-top:14px!important;justify-content:flex-end!important}
-.prediction-inspector{position:absolute;z-index:24;width:min(300px,calc(100% - 28px));display:none;background:color-mix(in srgb,var(--surface-2) 96%,transparent);border:1px solid var(--line-strong);box-shadow:0 18px 44px rgba(0,0,0,.22);color:var(--ink);padding:0;pointer-events:auto}
-.prediction-inspector.open{display:block}.predict-inspect-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line)}
-.predict-inspect-head strong{font:650 9px/1 ui-monospace,monospace;letter-spacing:.055em;text-transform:uppercase}.predict-inspect-head button{border:0;background:transparent;color:var(--muted);font-size:15px;padding:1px 4px}
-.predict-inspect-body{padding:11px 12px 12px}.predict-inspect-body h4{font-size:12px;line-height:1.35;margin:0 0 8px;font-weight:650}.predict-inspect-body p{font-size:10px;line-height:1.55;margin:0 0 10px;color:var(--muted)}
-.predict-inspect-grid{display:grid;grid-template-columns:70px 1fr;gap:6px 9px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);font:550 8px/1.45 ui-monospace,monospace}.predict-inspect-grid b{color:var(--muted);font-weight:550;text-transform:uppercase}.predict-inspect-grid span{color:var(--ink)}
-.prediction-node.is-predicted{cursor:pointer}.prediction-node.is-predicted:hover .node-disc{stroke:var(--ink)!important;stroke-width:1.2!important}
-/* Wide layouts may visually pack saved Bottom widgets into spare side lanes. Their saved zone remains Bottom. */
-.widget-zone.is-adaptive-fill{align-content:start}
-
 </style>
 </head>
 <body>
@@ -879,15 +859,15 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
       <select id="spaceFilter" class="native-context-select" aria-label="Data space"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select>
     </div>
   </header>
-  <div class="chrono-strip chrono-top" id="chronoStrip" aria-label="Melbourne local time">
+  <div class="chrono-strip" id="chronoStrip" aria-label="Melbourne and UTC time">
     <div class="chrono-block"><span>MEL</span><strong id="melClock">--:--:--</strong><em id="melDate">---</em></div>
+    <i></i>
+    <div class="chrono-block"><span>UTC</span><strong id="utcClock">--:--:--</strong><em id="utcDate">---</em></div>
   </div>
   <aside class="utility-pane" id="utilityPane" aria-live="polite"><div id="utilityPaneContent"></div></aside><div class="tool-snap-hint" aria-hidden="true"></div><div class="widget-snap-preview" aria-hidden="true"></div>
 
   <main class="main" id="app"></main>
-  <footer class="chrono-strip chrono-bottom" id="chronoStripBottom" aria-label="UTC time footer">
-    <div class="chrono-block"><span>UTC</span><strong id="utcClockBottom">--:--:--</strong><em id="utcDateBottom">---</em></div>
-  </footer>
+  
 </div>
 
 <div class="overlay" id="captureOverlay">
@@ -952,7 +932,7 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='0.11.2'; const DATA_VERSION=6; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.11.0'; const DATA_VERSION=6; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -964,7 +944,7 @@ const todayKey=()=>new Date().toLocaleDateString('en-CA');
 const demo={
   version:DATA_VERSION,
   meta:{createdAt:now(),lastSavedAt:now(),lastAppVersion:APP_VERSION},
-  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',activeProfile:'me',mapDepth:4,mapLabelOpacity:.72,mapEdgeOpacity:.32,mapViewMode:'nodes',predictionSeed:1,selectedArea:'',editorTab:'structure',mapLayoutVersion:10,theme:'day',calendarCursor:'',widgetLayout:{},widgetFloat:{}},
+  settings:{activeTab:'home',subtab:'overview',spaceFilter:'all',activeProfile:'me',mapDepth:4,mapLabelOpacity:.72,mapEdgeOpacity:.32,mapViewMode:'nodes',selectedArea:'',editorTab:'structure',mapLayoutVersion:10,theme:'day',calendarCursor:'',widgetLayout:{},widgetFloat:{}},
   profiles:[{id:'me',name:'Me',kind:'person'},{id:'alyssa',name:'Alyssa',kind:'person'},{id:'us',name:'Us',kind:'shared'}],
   areas:[
     {id:'work',name:'Work',code:'WRK',space:'work',level:2,parentId:'atlas',description:'Professional operating picture, development and delivery.',x:600,y:90,status:'active'},
@@ -1246,7 +1226,7 @@ function migrateData(s){
     s.settings=s.settings||{};
     if(!s.settings.widgetLayout||typeof s.settings.widgetLayout!=='object')s.settings.widgetLayout={};
     if(!s.settings.widgetFloat||typeof s.settings.widgetFloat!=='object')s.settings.widgetFloat={};
-    if(!['nodes','list','predict'].includes(s.settings.mapViewMode))s.settings.mapViewMode='nodes';if(!Number.isFinite(Number(s.settings.predictionSeed)))s.settings.predictionSeed=1;
+    if(!['nodes','list'].includes(s.settings.mapViewMode))s.settings.mapViewMode='nodes';
     s.settings.sidePane='';
   }
   s.version=DATA_VERSION;
@@ -1261,10 +1241,10 @@ function ensureState(s){
   if(!s.settings)s.settings=clone(demo.settings);
   for(const k of ['areas','links','projects','notes','daily','calendar','profiles','quickTodos','activity']) if(!Array.isArray(s[k])) s[k]=[];
   s.profiles.forEach(p=>{if(!s.areas.some(a=>(a.profile||'me')===p.id))s.areas.push(...profileStarterAreas(p.id,p.kind))});if(!s.scratch||typeof s.scratch!=='object'||Array.isArray(s.scratch))s.scratch={};s.profiles.forEach(p=>{if(typeof s.scratch[p.id]!=='string')s.scratch[p.id]=''});
-  s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.sidePane=typeof s.settings.sidePane==='string'?s.settings.sidePane:''; s.settings.toolPaneFloating=!!s.settings.toolPaneFloating; s.settings.toolPaneDock=['top','left','right','float'].includes(s.settings.toolPaneDock)?s.settings.toolPaneDock:(s.settings.toolPaneFloating?'float':'top'); s.settings.toolPaneFloating=s.settings.toolPaneDock==='float'; s.settings.toolPaneX=Number.isFinite(Number(s.settings.toolPaneX))?Number(s.settings.toolPaneX):0; s.settings.toolPaneY=Number.isFinite(Number(s.settings.toolPaneY))?Number(s.settings.toolPaneY):0; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.activeProfile=s.settings.activeProfile||'me'; s.settings.calendarCursor=s.settings.calendarCursor||''; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.mapLabelOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapLabelOpacity))?Number(s.settings.mapLabelOpacity):.72)); s.settings.mapEdgeOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapEdgeOpacity))?Number(s.settings.mapEdgeOpacity):.32)); s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day'; s.settings.mapViewMode=['nodes','list','predict'].includes(s.settings.mapViewMode)?s.settings.mapViewMode:'nodes';s.settings.predictionSeed=Number.isFinite(Number(s.settings.predictionSeed))?Number(s.settings.predictionSeed):1; if(!s.settings.widgetLayout||typeof s.settings.widgetLayout!=='object')s.settings.widgetLayout={}; if(!s.settings.widgetFloat||typeof s.settings.widgetFloat!=='object')s.settings.widgetFloat={}; s.settings.sidePane='';
+  s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.sidePane=typeof s.settings.sidePane==='string'?s.settings.sidePane:''; s.settings.toolPaneFloating=!!s.settings.toolPaneFloating; s.settings.toolPaneDock=['top','left','right','float'].includes(s.settings.toolPaneDock)?s.settings.toolPaneDock:(s.settings.toolPaneFloating?'float':'top'); s.settings.toolPaneFloating=s.settings.toolPaneDock==='float'; s.settings.toolPaneX=Number.isFinite(Number(s.settings.toolPaneX))?Number(s.settings.toolPaneX):0; s.settings.toolPaneY=Number.isFinite(Number(s.settings.toolPaneY))?Number(s.settings.toolPaneY):0; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.activeProfile=s.settings.activeProfile||'me'; s.settings.calendarCursor=s.settings.calendarCursor||''; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.mapLabelOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapLabelOpacity))?Number(s.settings.mapLabelOpacity):.72)); s.settings.mapEdgeOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapEdgeOpacity))?Number(s.settings.mapEdgeOpacity):.32)); s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day'; s.settings.mapViewMode=['nodes','list'].includes(s.settings.mapViewMode)?s.settings.mapViewMode:'nodes'; if(!s.settings.widgetLayout||typeof s.settings.widgetLayout!=='object')s.settings.widgetLayout={}; if(!s.settings.widgetFloat||typeof s.settings.widgetFloat!=='object')s.settings.widgetFloat={}; s.settings.sidePane='';
   if(Number(s.settings.mapLayoutVersion||0)<3) s=applyWideMapLayout(s);
-  const needsSphere=Number(s.settings.mapLayoutVersion||0)<11||s.areas.some(a=>!Number.isFinite(Number(a.x))||!Number.isFinite(Number(a.y))||!Number.isFinite(Number(a.mapZ)));
-  if(needsSphere){s.profiles.forEach(p=>organiseSphericalLayout(s,p.id));s.settings.mapLayoutVersion=11}
+  const needsSphere=Number(s.settings.mapLayoutVersion||0)<10||s.areas.some(a=>!Number.isFinite(Number(a.x))||!Number.isFinite(Number(a.y))||!Number.isFinite(Number(a.mapZ)));
+  if(needsSphere){s.profiles.forEach(p=>organiseSphericalLayout(s,p.id));s.settings.mapLayoutVersion=10}
   s=normaliseAreaCodes(s);
   return s;
 }
@@ -1379,7 +1359,7 @@ function getNext(scope){return visibleProjects(scope).filter(p=>p.status==='ACTI
 function getWatch(scope){return visibleProjects(scope).filter(p=>p.status!=='COMPLETE').flatMap(p=>(p.milestones||[]).filter(m=>m.current||(!m.done&&p.status==='WATCHING')).slice(0,1).map(m=>({name:m.title,meta:p.title,status:p.status,badge:m.current?'CURRENT':'WATCH'}))).slice(0,4)}
 
 function networkLegendHtml(){const roots=profileAreas().filter(a=>a.level===2&&spaceAllows(a.space)).sort((a,b)=>a.name.localeCompare(b.name)).slice(0,6);return roots.map(a=>`<span><i style="background:${domainHueFor(a)}"></i>${esc(a.code)}</span>`).join('')}
-function networkPanel(scope=null){const hero=!scope;const count=graphData(scope).nodes.length;return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2></div>`:''}<div class="map-wrap"><div class="map-meta"><span>MAP</span><span>${esc(activeProfile().name.toUpperCase())}</span><span>${count} NODES</span><span id="mapInspect"></span></div><svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="map-hud"><div class="zoom-controls" aria-label="Map zoom controls"><button type="button" data-map-zoom="out" aria-label="Zoom out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset" aria-label="Fit network"><span id="zoomValue">FIT</span></button><button type="button" data-map-zoom="in" aria-label="Zoom in">+</button></div><div class="zoom-controls" aria-label="Map layout controls"><button type="button" class="zoom-reset" data-map-layout="organise" aria-label="Reform constellation">Reform</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}" /><strong id="depthValue">${state.settings.mapDepth}</strong></div><div class="depth map-opacity">Type <input id="labelOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapLabelOpacity??.78)*100)}" /><strong id="labelOpacityValue">${Math.round((state.settings.mapLabelOpacity??.78)*100)}</strong></div><div class="depth map-opacity">Links <input id="edgeOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapEdgeOpacity??.38)*100)}" /><strong id="edgeOpacityValue">${Math.round((state.settings.mapEdgeOpacity??.38)*100)}</strong></div></div></div></div></section>`}
+function networkPanel(scope=null){const hero=!scope;const count=graphData(scope).nodes.length;return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2></div>`:''}<div class="map-wrap"><div class="map-meta"><span>MAP</span><span>${esc(activeProfile().name.toUpperCase())}</span><span>${count} NODES</span><span id="mapInspect"></span></div><svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="map-hud"><div class="zoom-controls" aria-label="Map zoom controls"><button type="button" data-map-zoom="out" aria-label="Zoom out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset" aria-label="Fit network"><span id="zoomValue">FIT</span></button><button type="button" data-map-zoom="in" aria-label="Zoom in">+</button></div><div class="zoom-controls" aria-label="Map layout controls"><button type="button" class="zoom-reset" data-map-layout="organise" aria-label="Reform constellation">Reform</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}" /><strong id="depthValue">${state.settings.mapDepth}</strong></div><div class="depth map-opacity">Type <input id="labelOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapLabelOpacity||.78)*100)}" /><strong id="labelOpacityValue">${Math.round((state.settings.mapLabelOpacity||.78)*100)}</strong></div><div class="depth map-opacity">Links <input id="edgeOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapEdgeOpacity||.38)*100)}" /><strong id="edgeOpacityValue">${Math.round((state.settings.mapEdgeOpacity||.38)*100)}</strong></div></div></div></div></section>`}
 function foldPanel(title,code,body,open=false){return `<details class="fold" ${open?'open':''}><summary><span>${esc(title)}</span></summary><div class="fold-body">${body}</div></details>`}
 function queueRows(items){return `<div class="queue">${items.length?items.map(i=>`<div class="qrow"><i class="dot ${statusDot(i.status)}"></i><div><div class="qname">${esc(i.name)}</div><div class="qmeta">${esc(i.meta)}</div></div><span class="badge">${esc(i.badge||'OPEN')}</span></div>`).join(''):'<div class="empty">Nothing here.</div>'}</div>`}
 function upcomingCalendarHtml(){const start=todayKey();const end=new Date();end.setDate(end.getDate()+30);const endKey=end.toLocaleDateString('en-CA');const ev=state.calendar.filter(e=>profileAllows(e.profile)&&e.date>=start&&e.date<=endKey).sort((a,b)=>(a.date+(a.startTime||'')).localeCompare(b.date+(b.startTime||''))).slice(0,8);return `<div class="queue">${ev.length?ev.map(e=>`<div class="qrow"><i class="dot" style="background:${eventHue(e)}"></i><div><div class="qname">${esc(e.title)}${e.entangledId||e.sourceEventId?' ⟷':''}</div><div class="qmeta">${esc(e.date)}${e.startTime?` · ${esc(e.startTime)}`:''}${e.areaId?` · ${esc(areaById(e.areaId)?.name||'')}`:e.sourceAreaLabel?` · ${esc(e.sourceAreaLabel)}`:''}</div></div><span class="badge">${esc(profileById(e.profile).name)}</span></div>`).join(''):'<div class="empty">Nothing scheduled in the next 30 days.</div>'}</div>`}
@@ -1390,7 +1370,7 @@ function renderWorkspace(id){const el=document.getElementById('workspace');if(!e
 else if(st==='notes')el.innerHTML=`<section class="panel"><div class="panel-head"><h3>Notes</h3><button class="btn small primary" data-quick-add="note" data-area="${id}">+ Add Note</button></div>${notesHtml(visibleNotes(id))}</section>`;
 else if(st==='projects')el.innerHTML=`<section class="panel"><div class="panel-head"><h3>Projects</h3><button class="btn small primary" data-quick-add="project" data-area="${id}">+ New Project</button></div>${projectCards(id)}</section>`;
 else if(st==='milestones')el.innerHTML=`<section class="panel"><div class="panel-head"><h3>Milestones</h3><span class="code">ALL LINKED PROJECTS</span></div>${milestonesHtml(id)}</section>`;
-else if(st==='map'){el.innerHTML=networkPanel(id);if(state.settings.mapViewMode==='nodes')drawNetwork(id);else if(state.settings.mapViewMode==='predict')drawPredictionNetwork(id)}}
+else if(st==='map'){el.innerHTML=networkPanel(id);drawNetwork(id)}}
 function topicsHtml(id){const kids=childAreas(id);return `<div class="topic-grid">${kids.length?kids.map(k=>`<div class="topic" data-open-area="${k.id}"><div class="k">${esc(k.code)} · L${k.level}</div><strong>${esc(k.name)}</strong><span>${esc(k.description)}</span></div>`).join(''):'<div class="empty">No child topics yet.</div>'}</div>`}
 function projectCards(scope){const ps=visibleProjects(scope);return `<div class="cards">${ps.length?ps.map(p=>{const pc=projectProgress(p);return `<article class="card clickable" data-project="${p.id}"><div class="card-top"><div><div class="code">${esc(p.code)}</div><h4>${esc(p.title)}</h4></div><span class="badge">${esc(p.status)}</span></div><p>${esc(p.next||p.objective)}</p><div class="progress"><div class="bar" style="width:${pc}%"></div></div><div class="card-foot"><span>${pc}% milestone progress</span><span>${(p.milestones||[]).filter(m=>!m.done).length} open</span></div></article>`}).join(''):'<div class="empty" style="grid-column:1/-1">No projects in this area yet.</div>'}</div>`}
 function notesHtml(notes){return `<div class="notes-list">${notes.length?notes.map(n=>`<article class="note"><div class="note-top"><div class="note-title">${esc(n.title||'Untitled')}</div><span class="note-type">${esc(n.type)}</span></div><div class="note-body">${esc(n.body||'')}</div><div class="tags">${(n.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div><div class="meta">${fmtDate(n.createdAt)} · ${esc(areaById(n.topicId)?.name||areaById(n.areaId)?.name||'Inbox')}</div></article>`).join(''):'<div class="empty">No notes yet.</div>'}</div>`}
@@ -1434,42 +1414,26 @@ function visualRadius(n){return radius(n.level)*depthScale(n.z)}
 function sphereProject(theta,phi,r=292){const cr=Math.cos(phi),x=r*cr*Math.cos(theta),z=r*cr*Math.sin(theta),y=r*Math.sin(phi);const tilt=.07;return{x:600+x,y:340+y*.90+z*tilt,z}}
 function organiseSphericalLayout(s,profileId='me'){
   const areas=(s.areas||[]).filter(a=>(a.profile||'me')===profileId);if(!areas.length)return s;
-  const byId=Object.fromEntries(areas.map(a=>[a.id,a])),kids={};areas.forEach(a=>(kids[a.parentId||'atlas']??=[]).push(a));Object.values(kids).forEach(arr=>arr.sort((a,b)=>String(a.name).localeCompare(String(b.name))));
-  const roots=(kids.atlas||[]).slice(),cx=600,cy=340,rootCount=Math.max(1,roots.length),rootR=255;
-  const pref=['WRK','LIFE','CRTV','DAIL'];roots.sort((a,b)=>{const ai=pref.indexOf(a.code),bi=pref.indexOf(b.code);return (ai<0?99:ai)-(bi<0?99:bi)||a.name.localeCompare(b.name)});
-  const rootAngles=rootCount===4?[-2.24,-.74,.82,2.28]:roots.map((_,i)=>-Math.PI/2+i*Math.PI*2/rootCount);
-  const ideal={};
-  roots.forEach((r,i)=>{const a=rootAngles[i],rr=rootR+Math.min(44,(kids[r.id]||[]).length*8);ideal[r.id]={x:cx+Math.cos(a)*rr,y:cy+Math.sin(a)*rr*.73,z:Math.sin(a)*85};});
-  function placeLocal(parent,heading){
-    const cs=kids[parent.id]||[];if(!cs.length)return;
-    const n=cs.length,plevel=Number(parent.level||2),childLevel=Number(cs[0]?.level||plevel+1);
-    let ring=childLevel===3?112:childLevel===4?78:54;
-    ring+=Math.max(0,n-5)*6;
-    let span;
-    if(plevel===2)span=n>=5?Math.PI*1.48:n===4?Math.PI*1.24:n===3?Math.PI*.96:n===2?Math.PI*.66:0;
-    else span=n>=5?Math.PI*1.78:n===4?Math.PI*1.48:n===3?Math.PI*1.16:n===2?Math.PI*.78:0;
-    const start=heading-span/2;
-    cs.forEach((c,i)=>{const a=n===1?heading:start+(span*i/Math.max(1,n-1));const p=ideal[parent.id]||{x:parent.x||cx,y:parent.y||cy,z:0};ideal[c.id]={x:p.x+Math.cos(a)*ring,y:p.y+Math.sin(a)*ring,z:(p.z||0)*.52+stableOffset(c.id,60)};placeLocal(c,a)});
+  const kids={};areas.forEach(a=>{const p=a.parentId||'atlas';(kids[p]||(kids[p]=[])).push(a)});Object.values(kids).forEach(arr=>arr.sort((a,b)=>String(a.name).localeCompare(String(b.name))));
+  const pref=['WRK','LIFE','CRTV','DAIL'];const roots=(kids.atlas||[]).slice().sort((a,b)=>{const ai=pref.indexOf(a.code),bi=pref.indexOf(b.code);return (ai<0?99:ai)-(bi<0?99:bi)||a.name.localeCompare(b.name)});
+  const countDesc=id=>(kids[id]||[]).reduce((n,c)=>n+1+countDesc(c.id),0);
+  const ideal={},byId=Object.fromEntries(areas.map(a=>[a.id,a])),cx=600,cy=340,rootN=Math.max(1,roots.length);
+  const rootAngles=rootN===4?[-2.36,-.78,.80,2.36]:roots.map((_,i)=>-Math.PI/2+(i/rootN)*Math.PI*2);
+  const placeChildren=(parent,outward,level)=>{const cs=kids[parent.id]||[];if(!cs.length)return;const n=cs.length,desc=countDesc(parent.id);const localR=(level===3?112:level===4?84:62)+Math.min(34,Math.max(0,n-2)*7+Math.min(18,desc*1.6));const span=n>=6?Math.PI*1.55:n>=4?Math.PI*1.18:n===3?Math.PI*.92:n===2?Math.PI*.64:0;cs.forEach((c,i)=>{const jitter=stableOffset(profileId+'|'+c.id,.10);const a=n===1?outward+jitter:outward-span/2+(span*i/(n-1))+jitter;const p=ideal[parent.id];ideal[c.id]={x:p.x+Math.cos(a)*localR,y:p.y+Math.sin(a)*localR,z:(p.z||0)*.68+stableOffset(c.id,95)};placeChildren(c,a,level+1)});};
+  roots.forEach((r,i)=>{const a=rootAngles[i%rootAngles.length]+stableOffset(r.id,.055),weight=countDesc(r.id);const rx=318+Math.min(42,weight*3.4),ry=205+Math.min(28,weight*2.1);ideal[r.id]={x:cx+Math.cos(a)*rx,y:cy+Math.sin(a)*ry,z:Math.sin(a*1.55)*145};placeChildren(r,a,3)});
+  areas.forEach((a,i)=>{const p=ideal[a.id]||{x:cx+Math.cos(i/areas.length*Math.PI*2)*280,y:cy+Math.sin(i/areas.length*Math.PI*2)*190,z:stableOffset(a.id,120)};a.x=p.x;a.y=p.y;a.mapZ=p.z||0});
+  const treeLinks=areas.filter(a=>a.parentId&&a.parentId!=='atlas'&&byId[a.parentId]).map(a=>({a:byId[a.parentId],b:a}));
+  const labelWidth=a=>Math.max(24,Math.min(58,String(a.code||'').length*6.1));
+  for(let iter=0;iter<620;iter++){
+    // Edge springs keep clusters coherent without forcing rigid spokes.
+    treeLinks.forEach(({a,b})=>{let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.001;const target=b.level===3?116:b.level===4?88:66;const pull=(d-target)*.016;const nx=dx/d,ny=dy/d;const aw=a.level===2?.22:.42,bw=b.level===2?.22:.58;a.x+=nx*pull*aw;a.y+=ny*pull*aw;b.x-=nx*pull*bw;b.y-=ny*pull*bw});
+    // Collision + short-range repulsion. Labels are part of the collision envelope.
+    for(let i=0;i<areas.length;i++)for(let j=i+1;j<areas.length;j++){const a=areas[i],b=areas[j];let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.001;const ra=radius(a.level)*depthScale(a.mapZ),rb=radius(b.level)*depthScale(b.mapZ);let min=ra+rb+36;if(Math.abs(dy)<25)min=Math.max(min,(labelWidth(a)+labelWidth(b))*.56+24);if(d<min){const nx=dx/d,ny=dy/d,push=(min-d)*.53+.18,ma=a.level===2?.30:1,mb=b.level===2?.30:1,tot=ma+mb;a.x-=nx*push*(ma/tot);a.y-=ny*push*(ma/tot);b.x+=nx*push*(mb/tot);b.y+=ny*push*(mb/tot)}else if(d<118){const push=(118-d)*.0018, nx=dx/d,ny=dy/d;a.x-=nx*push;a.y-=ny*push;b.x+=nx*push;b.y+=ny*push}}
+    // Gentle attraction to the orbital seed prevents branches drifting into a grid.
+    areas.forEach(a=>{const p=ideal[a.id];const k=a.level===2?.075:a.level===3?.022:.012;a.x+=(p.x-a.x)*k;a.y+=(p.y-a.y)*k});
   }
-  roots.forEach((r,i)=>placeLocal(r,rootAngles[i]));
-  areas.forEach((a,i)=>{const p=ideal[a.id]||{x:cx+Math.cos(i/areas.length*Math.PI*2)*260,y:cy+Math.sin(i/areas.length*Math.PI*2)*185,z:0};a.x=p.x;a.y=p.y;a.mapZ=p.z||0});
-  const tree=areas.filter(a=>a.parentId&&a.parentId!=='atlas'&&byId[a.parentId]).map(a=>({p:byId[a.parentId],c:a}));
-  const target=c=>Number(c.level)===3?112:Number(c.level)===4?80:56;
-  const labelW=a=>Math.max(25,Math.min(64,String(a.code||'').length*6.5));
-  for(let iter=0;iter<520;iter++){
-    // Strong local springs: direct relationships should remain visibly clustered.
-    tree.forEach(({p,c})=>{let dx=c.x-p.x,dy=c.y-p.y,d=Math.hypot(dx,dy)||1,want=target(c),err=d-want,nx=dx/d,ny=dy/d,k=.045;const pm=p.level===2?.20:.34,cm=.72;p.x+=nx*err*k*pm;p.y+=ny*err*k*pm;c.x-=nx*err*k*cm;c.y-=ny*err*k*cm});
-    // Keep siblings on an even local halo around the parent.
-    Object.keys(kids).forEach(pid=>{if(pid==='atlas')return;const cs=kids[pid]||[],p=byId[pid];if(!p||cs.length<2)return;const desired=target(cs[0]);cs.forEach(c=>{let dx=c.x-p.x,dy=c.y-p.y,d=Math.hypot(dx,dy)||1;const f=(desired-d)*.018;c.x+=dx/d*f;c.y+=dy/d*f})});
-    // Collision envelope includes code labels.
-    for(let i=0;i<areas.length;i++)for(let j=i+1;j<areas.length;j++){
-      const a=areas[i],b=areas[j];let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||.001;const ra=radius(a.level),rb=radius(b.level);let min=ra+rb+28;if(Math.abs(dy)<24)min=Math.max(min,(labelW(a)+labelW(b))*.50+20);if(d<min){const nx=dx/d,ny=dy/d,push=(min-d)*.48+.08,am=a.level===2?.24:1,bm=b.level===2?.24:1,tot=am+bm;a.x-=nx*push*am/tot;a.y-=ny*push*am/tot;b.x+=nx*push*bm/tot;b.y+=ny*push*bm/tot}
-    }
-    // Very gentle return to canonical territories so the map stays orbital rather than drifting.
-    areas.forEach(a=>{const home=ideal[a.id];if(!home)return;const k=a.level===2?.08:a.level===3?.026:.014;a.x+=(home.x-a.x)*k;a.y+=(home.y-a.y)*k});
-  }
-  areas.forEach(a=>{a.x=Math.round(a.x*10)/10;a.y=Math.round(a.y*10)/10;a.mapZ=Math.round((a.mapZ||0)*10)/10});
-  s.settings=s.settings||{};s.settings.mapLayoutVersion=11;return s;
+  areas.forEach(a=>{a.x=Math.round(a.x*10)/10;a.y=Math.round(a.y*10)/10;a.mapZ=Math.round(Number(a.mapZ||0)*10)/10});
+  s.settings=s.settings||{};s.settings.mapLayoutVersion=10;return s;
 }
 const mapCameras={};
 function mapCamera(scope){const key=`${state.settings.activeProfile||'me'}:${scope||'home'}`;if(!mapCameras[key])mapCameras[key]={cx:600,cy:340,zoom:1,needsFit:true};return mapCameras[key]}
@@ -1484,37 +1448,17 @@ function clientToSvg(svg,clientX,clientY){const p=svg.createSVGPoint();p.x=clien
 function seeded(seed){let h=2166136261;for(const c of String(seed))h=Math.imul(h^c.charCodeAt(0),16777619);return()=>((h=Math.imul(h^(h>>>13),1274126177))>>>0)/4294967296}
 function svgEl(tag,attrs={}){const el=document.createElementNS(SVG_NS,tag);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));return el}
 function straightPath(a,b){const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1;const ar=visualRadius(a)+1.5,br=visualRadius(b)+1.5;const x1=a.x+(dx/d)*ar,y1=a.y+(dy/d)*ar,x2=b.x-(dx/d)*br,y2=b.y-(dy/d)*br;return `M ${x1.toFixed(2)} ${y1.toFixed(2)} L ${x2.toFixed(2)} ${y2.toFixed(2)}`}
-function drawNetwork(scope){const svg=document.getElementById('network');if(!svg)return;svg.dataset.scope=scope||'';svg.style.setProperty('--map-label-opacity',String(state.settings.mapLabelOpacity??.78));svg.style.setProperty('--map-edge-opacity',String(state.settings.mapEdgeOpacity??.38));svg.style.setProperty('--map-cross-opacity',String((state.settings.mapEdgeOpacity??.38)*.62));svg.innerHTML='';const{nodes,links}=graphData(scope);const cam=mapCamera(scope);if(cam.needsFit)setFitCamera(scope,nodes);applyMapView(svg,scope);const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
+function drawNetwork(scope){const svg=document.getElementById('network');if(!svg)return;svg.dataset.scope=scope||'';svg.style.setProperty('--map-label-opacity',String(state.settings.mapLabelOpacity||.78));svg.style.setProperty('--map-edge-opacity',String(state.settings.mapEdgeOpacity||.38));svg.innerHTML='';const{nodes,links}=graphData(scope);const cam=mapCamera(scope);if(cam.needsFit)setFitCamera(scope,nodes);applyMapView(svg,scope);const byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
   links.slice().sort((l1,l2)=>{const z1=((byId[l1.source]?.z||0)+(byId[l1.target]?.z||0))/2,z2=((byId[l2.source]?.z||0)+(byId[l2.target]?.z||0))/2;return z1-z2}).forEach(l=>{const a=byId[l.source],b=byId[l.target];if(!a||!b)return;const path=svgEl('path',{d:straightPath(a,b),class:`edge ${l.type==='cross'?'cross':'tree'}`,'data-source':l.source,'data-target':l.target});if(l.type==='cross')path.style.stroke=a.hue||domainHueFor(a);svg.appendChild(path)});
   const parents=new Set(links.filter(l=>l.type!=='cross').map(l=>l.source));nodes.slice().sort((a,b)=>(a.z||0)-(b.z||0)).forEach(n=>{const r=visualRadius(n),zNorm=Math.max(-1,Math.min(1,(n.z||0)/280));const g=svgEl('g',{class:`node level${n.level} ${n.id===scope?'active':''} ${n.note?'note':''} ${parents.has(n.id)?'has-children':''} ${zNorm<-.18?'is-back':zNorm>.18?'is-front':''}`});g.dataset.node=n.id;const disc=svgEl('circle',{cx:n.x,cy:n.y,r:r.toFixed(2),class:'node-disc'});g.appendChild(disc);const title=svgEl('title');title.textContent=n.name;g.appendChild(title);const gap=({2:18,3:16,4:14,5:11}[n.level]||14);const tx=svgEl('text',{x:n.x.toFixed(2),y:(n.y+r+gap).toFixed(2),class:'label','dominant-baseline':'hanging'});tx.textContent=n.code||makeNodeCode(n.name);g.appendChild(tx);svg.appendChild(g)});
   const inspect=document.getElementById('mapInspect');
   const focusNode=(id)=>{const connected=new Set([id]);svg.querySelectorAll('.edge').forEach(e=>{if(e.dataset.source===id)connected.add(e.dataset.target);if(e.dataset.target===id)connected.add(e.dataset.source)});svg.classList.add('has-focus');svg.querySelectorAll('.node').forEach(el=>el.classList.toggle('focus-near',connected.has(el.dataset.node)));svg.querySelectorAll('.edge').forEach(el=>el.classList.toggle('focus-near',el.dataset.source===id||el.dataset.target===id));const n=byId[id];if(inspect&&n)inspect.textContent=`${n.code||makeNodeCode(n.name)} / ${String(n.name||'').toUpperCase()}`};
   const clearFocus=()=>{svg.classList.remove('has-focus');svg.querySelectorAll('.focus-near').forEach(el=>el.classList.remove('focus-near'));if(inspect)inspect.textContent=''};
   svg.querySelectorAll('.node').forEach(el=>{el.addEventListener('pointerenter',()=>focusNode(el.dataset.node));el.addEventListener('pointerleave',clearFocus)});
-  bindNetwork(scope);const dr=document.getElementById('depthRange');if(dr){dr.oninput=e=>{state.settings.mapDepth=Number(e.target.value);document.getElementById('depthValue').textContent=e.target.value;drawNetwork(scope);save()}}const lr=document.getElementById('labelOpacityRange');if(lr){lr.oninput=e=>{state.settings.mapLabelOpacity=Number(e.target.value)/100;document.getElementById('labelOpacityValue').textContent=e.target.value;const net=document.getElementById('network');if(net)net.style.setProperty('--map-label-opacity',String(state.settings.mapLabelOpacity));save()}}const er=document.getElementById('edgeOpacityRange');if(er){er.oninput=e=>{state.settings.mapEdgeOpacity=Number(e.target.value)/100;document.getElementById('edgeOpacityValue').textContent=e.target.value;const net=document.getElementById('network');if(net){net.style.setProperty('--map-edge-opacity',String(state.settings.mapEdgeOpacity));net.style.setProperty('--map-cross-opacity',String(state.settings.mapEdgeOpacity*.62))}save()}}document.querySelectorAll('[data-map-zoom]').forEach(b=>{b.onclick=()=>{const a=b.dataset.mapZoom;if(a==='in')zoomMap(scope,1.2);else if(a==='out')zoomMap(scope,1/1.2);else resetMapView(scope)}});document.querySelectorAll('[data-map-layout]').forEach(b=>{b.onclick=()=>{organiseSphericalLayout(state,state.settings.activeProfile||'me');const gd=graphData(scope);setFitCamera(scope,gd.nodes);save();drawNetwork(scope);toast('Constellation reformed')}})}
+  bindNetwork(scope);const dr=document.getElementById('depthRange');if(dr){dr.oninput=e=>{state.settings.mapDepth=Number(e.target.value);document.getElementById('depthValue').textContent=e.target.value;drawNetwork(scope);save()}}const lr=document.getElementById('labelOpacityRange');if(lr){lr.oninput=e=>{state.settings.mapLabelOpacity=Number(e.target.value)/100;document.getElementById('labelOpacityValue').textContent=e.target.value;const net=document.getElementById('network');if(net)net.style.setProperty('--map-label-opacity',String(state.settings.mapLabelOpacity));save()}}const er=document.getElementById('edgeOpacityRange');if(er){er.oninput=e=>{state.settings.mapEdgeOpacity=Number(e.target.value)/100;document.getElementById('edgeOpacityValue').textContent=e.target.value;const net=document.getElementById('network');if(net)net.style.setProperty('--map-edge-opacity',String(state.settings.mapEdgeOpacity));save()}}document.querySelectorAll('[data-map-zoom]').forEach(b=>{b.onclick=()=>{const a=b.dataset.mapZoom;if(a==='in')zoomMap(scope,1.2);else if(a==='out')zoomMap(scope,1/1.2);else resetMapView(scope)}});document.querySelectorAll('[data-map-layout]').forEach(b=>{b.onclick=()=>{organiseSphericalLayout(state,state.settings.activeProfile||'me');const gd=graphData(scope);setFitCamera(scope,gd.nodes);save();drawNetwork(scope);toast('Constellation reformed')}})}
 
 function shortLabel(s,l){const lim={1:20,2:18,3:20,4:20,5:16}[l]||18;const v=String(s||'');return v.length>lim?v.slice(0,lim-1)+'…':v}
-function bindNetwork(scope){
-  const svg=document.getElementById('network');if(!svg||svg.dataset.bound==='yes')return;svg.dataset.bound='yes';
-  svg.addEventListener('pointerdown',e=>{
-    const g=e.target.closest?.('.node');
-    if(!g){const cam=mapCamera(svg.dataset.scope||null);dragging={kind:'pan',startX:e.clientX,startY:e.clientY,origCx:cam.cx,origCy:cam.cy,moved:false,pointerId:e.pointerId};svg.classList.add('is-panning');svg.setPointerCapture(e.pointerId);return}
-    const id=g.dataset.node;if(id.startsWith('n')){dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId);return}
-    const a=areaById(id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY);
-    const direct=profileAreas().filter(x=>x.parentId===id&&areaAllows(x));const group=[a,...direct];const origins=Object.fromEntries(group.map(x=>[x.id,{x:x.x,y:x.y}]));
-    dragging={kind:'node-group',id,startX:e.clientX,startY:e.clientY,startSvgX:p.x,startSvgY:p.y,origins,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId)
-  });
-  svg.addEventListener('pointermove',e=>{
-    if(!dragging)return;
-    if(dragging.kind==='pan'){const cam=mapCamera(svg.dataset.scope||null),v=mapView(svg.dataset.scope||null),rect=svg.getBoundingClientRect();const dx=(e.clientX-dragging.startX)*v.w/rect.width,dy=(e.clientY-dragging.startY)*v.h/rect.height;if(Math.abs(dx)+Math.abs(dy)>2)dragging.moved=true;cam.cx=dragging.origCx-dx;cam.cy=dragging.origCy-dy;applyMapView(svg,svg.dataset.scope||null);return}
-    if(dragging.id.startsWith('n'))return;
-    const p=clientToSvg(svg,e.clientX,e.clientY),dx=p.x-dragging.startSvgX,dy=p.y-dragging.startSvgY;if(Math.abs(e.clientX-dragging.startX)+Math.abs(e.clientY-dragging.startY)>3)dragging.moved=true;
-    Object.entries(dragging.origins||{}).forEach(([id,o])=>{const a=areaById(id);if(a){a.x=o.x+dx;a.y=o.y+dy}});mapCamera(svg.dataset.scope||null).needsFit=false;drawNetwork(svg.dataset.scope||null)
-  });
-  svg.addEventListener('pointerup',e=>{if(!dragging)return;const d=dragging;try{svg.releasePointerCapture(d.pointerId)}catch(_){ }dragging=null;svg.classList.remove('is-panning');if(d.kind==='pan')return;const moved=d.moved,id=d.id;if(moved){save();return}if(id.startsWith('n'))return;const a=areaById(id);if(a&&areaAllows(a)){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='overview';renderTabs();if(a.level>=3)renderArea(a.id);else renderAll();save()}});
-  svg.addEventListener('pointercancel',()=>{dragging=null;svg.classList.remove('is-panning')});
-  svg.addEventListener('wheel',e=>{if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();zoomMap(svg.dataset.scope||null,e.deltaY<0?1.12:1/1.12,e.clientX,e.clientY)},{passive:false})
-}
+function bindNetwork(scope){const svg=document.getElementById('network');if(!svg||svg.dataset.bound==='yes')return;svg.dataset.bound='yes';svg.addEventListener('pointerdown',e=>{const g=e.target.closest?.('.node');if(!g){const cam=mapCamera(svg.dataset.scope||null);dragging={kind:'pan',startX:e.clientX,startY:e.clientY,origCx:cam.cx,origCy:cam.cy,moved:false,pointerId:e.pointerId};svg.classList.add('is-panning');svg.setPointerCapture(e.pointerId);return}const id=g.dataset.node;if(id.startsWith('n')){dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId);return}const a=areaById(id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY);dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,startSvgX:p.x,startSvgY:p.y,origX:a.x,origY:a.y,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId)});svg.addEventListener('pointermove',e=>{if(!dragging)return;if(dragging.kind==='pan'){const cam=mapCamera(svg.dataset.scope||null),v=mapView(svg.dataset.scope||null),rect=svg.getBoundingClientRect();const dx=(e.clientX-dragging.startX)*v.w/rect.width,dy=(e.clientY-dragging.startY)*v.h/rect.height;if(Math.abs(dx)+Math.abs(dy)>2)dragging.moved=true;cam.cx=dragging.origCx-dx;cam.cy=dragging.origCy-dy;applyMapView(svg,svg.dataset.scope||null);return}if(dragging.id.startsWith('n'))return;const a=areaById(dragging.id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY),dx=p.x-dragging.startSvgX,dy=p.y-dragging.startSvgY;if(Math.abs(e.clientX-dragging.startX)+Math.abs(e.clientY-dragging.startY)>3)dragging.moved=true;a.x=dragging.origX+dx;a.y=dragging.origY+dy;mapCamera(svg.dataset.scope||null).needsFit=false;drawNetwork(svg.dataset.scope||null)});svg.addEventListener('pointerup',e=>{if(!dragging)return;const d=dragging;try{svg.releasePointerCapture(d.pointerId)}catch(_){ }dragging=null;svg.classList.remove('is-panning');if(d.kind==='pan')return;const moved=d.moved,id=d.id;if(moved){save();return}if(id.startsWith('n'))return;const a=areaById(id);if(a&&areaAllows(a)){state.settings.activeTab=getTopDomain(a)?.id||a.id;state.settings.selectedArea=a.id;state.settings.subtab='overview';renderTabs();if(a.level>=3)renderArea(a.id);else renderAll();save()}});svg.addEventListener('pointercancel',()=>{dragging=null;svg.classList.remove('is-panning')});svg.addEventListener('wheel',e=>{if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();zoomMap(svg.dataset.scope||null,e.deltaY<0?1.12:1/1.12,e.clientX,e.clientY)},{passive:false})}
 function getTopDomain(a){let cur=a;while(cur&&cur.level>2)cur=areaById(cur.parentId);return cur}
 
 function openProject(id){const p=projectById(id);if(!p)return;activeProjectId=id;document.getElementById('projectCode').textContent=`${p.code} / ${p.status}`;document.getElementById('projectTitle').textContent=p.title;document.getElementById('projectBody').innerHTML=`<div class="form"><div class="row2"><div><div class="code">OBJECTIVE</div><p style="font-size:12px;line-height:1.5">${esc(p.objective)}</p></div><div><div class="code">NEXT MOVE</div><p style="font-size:12px;line-height:1.5">${esc(p.next)}</p></div></div><div><div class="code">MILESTONES</div>${milestonesHtmlForProject(p)}</div><div><div class="code">TASKS</div><div class="mini-list">${(p.tasks||[]).map(t=>`<label class="mini-row"><input type="checkbox" data-project-task="${t.id}" ${t.done?'checked':''}/><span>${esc(t.title)}</span><span class="badge">${t.done?'DONE':'OPEN'}</span></label>`).join('')}</div></div><div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></div>`;openOverlay('projectOverlay')}
@@ -1669,7 +1613,7 @@ async function handleEditorAction(b){const a=b.dataset.edAction;
 }
 
 
-/* Atlas 0.11.1 · Widget workspace + branch list + dual clocks */
+/* Atlas 0.11.0 · Widget workspace + branch list + dual clocks */
 const ATLAS_WIDGETS={
   scratch:{title:'Scratch',code:'NTS',zone:'top'},todo:{title:'To-do',code:'TODO',zone:'left'},upcoming:{title:'Upcoming',code:'UP',zone:'left'},calendar:{title:'Calendar',code:'CAL',zone:'right'},
   active:{title:'Active now',code:'NOW',zone:'left'},milestones:{title:'Milestones',code:'MILE',zone:'bottom'},projects:{title:'Projects',code:'PROJ',zone:'bottom'},notes:{title:'Recent notes',code:'NOTE',zone:'right'},log:{title:'System log',code:'LOG',zone:'right'}
@@ -1678,7 +1622,7 @@ function defaultWidgetLayout(){return{scratch:{open:true,zone:'top',order:0},act
 function ensureWidgetSettings(){
   if(!state?.settings)return; if(!state.settings.widgetLayout||typeof state.settings.widgetLayout!=='object')state.settings.widgetLayout={}; if(!state.settings.widgetFloat||typeof state.settings.widgetFloat!=='object')state.settings.widgetFloat={};
   const defs=defaultWidgetLayout();Object.keys(ATLAS_WIDGETS).forEach(id=>{const cur=state.settings.widgetLayout[id]||{};state.settings.widgetLayout[id]={open:typeof cur.open==='boolean'?cur.open:defs[id].open,zone:['top','left','right','bottom','float'].includes(cur.zone)?cur.zone:defs[id].zone,order:Number.isFinite(Number(cur.order))?Number(cur.order):defs[id].order}});
-  state.settings.mapViewMode=['nodes','list','predict'].includes(state.settings.mapViewMode)?state.settings.mapViewMode:'nodes';state.settings.sidePane='';
+  state.settings.mapViewMode=['nodes','list'].includes(state.settings.mapViewMode)?state.settings.mapViewMode:'nodes';state.settings.sidePane='';
 }
 function renderUtilityPane(){const pane=document.getElementById('utilityPane');if(pane){pane.classList.remove('open','floating');pane.innerHTML='<div id="utilityPaneContent"></div>'}document.body.classList.remove('tool-pane-open');document.body.dataset.toolDock=''}
 function widgetCfg(id){ensureWidgetSettings();return state.settings.widgetLayout[id]}
@@ -1700,17 +1644,8 @@ function notesWidget(){const ns=visibleNotes(null).slice(0,8);return widgetShell
 function logWidget(){const rows=state.activity.filter(a=>profileAllows(a.profile)).slice(0,12);return widgetShell('log',rows.length?rows.map(a=>`<div class="widget-log"><time>${fmtDate(a.time)}<br>${fmtTime(a.time)}</time><span>${esc(a.text)}</span></div>`).join(''):'<div class="widget-empty">No system activity.</div>',`${rows.length} EVENTS`)}
 function calendarWidget(){const d=monthCursorDate(),year=d.getFullYear(),month=d.getMonth(),first=new Date(year,month,1),start=new Date(year,month,1-first.getDay()),events=calendarEvents();let cells='';for(let i=0;i<42;i++){const day=new Date(start);day.setDate(start.getDate()+i);const key=day.toLocaleDateString('en-CA'),out=day.getMonth()!==month,today=key===todayKey(),ev=events.some(e=>e.date===key);cells+=`<button type="button" class="mini-day ${out?'out':''} ${today?'today':''} ${ev?'has-event':''}" data-widget-cal-date="${key}">${day.getDate()}</button>`}const title=new Intl.DateTimeFormat('en-AU',{month:'short',year:'numeric'}).format(first);return widgetShell('calendar',`<div style="padding:10px"><div class="mini-calendar-head"><button type="button" data-widget-cal-nav="prev">←</button><strong>${esc(title)}</strong><button type="button" data-widget-cal-nav="next">→</button></div><div class="mini-cal">${['S','M','T','W','T','F','S'].map(x=>`<div class="dow">${x}</div>`).join('')}${cells}</div><div class="utility-actions-row" style="margin-top:10px"><button type="button" data-widget-action="open-calendar">Open Calendar</button></div></div>`,`${events.filter(e=>e.date.slice(0,7)===`${year}-${String(month+1).padStart(2,'0')}`).length} EVENTS`)}
 function renderWidget(id){if(id==='scratch')return scratchWidget();if(id==='todo')return todoWidget();if(id==='upcoming')return upcomingWidget();if(id==='calendar')return calendarWidget();if(id==='active')return activeWidget();if(id==='milestones')return milestonesWidget();if(id==='projects')return projectsWidget();if(id==='notes')return notesWidget();if(id==='log')return logWidget();return''}
-const WIDGET_LOAD={scratch:2.8,todo:1.8,upcoming:2.4,calendar:3.1,active:2.5,milestones:2.3,projects:2.3,notes:2.2,log:2.2};
-function adaptiveWidgetZones(){
-  const zones={top:widgetZoneItems('top'),left:widgetZoneItems('left'),right:widgetZoneItems('right'),bottom:widgetZoneItems('bottom'),float:widgetZoneItems('float')};
-  if(window.innerWidth>=1180&&zones.bottom.length){
-    let l=zones.left.reduce((s,id)=>s+(WIDGET_LOAD[id]||2),0),r=zones.right.reduce((s,id)=>s+(WIDGET_LOAD[id]||2),0);
-    zones.bottom.forEach(id=>{if(l<=r){zones.left.push(id);l+=WIDGET_LOAD[id]||2}else{zones.right.push(id);r+=WIDGET_LOAD[id]||2}});zones.bottom=[];
-  }
-  return zones;
-}
-function zoneHtml(zone,ids=null){ids=ids||widgetZoneItems(zone);return `<div class="widget-zone zone-${zone} ${zone==='left'||zone==='right'?'is-adaptive-fill':''}" data-widget-zone="${zone}" data-count="${Math.min(6,ids.length)}">${ids.map(renderWidget).join('')}</div>`}
-function floatingWidgets(ids=null){return (ids||widgetZoneItems('float')).map(renderWidget).join('')}
+function zoneHtml(zone){const ids=widgetZoneItems(zone);return `<div class="widget-zone zone-${zone}" data-widget-zone="${zone}" data-count="${Math.min(6,ids.length)}">${ids.map(renderWidget).join('')}</div>`}
+function floatingWidgets(){return widgetZoneItems('float').map(renderWidget).join('')}
 function widgetMenuState(){const rail=document.getElementById('utilityRail');if(!rail)return;rail.querySelectorAll('[data-widget-toggle]').forEach(b=>b.classList.toggle('is-open',widgetIsOpen(b.dataset.widgetToggle)))}
 function renderTabs(){
   const items=navItems(),activeTab=state.settings.activeTab==='home'?'':state.settings.activeTab,activeProfileId=state.settings.activeProfile||'me',space=state.settings.spaceFilter||'all';
@@ -1721,117 +1656,11 @@ function renderTabs(){
   const vp=document.getElementById('viewMenuPanel'),vv=document.getElementById('viewMenuValue');if(vp){vp.innerHTML=`<button type="button" class="system-item" data-view-id="" aria-current="${!activeTab}">Home</button>`+items.map(t=>`<button type="button" class="system-item" data-view-id="${t.id}" aria-current="${t.id===activeTab}">${esc(t.name)}</button>`).join('')}if(vv){const t=items.find(x=>x.id===activeTab);vv.textContent=t?t.name:'Navigate'}
   const sp=document.getElementById('spaceMenuPanel'),sv=document.getElementById('spaceMenuValue');const spaces=[['all','All spaces'],['work','Work only'],['personal','Personal only']];if(sp){sp.innerHTML=spaces.map(([id,name])=>`<button type="button" class="system-item" data-space-id="${id}" aria-current="${id===space}">${name}</button>`).join('')}if(sv)sv.textContent=(spaces.find(x=>x[0]===space)||spaces[0])[1];ensureWidgetSettings();widgetMenuState();
 }
-function branchTreeHtml(scope=null){
-  const max=state.settings.mapDepth,areas=profileAreas().filter(a=>spaceAllows(a.space)&&a.level<=max),byParent={};
-  areas.forEach(a=>(byParent[a.parentId||'atlas']??=[]).push(a));
-  Object.values(byParent).forEach(arr=>arr.sort((a,b)=>a.name.localeCompare(b.name)));
-  const noteKids={};
-  if(max>=5)state.notes.filter(n=>profileAllows(n.profile)&&spaceAllows(n.space)&&n.showOnMap&&(n.topicId||n.areaId)).forEach(n=>(noteKids[n.topicId||n.areaId]??=[]).push(n));
-  const relevant=scope?new Set([scope,...areas.filter(a=>isDescendant(a.id,scope)).map(a=>a.id)]):null;
-  function childList(a){
-    if(relevant&&!relevant.has(a.id))return'';
-    return (byParent[a.id]||[]).map(child=>{
-      const descendants=childList(child);
-      const notes=(noteKids[child.id]||[]).slice(0,20).map(n=>`<li><span class="branch-node branch-note"><b class="branch-code">${esc(makeNodeCode(n.title||'NOTE'))}</b><span class="branch-name">${esc(n.title||'Untitled')}</span></span></li>`).join('');
-      return `<li><span class="branch-node" data-open-area="${child.id}"><b class="branch-code">${esc(child.code)}</b><span class="branch-name">${esc(child.name)}</span></span>${descendants||notes?`<ul>${descendants}${notes}</ul>`:''}</li>`;
-    }).join('');
-  }
-  const roots=scope?[areaById(scope)].filter(Boolean):(byParent['atlas']||[]);
-  return `<div class="branch-root-list">${roots.map(root=>`<section class="branch-root"><button class="branch-root-title" data-open-area="${root.id}">${esc(root.name)}</button><div class="branch-root-tree"><span class="branch-root-code">${esc(root.code)}</span><ul class="branch-tree root-children">${childList(root)||'<li class="widget-empty">No child records.</li>'}</ul></div></section>`).join('')||'<div class="widget-empty">No visible branches.</div>'}</div>`;
-}
-
-const PREDICT_TERMS=['Implication','Dependency','Counterpoint','Application','Evidence','Scenario','Unknown','Opportunity','Failure mode','Next question','Adjacent system','Experiment','Constraint','Signal','Pattern','Alternative','Risk','Extension'];
-const PREDICT_CONTEXT={
-  'Implication':'A downstream consequence worth testing if the source idea is true.',
-  'Dependency':'A prerequisite, enabling condition, resource or assumption the source may depend on.',
-  'Counterpoint':'A competing explanation or challenge that could weaken or reshape the source idea.',
-  'Application':'A place the source idea could be used, demonstrated or translated into practice.',
-  'Evidence':'A line of evidence, observation or research that could support or falsify the source idea.',
-  'Scenario':'A possible future or narrative state produced by extending the source idea.',
-  'Unknown':'A missing variable or unresolved question at the current edge of the knowledge structure.',
-  'Opportunity':'A useful direction that becomes available if the source idea is developed further.',
-  'Failure mode':'A way the source idea, plan or mechanism could break, contradict itself or produce an unwanted result.',
-  'Next question':'A question that naturally follows from the current edge of the branch.',
-  'Adjacent system':'A neighbouring topic or system that may interact with the source in a useful way.',
-  'Experiment':'A test, prototype or thought experiment that could probe the source idea.',
-  'Constraint':'A boundary condition that limits how far or in what direction the source idea can develop.',
-  'Signal':'A pattern or indicator that may reveal whether the projected direction is meaningful.',
-  'Pattern':'A repeated structure that may connect the source to other parts of Atlas.',
-  'Alternative':'A different route, interpretation or design that could replace the current path.',
-  'Risk':'A downside or uncertainty worth accounting for before developing the source further.',
-  'Extension':'A direct continuation that pushes the current concept one step beyond its stored state.'
-};
-function predictedGraph(scope=null){
-  const base=graphData(scope),actual=base.nodes.filter(n=>!n.note),treeChildren={};
-  base.links.filter(l=>l.type==='tree').forEach(l=>(treeChildren[l.source]??=[]).push(l.target));
-  const anchors=actual.filter(n=>n.level>=3&&!(treeChildren[n.id]||[]).length).slice(0,18);
-  const nodes=actual.map(n=>({...n,predicted:false})),links=base.links.map(l=>({...l,predicted:false}));
-  const seedBase=`${activeProfile().id}|${scope||'home'}|${state.settings.predictionSeed||1}`;
-  anchors.forEach((anchor,ai)=>{
-    const rand=seeded(seedBase+'|'+anchor.id),baseAngle=Math.atan2(anchor.y-340,anchor.x-600),filaments=3+Math.floor(rand()*4);
-    for(let f=0;f<filaments;f++){
-      const term=PREDICT_TERMS[(Math.floor(rand()*PREDICT_TERMS.length)+f+ai)%PREDICT_TERMS.length];
-      const bend=(f-(filaments-1)/2)*.34+(rand()-.5)*.18,ang=baseAngle+bend,len=4+Math.floor(rand()*5),step=42+rand()*22;
-      let prev=anchor.id,px=anchor.x,py=anchor.y;
-      for(let d=0;d<len;d++){
-        const drift=(rand()-.5)*.12,theta=ang+drift+d*.018*(f%2?1:-1),dist=step*(.88+rand()*.24);
-        px+=Math.cos(theta)*dist;py+=Math.sin(theta)*dist;
-        const id=`pred-${anchor.id}-${f}-${d}`;
-        const label=d===len-1?term:(d===0?`${term} path`:PREDICT_TERMS[(PREDICT_TERMS.indexOf(term)+d*3+f)%PREDICT_TERMS.length]);
-        nodes.push({id,name:`${anchor.name} — ${label}`,code:makeNodeCode(label),profile:anchor.profile,space:anchor.space,level:5,parentId:prev,x:px,y:py,z:0,predicted:true,predictDepth:d+1,predictAnchor:anchor.id,predictKind:label,predictRootKind:term,predictSource:prev});
-        links.push({source:prev,target:id,type:'prediction',predicted:true});prev=id;
-        if(d>1&&d<len-1&&rand()>.72){
-          const sid=`pred-${anchor.id}-${f}-${d}-s`,sideA=theta+(rand()>.5?1:-1)*(.55+rand()*.35),slen=28+rand()*30;
-          const sideKind=PREDICT_TERMS[Math.floor(rand()*PREDICT_TERMS.length)];nodes.push({id:sid,name:`${anchor.name} — ${sideKind}`,code:'',profile:anchor.profile,space:anchor.space,level:5,parentId:id,x:px+Math.cos(sideA)*slen,y:py+Math.sin(sideA)*slen,z:0,predicted:true,predictDepth:d+1,predictAnchor:anchor.id,predictKind:sideKind,predictRootKind:term,predictSource:id,minor:true});
-          links.push({source:id,target:sid,type:'prediction',predicted:true});
-        }
-      }
-    }
-  });
-  return{nodes,links,actualCount:actual.length,predictedCount:nodes.length-actual.length};
-}
-function predictionRadius(n){if(!n.predicted)return Math.max(4.2,visualRadius(n)*.82);return n.minor?1.25:(n.predictDepth===1?2.6:1.75)}
-function predictionPath(a,b,seed){const dx=b.x-a.x,dy=b.y-a.y,mx=(a.x+b.x)/2,my=(a.y+b.y)/2,d=Math.hypot(dx,dy)||1,side=stableOffset(seed,1)>=0?1:-1,bend=Math.min(32,d*.18)*side;return `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} Q ${(mx-dy/d*bend).toFixed(1)} ${(my+dx/d*bend).toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`}
-function predictionContextFor(n,byId){
-  const anchor=byId[n.predictAnchor]||areaById(n.predictAnchor);
-  const source=byId[n.predictSource]||anchor;
-  const kind=n.predictKind||n.predictRootKind||'Extension';
-  return {anchor,source,kind,copy:PREDICT_CONTEXT[kind]||PREDICT_CONTEXT['Extension']};
-}
-function showPredictionInspector(n,byId,e){
-  const panel=document.getElementById('predictInspector'),wrap=document.querySelector('.map-wrap');if(!panel||!wrap||!n?.predicted)return;
-  const ctx=predictionContextFor(n,byId),anchorCode=ctx.anchor?.code||makeNodeCode(ctx.anchor?.name||'SOURCE'),sourceCode=ctx.source?.code||makeNodeCode(ctx.source?.name||anchorCode);
-  panel.innerHTML=`<div class="predict-inspect-head"><strong>${esc(n.code||makeNodeCode(ctx.kind))} · projection</strong><button type="button" data-predict-close aria-label="Close prediction">×</button></div><div class="predict-inspect-body"><h4>${esc(ctx.kind)}</h4><p>${esc(ctx.copy)}</p><div class="predict-inspect-grid"><b>Anchor</b><span>${esc(anchorCode)} · ${esc(ctx.anchor?.name||'Unknown')}</span><b>From</b><span>${esc(sourceCode)} · ${esc(ctx.source?.name||ctx.anchor?.name||'Unknown')}</span><b>Depth</b><span>${Number(n.predictDepth||1)}</span><b>Role</b><span>${esc(n.minor?'Secondary branch':'Primary filament')}</span></div></div>`;
-  const r=wrap.getBoundingClientRect(),pw=Math.min(300,r.width-28),ph=230;let x=e.clientX-r.left+14,y=e.clientY-r.top+14;if(x+pw>r.width-8)x=Math.max(8,e.clientX-r.left-pw-14);if(y+ph>r.height-8)y=Math.max(44,e.clientY-r.top-ph-14);panel.style.left=Math.max(8,x)+'px';panel.style.top=Math.max(44,y)+'px';panel.classList.add('open');
-}
-function closePredictionInspector(){const p=document.getElementById('predictInspector');if(p)p.classList.remove('open')}
-function drawPredictionNetwork(scope){
-  const svg=document.getElementById('network');if(!svg)return;
-  const key=`predict:${scope||'home'}`;svg.dataset.scope=key;svg.innerHTML='';const gd=predictedGraph(scope),nodes=gd.nodes,links=gd.links,byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
-  const cam=mapCamera(key);if(cam.needsFit)setFitCamera(key,nodes.map(n=>({...n,level:n.predicted?5:n.level})));applyMapView(svg,key);
-  links.forEach(l=>{const a=byId[l.source],b=byId[l.target];if(!a||!b)return;const pred=l.predicted||l.type==='prediction';svg.appendChild(svgEl('path',{d:pred?predictionPath(a,b,l.source+'|'+l.target):straightPath(a,b),class:`edge ${pred?'prediction':l.type==='cross'?'cross':'tree'}`}))});
-  nodes.forEach(n=>{const r=predictionRadius(n),g=svgEl('g',{class:`node prediction-node ${n.predicted?'is-predicted':'is-actual'} ${n.minor?'minor':''}`});g.dataset.node=n.id;g.appendChild(svgEl('circle',{cx:n.x,cy:n.y,r:r,class:'node-disc'}));const title=svgEl('title');title.textContent=n.predicted?`Projected prompt: ${n.name}`:n.name;g.appendChild(title);if(!n.predicted||(!n.minor&&n.predictDepth===1)){const tx=svgEl('text',{x:n.x,y:n.y+r+8,class:'label','dominant-baseline':'hanging'});tx.textContent=n.predicted?n.code:(n.code||makeNodeCode(n.name));g.appendChild(tx)}svg.appendChild(g)});
-  const inspect=document.getElementById('mapInspect');svg.querySelectorAll('.node').forEach(el=>{el.addEventListener('pointerenter',()=>{const n=byId[el.dataset.node];if(inspect&&n)inspect.textContent=n.predicted?`PROJECTED / ${n.name.toUpperCase()}`:`ACTUAL / ${n.code} / ${n.name.toUpperCase()}`});el.addEventListener('click',e=>{const n=byId[el.dataset.node];if(n?.predicted){e.stopPropagation();showPredictionInspector(n,byId,e)}})});svg.addEventListener('pointerleave',()=>{if(inspect)inspect.textContent=''});
-  bindPredictionNetwork(scope);
-  document.querySelectorAll('[data-map-zoom]').forEach(b=>{b.onclick=()=>{const a=b.dataset.mapZoom;if(a==='in')zoomPrediction(scope,1.2);else if(a==='out')zoomPrediction(scope,1/1.2);else fitPrediction(scope)}});
-  const rg=document.querySelector('[data-predict-regenerate]');if(rg)rg.onclick=()=>{state.settings.predictionSeed=(Number(state.settings.predictionSeed)||1)+1;mapCamera(key).needsFit=true;save();drawPredictionNetwork(scope)};
-}
-function fitPrediction(scope){const gd=predictedGraph(scope),key=`predict:${scope||'home'}`;setFitCamera(key,gd.nodes.map(n=>({...n,level:n.predicted?5:n.level})));const svg=document.getElementById('network');if(svg)applyMapView(svg,key)}
-function zoomPrediction(scope,factor,clientX=null,clientY=null){zoomMap(`predict:${scope||'home'}`,factor,clientX,clientY)}
-function bindPredictionNetwork(scope){const svg=document.getElementById('network');if(!svg||svg.dataset.predBound==='yes')return;svg.dataset.predBound='yes';const key=`predict:${scope||'home'}`;let pd=null;svg.addEventListener('pointerdown',e=>{if(e.target.closest?.('.prediction-node.is-predicted'))return;closePredictionInspector();const cam=mapCamera(key);pd={x:e.clientX,y:e.clientY,cx:cam.cx,cy:cam.cy,p:e.pointerId};svg.setPointerCapture(e.pointerId)});svg.addEventListener('pointermove',e=>{if(!pd)return;const cam=mapCamera(key),v=mapView(key),r=svg.getBoundingClientRect();cam.cx=pd.cx-(e.clientX-pd.x)*v.w/r.width;cam.cy=pd.cy-(e.clientY-pd.y)*v.h/r.height;cam.needsFit=false;applyMapView(svg,key)});svg.addEventListener('pointerup',e=>{if(!pd)return;try{svg.releasePointerCapture(pd.p)}catch(_){ }pd=null});svg.addEventListener('wheel',e=>{if(!(e.ctrlKey||e.metaKey))return;e.preventDefault();zoomPrediction(scope,e.deltaY<0?1.12:1/1.12,e.clientX,e.clientY)},{passive:false})}
-
-function networkPanel(scope=null){
-  const hero=!scope,count=graphData(scope).nodes.length,mode=state.settings.mapViewMode||'nodes',predict=mode==='predict',metaCount=predict?predictedGraph(scope).predictedCount:count;
-  return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2></div>`:''}<div class="map-wrap ${predict?'prediction-mode':''}"><div class="map-topline"><div class="map-meta"><span>${mode==='nodes'?'MAP':mode==='list'?'LIST':'PREDICT'}</span><span>${esc(activeProfile().name.toUpperCase())}</span><span>${predict?`${metaCount} PROJECTED`:`${count} NODES`}</span><span id="mapInspect"></span></div><div class="map-view-toggle"><button type="button" data-map-view="nodes" class="${mode==='nodes'?'active':''}">Nodes</button><button type="button" data-map-view="list" class="${mode==='list'?'active':''}">List</button><button type="button" data-map-view="predict" class="${mode==='predict'?'active':''}">Predict</button></div></div>${mode==='list'?`<div class="branch-view">${branchTreeHtml(scope)}</div>`:`<svg id="network" viewBox="0 0 1200 680" role="img" aria-label="${predict?'Atlas procedural prediction map':'Atlas relationship map'}"></svg>${predict?'<aside id="predictInspector" class="prediction-inspector" aria-live="polite"></aside>':''}<div class="map-controls"><div class="map-hud"><div class="zoom-controls"><button type="button" data-map-zoom="out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset"><span id="zoomValue">FIT</span></button><button type="button" data-map-zoom="in">+</button></div>${predict?`<div class="zoom-controls"><button type="button" class="zoom-reset" data-predict-regenerate>Regenerate</button></div><span class="predict-note">PROCEDURAL IDEA PROJECTION · NOT STORED</span>`:`<div class="zoom-controls"><button type="button" class="zoom-reset" data-map-layout="organise">Reform</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}"/><strong id="depthValue">${state.settings.mapDepth}</strong></div><div class="depth map-opacity">Type <input id="labelOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapLabelOpacity??.72)*100)}"/><strong id="labelOpacityValue">${Math.round((state.settings.mapLabelOpacity??.72)*100)}</strong></div><div class="depth map-opacity">Links <input id="edgeOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapEdgeOpacity??.32)*100)}"/><strong id="edgeOpacityValue">${Math.round((state.settings.mapEdgeOpacity??.32)*100)}</strong></div>`}</div></div>`}</div></section>`;
-}
-function renderHome(){ensureWidgetSettings();const z=adaptiveWidgetZones(),app=document.getElementById('app');app.innerHTML=`<section class="atlas-board" id="atlasBoard">${zoneHtml('top',z.top)}<div class="board-middle">${zoneHtml('left',z.left)}<div class="board-map">${networkPanel(null)}</div>${zoneHtml('right',z.right)}</div>${zoneHtml('bottom',z.bottom)}${floatingWidgets(z.float)}</section>`;if(state.settings.mapViewMode==='nodes')drawNetwork(null);else if(state.settings.mapViewMode==='predict')drawPredictionNetwork(null);widgetMenuState()}
-function updateAtlasClock(){
-  const nowD=new Date(),tf=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),df=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',weekday:'short',day:'2-digit',month:'short',year:'numeric'}),utf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),udf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',weekday:'short',day:'2-digit',month:'short',year:'numeric'});
-  const vals={melClock:tf.format(nowD),melDate:df.format(nowD),utcClockBottom:utf.format(nowD),utcDateBottom:udf.format(nowD)};
-  Object.entries(vals).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
-}
+function branchTreeHtml(scope=null){const max=state.settings.mapDepth,areas=profileAreas().filter(a=>spaceAllows(a.space)&&a.level<=max),byParent={};areas.forEach(a=>(byParent[a.parentId||'atlas']??=[]).push(a));Object.values(byParent).forEach(arr=>arr.sort((a,b)=>a.name.localeCompare(b.name)));const noteKids={};if(max>=5)state.notes.filter(n=>profileAllows(n.profile)&&spaceAllows(n.space)&&n.showOnMap&&(n.topicId||n.areaId)).forEach(n=>(noteKids[n.topicId||n.areaId]??=[]).push(n));const relevant=scope?new Set([scope,...areas.filter(a=>isDescendant(a.id,scope)).map(a=>a.id)]):null;function one(a){if(relevant&&!relevant.has(a.id))return'';const kids=(byParent[a.id]||[]).map(one).join('');const notes=(noteKids[a.id]||[]).slice(0,20).map(n=>`<li><span class="branch-node"><b class="branch-code">${esc(makeNodeCode(n.title||'NOTE'))}</b><span class="branch-name">${esc(n.title||'Untitled')}</span></span></li>`).join('');return `<li><span class="branch-node" data-open-area="${a.id}"><b class="branch-code">${esc(a.code)}</b><span class="branch-name">${esc(a.name)}</span></span>${kids||notes?`<ul>${kids}${notes}</ul>`:''}</li>`}const roots=scope?[areaById(scope)].filter(Boolean):(byParent['atlas']||[]);return `<ul class="branch-tree">${roots.map(one).join('')||'<li class="widget-empty">No visible branches.</li>'}</ul>`}
+function networkPanel(scope=null){const hero=!scope,count=graphData(scope).nodes.length,mode=state.settings.mapViewMode||'nodes';return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2></div>`:''}<div class="map-wrap"><div class="map-topline"><div class="map-meta"><span>${mode==='nodes'?'MAP':'LIST'}</span><span>${esc(activeProfile().name.toUpperCase())}</span><span>${count} NODES</span><span id="mapInspect"></span></div><div class="map-view-toggle"><button type="button" data-map-view="nodes" class="${mode==='nodes'?'active':''}">Nodes</button><button type="button" data-map-view="list" class="${mode==='list'?'active':''}">List</button></div></div>${mode==='nodes'?`<svg id="network" viewBox="0 0 1200 680" role="img" aria-label="Atlas relationship map"></svg><div class="map-controls"><div class="map-hud"><div class="zoom-controls"><button type="button" data-map-zoom="out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset"><span id="zoomValue">FIT</span></button><button type="button" data-map-zoom="in">+</button></div><div class="zoom-controls"><button type="button" class="zoom-reset" data-map-layout="organise">Reform</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}"/><strong id="depthValue">${state.settings.mapDepth}</strong></div><div class="depth map-opacity">Type <input id="labelOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapLabelOpacity||.72)*100)}"/><strong id="labelOpacityValue">${Math.round((state.settings.mapLabelOpacity||.72)*100)}</strong></div><div class="depth map-opacity">Links <input id="edgeOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapEdgeOpacity||.32)*100)}"/><strong id="edgeOpacityValue">${Math.round((state.settings.mapEdgeOpacity||.32)*100)}</strong></div></div></div>`:`<div class="branch-view">${branchTreeHtml(scope)}</div>`}</div></section>`}
+function renderHome(){ensureWidgetSettings();const app=document.getElementById('app');app.innerHTML=`<section class="atlas-board" id="atlasBoard">${zoneHtml('top')}<div class="board-middle">${zoneHtml('left')}<div class="board-map">${networkPanel(null)}</div>${zoneHtml('right')}</div>${zoneHtml('bottom')}${floatingWidgets()}</section>`;if(state.settings.mapViewMode==='nodes')drawNetwork(null);widgetMenuState()}
+function updateAtlasClock(){const nowD=new Date(),tf=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),df=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',weekday:'short',day:'2-digit',month:'short',year:'numeric'}),utf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),udf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',weekday:'short',day:'2-digit',month:'short',year:'numeric'});const mel=document.getElementById('melClock'),md=document.getElementById('melDate'),utc=document.getElementById('utcClock'),ud=document.getElementById('utcDate');if(mel)mel.textContent=tf.format(nowD);if(md)md.textContent=df.format(nowD);if(utc)utc.textContent=utf.format(nowD);if(ud)ud.textContent=udf.format(nowD)}
 setInterval(updateAtlasClock,1000);setTimeout(updateAtlasClock,0);
-let atlasResizeTimer=null;window.addEventListener('resize',()=>{clearTimeout(atlasResizeTimer);atlasResizeTimer=setTimeout(()=>{if(state?.settings?.activeTab==='home')renderHome()},180)});
 
 let atlasWidgetDrag=null;
 function beginWidgetDrag(id,e){if(!ATLAS_WIDGETS[id])return;const el=document.querySelector(`.atlas-widget[data-widget="${CSS.escape(id)}"]`);if(!el)return;const rect=el.getBoundingClientRect(),c=widgetCfg(id);if(c.zone!=='float'){c.zone='float';state.settings.widgetFloat[id]={x:rect.left,y:rect.top};renderHome();requestAnimationFrame(()=>{const fresh=document.querySelector(`.atlas-widget[data-widget="${CSS.escape(id)}"]`);if(fresh){const r=fresh.getBoundingClientRect();atlasWidgetDrag={id,pointerId:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};document.body.classList.add('widget-dragging')}})}else{atlasWidgetDrag={id,pointerId:e.pointerId,dx:e.clientX-rect.left,dy:e.clientY-rect.top};document.body.classList.add('widget-dragging')}e.preventDefault()}
@@ -1844,7 +1673,6 @@ document.addEventListener('input',e=>{if(e.target.id==='widgetScratch'){state.sc
 document.addEventListener('keydown',e=>{if(e.target.id==='widgetTodoInput'&&e.key==='Enter'){e.preventDefault();const val=e.target.value.trim();if(val){state.quickTodos.unshift({id:uid('qt'),profile:state.settings.activeProfile||'me',text:val,done:false,createdAt:now()});save();renderHome()}}});
 document.addEventListener('change',e=>{if(e.target.dataset.widgetTodo){const t=state.quickTodos.find(x=>x.id===e.target.dataset.widgetTodo);if(t){t.done=e.target.checked;save();renderHome()}}});
 document.addEventListener('click',e=>{
-  const pc=e.target.closest('[data-predict-close]');if(pc){closePredictionInspector();return}
   const wt=e.target.closest('[data-widget-toggle]');if(wt){toggleWidget(wt.dataset.widgetToggle);const d=wt.closest('details');if(d)d.removeAttribute('open');return}
   const wc=e.target.closest('[data-widget-close]');if(wc){closeWidget(wc.dataset.widgetClose);return}
   const wm=e.target.closest('[data-widget-move]');if(wm){moveWidget(wm.dataset.widgetMove,wm.dataset.zone);return}
