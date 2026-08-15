@@ -719,7 +719,7 @@ body.tool-dragging[data-snap-target="top"] .tool-snap-hint{display:block;left:8p
 
 
 
-/* Atlas 0.11.2 · prediction inspector + adaptive widget packing */
+/* Atlas 0.11.3 · contextual projection + centre-bottom widget lane + clock repair */
 :root{
   --onyx:#0a0a0a;--charcoal:#2a2529;--ivory:#f3f0e7;--slate:#536878;--sand:#b9a27a;
   --widget-gap:10px;--widget-side:320px;
@@ -820,6 +820,19 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
 /* Wide layouts may visually pack saved Bottom widgets into spare side lanes. Their saved zone remains Bottom. */
 .widget-zone.is-adaptive-fill{align-content:start}
 
+
+/* Atlas 0.11.3 refinements */
+.topbar{position:relative!important;padding-bottom:28px!important}
+.header-chrono{position:absolute;right:0;bottom:4px;display:flex;align-items:baseline;gap:7px;height:18px;color:var(--muted);font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;white-space:nowrap}
+.header-chrono span{font-size:6.5px;letter-spacing:.14em}.header-chrono strong{font-size:10px;font-weight:650;letter-spacing:.07em;color:var(--ink)}.header-chrono em{font-style:normal;font-size:6.5px;letter-spacing:.055em;text-transform:uppercase}
+.chrono-bottom{height:28px!important;min-height:28px!important;margin:14px 0 0!important;padding:0 0!important;border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important;border-bottom:0!important;justify-content:flex-end!important}
+.chrono-bottom:before,.chrono-bottom:after{display:none!important}
+.board-middle{grid-template-columns:auto minmax(0,1fr) auto!important;align-items:start!important}
+.board-center{min-width:0;display:grid;gap:var(--widget-gap);align-content:start}
+.board-center>.widget-zone.zone-bottom{width:100%;grid-template-columns:repeat(var(--zone-cols,1),minmax(0,1fr));align-items:start}
+.prediction-inspector{width:min(330px,calc(100% - 24px))!important}.predict-inspect-body h4{font-size:13px!important;line-height:1.35!important;margin-bottom:8px!important}.predict-reason{padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent);color:var(--muted)!important;font-size:9px!important}
+.prediction-node.is-predicted.predict-ai .node-disc{stroke:var(--sand)!important;fill:color-mix(in srgb,var(--sand) 24%,var(--surface-2))!important}
+@media(max-width:920px){.topbar{padding-bottom:30px!important}.header-chrono{left:0;right:auto}.board-middle{grid-template-columns:minmax(0,1fr)!important}.widget-zone.zone-left{order:1}.board-center{order:2}.widget-zone.zone-right{order:3}.board-center>.widget-zone.zone-bottom{order:2}.board-map{order:1}.chrono-bottom{justify-content:flex-start!important}}
 </style>
 </head>
 <body>
@@ -878,10 +891,8 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
       <select id="sectionSelect" class="native-context-select" aria-label="Navigate Atlas"><option value="">Navigate</option></select>
       <select id="spaceFilter" class="native-context-select" aria-label="Data space"><option value="all">All spaces</option><option value="work">Work only</option><option value="personal">Personal only</option></select>
     </div>
+    <div class="header-chrono" aria-label="Melbourne local time"><span>MEL</span><strong id="melClock">--:--:--</strong><em id="melDate">---</em></div>
   </header>
-  <div class="chrono-strip chrono-top" id="chronoStrip" aria-label="Melbourne local time">
-    <div class="chrono-block"><span>MEL</span><strong id="melClock">--:--:--</strong><em id="melDate">---</em></div>
-  </div>
   <aside class="utility-pane" id="utilityPane" aria-live="polite"><div id="utilityPaneContent"></div></aside><div class="tool-snap-hint" aria-hidden="true"></div><div class="widget-snap-preview" aria-hidden="true"></div>
 
   <main class="main" id="app"></main>
@@ -952,7 +963,7 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_VERSION='0.11.2'; const DATA_VERSION=6; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.11.3'; const DATA_VERSION=6; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1702,12 +1713,10 @@ function calendarWidget(){const d=monthCursorDate(),year=d.getFullYear(),month=d
 function renderWidget(id){if(id==='scratch')return scratchWidget();if(id==='todo')return todoWidget();if(id==='upcoming')return upcomingWidget();if(id==='calendar')return calendarWidget();if(id==='active')return activeWidget();if(id==='milestones')return milestonesWidget();if(id==='projects')return projectsWidget();if(id==='notes')return notesWidget();if(id==='log')return logWidget();return''}
 const WIDGET_LOAD={scratch:2.8,todo:1.8,upcoming:2.4,calendar:3.1,active:2.5,milestones:2.3,projects:2.3,notes:2.2,log:2.2};
 function adaptiveWidgetZones(){
-  const zones={top:widgetZoneItems('top'),left:widgetZoneItems('left'),right:widgetZoneItems('right'),bottom:widgetZoneItems('bottom'),float:widgetZoneItems('float')};
-  if(window.innerWidth>=1180&&zones.bottom.length){
-    let l=zones.left.reduce((s,id)=>s+(WIDGET_LOAD[id]||2),0),r=zones.right.reduce((s,id)=>s+(WIDGET_LOAD[id]||2),0);
-    zones.bottom.forEach(id=>{if(l<=r){zones.left.push(id);l+=WIDGET_LOAD[id]||2}else{zones.right.push(id);r+=WIDGET_LOAD[id]||2}});zones.bottom=[];
-  }
-  return zones;
+  // Preserve the user's dock choices across aspect ratios. The bottom zone is a
+  // real centre lane beneath the map on wide screens and returns to normal flow
+  // on narrow screens. No widgets are silently reassigned to another dock.
+  return {top:widgetZoneItems('top'),left:widgetZoneItems('left'),right:widgetZoneItems('right'),bottom:widgetZoneItems('bottom'),float:widgetZoneItems('float')};
 }
 function zoneHtml(zone,ids=null){ids=ids||widgetZoneItems(zone);return `<div class="widget-zone zone-${zone} ${zone==='left'||zone==='right'?'is-adaptive-fill':''}" data-widget-zone="${zone}" data-count="${Math.min(6,ids.length)}">${ids.map(renderWidget).join('')}</div>`}
 function floatingWidgets(ids=null){return (ids||widgetZoneItems('float')).map(renderWidget).join('')}
@@ -1740,69 +1749,82 @@ function branchTreeHtml(scope=null){
   return `<div class="branch-root-list">${roots.map(root=>`<section class="branch-root"><button class="branch-root-title" data-open-area="${root.id}">${esc(root.name)}</button><div class="branch-root-tree"><span class="branch-root-code">${esc(root.code)}</span><ul class="branch-tree root-children">${childList(root)||'<li class="widget-empty">No child records.</li>'}</ul></div></section>`).join('')||'<div class="widget-empty">No visible branches.</div>'}</div>`;
 }
 
-const PREDICT_TERMS=['Implication','Dependency','Counterpoint','Application','Evidence','Scenario','Unknown','Opportunity','Failure mode','Next question','Adjacent system','Experiment','Constraint','Signal','Pattern','Alternative','Risk','Extension'];
-const PREDICT_CONTEXT={
-  'Implication':'A downstream consequence worth testing if the source idea is true.',
-  'Dependency':'A prerequisite, enabling condition, resource or assumption the source may depend on.',
-  'Counterpoint':'A competing explanation or challenge that could weaken or reshape the source idea.',
-  'Application':'A place the source idea could be used, demonstrated or translated into practice.',
-  'Evidence':'A line of evidence, observation or research that could support or falsify the source idea.',
-  'Scenario':'A possible future or narrative state produced by extending the source idea.',
-  'Unknown':'A missing variable or unresolved question at the current edge of the knowledge structure.',
-  'Opportunity':'A useful direction that becomes available if the source idea is developed further.',
-  'Failure mode':'A way the source idea, plan or mechanism could break, contradict itself or produce an unwanted result.',
-  'Next question':'A question that naturally follows from the current edge of the branch.',
-  'Adjacent system':'A neighbouring topic or system that may interact with the source in a useful way.',
-  'Experiment':'A test, prototype or thought experiment that could probe the source idea.',
-  'Constraint':'A boundary condition that limits how far or in what direction the source idea can develop.',
-  'Signal':'A pattern or indicator that may reveal whether the projected direction is meaningful.',
-  'Pattern':'A repeated structure that may connect the source to other parts of Atlas.',
-  'Alternative':'A different route, interpretation or design that could replace the current path.',
-  'Risk':'A downside or uncertainty worth accounting for before developing the source further.',
-  'Extension':'A direct continuation that pushes the current concept one step beyond its stored state.'
-};
+const RECOMMENDATION_DOMAINS=[
+  {re:/\b(tv|film|movie|cinema|series|watch|entertainment)\b/i,title:'Find the next thing to watch',summary:'Use the stored titles, notes and themes in this branch to recommend specific films or series that are adjacent to what already works, not just more of the same.',kind:'AI recommendation'},
+  {re:/\b(fragrance|frag|scent|perfume|cologne)\b/i,title:'Find the next fragrance to sample',summary:'Use the stored fragrance notes, favourites, dislikes and style cues in this branch to recommend specific samples worth trying next.',kind:'AI recommendation'},
+  {re:/\b(book|reading|read|author|literature)\b/i,title:'Find the next book to read',summary:'Use the stored reading notes, authors, themes and unfinished interests in this branch to recommend specific books to read next.',kind:'AI recommendation'},
+  {re:/\b(car|cars|auto|vehicle|suv|bmw|x5|patrol|defender)\b/i,title:'Surface the next vehicle to compare',summary:'Use the stored vehicle notes, shortlist, ownership constraints and preferred feel to identify the next specific vehicle or listing class worth comparing.',kind:'AI recommendation'}
+];
+function predictionPathText(anchor){
+  const parts=[];let a=anchor,guard=0;while(a&&guard++<8){parts.unshift(a.name||'');a=areaById(a.parentId)}return parts.join(' ')
+}
+function anchorProjects(anchor){return state.projects.filter(p=>profileAllows(p.profile)&&spaceAllows(p.space)&&(p.topicId===anchor.id||p.areaId===anchor.id||isDescendant(p.topicId||p.areaId,anchor.id)))}
+function anchorNotes(anchor){return state.notes.filter(n=>profileAllows(n.profile)&&spaceAllows(n.space)&&(n.topicId===anchor.id||n.areaId===anchor.id||isDescendant(n.topicId||n.areaId,anchor.id))).sort((a,b)=>b.createdAt-a.createdAt)}
+function cleanPredictionText(v,max=76){v=String(v||'').replace(/\s+/g,' ').trim();return v.length>max?v.slice(0,max-1).trim()+'…':v}
+function predictionIdeasFor(anchor){
+  const ideas=[],projects=anchorProjects(anchor),notes=anchorNotes(anchor),path=predictionPathText(anchor),seen=new Set();
+  const add=(title,summary,kind='Projected next',why='',requiresAI=false,source='')=>{title=cleanPredictionText(title,92);if(!title||seen.has(title.toLowerCase()))return;seen.add(title.toLowerCase());ideas.push({title,summary:cleanPredictionText(summary,260),kind,why:cleanPredictionText(why,220),requiresAI,source})};
+  projects.forEach(p=>{
+    const openMs=(p.milestones||[]).filter(m=>!m.done),openTasks=(p.tasks||[]).filter(t=>!t.done),current=openMs.find(m=>m.current);
+    if(p.next)add(p.next,`Immediate next move already stored against ${p.code} · ${p.title}.`,'Next move','This comes directly from the project’s current next-move field.',false,p.id);
+    if(current)add(`Complete ${current.title}`,`Current project milestone for ${p.code}.`,'Current milestone','This is the milestone Atlas already marks as current.',false,p.id);
+    openTasks.slice(0,3).forEach(t=>add(t.title,`Open task inside ${p.code} · ${p.title}.`,'Open task','This is unfinished work already present in the project.',false,p.id));
+    openMs.filter(m=>!m.current).slice(0,4).forEach((m,i)=>add(`${i?'Then ':'Next milestone: '}${m.title}`,`Likely project progression after the current work in ${p.code}.`,'Project pathway','This follows the remaining milestone order already stored in Atlas.',false,p.id));
+    if(openMs.length||openTasks.length)add(`Review outcome and set the next decision for ${p.title}`,`A likely decision point once the currently stored work is closed.`,'Decision point','Generated from the end of the project’s known task/milestone sequence.',false,p.id);
+  });
+  notes.slice(0,4).forEach(n=>{
+    add(`Develop: ${n.title}`,n.body||`Continue the line of thought captured in ${n.title}.`,'Note evolution','Generated from a recent note in this branch.',false,n.id);
+  });
+  const tags=[...new Set(notes.flatMap(n=>n.tags||[]).map(x=>String(x).trim()).filter(Boolean))];
+  if(tags.length>=2)add(`Connect ${tags[0]} with ${tags[1]}`,`Test whether the two recurring concepts in this branch form a useful relationship.`,'Connection','Generated from recurring tags in stored notes.',false,anchor.id);
+  const domain=RECOMMENDATION_DOMAINS.find(d=>d.re.test(path));
+  if(domain)add(domain.title,domain.summary,domain.kind,`Specific external recommendations require outside knowledge; Atlas has prepared the context from ${anchor.name} but does not fabricate the answer offline.`,true,anchor.id);
+  if(/\b(story|novella|writing|creative|quantum)\b/i.test(path)&&projects.length===0)add(`What changes next because of ${anchor.name}?`,`Push the stored creative premise forward by identifying the next consequential event, constraint or reveal rather than merely adding more lore.`,'Story evolution','Generated from the creative branch context.',false,anchor.id);
+  if(/\b(work|ground|surveillance|guidance|career|project)\b/i.test(path)&&projects.length===0)add(`Define the next observable outcome for ${anchor.name}`,`Turn this branch into a concrete next state: decision, deliverable, engagement, evidence or review point.`,'Work pathway','Generated because this is a work branch without a structured project pathway yet.',false,anchor.id);
+  if(!ideas.length)add(`Clarify the next question for ${anchor.name}`,anchor.description||`Identify the next useful question or action at the edge of this branch.`,'Next question','Fallback generated from the area itself.',false,anchor.id);
+  return ideas.slice(0,9)
+}
 function predictedGraph(scope=null){
   const base=graphData(scope),actual=base.nodes.filter(n=>!n.note),treeChildren={};
   base.links.filter(l=>l.type==='tree').forEach(l=>(treeChildren[l.source]??=[]).push(l.target));
-  const anchors=actual.filter(n=>n.level>=3&&!(treeChildren[n.id]||[]).length).slice(0,18);
+  const contextualIds=new Set();
+  state.projects.filter(p=>profileAllows(p.profile)&&spaceAllows(p.space)).forEach(p=>{if(p.topicId)contextualIds.add(p.topicId);else if(p.areaId)contextualIds.add(p.areaId)});
+  state.notes.filter(n=>profileAllows(n.profile)&&spaceAllows(n.space)).forEach(n=>{if(n.topicId)contextualIds.add(n.topicId);else if(n.areaId)contextualIds.add(n.areaId)});
+  const anchors=actual.filter(n=>contextualIds.has(n.id)||(n.level>=3&&!(treeChildren[n.id]||[]).length)).slice(0,22);
   const nodes=actual.map(n=>({...n,predicted:false})),links=base.links.map(l=>({...l,predicted:false}));
   const seedBase=`${activeProfile().id}|${scope||'home'}|${state.settings.predictionSeed||1}`;
   anchors.forEach((anchor,ai)=>{
-    const rand=seeded(seedBase+'|'+anchor.id),baseAngle=Math.atan2(anchor.y-340,anchor.x-600),filaments=3+Math.floor(rand()*4);
-    for(let f=0;f<filaments;f++){
-      const term=PREDICT_TERMS[(Math.floor(rand()*PREDICT_TERMS.length)+f+ai)%PREDICT_TERMS.length];
-      const bend=(f-(filaments-1)/2)*.34+(rand()-.5)*.18,ang=baseAngle+bend,len=4+Math.floor(rand()*5),step=42+rand()*22;
-      let prev=anchor.id,px=anchor.x,py=anchor.y;
-      for(let d=0;d<len;d++){
-        const drift=(rand()-.5)*.12,theta=ang+drift+d*.018*(f%2?1:-1),dist=step*(.88+rand()*.24);
-        px+=Math.cos(theta)*dist;py+=Math.sin(theta)*dist;
-        const id=`pred-${anchor.id}-${f}-${d}`;
-        const label=d===len-1?term:(d===0?`${term} path`:PREDICT_TERMS[(PREDICT_TERMS.indexOf(term)+d*3+f)%PREDICT_TERMS.length]);
-        nodes.push({id,name:`${anchor.name} — ${label}`,code:makeNodeCode(label),profile:anchor.profile,space:anchor.space,level:5,parentId:prev,x:px,y:py,z:0,predicted:true,predictDepth:d+1,predictAnchor:anchor.id,predictKind:label,predictRootKind:term,predictSource:prev});
-        links.push({source:prev,target:id,type:'prediction',predicted:true});prev=id;
-        if(d>1&&d<len-1&&rand()>.72){
-          const sid=`pred-${anchor.id}-${f}-${d}-s`,sideA=theta+(rand()>.5?1:-1)*(.55+rand()*.35),slen=28+rand()*30;
-          const sideKind=PREDICT_TERMS[Math.floor(rand()*PREDICT_TERMS.length)];nodes.push({id:sid,name:`${anchor.name} — ${sideKind}`,code:'',profile:anchor.profile,space:anchor.space,level:5,parentId:id,x:px+Math.cos(sideA)*slen,y:py+Math.sin(sideA)*slen,z:0,predicted:true,predictDepth:d+1,predictAnchor:anchor.id,predictKind:sideKind,predictRootKind:term,predictSource:id,minor:true});
-          links.push({source:id,target:sid,type:'prediction',predicted:true});
-        }
+    const ideas=predictionIdeasFor(anchor);if(!ideas.length)return;
+    const rand=seeded(seedBase+'|'+anchor.id),baseAngle=Math.atan2(anchor.y-340,anchor.x-600),fan=Math.min(ideas.length,7);
+    ideas.slice(0,fan).forEach((idea,i)=>{
+      const spread=(i-(fan-1)/2)*.23,theta=baseAngle+spread+(rand()-.5)*.08,step=54+rand()*18;
+      const id=`pred-${anchor.id}-${i}`,px=anchor.x+Math.cos(theta)*step,py=anchor.y+Math.sin(theta)*step;
+      nodes.push({id,name:idea.title,code:idea.requiresAI?'AI':makeNodeCode(idea.kind),profile:anchor.profile,space:anchor.space,level:5,parentId:anchor.id,x:px,y:py,z:0,predicted:true,predictDepth:1,predictAnchor:anchor.id,predictSource:anchor.id,predictKind:idea.kind,predictTitle:idea.title,predictSummary:idea.summary,predictWhy:idea.why,predictAI:!!idea.requiresAI,predictRecord:idea.source});
+      links.push({source:anchor.id,target:id,type:'prediction',predicted:true});
+      // Structured projects can continue down the actual known pathway. For other
+      // contexts keep the projection shallow rather than filling the graph with
+      // meaningless taxonomy nodes.
+      if(!idea.requiresAI&&/^(Next move|Current milestone|Open task|Project pathway)$/.test(idea.kind)&&i<3){
+        const id2=`${id}-next`,theta2=theta+(rand()-.5)*.10,dist=42+rand()*12;
+        const continuation=idea.kind==='Open task'?'Close this work, then reassess the project state':idea.kind==='Current milestone'?'Advance to the next unfinished milestone':'Record the outcome and choose the following move';
+        nodes.push({id:id2,name:continuation,code:'NEXT',profile:anchor.profile,space:anchor.space,level:5,parentId:id,x:px+Math.cos(theta2)*dist,y:py+Math.sin(theta2)*dist,z:0,predicted:true,predictDepth:2,predictAnchor:anchor.id,predictSource:id,predictKind:'Follow-on',predictTitle:continuation,predictSummary:`A plausible follow-on after “${idea.title}”.`,predictWhy:'This is a workflow continuation, not stored Atlas data.',predictAI:false,minor:true});
+        links.push({source:id,target:id2,type:'prediction',predicted:true});
       }
-    }
+    });
   });
   return{nodes,links,actualCount:actual.length,predictedCount:nodes.length-actual.length};
 }
 function predictionRadius(n){if(!n.predicted)return Math.max(4.2,visualRadius(n)*.82);return n.minor?1.25:(n.predictDepth===1?2.6:1.75)}
 function predictionPath(a,b,seed){const dx=b.x-a.x,dy=b.y-a.y,mx=(a.x+b.x)/2,my=(a.y+b.y)/2,d=Math.hypot(dx,dy)||1,side=stableOffset(seed,1)>=0?1:-1,bend=Math.min(32,d*.18)*side;return `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} Q ${(mx-dy/d*bend).toFixed(1)} ${(my+dx/d*bend).toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`}
 function predictionContextFor(n,byId){
-  const anchor=byId[n.predictAnchor]||areaById(n.predictAnchor);
-  const source=byId[n.predictSource]||anchor;
-  const kind=n.predictKind||n.predictRootKind||'Extension';
-  return {anchor,source,kind,copy:PREDICT_CONTEXT[kind]||PREDICT_CONTEXT['Extension']};
+  const anchor=byId[n.predictAnchor]||areaById(n.predictAnchor),source=byId[n.predictSource]||anchor;
+  return {anchor,source,kind:n.predictKind||'Projected next',title:n.predictTitle||n.name,summary:n.predictSummary||'',why:n.predictWhy||'',requiresAI:!!n.predictAI};
 }
 function showPredictionInspector(n,byId,e){
   const panel=document.getElementById('predictInspector'),wrap=document.querySelector('.map-wrap');if(!panel||!wrap||!n?.predicted)return;
-  const ctx=predictionContextFor(n,byId),anchorCode=ctx.anchor?.code||makeNodeCode(ctx.anchor?.name||'SOURCE'),sourceCode=ctx.source?.code||makeNodeCode(ctx.source?.name||anchorCode);
-  panel.innerHTML=`<div class="predict-inspect-head"><strong>${esc(n.code||makeNodeCode(ctx.kind))} · projection</strong><button type="button" data-predict-close aria-label="Close prediction">×</button></div><div class="predict-inspect-body"><h4>${esc(ctx.kind)}</h4><p>${esc(ctx.copy)}</p><div class="predict-inspect-grid"><b>Anchor</b><span>${esc(anchorCode)} · ${esc(ctx.anchor?.name||'Unknown')}</span><b>From</b><span>${esc(sourceCode)} · ${esc(ctx.source?.name||ctx.anchor?.name||'Unknown')}</span><b>Depth</b><span>${Number(n.predictDepth||1)}</span><b>Role</b><span>${esc(n.minor?'Secondary branch':'Primary filament')}</span></div></div>`;
-  const r=wrap.getBoundingClientRect(),pw=Math.min(300,r.width-28),ph=230;let x=e.clientX-r.left+14,y=e.clientY-r.top+14;if(x+pw>r.width-8)x=Math.max(8,e.clientX-r.left-pw-14);if(y+ph>r.height-8)y=Math.max(44,e.clientY-r.top-ph-14);panel.style.left=Math.max(8,x)+'px';panel.style.top=Math.max(44,y)+'px';panel.classList.add('open');
+  const ctx=predictionContextFor(n,byId),anchorCode=ctx.anchor?.code||makeNodeCode(ctx.anchor?.name||'SOURCE');
+  panel.innerHTML=`<div class="predict-inspect-head"><strong>${esc(ctx.kind)}${ctx.requiresAI?' · AI ASSIST':''}</strong><button type="button" data-predict-close aria-label="Close prediction">×</button></div><div class="predict-inspect-body"><h4>${esc(ctx.title)}</h4><p>${esc(ctx.summary)}</p>${ctx.why?`<p class="predict-reason">${esc(ctx.why)}</p>`:''}<div class="predict-inspect-grid"><b>Context</b><span>${esc(anchorCode)} · ${esc(ctx.anchor?.name||'Unknown')}</span><b>Depth</b><span>${Number(n.predictDepth||1)}</span><b>Status</b><span>${ctx.requiresAI?'Needs AI / external knowledge':'Local projection'}</span></div></div>`;
+  const r=wrap.getBoundingClientRect(),pw=Math.min(330,r.width-28),ph=260;let x=e.clientX-r.left+14,y=e.clientY-r.top+14;if(x+pw>r.width-8)x=Math.max(8,e.clientX-r.left-pw-14);if(y+ph>r.height-8)y=Math.max(44,e.clientY-r.top-ph-14);panel.style.left=Math.max(8,x)+'px';panel.style.top=Math.max(44,y)+'px';panel.classList.add('open');
 }
 function closePredictionInspector(){const p=document.getElementById('predictInspector');if(p)p.classList.remove('open')}
 function drawPredictionNetwork(scope){
@@ -1810,7 +1832,7 @@ function drawPredictionNetwork(scope){
   const key=`predict:${scope||'home'}`;svg.dataset.scope=key;svg.innerHTML='';const gd=predictedGraph(scope),nodes=gd.nodes,links=gd.links,byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
   const cam=mapCamera(key);if(cam.needsFit)setFitCamera(key,nodes.map(n=>({...n,level:n.predicted?5:n.level})));applyMapView(svg,key);
   links.forEach(l=>{const a=byId[l.source],b=byId[l.target];if(!a||!b)return;const pred=l.predicted||l.type==='prediction';svg.appendChild(svgEl('path',{d:pred?predictionPath(a,b,l.source+'|'+l.target):straightPath(a,b),class:`edge ${pred?'prediction':l.type==='cross'?'cross':'tree'}`}))});
-  nodes.forEach(n=>{const r=predictionRadius(n),g=svgEl('g',{class:`node prediction-node ${n.predicted?'is-predicted':'is-actual'} ${n.minor?'minor':''}`});g.dataset.node=n.id;g.appendChild(svgEl('circle',{cx:n.x,cy:n.y,r:r,class:'node-disc'}));const title=svgEl('title');title.textContent=n.predicted?`Projected prompt: ${n.name}`:n.name;g.appendChild(title);if(!n.predicted||(!n.minor&&n.predictDepth===1)){const tx=svgEl('text',{x:n.x,y:n.y+r+8,class:'label','dominant-baseline':'hanging'});tx.textContent=n.predicted?n.code:(n.code||makeNodeCode(n.name));g.appendChild(tx)}svg.appendChild(g)});
+  nodes.forEach(n=>{const r=predictionRadius(n),g=svgEl('g',{class:`node prediction-node ${n.predicted?'is-predicted':'is-actual'} ${n.minor?'minor':''} ${n.predictAI?'predict-ai':''}`});g.dataset.node=n.id;g.appendChild(svgEl('circle',{cx:n.x,cy:n.y,r:r,class:'node-disc'}));const title=svgEl('title');title.textContent=n.predicted?`Projected: ${n.predictTitle||n.name}`:n.name;g.appendChild(title);if(!n.predicted||(!n.minor&&n.predictDepth===1)){const tx=svgEl('text',{x:n.x,y:n.y+r+8,class:'label','dominant-baseline':'hanging'});tx.textContent=n.predicted?(n.predictAI?'AI':(n.code||'NEXT')):(n.code||makeNodeCode(n.name));g.appendChild(tx)}svg.appendChild(g)});
   const inspect=document.getElementById('mapInspect');svg.querySelectorAll('.node').forEach(el=>{el.addEventListener('pointerenter',()=>{const n=byId[el.dataset.node];if(inspect&&n)inspect.textContent=n.predicted?`PROJECTED / ${n.name.toUpperCase()}`:`ACTUAL / ${n.code} / ${n.name.toUpperCase()}`});el.addEventListener('click',e=>{const n=byId[el.dataset.node];if(n?.predicted){e.stopPropagation();showPredictionInspector(n,byId,e)}})});svg.addEventListener('pointerleave',()=>{if(inspect)inspect.textContent=''});
   bindPredictionNetwork(scope);
   document.querySelectorAll('[data-map-zoom]').forEach(b=>{b.onclick=()=>{const a=b.dataset.mapZoom;if(a==='in')zoomPrediction(scope,1.2);else if(a==='out')zoomPrediction(scope,1/1.2);else fitPrediction(scope)}});
@@ -1822,9 +1844,9 @@ function bindPredictionNetwork(scope){const svg=document.getElementById('network
 
 function networkPanel(scope=null){
   const hero=!scope,count=graphData(scope).nodes.length,mode=state.settings.mapViewMode||'nodes',predict=mode==='predict',metaCount=predict?predictedGraph(scope).predictedCount:count;
-  return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2></div>`:''}<div class="map-wrap ${predict?'prediction-mode':''}"><div class="map-topline"><div class="map-meta"><span>${mode==='nodes'?'MAP':mode==='list'?'LIST':'PREDICT'}</span><span>${esc(activeProfile().name.toUpperCase())}</span><span>${predict?`${metaCount} PROJECTED`:`${count} NODES`}</span><span id="mapInspect"></span></div><div class="map-view-toggle"><button type="button" data-map-view="nodes" class="${mode==='nodes'?'active':''}">Nodes</button><button type="button" data-map-view="list" class="${mode==='list'?'active':''}">List</button><button type="button" data-map-view="predict" class="${mode==='predict'?'active':''}">Predict</button></div></div>${mode==='list'?`<div class="branch-view">${branchTreeHtml(scope)}</div>`:`<svg id="network" viewBox="0 0 1200 680" role="img" aria-label="${predict?'Atlas procedural prediction map':'Atlas relationship map'}"></svg>${predict?'<aside id="predictInspector" class="prediction-inspector" aria-live="polite"></aside>':''}<div class="map-controls"><div class="map-hud"><div class="zoom-controls"><button type="button" data-map-zoom="out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset"><span id="zoomValue">FIT</span></button><button type="button" data-map-zoom="in">+</button></div>${predict?`<div class="zoom-controls"><button type="button" class="zoom-reset" data-predict-regenerate>Regenerate</button></div><span class="predict-note">PROCEDURAL IDEA PROJECTION · NOT STORED</span>`:`<div class="zoom-controls"><button type="button" class="zoom-reset" data-map-layout="organise">Reform</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}"/><strong id="depthValue">${state.settings.mapDepth}</strong></div><div class="depth map-opacity">Type <input id="labelOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapLabelOpacity??.72)*100)}"/><strong id="labelOpacityValue">${Math.round((state.settings.mapLabelOpacity??.72)*100)}</strong></div><div class="depth map-opacity">Links <input id="edgeOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapEdgeOpacity??.32)*100)}"/><strong id="edgeOpacityValue">${Math.round((state.settings.mapEdgeOpacity??.32)*100)}</strong></div>`}</div></div>`}</div></section>`;
+  return `<section class="network-stage ${hero?'home-network':'area-network'}">${scope?`<div class="network-head"><h2>${esc(areaById(scope)?.name||'Area')} Network</h2></div>`:''}<div class="map-wrap ${predict?'prediction-mode':''}"><div class="map-topline"><div class="map-meta"><span>${mode==='nodes'?'MAP':mode==='list'?'LIST':'PREDICT'}</span><span>${esc(activeProfile().name.toUpperCase())}</span><span>${predict?`${metaCount} PROJECTED`:`${count} NODES`}</span><span id="mapInspect"></span></div><div class="map-view-toggle"><button type="button" data-map-view="nodes" class="${mode==='nodes'?'active':''}">Nodes</button><button type="button" data-map-view="list" class="${mode==='list'?'active':''}">List</button><button type="button" data-map-view="predict" class="${mode==='predict'?'active':''}">Predict</button></div></div>${mode==='list'?`<div class="branch-view">${branchTreeHtml(scope)}</div>`:`<svg id="network" viewBox="0 0 1200 680" role="img" aria-label="${predict?'Atlas procedural prediction map':'Atlas relationship map'}"></svg>${predict?'<aside id="predictInspector" class="prediction-inspector" aria-live="polite"></aside>':''}<div class="map-controls"><div class="map-hud"><div class="zoom-controls"><button type="button" data-map-zoom="out">−</button><button type="button" class="zoom-reset" data-map-zoom="reset"><span id="zoomValue">FIT</span></button><button type="button" data-map-zoom="in">+</button></div>${predict?`<div class="zoom-controls"><button type="button" class="zoom-reset" data-predict-regenerate>Regenerate</button></div><span class="predict-note">CONTEXTUAL PROJECTION · AI SLOTS MARKED · NOT STORED</span>`:`<div class="zoom-controls"><button type="button" class="zoom-reset" data-map-layout="organise">Reform</button></div><div class="depth">Depth <input id="depthRange" type="range" min="2" max="5" step="1" value="${state.settings.mapDepth}"/><strong id="depthValue">${state.settings.mapDepth}</strong></div><div class="depth map-opacity">Type <input id="labelOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapLabelOpacity??.72)*100)}"/><strong id="labelOpacityValue">${Math.round((state.settings.mapLabelOpacity??.72)*100)}</strong></div><div class="depth map-opacity">Links <input id="edgeOpacityRange" type="range" min="0" max="100" step="1" value="${Math.round((state.settings.mapEdgeOpacity??.32)*100)}"/><strong id="edgeOpacityValue">${Math.round((state.settings.mapEdgeOpacity??.32)*100)}</strong></div>`}</div></div>`}</div></section>`;
 }
-function renderHome(){ensureWidgetSettings();const z=adaptiveWidgetZones(),app=document.getElementById('app');app.innerHTML=`<section class="atlas-board" id="atlasBoard">${zoneHtml('top',z.top)}<div class="board-middle">${zoneHtml('left',z.left)}<div class="board-map">${networkPanel(null)}</div>${zoneHtml('right',z.right)}</div>${zoneHtml('bottom',z.bottom)}${floatingWidgets(z.float)}</section>`;if(state.settings.mapViewMode==='nodes')drawNetwork(null);else if(state.settings.mapViewMode==='predict')drawPredictionNetwork(null);widgetMenuState()}
+function renderHome(){ensureWidgetSettings();const z=adaptiveWidgetZones(),app=document.getElementById('app');app.innerHTML=`<section class="atlas-board" id="atlasBoard">${zoneHtml('top',z.top)}<div class="board-middle">${zoneHtml('left',z.left)}<div class="board-center"><div class="board-map">${networkPanel(null)}</div>${zoneHtml('bottom',z.bottom)}</div>${zoneHtml('right',z.right)}</div>${floatingWidgets(z.float)}</section>`;if(state.settings.mapViewMode==='nodes')drawNetwork(null);else if(state.settings.mapViewMode==='predict')drawPredictionNetwork(null);widgetMenuState()}
 function updateAtlasClock(){
   const nowD=new Date(),tf=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),df=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',weekday:'short',day:'2-digit',month:'short',year:'numeric'}),utf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),udf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',weekday:'short',day:'2-digit',month:'short',year:'numeric'});
   const vals={melClock:tf.format(nowD),melDate:df.format(nowD),utcClockBottom:utf.format(nowD),utcDateBottom:udf.format(nowD)};
