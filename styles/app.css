@@ -594,6 +594,7 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
 .atlas-logo{display:block;width:104px;height:auto;object-fit:contain;filter:none}
 body[data-theme="night"] .atlas-logo{filter:invert(1) brightness(1.06)}
 .atlas-logo-lock{width:126px!important;height:auto!important}
+.lock-screen .atlas-logo-lock,body[data-theme="night"] .lock-screen .atlas-logo-lock{filter:invert(1) brightness(1.06)!important}
 .brand-home{width:108px!important;height:38px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;overflow:visible!important}
 .lock-brand{width:132px!important;min-height:44px!important;display:flex!important;align-items:center!important}
 
