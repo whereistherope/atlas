@@ -54,8 +54,7 @@ body[data-theme="night"] .field input,body[data-theme="night"] .field select,bod
 .network-head h2{margin:0;font:850 11px/1.15 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.07em}
 .map-wrap{position:relative;padding:0;min-height:625px;overflow:hidden;background:transparent}
 .home-network{margin-top:-2px}
-.home-network .map-wrap{min-height:780px}
-.home-network #network{height:780px}
+
 body[data-theme="night"] .map-wrap{background:transparent}
 #network{width:100%;height:620px;display:block;touch-action:none;cursor:grab}
 #network.is-panning{cursor:grabbing}
@@ -93,7 +92,7 @@ body[data-theme="night"] .zoom-controls button:hover{color:#031018}
 body[data-theme="night"] .fold{background:rgba(12,18,25,.95);border-color:var(--line)}
 body[data-theme="night"] .fold[open]>summary{border-color:var(--line)}
 .home-queues{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-@media(max-width:850px){.home-queues{grid-template-columns:1fr}.home-network .map-wrap{min-height:580px}.home-network #network{height:575px}}
+@media(max-width:850px){.home-queues{grid-template-columns:1fr}}
 
 /* overlays */
 .overlay{position:fixed;inset:0;z-index:40;background:rgba(18,23,19,.34);display:none;align-items:flex-start;justify-content:center;padding:5vh 12px;overflow:auto}.overlay.open{display:flex}.modal{width:min(760px,96vw);background:#efeee6;border:1px solid #666e66;border-radius:6px;box-shadow:0 24px 70px rgba(17,22,18,.3)}.modal.wide{width:min(1260px,97vw)}.modal-head{padding:14px 15px;border-bottom:1px solid #b3b7af;display:flex;justify-content:space-between;gap:10px;align-items:start;position:sticky;top:0;background:#efeee6;z-index:2}.modal-head h3{margin:4px 0 0;font-size:22px;letter-spacing:-.025em}.modal-body{padding:15px}.form{display:grid;gap:11px}.field label{display:block;font:800 8.5px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;color:var(--muted);margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid #969d94;border-radius:4px;background:#f6f5ee;color:var(--ink);padding:9px 10px;font-size:12px}.field textarea{min-height:96px;resize:vertical}.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.checkline{display:flex;gap:8px;align-items:center;font-size:11px}.checkline input{accent-color:var(--green)}
@@ -101,7 +100,6 @@ body[data-theme="night"] .fold[open]>summary{border-color:var(--line)}
 
 .lock-screen{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;background:#05080c;color:#d9edf8;overflow:auto}.lock-screen.open{display:flex}.lock-card{width:min(420px,94vw);padding:28px 26px 24px;border-top:3px solid #1793d1;background:#080d12;border-bottom:1px solid #253746}.lock-brand{font-size:38px;font-weight:780;letter-spacing:-.045em;line-height:1;margin:0 0 28px;color:#d9edf8}.lock-kicker{font:800 9px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.08em;color:#1793d1;margin-bottom:7px}.lock-title{font-size:20px;font-weight:720;letter-spacing:-.025em;margin:0 0 7px}.lock-copy{font-size:11px;line-height:1.55;color:#7892a3;margin:0 0 18px}.lock-field{margin:0 0 11px}.lock-field label{display:block;font:800 8.5px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.06em;color:#7892a3;margin:0 0 5px}.lock-field input,.lock-field select{width:100%;border:1px solid #253746;border-radius:4px;background:#05080c;color:#d9edf8;padding:11px 12px;font-size:13px;outline:none}.lock-field input:focus,.lock-field select:focus{border-color:#1793d1}.lock-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:15px}.lock-primary,.lock-secondary{border:1px solid #1793d1;border-radius:4px;padding:10px 12px;font:800 9.5px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.055em}.lock-primary{background:#1793d1;color:#031018}.lock-secondary{background:transparent;color:#9fcfe7;border-color:#31566c}.lock-primary:disabled{opacity:.42;cursor:not-allowed}.lock-check{display:flex;gap:8px;align-items:center;color:#7892a3;font-size:10px;margin-top:10px}.lock-check input{accent-color:#1793d1}.lock-message{min-height:16px;margin-top:10px;font:750 9px/1.45 "SFMono-Regular",Consolas,monospace;color:#d7a84a}.recovery-key{display:block;width:100%;margin:12px 0;padding:12px;border:1px dashed #1793d1;background:#05080c;color:#bfe9ff;font:800 12px/1.5 "SFMono-Regular",Consolas,monospace;letter-spacing:.08em;text-align:center}.lock-note{margin-top:16px;padding-top:12px;border-top:1px solid #1b2a35;color:#607b8c;font-size:9px;line-height:1.5}.atlas-locked{overflow:hidden}
 .toast{position:fixed;right:18px;bottom:18px;z-index:80;background:var(--ink);color:var(--paper);border-radius:4px;padding:9px 11px;font:750 9px "SFMono-Regular",Consolas,monospace;text-transform:uppercase;opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}.toast.show{opacity:1;transform:translateY(0)}
-
 
 /* Atlas 0.10.2 · quiet spherical graph + utility rail */
 :root{--graph-work:202;--graph-life:92;--graph-creative:272;--graph-daily:34}
@@ -168,7 +166,7 @@ body[data-theme="night"] .utility-btn:hover,body[data-theme="night"] .utility-fi
 .brand-home:hover{color:var(--ink)!important}
 .header-switch select,.space-switch select,.section-switch select{background:transparent;border-color:color-mix(in srgb,var(--line) 82%,transparent)}
 .panel,.editor-section,.profile-card{box-shadow:none}
-.home-network .map-wrap{background:transparent}
+
 .sphere-guide{display:none!important}
 .edge{stroke:color-mix(in srgb,var(--muted) 56%,transparent)!important;stroke-width:.58!important;opacity:.23!important}
 .edge.cross{stroke-width:.78!important;stroke-dasharray:2 5!important;opacity:.42!important}
@@ -218,7 +216,6 @@ body[data-theme="night"] .edge{stroke:#686c68!important;opacity:.22!important}
 .lock-message{margin-top:10px;color:#9b8d79;font:500 9px/1.4 "Courier New",Courier,monospace}
 .recovery-key{border:1px solid #3b3e39;background:transparent;color:#c4c1b9;font:500 11px/1.5 "Courier New",Courier,monospace}
 .lock-note{border-top:0;color:#646861;font-size:8.5px}
-
 
 /* Atlas 0.10.4 · restrained Life OS interface */
 :root{
@@ -333,8 +330,6 @@ body[data-theme="night"] .field input,body[data-theme="night"] .field select,bod
   .topbar{flex-direction:row!important;align-items:center!important;gap:8px!important}.brand-home{width:102px}.atlas-wordmark{width:100px}.utility-actions{justify-content:flex-end!important}
 }
 
-
-
 /* Atlas 0.10.5 · precision workstation pass */
 :root{
   --bg:#e8e5dd;--paper:#e8e5dd;--paper2:#e8e5dd;--ink:#20231f;--muted:#6e736e;--line:#aaa9a1;
@@ -367,7 +362,7 @@ body{font-feature-settings:"kern" 1,"liga" 1;-webkit-font-smoothing:antialiased;
 .utility-pane{border-radius:0!important;border:0!important;border-right:1px solid var(--line)!important}
 
 /* Map becomes the primary readable instrument. */
-.home-network .map-wrap{min-height:720px}.home-network #network{height:720px}.map-wrap{overflow:hidden}
+.map-wrap{overflow:hidden}
 .map-meta{position:absolute;z-index:3;top:14px;left:14px;display:flex;gap:12px;align-items:center;color:var(--muted);pointer-events:none;font:600 9px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono",monospace;letter-spacing:.045em;text-transform:uppercase}
 .map-meta span+span{position:relative}.map-meta span+span:before{content:"/";position:absolute;left:-8px;color:color-mix(in srgb,var(--muted) 48%,transparent)}
 #mapInspect{color:var(--ink);max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -401,10 +396,8 @@ body{font-feature-settings:"kern" 1,"liga" 1;-webkit-font-smoothing:antialiased;
 .lock-card{width:min(350px,90vw)!important}.lock-brand{margin-bottom:42px!important}.lock-field input.pin-input{font-size:21px!important;letter-spacing:.52em!important}
 .code,.panel-head h2,.panel-head h3,.workspace-title .crumb,.badge{font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono",monospace!important}
 
-@media(max-width:900px){.home-network .map-wrap{min-height:590px}.home-network #network{height:590px}.map-meta{top:9px;left:9px;gap:9px}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0!important}.metric:nth-child(-n+2){border-bottom:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important}}
-@media(max-width:700px){.shell{padding:10px 12px 24px}.brand-home{width:108px;height:34px}.atlas-wordmark{width:106px;height:34px}.utility-actions{gap:0}.utility-btn,.utility-file{padding:6px!important;font-size:9px!important}.header-switch{font-size:8px!important}.home-network .map-wrap{min-height:520px}.home-network #network{height:520px}.map-meta span:nth-child(2),.map-meta span:nth-child(3){display:none}.metrics{grid-template-columns:1fr 1fr}.metric{min-height:86px!important}.metric .value{font-size:28px!important}}
-
-
+@media(max-width:900px){.map-meta{top:9px;left:9px;gap:9px}.metrics{grid-template-columns:repeat(2,1fr)}.metric:nth-child(2){border-right:0!important}.metric:nth-child(-n+2){border-bottom:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important}}
+@media(max-width:700px){.shell{padding:10px 12px 24px}.brand-home{width:108px;height:34px}.atlas-wordmark{width:106px;height:34px}.utility-actions{gap:0}.utility-btn,.utility-file{padding:6px!important;font-size:9px!important}.header-switch{font-size:8px!important}.map-meta span:nth-child(2),.map-meta span:nth-child(3){display:none}.metrics{grid-template-columns:1fr 1fr}.metric{min-height:86px!important}.metric .value{font-size:28px!important}}
 
 /* Atlas 0.10.6 · operational workspace redesign */
 :root{
@@ -447,14 +440,7 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,
 /* Home layout: operational sidecar on wide screens; map-first stack on tall/narrow screens. */
 .home-layout{display:grid;grid-template-areas:"map" "dash";gap:12px;align-items:start}
 .home-map{grid-area:map;min-width:0}.home-stack{grid-area:dash;margin:0!important;border:1px solid var(--line)!important;background:var(--surface-1)!important;box-shadow:var(--shadow-soft);min-width:0}
-.home-network{margin:0!important}.home-network .map-wrap{min-height:690px!important;height:690px!important;background:
-  radial-gradient(ellipse at 52% 46%,color-mix(in srgb,var(--accent) 10%,transparent) 0%,color-mix(in srgb,var(--accent) 4%,transparent) 30%,transparent 62%),
-  linear-gradient(180deg,color-mix(in srgb,var(--surface-1) 90%,transparent),color-mix(in srgb,var(--surface-0) 96%,transparent))!important;
-  border:1px solid color-mix(in srgb,var(--line) 70%,transparent);box-shadow:var(--shadow-soft);overflow:hidden}
-.home-network #network{height:690px!important}
-body[data-theme="night"] .home-network .map-wrap{background:
-  radial-gradient(ellipse at 52% 46%,rgba(99,132,151,.12) 0%,rgba(99,132,151,.055) 30%,transparent 62%),
-  linear-gradient(180deg,#10171c 0%,#0c1216 100%)!important}
+.home-network{margin:0!important}
 
 /* True map styling: crisp nodes, readable codes, subdued group hues. */
 .edge,body[data-theme="night"] .edge{stroke:var(--map-edge)!important;stroke-width:.9!important;opacity:.42!important}
@@ -490,7 +476,7 @@ body[data-theme="night"] .home-network .map-wrap{background:
   .home-layout{grid-template-columns:minmax(300px,340px) minmax(0,1fr);grid-template-areas:"dash map";gap:14px}
   .home-stack{position:sticky;top:72px;max-height:calc(100vh - 86px);overflow:auto}
   .home-stack .metrics{grid-template-columns:1fr 1fr!important}.home-stack .metric:nth-child(2){border-right:0!important}.home-stack .metric:nth-child(-n+2){border-bottom:1px solid var(--line)!important}
-  .home-network .map-wrap{min-height:calc(100vh - 82px)!important;height:calc(100vh - 82px)!important}.home-network #network{height:calc(100vh - 82px)!important}
+
 }
 @media (max-width:1179px), (max-aspect-ratio: 1.339/1){
   .home-layout{grid-template-columns:1fr;grid-template-areas:"map" "dash"}
@@ -500,7 +486,7 @@ body[data-theme="night"] .home-network .map-wrap{background:
   .topbar{grid-template-columns:132px 1fr auto!important;gap:12px!important}.top-context{justify-self:stretch}.context-switch{padding:0 7px;gap:5px}.context-switch span{display:none}.context-switch select{min-width:72px}.command-btn{padding:0 8px}
 }
 @media(max-width:760px){
-  .shell{padding:9px 10px 24px!important}.topbar{grid-template-columns:112px 1fr!important;grid-template-areas:"brand actions" "context context";row-gap:7px!important}.brand-home{grid-area:brand}.top-actions{grid-area:actions}.top-context{grid-area:context;justify-content:stretch}.context-switch{flex:1;display:flex;justify-content:space-between}.context-switch span{display:block}.context-switch select{min-width:0;max-width:120px}.home-network .map-wrap,.home-network #network{height:560px!important;min-height:560px!important}.home-stack .metrics{grid-template-columns:1fr 1fr!important}.system-menu-panel{right:0}
+  .shell{padding:9px 10px 24px!important}.topbar{grid-template-columns:112px 1fr!important;grid-template-areas:"brand actions" "context context";row-gap:7px!important}.brand-home{grid-area:brand}.top-actions{grid-area:actions}.top-context{grid-area:context;justify-content:stretch}.context-switch{flex:1;display:flex;justify-content:space-between}.context-switch span{display:block}.context-switch select{min-width:0;max-width:120px}.home-stack .metrics{grid-template-columns:1fr 1fr!important}.system-menu-panel{right:0}
 }
 
 /* Atlas 0.10.7 · map controls + dock cleanup */
@@ -521,7 +507,6 @@ body[data-theme="night"] .home-network .map-wrap{background:
 @media(max-width:1040px){.top-context{width:100%!important}.context-switch{padding:0 8px!important}.context-switch span{display:none!important}}
 @media(max-width:760px){.top-context{grid-template-columns:repeat(3,1fr)!important}.utility-pane{left:8px!important;right:8px!important;top:auto!important;bottom:10px!important;width:auto!important;max-height:62vh!important}.map-opacity input{width:68px!important}}
 
-
 /* Atlas 0.10.8 · breathing map + dockable tools + quiet node system */
 html,body{min-height:100%;background:var(--surface-0,#0c1115)!important}
 body{min-height:100vh;background-attachment:fixed!important}
@@ -538,9 +523,7 @@ body[data-theme="night"]{--node-fill:#778187;--node-fill-back:#5f696f;--node-par
 .node.level2 text{font-size:10.2px!important}.node.level3 text{font-size:9.5px!important}.node.level4 text{font-size:8.8px!important}.node.level5 text{font-size:7.7px!important}
 .edge,body[data-theme="night"] .edge{stroke:var(--map-edge)!important;stroke-width:.75!important;opacity:var(--map-edge-opacity,.32)!important}.edge.cross,body[data-theme="night"] .edge.cross{stroke:var(--map-edge)!important;stroke-width:.9!important;opacity:calc(var(--map-edge-opacity,.32) + .12)!important}
 .constellation-legend,.legend{display:none!important}
-.home-network .map-wrap{min-height:720px!important;height:720px!important}.home-network #network{height:720px!important}
-@media(max-width:1179px), (max-aspect-ratio:1.339/1){.home-network .map-wrap{min-height:min(72vh,760px)!important;height:min(72vh,760px)!important}.home-network #network{height:min(72vh,760px)!important}}
-@media(max-width:760px){.home-network .map-wrap,.home-network #network{height:64vh!important;min-height:520px!important}}
+
 .shell{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"header" "main";column-gap:12px;align-items:start}.topbar{grid-area:header}.main{grid-area:main}
 .utility-pane,body[data-theme="night"] .utility-pane{grid-area:tool;position:static!important;display:none!important;width:auto!important;max-width:none!important;max-height:none!important;border:1px solid var(--line)!important;background:var(--surface-1)!important;box-shadow:var(--shadow-soft)!important;backdrop-filter:none!important}
 body.tool-pane-open .utility-pane{display:block!important}
@@ -548,7 +531,6 @@ body.tool-pane-open .utility-pane{display:block!important}
 @media(min-width:1200px) and (min-aspect-ratio:1.25/1){body.tool-pane-open:not(.tool-pane-floating) .shell{grid-template-columns:minmax(0,1fr) 330px;grid-template-areas:"header header" "main tool"}body.tool-pane-open:not(.tool-pane-floating) .utility-pane{position:sticky!important;top:74px!important;max-height:calc(100vh - 88px)!important;overflow:auto!important}}
 @media(max-width:1199px), (max-aspect-ratio:1.249/1){body.tool-pane-open:not(.tool-pane-floating) .shell{grid-template-areas:"header" "tool" "main";row-gap:10px}body.tool-pane-open:not(.tool-pane-floating) .utility-pane{max-height:360px!important;overflow:auto!important}}
 body.tool-pane-floating .shell{grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"header" "main"!important}body.tool-pane-floating .utility-pane,body.tool-pane-floating[data-theme="night"] .utility-pane{position:fixed!important;z-index:85!important;width:340px!important;max-height:min(620px,calc(100vh - 90px))!important;overflow:auto!important;border:1px solid var(--line-strong)!important;box-shadow:0 18px 50px rgba(0,0,0,.22)!important}
-
 
 /* Atlas 0.10.9 · orbital map / unified command bar / true floating tools */
 :root{
@@ -576,18 +558,15 @@ body[data-theme="night"]{
 .node text,body[data-theme="night"] .node text{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-weight:570!important;letter-spacing:.055em!important;font-variant-numeric:tabular-nums;text-transform:uppercase}
 .node.level2 text{font-size:10.4px!important}.node.level3 text{font-size:9.5px!important}.node.level4 text{font-size:8.7px!important}.node.level5 text{font-size:7.6px!important}
 /* Obsidian-like depth comes from restrained atmosphere + actual topology, not decorative particles. */
-.home-network .map-wrap{background:radial-gradient(ellipse at 52% 49%,rgba(104,124,131,.105) 0%,rgba(104,124,131,.045) 32%,transparent 69%),linear-gradient(180deg,color-mix(in srgb,var(--surface-1) 88%,transparent),color-mix(in srgb,var(--surface-0) 97%,transparent))!important}
-body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(ellipse at 52% 49%,rgba(83,113,130,.14) 0%,rgba(83,113,130,.06) 34%,transparent 70%),linear-gradient(180deg,#10171c 0%,#0c1216 100%)!important}
+
 /* Portrait gets an efficient workspace: no fixed 72vh dead-zone, camera uses real SVG aspect. */
-@media(max-width:1179px),(max-aspect-ratio:1.339/1){.home-network .map-wrap,.home-network #network{height:clamp(540px,62vh,700px)!important;min-height:540px!important}}
-@media(max-width:760px){.home-network .map-wrap,.home-network #network{height:clamp(500px,60vh,620px)!important;min-height:500px!important}}
+
 /* A real tool window. Docked mode owns layout space; floating mode is genuinely draggable. */
 .utility-pane.floating,body[data-theme="night"] .utility-pane.floating{position:fixed!important;z-index:95!important;width:340px!important;max-width:calc(100vw - 16px)!important;max-height:min(620px,calc(100vh - 90px))!important;overflow:auto!important;border:1px solid var(--line-strong)!important;box-shadow:0 22px 58px rgba(0,0,0,.22)!important}
 .utility-pane.floating .utility-pane-head{cursor:move!important}
 /* Responsive command rail without orphaned controls. */
 @media(max-width:1180px){.context-switch{width:108px!important;min-width:108px!important}.context-switch span{display:none!important}.topbar{grid-template-columns:110px minmax(0,1fr)!important}.command-btn{padding:0 8px!important}}
 @media(max-width:850px){.topbar{grid-template-areas:none!important;grid-template-columns:104px minmax(0,1fr)!important;align-items:start!important}.brand-home,.top-actions,.top-context{grid-area:auto!important}.top-actions{flex-wrap:wrap!important}.top-context{order:6!important;width:100%!important;flex-basis:100%!important}.context-switch{flex:1!important;width:auto!important;min-width:0!important}.tools-menu{order:4!important}.top-actions>#systemMenu{order:5!important}}
-
 
 /* Atlas 0.10.10 · unified menus + modular tool docks + fixed wordmark */
 .atlas-wordmark{display:none!important}
@@ -638,7 +617,7 @@ body[data-theme="night"] .atlas-logo{filter:invert(1) brightness(1.06)}
 }
 
 /* Modular tool workspace. */
-.shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"header" "main"!important;column-gap:12px!important;row-gap:10px!important;align-items:start!important}
+.shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"header" "main"!important;column-gap:12px!important;row-gap:10px!important;align-items:start!important;align-content:start!important}
 .topbar{grid-area:header!important}.main{grid-area:main!important}.utility-pane{grid-area:tool!important}
 .utility-pane,body[data-theme="night"] .utility-pane{
   position:static!important;display:none!important;width:auto!important;max-width:none!important;max-height:none!important;
