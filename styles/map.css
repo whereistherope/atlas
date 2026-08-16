@@ -1,22 +1,37 @@
-<!DOCTYPE html>
-<html lang="en-AU">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Atlas</title>
-<link rel="manifest" href="./manifest.webmanifest" />
-<meta name="theme-color" content="#202120" />
-<meta name="application-name" content="Atlas" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Atlas" />
-<link rel="apple-touch-icon" href="./atlas-192.png" />
+/* Nodes, List and Predict view presentation. */
+/* Atlas 0.11.1 · branch list / clustered map / prediction view */
+.chrono-bottom{margin:12px 0 0!important;border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important;border-bottom:0!important;justify-content:flex-end!important;min-height:32px}
+.edge.cross,body[data-theme="night"] .edge.cross{opacity:var(--map-cross-opacity,.22)!important}
+.branch-view{padding:58px 26px 28px!important}
+.branch-root-list{display:grid;gap:28px;max-width:1180px;margin:0 auto}.branch-root{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:28px;align-items:start;padding-bottom:24px;border-bottom:1px solid color-mix(in srgb,var(--line) 52%,transparent)}.branch-root:last-child{border-bottom:0}.branch-root-title{border:0;background:transparent;color:var(--ink);padding:5px 0;text-align:left;font:600 10px/1.45 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;letter-spacing:.025em}.branch-root-title:hover{color:var(--accent)}.branch-root-tree{min-width:0;position:relative}.branch-root-code{display:inline-block;margin:0 0 8px;font:600 8px/1 ui-monospace,monospace;letter-spacing:.08em;color:var(--muted)}.branch-tree.root-children{margin-left:0!important}.branch-node{grid-template-columns:60px minmax(0,1fr)!important}.branch-code{font-size:8px!important}.branch-name{font-size:10px!important;color:color-mix(in srgb,var(--ink) 72%,var(--muted))!important}.branch-note .branch-name{opacity:.72}
+.prediction-mode{background:radial-gradient(ellipse at 50% 48%,color-mix(in srgb,var(--slate) 12%,transparent),transparent 52%),var(--surface-1)!important}.prediction-mode .edge.prediction{fill:none;stroke:color-mix(in srgb,var(--ink) 58%,transparent);stroke-width:.62;opacity:.34;vector-effect:non-scaling-stroke}.prediction-mode .prediction-node .node-disc{fill:color-mix(in srgb,var(--ink) 80%,var(--surface-1));stroke:none!important}.prediction-mode .prediction-node.is-actual .node-disc{fill:var(--surface-3);stroke:color-mix(in srgb,var(--ink) 54%,transparent)!important;stroke-width:.8!important}.prediction-mode .prediction-node.minor{opacity:.62}.prediction-mode .prediction-node text{font-size:6.6px!important;font-weight:540!important;opacity:.62}.prediction-mode .prediction-node.is-actual text{font-size:8px!important;opacity:.82}.predict-note{align-self:center;font:550 7px/1 ui-monospace,monospace;letter-spacing:.07em;color:var(--muted);white-space:nowrap}
+@media(max-width:760px){.branch-root{grid-template-columns:112px minmax(0,1fr);gap:16px}.branch-root-title{font-size:10px}.chrono-bottom{justify-content:flex-start!important}}
+/* 0.11.2 refinements */
+.chrono-top{margin-bottom:10px!important;border-top:0!important;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important;justify-content:flex-end!important}
+.chrono-bottom{margin-top:14px!important;justify-content:flex-end!important}
+.prediction-inspector{position:absolute;z-index:24;width:min(300px,calc(100% - 28px));display:none;background:color-mix(in srgb,var(--surface-2) 96%,transparent);border:1px solid var(--line-strong);box-shadow:0 18px 44px rgba(0,0,0,.22);color:var(--ink);padding:0;pointer-events:auto}
+.prediction-inspector.open{display:block}.predict-inspect-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line)}
+.predict-inspect-head strong{font:650 9px/1 ui-monospace,monospace;letter-spacing:.055em;text-transform:uppercase}.predict-inspect-head button{border:0;background:transparent;color:var(--muted);font-size:15px;padding:1px 4px}
+.predict-inspect-body{padding:11px 12px 12px}.predict-inspect-body h4{font-size:12px;line-height:1.35;margin:0 0 8px;font-weight:650}.predict-inspect-body p{font-size:10px;line-height:1.55;margin:0 0 10px;color:var(--muted)}
+.predict-inspect-grid{display:grid;grid-template-columns:70px 1fr;gap:6px 9px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);font:550 8px/1.45 ui-monospace,monospace}.predict-inspect-grid b{color:var(--muted);font-weight:550;text-transform:uppercase}.predict-inspect-grid span{color:var(--ink)}
+.prediction-node.is-predicted{cursor:pointer}.prediction-node.is-predicted:hover .node-disc{stroke:var(--ink)!important;stroke-width:1.2!important}
+/* Wide layouts may visually pack saved Bottom widgets into spare side lanes. Their saved zone remains Bottom. */
+.widget-zone.is-adaptive-fill{align-content:start}
 
-<link rel="stylesheet" href="./styles/tokens.css" />
-<link rel="stylesheet" href="./styles/app.css" />
-<link rel="stylesheet" href="./styles/widgets.css" />
-<link rel="stylesheet" href="./styles/map.css" />
 
+/* Atlas 0.11.3 refinements */
+.topbar{position:relative!important;padding-bottom:28px!important}
+.header-chrono{position:absolute;right:0;bottom:4px;display:flex;align-items:baseline;gap:7px;height:18px;color:var(--muted);font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;white-space:nowrap}
+.header-chrono span{font-size:6.5px;letter-spacing:.14em}.header-chrono strong{font-size:10px;font-weight:650;letter-spacing:.07em;color:var(--ink)}.header-chrono em{font-style:normal;font-size:6.5px;letter-spacing:.055em;text-transform:uppercase}
+.chrono-bottom{height:28px!important;min-height:28px!important;margin:14px 0 0!important;padding:0 0!important;border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important;border-bottom:0!important;justify-content:flex-end!important}
+.chrono-bottom:before,.chrono-bottom:after{display:none!important}
+.board-middle{grid-template-columns:auto minmax(0,1fr) auto!important;align-items:start!important}
+.board-center{min-width:0;display:grid;gap:var(--widget-gap);align-content:start}
+.board-center>.widget-zone.zone-bottom{width:100%;grid-template-columns:repeat(var(--zone-cols,1),minmax(0,1fr));align-items:start}
+.prediction-inspector{width:min(330px,calc(100% - 24px))!important}.predict-inspect-body h4{font-size:13px!important;line-height:1.35!important;margin-bottom:8px!important}.predict-reason{padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent);color:var(--muted)!important;font-size:9px!important}
+.prediction-node.is-predicted.predict-ai .node-disc{stroke:var(--sand)!important;fill:color-mix(in srgb,var(--sand) 24%,var(--surface-2))!important}
+@media(max-width:920px){.topbar{padding-bottom:30px!important}.header-chrono{left:0;right:auto}.board-middle{grid-template-columns:minmax(0,1fr)!important}.widget-zone.zone-left{order:1}.board-center{order:2}.widget-zone.zone-right{order:3}.board-center>.widget-zone.zone-bottom{order:2}.board-map{order:1}.chrono-bottom{justify-content:flex-start!important}}
+</style>
 </head>
 <body>
 <div class="lock-screen" id="lockScreen" aria-live="polite">
@@ -144,17 +159,3 @@
   </section>
 </div>
 <div class="toast" id="toast"></div>
-
-<script src="./js/db.js" defer></script>
-<script src="./js/auth.js" defer></script>
-<script src="./js/app.js" defer></script>
-<script src="./js/calendar.js" defer></script>
-<script src="./js/map.js" defer></script>
-<script src="./js/ui.js" defer></script>
-<script src="./js/widgets.js" defer></script>
-<script src="./js/bootstrap.js" defer></script>
-
-
-
-</body>
-</html>
