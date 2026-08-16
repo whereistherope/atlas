@@ -33,13 +33,21 @@ require("board-middle" not in map_css and "board-center" not in map_css and "boa
 workspace_geometry = widgets_css.split("/* Main home workspace", 1)[1].split("/* Widget internals", 1)[0]
 require(not any("!important" in line for line in workspace_geometry.splitlines() if any(token in line for token in (".board-middle", ".board-center", ".board-map", ".widget-zone.zone-left", ".widget-zone.zone-right", ".widget-zone.zone-bottom"))), "canonical workspace geometry must not depend on !important")
 
-# Side lanes and the map share one height; side rows divide it equally and
-# widget bodies scroll rather than increasing the map row.
-require("height:var(--map-pane-height)" in widgets_css, "map and side lanes must share a height token")
-require("grid-template-rows:repeat(var(--zone-rows),minmax(0,1fr))" in widgets_css, "side widgets must divide map height")
-for count in range(1, 7):
-    require(f'[data-count="{count}"]' in widgets_css and f"--zone-rows:{count}" in widgets_css, f"side row count {count} missing")
-require("overflow:auto" in workspace_geometry, "side widget content must scroll")
+# The centre surface has an unbroken definite-height chain shared by all modes.
+require(".board-map{min-width:0;position:relative;height:var(--map-pane-height)}" in widgets_css, "board map height missing")
+require(".board-map>.network-stage{width:100%;min-width:0;height:100%;min-height:0}" in widgets_css, "network stage height chain missing")
+require(".board-map>.network-stage>.map-wrap{width:100%;min-width:0;height:100%;min-height:0}" in widgets_css, "map wrap height chain missing")
+require(".board-map #network{width:100%;height:100%;display:block}" in widgets_css, "SVG height chain missing")
+
+# Side lanes share map height. One widget fills it, two split it, and three or
+# more retain two-slot height inside a scrolling lane rather than compressing.
+require("--widget-side:clamp(220px,18vw,300px)" in widgets_css, "restrained side width missing")
+require('zone-left[data-count="1"]' in widgets_css and "grid-template-rows:minmax(0,1fr)" in widgets_css, "single side widget must fill height")
+require('zone-left[data-count="2"]' in widgets_css and "grid-template-rows:repeat(2,minmax(0,1fr))" in widgets_css, "two side widgets must split height")
+require("grid-auto-rows:calc((100% - var(--workspace-gap))/2)" in widgets_css and "overflow-y:auto" in workspace_geometry, "3+ side widgets must use scrolling two-slot rows")
+for count in range(3, 7):
+    require(f"--zone-rows:{count}" not in widgets_css, f"side count {count} must not compress into equal rows")
+require("overflow:auto" in workspace_geometry, "internal side widget content must scroll")
 
 # Top and Bottom pack 1/2/3/4 across. Bottom remains immediately after the map
 # inside centre, so its width always follows the centre column.
@@ -54,7 +62,8 @@ require("@media(max-width:1179px)" in widgets_css and ".board-center{order:0}" i
 require(".widget-zone.zone-left{order:1}" in widgets_css and ".widget-zone.zone-right{order:2}" in widgets_css, "tablet side order missing")
 require("repeat(2,minmax(0,1fr))" in workspace_geometry, "tablet two-column widgets missing")
 require("@media(max-width:700px)" in widgets_css and "grid-template-columns:minmax(0,1fr)" in workspace_geometry, "narrow single-column stack missing")
-require(render_home.count('class="board-map"') == 1 and "networkPanel(null)" in render_home, "all map modes must share one centre pane")
+require(render_home.count('class="board-map"') == 1 and "networkPanel(null)" in render_home, "Nodes/List/Predict must share one centre pane")
+require("mode==='list'" in widgets_js and "mode==='predict'" in widgets_js, "all three modes must render inside networkPanel")
 require(".branch-view{position:absolute;inset:0" in map_css, "List must fill the entire map pane")
 
 # List has a recursive directory tree, compact code/title rows, connectors, and
