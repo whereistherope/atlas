@@ -34,7 +34,7 @@ function adaptiveWidgetZones(){
   // geometry; it never renders a widget under a different dock.
   return {top:widgetZoneItems('top'),left:widgetZoneItems('left'),right:widgetZoneItems('right'),bottom:widgetZoneItems('bottom'),float:widgetZoneItems('float')};
 }
-function zoneHtml(zone,ids=null){ids=ids||widgetZoneItems(zone);return `<div class="widget-zone zone-${zone} ${zone==='left'||zone==='right'?'is-adaptive-fill':''}" data-widget-zone="${zone}" data-count="${Math.min(6,ids.length)}">${ids.map(renderWidget).join('')}</div>`}
+function zoneHtml(zone,ids=null){ids=ids||widgetZoneItems(zone);if(!ids.length)return'';return `<div class="widget-zone zone-${zone}" data-widget-zone="${zone}" data-count="${Math.min(6,ids.length)}">${ids.map(renderWidget).join('')}</div>`}
 function floatingWidgets(ids=null){return (ids||widgetZoneItems('float')).map(renderWidget).join('')}
 function widgetMenuState(){const rail=document.getElementById('utilityRail');if(!rail)return;rail.querySelectorAll('[data-widget-toggle]').forEach(b=>b.classList.toggle('is-open',widgetIsOpen(b.dataset.widgetToggle)))}
 function renderTabs(){
@@ -62,7 +62,7 @@ function branchTreeHtml(scope=null){
     }).join('');
   }
   const roots=scope?[areaById(scope)].filter(Boolean):(byParent['atlas']||[]);
-  return `<div class="branch-root-list">${roots.map(root=>`<section class="branch-root"><button class="branch-root-title" data-open-area="${root.id}">${esc(root.name)}</button><div class="branch-root-tree"><span class="branch-root-code">${esc(root.code)}</span><ul class="branch-tree root-children">${childList(root)||'<li class="widget-empty">No child records.</li>'}</ul></div></section>`).join('')||'<div class="widget-empty">No visible branches.</div>'}</div>`;
+  return `<div class="branch-root-list">${roots.map(root=>`<section class="branch-root"><button class="branch-root-title" data-open-area="${root.id}">${esc(root.name)}</button><ul class="branch-tree root-children">${childList(root)||'<li class="widget-empty">No child records.</li>'}</ul></section>`).join('')||'<div class="widget-empty">No visible branches.</div>'}</div>`;
 }
 
 const RECOMMENDATION_DOMAINS=[

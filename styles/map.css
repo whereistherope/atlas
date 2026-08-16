@@ -1,10 +1,24 @@
 /* Nodes, List and Predict view presentation. */
 /* Atlas 0.11.1 · branch list / clustered map / prediction view */
 .edge.cross,body[data-theme="night"] .edge.cross{opacity:var(--map-cross-opacity,.22)!important}
-.branch-view{padding:58px 26px 28px!important}
-.branch-root-list{display:grid;gap:28px;max-width:1180px;margin:0 auto}.branch-root{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:28px;align-items:start;padding-bottom:24px;border-bottom:1px solid color-mix(in srgb,var(--line) 52%,transparent)}.branch-root:last-child{border-bottom:0}.branch-root-title{border:0;background:transparent;color:var(--ink);padding:5px 0;text-align:left;font:600 10px/1.45 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;letter-spacing:.025em}.branch-root-title:hover{color:var(--accent)}.branch-root-tree{min-width:0;position:relative}.branch-root-code{display:inline-block;margin:0 0 8px;font:600 8px/1 ui-monospace,monospace;letter-spacing:.08em;color:var(--muted)}.branch-tree.root-children{margin-left:0!important}.branch-node{grid-template-columns:60px minmax(0,1fr)!important}.branch-code{font-size:8px!important}.branch-name{font-size:10px!important;color:color-mix(in srgb,var(--ink) 72%,var(--muted))!important}.branch-note .branch-name{opacity:.72}
+.branch-view{position:absolute;inset:0;overflow:auto;padding:58px 24px 26px;color:var(--ink);box-sizing:border-box}
+.branch-root-list{display:grid;gap:22px;width:100%;margin:0}
+.branch-root{min-width:0;padding:0 0 20px;border-bottom:1px solid color-mix(in srgb,var(--line) 52%,transparent)}
+.branch-root:last-child{border-bottom:0}
+.branch-root-title{display:block;border:0;background:transparent;color:var(--ink);padding:3px 0 9px;text-align:left;font:650 10px/1.4 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;letter-spacing:.025em}
+.branch-root-title:hover{color:var(--accent)}
+.branch-tree,.branch-tree ul{list-style:none;margin:0;padding-left:22px}
+.branch-tree.root-children{padding-left:22px}
+.branch-tree li{position:relative;margin:0;padding:4px 0}
+.branch-tree li:before{content:"";position:absolute;left:-14px;top:0;height:100%;border-left:1px solid color-mix(in srgb,var(--line) 76%,transparent)}
+.branch-tree li:after{content:"";position:absolute;left:-14px;top:13px;width:10px;border-top:1px solid color-mix(in srgb,var(--line) 76%,transparent)}
+.branch-tree li:last-child:before{height:13px}
+.branch-node{display:inline-grid;grid-template-columns:minmax(44px,auto) minmax(0,1fr);gap:10px;align-items:baseline;max-width:100%;cursor:pointer}
+.branch-code{font:650 8px/1.4 ui-monospace,monospace;letter-spacing:.06em;color:var(--ink)}
+.branch-name{font:500 10px/1.4 ui-monospace,monospace;color:color-mix(in srgb,var(--ink) 72%,var(--muted))}
+.branch-note .branch-name{opacity:.72}.branch-node:hover .branch-code,.branch-node:hover .branch-name{color:var(--accent)}
 .prediction-mode{background:radial-gradient(ellipse at 50% 48%,color-mix(in srgb,var(--slate) 12%,transparent),transparent 52%),var(--surface-1)!important}.prediction-mode .edge.prediction{fill:none;stroke:color-mix(in srgb,var(--ink) 58%,transparent);stroke-width:.62;opacity:.34;vector-effect:non-scaling-stroke}.prediction-mode .prediction-node .node-disc{fill:color-mix(in srgb,var(--ink) 80%,var(--surface-1));stroke:none!important}.prediction-mode .prediction-node.is-actual .node-disc{fill:var(--surface-3);stroke:color-mix(in srgb,var(--ink) 54%,transparent)!important;stroke-width:.8!important}.prediction-mode .prediction-node.minor{opacity:.62}.prediction-mode .prediction-node text{font-size:6.6px!important;font-weight:540!important;opacity:.62}.prediction-mode .prediction-node.is-actual text{font-size:8px!important;opacity:.82}.predict-note{align-self:center;font:550 7px/1 ui-monospace,monospace;letter-spacing:.07em;color:var(--muted);white-space:nowrap}
-@media(max-width:760px){.branch-root{grid-template-columns:112px minmax(0,1fr);gap:16px}.branch-root-title{font-size:10px}}
+@media(max-width:700px){.branch-view{padding:58px 14px 20px}.branch-tree,.branch-tree ul{padding-left:18px}}
 /* 0.11.2 refinements */
 .prediction-inspector{position:absolute;z-index:24;width:min(300px,calc(100% - 28px));display:none;background:color-mix(in srgb,var(--surface-2) 96%,transparent);border:1px solid var(--line-strong);box-shadow:0 18px 44px rgba(0,0,0,.22);color:var(--ink);padding:0;pointer-events:auto}
 .prediction-inspector.open{display:block}.predict-inspect-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line)}
@@ -12,15 +26,8 @@
 .predict-inspect-body{padding:11px 12px 12px}.predict-inspect-body h4{font-size:12px;line-height:1.35;margin:0 0 8px;font-weight:650}.predict-inspect-body p{font-size:10px;line-height:1.55;margin:0 0 10px;color:var(--muted)}
 .predict-inspect-grid{display:grid;grid-template-columns:70px 1fr;gap:6px 9px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);font:550 8px/1.45 ui-monospace,monospace}.predict-inspect-grid b{color:var(--muted);font-weight:550;text-transform:uppercase}.predict-inspect-grid span{color:var(--ink)}
 .prediction-node.is-predicted{cursor:pointer}.prediction-node.is-predicted:hover .node-disc{stroke:var(--ink)!important;stroke-width:1.2!important}
-/* Wide layouts may visually pack saved Bottom widgets into spare side lanes. Their saved zone remains Bottom. */
-.widget-zone.is-adaptive-fill{align-content:start}
-
-
 /* Atlas 0.11.3 refinements */
 .topbar{position:relative!important;padding-bottom:8px!important}
-.board-middle{grid-template-columns:auto minmax(0,1fr) auto!important;align-items:start!important}
-.board-center{min-width:0;display:grid;gap:var(--widget-gap);align-content:start}
-.board-center>.widget-zone.zone-bottom{width:100%;grid-template-columns:repeat(var(--zone-cols,1),minmax(0,1fr));align-items:start}
 .prediction-inspector{width:min(330px,calc(100% - 24px))!important}.predict-inspect-body h4{font-size:13px!important;line-height:1.35!important;margin-bottom:8px!important}.predict-reason{padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent);color:var(--muted)!important;font-size:9px!important}
 .prediction-node.is-predicted.predict-ai .node-disc{stroke:var(--sand)!important;fill:color-mix(in srgb,var(--sand) 24%,var(--surface-2))!important}
 @media(max-width:920px){.topbar{padding-bottom:8px!important}}
