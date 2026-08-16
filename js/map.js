@@ -95,7 +95,9 @@ function bindNetwork(scope){
     if(!g){const cam=mapCamera(svg.dataset.scope||null);dragging={kind:'pan',startX:e.clientX,startY:e.clientY,origCx:cam.cx,origCy:cam.cy,moved:false,pointerId:e.pointerId};svg.classList.add('is-panning');svg.setPointerCapture(e.pointerId);return}
     const id=g.dataset.node;if(id.startsWith('n')){dragging={kind:'node',id,startX:e.clientX,startY:e.clientY,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId);return}
     const a=areaById(id);if(!a)return;const p=clientToSvg(svg,e.clientX,e.clientY),positions=Object.fromEntries(graphData(svg.dataset.scope||null).nodes.map(n=>[n.id,n]));
-    const direct=profileAreas().filter(x=>x.parentId===id&&areaAllows(x));const group=[a,...direct];const origins=Object.fromEntries(group.map(x=>[x.id,{x:positions[x.id]?.x??x.x,y:positions[x.id]?.y??x.y,mapZ:positions[x.id]?.mapZ??x.mapZ}]));
+    // Structural ancestry is defined only by parentId. Associative (dotted)
+    // links never enter this set, while every depth of the branch does.
+    const group=profileAreas().filter(x=>x.id===id||isDescendant(x.id,id));const origins=Object.fromEntries(group.map(x=>[x.id,{x:positions[x.id]?.x??x.x,y:positions[x.id]?.y??x.y,mapZ:positions[x.id]?.mapZ??x.mapZ}]));
     dragging={kind:'node-group',id,startX:e.clientX,startY:e.clientY,startSvgX:p.x,startSvgY:p.y,origins,moved:false,pointerId:e.pointerId};svg.setPointerCapture(e.pointerId)
   });
   svg.addEventListener('pointermove',e=>{
