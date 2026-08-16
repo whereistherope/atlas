@@ -82,6 +82,7 @@ require("align-content:start!important" in app_css, "shell must keep spare heigh
 require("margin-top:-4px" not in widgets_css, "Atlas board must not compensate for shell row stretching")
 require('predict?`<div class="map-command"><button type="button" data-predict-regenerate>Regenerate</button></div>' in widgets_js, "Predict Regenerate must occupy the command slot")
 require(".map-wrap .predict-controls .map-hud{display:flex" not in map_css, "Predict must not override Nodes rail geometry")
+require(".prediction-mode{background:" not in map_css, "Predict must use the shared Nodes/List map surface background")
 responsive = widgets_css.split("@media(max-width:1179px), (max-aspect-ratio:1.339/1){", 1)[1].split("@media(max-width:700px)", 1)[0]
 require(".board-middle.has-left.has-right{display:contents}" in responsive, "width/aspect responsive mode must stack the workspace")
 require('.widget-position-panel [data-zone="left"],.widget-position-panel [data-zone="right"]{display:none}' in responsive, "the same width/aspect mode must hide side Position choices")
