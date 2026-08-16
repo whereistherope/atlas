@@ -694,32 +694,33 @@ body.tool-dragging[data-snap-target="top"] .tool-snap-hint{display:block;left:8p
   }
 }
 
-/* Atlas 0.12.1 · page status clock and balanced command header */
-.shell{grid-template-areas:"status" "header" "main"!important;row-gap:10px!important}
-.page-chrono{
-  grid-area:status;justify-self:end;display:grid;gap:3px;color:var(--muted);
-  font:650 9px/1.15 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono",monospace;
-  font-variant-numeric:tabular-nums;text-transform:uppercase;letter-spacing:.045em
+/* Atlas 0.12.1 · compact status and command header */
+.shell{grid-template-areas:"header" "main"!important;row-gap:10px!important}
+.topbar{
+  grid-template-columns:156px minmax(0,1fr)!important;grid-template-rows:auto auto!important;
+  grid-template-areas:"brand status" "brand actions"!important;gap:5px 22px!important;align-items:center!important;min-height:58px!important
 }
-.chrono-row{display:grid;grid-template-columns:24px 58px auto;align-items:baseline;column-gap:7px;white-space:nowrap}
-.chrono-row span{color:var(--ink);font-weight:750}.chrono-row strong{color:var(--ink);font-size:10px;letter-spacing:.025em}
-.chrono-row time{font-style:normal;color:var(--muted)}
-.topbar{grid-template-columns:172px minmax(0,1fr)!important;gap:24px!important;min-height:58px!important}
-.brand-home{width:168px!important;height:52px!important}.atlas-logo{width:164px!important;max-height:52px!important}
-.top-actions{gap:8px!important}.control-cluster{gap:4px!important}
+.brand-home{grid-area:brand!important;align-self:stretch!important;width:152px!important;height:auto!important}
+.atlas-logo{width:148px!important;max-height:50px!important}
+.page-chrono{
+  grid-area:status;justify-self:end;display:flex;align-items:baseline;justify-content:flex-end;gap:7px;color:var(--muted);
+  font:650 9px/1.15 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  font-variant-numeric:tabular-nums;text-transform:uppercase;letter-spacing:.045em;white-space:nowrap
+}
+.chrono-row{display:flex;align-items:baseline;gap:7px}.chrono-row span{color:var(--ink);font-weight:750}
+.chrono-row strong{color:var(--ink);font-size:10px;letter-spacing:.025em}.chrono-row time{font-style:normal;color:var(--muted)}
+.chrono-separator{color:var(--line-strong);padding:0 2px}.top-actions{grid-area:actions;gap:8px!important}.control-cluster{gap:4px!important}
 @media(max-width:1180px){
-  .topbar{grid-template-columns:146px minmax(0,1fr)!important;gap:14px!important}.brand-home{width:144px!important}.atlas-logo{width:140px!important}
+  .topbar{grid-template-columns:140px minmax(0,1fr)!important;gap:5px 14px!important}.brand-home{width:138px!important}.atlas-logo{width:134px!important}
   .top-actions{gap:4px!important}.control-cluster{gap:1px!important}
 }
 @media(max-width:850px){
-  .page-chrono{justify-self:end}.topbar{grid-template-columns:132px minmax(0,1fr)!important;gap:10px!important}
-  .brand-home{width:130px!important}.atlas-logo{width:126px!important}.top-actions{row-gap:6px!important}
+  .topbar{grid-template-columns:124px minmax(0,1fr)!important;gap:6px 10px!important}.brand-home{width:122px!important}.atlas-logo{width:118px!important}
+  .page-chrono{flex-wrap:wrap;row-gap:3px}.top-actions{row-gap:6px!important}
 }
 @media(max-width:560px){
-  .shell{row-gap:8px!important}.page-chrono{justify-self:stretch;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px}
-  .chrono-row{grid-template-columns:22px 56px;column-gap:5px}.chrono-row time{grid-column:1 / -1;font-size:8px}
-  .topbar{grid-template-columns:112px minmax(0,1fr)!important}.brand-home{width:110px!important;height:46px!important}.atlas-logo{width:108px!important;max-height:46px!important}
+  .topbar{grid-template-columns:108px minmax(0,1fr)!important;align-items:start!important}.brand-home{width:106px!important}.atlas-logo{width:104px!important;max-height:46px!important}
+  .page-chrono{white-space:normal;gap:3px 6px}.chrono-row{gap:5px}.chrono-separator{display:none}
   .command-btn{padding:0 7px!important}.system-menu>summary{min-width:68px!important;padding:0 6px!important}.context-menu>summary{min-width:78px!important}
 }
-
 
