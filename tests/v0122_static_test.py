@@ -49,17 +49,19 @@ for count in range(3, 7):
     require(f"--zone-rows:{count}" not in widgets_css, f"side count {count} must not compress into equal rows")
 require("overflow:auto" in workspace_geometry, "internal side widget content must scroll")
 
-# Top and Bottom pack 1/2/3/4 across. Bottom remains immediately after the map
-# inside centre, so its width always follows the centre column.
+# Top and Bottom pack 1/2/3/4 across. Bottom is a board-level shelf after the
+# complete middle workspace, so side occupancy never constrains its width.
 for count, columns in ((1, 1), (2, 2), (3, 3), (4, 4)):
     require(f'[data-count="{count}"]' in widgets_css and f"--zone-cols:{columns}" in widgets_css, f"equal column count {count} missing")
 render_home = widgets_js.split("function renderHome(){", 1)[1].split("function updateAtlasClock", 1)[0]
-require(render_home.index('class="board-map"') < render_home.index("zoneHtml('bottom'"), "Bottom must follow map inside centre")
+middle_end = render_home.index("</div>${zoneHtml('bottom'", render_home.index('class="board-middle'))
+require(render_home.index('class="board-map"') < middle_end, "map must remain inside middle workspace")
+require(middle_end < render_home.index("zoneHtml('bottom'"), "Bottom must be a full-workspace shelf after board-middle")
 
 # Tablet is map/Bottom first, then Left and Right in two columns; narrow is a
 # single-column stack. Nodes/List/Predict all remain contents of one board-map.
 require("@media(max-width:1179px)" in widgets_css and ".board-center{order:0}" in widgets_css, "tablet map-first composition missing")
-require(".widget-zone.zone-left{order:1}" in widgets_css and ".widget-zone.zone-right{order:2}" in widgets_css, "tablet side order missing")
+require(".widget-zone.zone-bottom{order:1}" in widgets_css and ".widget-zone.zone-left{order:2}" in widgets_css and ".widget-zone.zone-right{order:3}" in widgets_css, "tablet map/Bottom/side order missing")
 require("repeat(2,minmax(0,1fr))" in workspace_geometry, "tablet two-column widgets missing")
 require("@media(max-width:700px)" in widgets_css and "grid-template-columns:minmax(0,1fr)" in workspace_geometry, "narrow single-column stack missing")
 require(render_home.count('class="board-map"') == 1 and "networkPanel(null)" in render_home, "Nodes/List/Predict must share one centre pane")
@@ -72,6 +74,14 @@ require('<ul class="branch-tree root-children">' in widgets_js, "List root must 
 require("childList(child)" in widgets_js, "List descendants must render recursively")
 require('data-open-area="${child.id}"' in widgets_js, "List navigation hook missing")
 require(".branch-tree li:before" in map_css and ".branch-tree li:after" in map_css, "List hierarchy connectors missing")
+
+# Final composition polish: compact workspace offset, matching Predict/Nodes
+# rail structure, and portrait-only suppression of side placement choices.
+require(".atlas-board{display:grid;gap:var(--workspace-gap);min-width:0;position:relative;margin-top:-4px}" in widgets_css, "compact header-to-workspace offset missing")
+require('predict?`<div class="map-command"><button type="button" data-predict-regenerate>Regenerate</button></div>' in widgets_js, "Predict Regenerate must occupy the command slot")
+require(".map-wrap .predict-controls .map-hud{display:flex" not in map_css, "Predict must not override Nodes rail geometry")
+require('.widget-position-panel [data-zone="left"],.widget-position-panel [data-zone="right"]{display:none}' in widgets_css, "portrait Position menu must hide side choices")
+require("widgetCfg(id).zone" in widgets_js, "responsive menu styling must not rewrite saved zones")
 
 # Structural drag and Anchor/Reform contracts remain intact.
 drag_setup = map_js.split("// Structural ancestry is defined only by parentId.", 1)[1].split("dragging={kind:'node-group'", 1)[0]
