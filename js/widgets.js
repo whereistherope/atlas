@@ -166,8 +166,13 @@ function networkPanel(scope=null){
 }
 function renderHome(){ensureWidgetSettings();const z=adaptiveWidgetZones(),app=document.getElementById('app');app.innerHTML=`<section class="atlas-board" id="atlasBoard">${zoneHtml('top',z.top)}<div class="board-middle">${zoneHtml('left',z.left)}<div class="board-center"><div class="board-map">${networkPanel(null)}</div>${zoneHtml('bottom',z.bottom)}</div>${zoneHtml('right',z.right)}</div>${floatingWidgets(z.float)}</section>`;if(state.settings.mapViewMode==='nodes')drawNetwork(null);else if(state.settings.mapViewMode==='predict')drawPredictionNetwork(null);widgetMenuState()}
 function updateAtlasClock(){
-  const nowD=new Date(),tf=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),df=new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',weekday:'short',day:'2-digit',month:'short',year:'numeric'}),utf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),udf=new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',weekday:'short',day:'2-digit',month:'short',year:'numeric'});
-  const vals={melClock:tf.format(nowD),melDate:df.format(nowD),utcClockBottom:utf.format(nowD),utcDateBottom:udf.format(nowD)};
+  const nowD=new Date(),formatters={
+    melClock:new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),
+    melDate:new Intl.DateTimeFormat('en-AU',{timeZone:'Australia/Melbourne',weekday:'short',day:'2-digit',month:'short',year:'numeric'}),
+    utcClock:new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),
+    utcDate:new Intl.DateTimeFormat('en-AU',{timeZone:'UTC',weekday:'short',day:'2-digit',month:'short',year:'numeric'})
+  };
+  const vals=Object.fromEntries(Object.entries(formatters).map(([id,formatter])=>[id,formatter.format(nowD)]));
   Object.entries(vals).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v});
 }
 setInterval(updateAtlasClock,1000);setTimeout(updateAtlasClock,0);
@@ -194,4 +199,3 @@ document.addEventListener('click',e=>{
   const cnav=e.target.closest('[data-widget-cal-nav]');if(cnav){let d=monthCursorDate();d.setMonth(d.getMonth()+(cnav.dataset.widgetCalNav==='next'?1:-1));setCalendarCursor(new Date(d.getFullYear(),d.getMonth(),1));save();renderHome();return}
   const cday=e.target.closest('[data-widget-cal-date]');if(cday){openCalendarEvent('',cday.dataset.widgetCalDate);return}
 });
-
