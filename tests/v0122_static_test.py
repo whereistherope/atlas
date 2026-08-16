@@ -6,6 +6,7 @@ widgets_js = (ROOT / "js/widgets.js").read_text()
 map_js = (ROOT / "js/map.js").read_text()
 widgets_css = (ROOT / "styles/widgets.css").read_text()
 map_css = (ROOT / "styles/map.css").read_text()
+app_css = (ROOT / "styles/app.css").read_text()
 
 
 def require(condition, message):
@@ -75,12 +76,15 @@ require("childList(child)" in widgets_js, "List descendants must render recursiv
 require('data-open-area="${child.id}"' in widgets_js, "List navigation hook missing")
 require(".branch-tree li:before" in map_css and ".branch-tree li:after" in map_css, "List hierarchy connectors missing")
 
-# Final composition polish: compact workspace offset, matching Predict/Nodes
-# rail structure, and portrait-only suppression of side placement choices.
-require(".atlas-board{display:grid;gap:var(--workspace-gap);min-width:0;position:relative;margin-top:-4px}" in widgets_css, "compact header-to-workspace offset missing")
+# Final composition polish: the shell packs header/main at the top, Predict
+# matches the Nodes rail, and one shared responsive condition suppresses sides.
+require("align-content:start!important" in app_css, "shell must keep spare height after application content")
+require("margin-top:-4px" not in widgets_css, "Atlas board must not compensate for shell row stretching")
 require('predict?`<div class="map-command"><button type="button" data-predict-regenerate>Regenerate</button></div>' in widgets_js, "Predict Regenerate must occupy the command slot")
 require(".map-wrap .predict-controls .map-hud{display:flex" not in map_css, "Predict must not override Nodes rail geometry")
-require('.widget-position-panel [data-zone="left"],.widget-position-panel [data-zone="right"]{display:none}' in widgets_css, "portrait Position menu must hide side choices")
+responsive = widgets_css.split("@media(max-width:1179px), (max-aspect-ratio:1.339/1){", 1)[1].split("@media(max-width:700px)", 1)[0]
+require(".board-middle.has-left.has-right{display:contents}" in responsive, "width/aspect responsive mode must stack the workspace")
+require('.widget-position-panel [data-zone="left"],.widget-position-panel [data-zone="right"]{display:none}' in responsive, "the same width/aspect mode must hide side Position choices")
 require("widgetCfg(id).zone" in widgets_js, "responsive menu styling must not rewrite saved zones")
 
 # Structural drag and Anchor/Reform contracts remain intact.

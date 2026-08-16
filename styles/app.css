@@ -617,7 +617,7 @@ body[data-theme="night"] .atlas-logo{filter:invert(1) brightness(1.06)}
 }
 
 /* Modular tool workspace. */
-.shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"header" "main"!important;column-gap:12px!important;row-gap:10px!important;align-items:start!important}
+.shell{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"header" "main"!important;column-gap:12px!important;row-gap:10px!important;align-items:start!important;align-content:start!important}
 .topbar{grid-area:header!important}.main{grid-area:main!important}.utility-pane{grid-area:tool!important}
 .utility-pane,body[data-theme="night"] .utility-pane{
   position:static!important;display:none!important;width:auto!important;max-width:none!important;max-height:none!important;

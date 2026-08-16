@@ -31,7 +31,7 @@ body[data-theme="night"]:after{content:"";position:fixed;inset:0;pointer-events:
 .tool-snap-hint{display:none!important}
 
 /* Main home workspace: map + snap zones. */
-.atlas-board{display:grid;gap:var(--workspace-gap);min-width:0;position:relative;margin-top:-4px}
+.atlas-board{display:grid;gap:var(--workspace-gap);min-width:0;position:relative}
 .widget-zone{display:grid;gap:var(--workspace-gap);min-width:0}
 .widget-zone.zone-top,.widget-zone.zone-bottom{grid-template-columns:repeat(var(--zone-cols,1),minmax(0,1fr))}
 .widget-zone.zone-top[data-count="1"],.widget-zone.zone-bottom[data-count="1"]{--zone-cols:1}
@@ -69,7 +69,7 @@ body.widget-dragging[data-widget-snap="bottom"] .widget-snap-preview{display:blo
 body.widget-dragging[data-widget-snap="left"] .widget-snap-preview{display:block;left:18px;top:82px;bottom:18px;width:min(340px,30vw)}
 body.widget-dragging[data-widget-snap="right"] .widget-snap-preview{display:block;right:18px;top:82px;bottom:18px;width:min(340px,30vw)}
 
-@media(max-width:1179px){
+@media(max-width:1179px), (max-aspect-ratio:1.339/1){
   :root{--map-pane-height:clamp(540px,64vh,700px)}
   .board-middle,.board-middle.has-left,.board-middle.has-right,.board-middle.has-left.has-right{display:contents}
   .widget-zone.zone-top{order:-1}.board-center{order:0}.widget-zone.zone-bottom{order:1}.widget-zone.zone-left{order:2}.widget-zone.zone-right{order:3}
