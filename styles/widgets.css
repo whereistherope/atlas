@@ -81,3 +81,11 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
 }
 
 
+
+/* Atlas 0.12.2 · packed modular workspace */
+.atlas-board,.board-middle,.board-center,.widget-zone{gap:clamp(8px,1vw,12px)}
+.board-middle{grid-template-columns:minmax(250px,var(--widget-side)) minmax(480px,1fr) minmax(250px,var(--widget-side))!important}
+.widget-zone.zone-left,.widget-zone.zone-right{width:auto!important}
+@media(min-width:1180px){.widget-zone.zone-left,.widget-zone.zone-right{grid-auto-flow:row;grid-auto-rows:max-content}.board-center>.widget-zone.zone-bottom{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1179px){.board-middle{grid-template-columns:minmax(0,1fr)!important}.board-center{display:contents}.board-map{order:0}.widget-zone.zone-top{order:-1}.widget-zone.zone-left{order:1}.widget-zone.zone-right{order:2}.widget-zone.zone-bottom{order:3}.widget-zone.zone-left,.widget-zone.zone-right,.widget-zone.zone-bottom{grid-template-columns:repeat(2,minmax(0,1fr))!important}.home-network .map-wrap{height:clamp(540px,64vh,720px)!important;min-height:520px!important}}
+@media(max-width:700px){.atlas-board{gap:8px}.widget-zone.zone-top,.widget-zone.zone-left,.widget-zone.zone-right,.widget-zone.zone-bottom{grid-template-columns:minmax(0,1fr)!important}.home-network .map-wrap{height:clamp(540px,72vh,680px)!important;min-height:520px!important}.atlas-widget{width:100%}.widget-snap-preview{left:8px!important;right:8px!important;width:auto!important}}
