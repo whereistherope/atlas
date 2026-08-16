@@ -1,4 +1,4 @@
-# Atlas architecture (v0.12 refactor)
+# Atlas architecture (v0.12.3)
 
 Atlas is a framework-free, browser-based local-first PWA. The v0.12 refactor separates the previously inline implementation without changing the DOM contracts, data schema, migrations, or user-facing design.
 
@@ -12,6 +12,7 @@ Atlas is a framework-free, browser-based local-first PWA. The v0.12 refactor sep
 - `js/db.js` owns constants, initial/demo data used only for a genuinely new install, data normalization, all historical migrations, IndexedDB transactions, and backup primitives.
 - `js/auth.js` owns Atlas Lock cryptography, four-digit PIN flows, recovery, throttling, and idle/session locking.
 - `js/app.js` owns loading/saving, shared selectors, profile/space filtering, theme application, and primary non-calendar views.
+- `js/relay.js` owns the local-only Relay Envelope v1 validation, deterministic target preview, note create/append ingestion, provenance, and idempotent receipt interface. It contains no transport or network integration; see `docs/ATLAS_RELAY.md`.
 - `js/calendar.js` owns calendar rendering and linked `Us` Entangle event synchronization.
 - `js/map.js` owns graph data, spherical layout, camera state, Nodes rendering, pan, and zoom.
 - `js/ui.js` owns capture/search/editor overlays, menus, import/export, shared event delegation, and editing actions.
@@ -25,7 +26,7 @@ The JavaScript files remain ordered classic scripts rather than ES modules. This
 
 1. The browser parses the unchanged shell and downloads deferred styles/scripts.
 2. `db.js` establishes constants, the state shape, normalization/migrations, and storage functions.
-3. Auth, runtime, calendar, map, UI, and widget/view extensions establish their handlers in dependency order.
+3. Auth and runtime establish their primitives, Relay establishes its receiving interface, then calendar, map, UI, and widget/view extensions establish their handlers in dependency order.
 4. `bootstrap.js` calls `load()`.
 5. `load()` opens IndexedDB, reads the existing state, snapshots it before an app/data-version transition, applies existing migrations in memory, and saves the compatible result. Demo data is selected only when neither IndexedDB state nor a recognized legacy record exists.
 6. The UI renders and Atlas Lock initializes from its separate auth store.
@@ -44,11 +45,13 @@ Current stable identifiers are:
 | State fallback | `atlas_v1_fallback` |
 | Auth fallback | `atlas_lock_config_v1` |
 | Legacy imports | `groundOpsControlBoard_v2`, then `groundOpsControlBoard_v1` |
-| Current data version | `6` |
+| Current data version | `8` |
 
 The database upgrade creates missing stores only. It does not clear or recreate stores. Data migrations retain the original migration sequence, and a version/app transition creates a timestamped backup before normalization is persisted. JSON import also creates a pre-import backup. Manual reset remains an explicit user action in the editor and must never become part of boot or deployment.
 
 Profiles use stable IDs (`me`, `alyssa`, and `us`). Filtering is applied to Areas, links, projects, notes, daily entries, quick todos, scratch state, events, activity, and rendered graph data. Entangle creates or updates a linked `us` calendar record through `entangledId`/`sourceEventId` rather than merging profile calendars.
+
+Data version 7 additively initializes `relayReceipts` in the primary state record. Data version 8 additively initializes the `relayLedger` object, which durably retains compact accepted-request fingerprints independently of the newest-200 receipt UI history. Existing version-7 receipts are preserved and seed conservative ledger entries; no existing content is replaced. Neither migration changes the IndexedDB schema, database/store/key names, or prior records, and the normal pre-migration backup path protects the loaded snapshot before it is saved. Optional `relaySource`/`relaySources` metadata lives on Relay-touched normal notes; non-Relay notes require no new fields.
 
 ## CSS audit and cascade
 

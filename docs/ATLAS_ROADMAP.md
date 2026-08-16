@@ -61,6 +61,8 @@ This document is the canonical development backlog for Atlas.
 
 ## P4 — Send to Atlas / Relay
 
+- **Implemented in v0.12.3:** local Envelope v1 validation, deterministic profile/area/topic routing, preview, idempotent create/append note ingestion, bounded receipts/provenance, and a manual Relay widget receiver.
+- **Not yet connected:** authenticated backend/MCP transport and direct ChatGPT delivery remain future work.
 - Future ChatGPT integration allowing commands such as:
   - “Send to Atlas → Quantum Story → Decoherence”
   - “Append this to the existing RCP 2635 note”
