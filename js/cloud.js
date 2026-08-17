@@ -119,7 +119,77 @@
   }
   const latestMeBackupSnapshot=()=>readMeBackup();
   const getMeBackupSnapshot=recordId=>readMeBackup(recordId);
+  const RELAY_TYPE='relay_envelope_v1',RELAY_SCHEMA='atlas_relay_envelope',RELAY_VERSION=1,RELAY_MAX_BYTES=512000,RELAY_ID_MAX=300;
+  const RELAY_FINGERPRINT=/^sha256-[a-f0-9]{64}$/;
+  const plainObject=value=>!!value&&Object.prototype.toString.call(value)==='[object Object]';
+  function canonicalRelay(value){
+    if(value===null||typeof value==='string'||typeof value==='boolean')return JSON.stringify(value);
+    if(typeof value==='number'){if(!Number.isFinite(value))throw new Error('Relay envelope contains an invalid number.');return JSON.stringify(value)}
+    if(Array.isArray(value))return`[${value.map(canonicalRelay).join(',')}]`;
+    if(!plainObject(value))throw new Error('Relay envelope contains an unsupported value.');
+    const keys=Object.keys(value).sort();
+    if(keys.some(key=>value[key]===undefined||typeof value[key]==='function'||typeof value[key]==='symbol'))throw new Error('Relay envelope contains an unsupported value.');
+    return`{${keys.map(key=>`${JSON.stringify(key)}:${canonicalRelay(value[key])}`).join(',')}}`;
+  }
+  async function relayFingerprint(envelope){const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonicalRelay(envelope)));return'sha256-'+Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('')}
+  function relayEnvelopeShape(envelope){
+    if(!plainObject(envelope)||envelope.version!==1||envelope.profileId!=='me')return false;
+    if(typeof envelope.relayId!=='string'||!envelope.relayId||envelope.relayId.trim()!==envelope.relayId||envelope.relayId.length>RELAY_ID_MAX)return false;
+    if(!['create_note','append_note'].includes(envelope.operation)||!plainObject(envelope.target)||!plainObject(envelope.content))return false;
+    return envelope.source===undefined||plainObject(envelope.source);
+  }
+  async function validateRelayPayload(payload){
+    if(!plainObject(payload)||Object.keys(payload).length!==4||!['schema','version','fingerprint','envelope'].every(key=>Object.prototype.hasOwnProperty.call(payload,key)))throw new Error('Invalid Relay transport payload.');
+    if(payload.schema!==RELAY_SCHEMA||payload.version!==RELAY_VERSION||!RELAY_FINGERPRINT.test(payload.fingerprint||'')||!relayEnvelopeShape(payload.envelope))throw new Error('Invalid Relay transport payload.');
+    const canonical=canonicalRelay(payload.envelope);if(new TextEncoder().encode(canonical).byteLength>RELAY_MAX_BYTES)throw new Error('Relay transport payload is too large.');
+    const fingerprint=await relayFingerprint(payload.envelope);if(fingerprint!==payload.fingerprint)throw new Error('Relay transport fingerprint mismatch.');
+    return fingerprint;
+  }
+  async function validateRelayRow(row,profileId){
+    if(!plainObject(row)||row.profile_id!==profileId||row.record_type!==RELAY_TYPE)throw new Error('Invalid Me cloud Relay row.');
+    const fingerprint=await validateRelayPayload(row.payload);if(row.record_id!==row.payload.envelope.relayId)throw new Error('Relay row ID does not match its envelope.');
+    return Object.freeze({...row,payload:Object.freeze({...row.payload}),envelope:row.payload.envelope,fingerprint});
+  }
+  function relayRejection(row,error){
+    const raw=typeof row?.record_id==='string'?row.record_id:'';
+    return Object.freeze({recordId:raw.replace(/[\u0000-\u001f\u007f]/g,'').slice(0,RELAY_ID_MAX),error:errorMessage(error,'Invalid Me cloud Relay row.')});
+  }
+  function markRelayAccess(error){const marked=new Error(errorMessage(error));marked.relayAccessFailure=true;return marked}
+  function relayAccessError(error,fallback){const message=errorMessage(error,fallback);emit({state:offline()?'OFFLINE':'ERROR',message,verified:false});return{ok:false,error:message}}
+  async function fetchRelayRow(target,recordId){
+    const {data,error}=await client.from('atlas_records').select('profile_id,record_type,record_id,payload,client_updated_at,created_at,revision').eq('profile_id',target.profileId).eq('record_type',RELAY_TYPE).eq('record_id',recordId).maybeSingle();
+    if(error)throw markRelayAccess(error);return data?validateRelayRow(data,target.profileId):null;
+  }
+  async function appendMeRelayEnvelope(record){
+    let target;try{target=await resolveBackupTarget()}catch(error){return relayAccessError(error,'Relay access failed.')}
+    try{
+      if(!plainObject(record)||record.recordType!==RELAY_TYPE||!Number.isSafeInteger(record.clientUpdatedAt)||record.clientUpdatedAt<=0)throw new Error('Invalid Me Relay record.');
+      const fingerprint=await validateRelayPayload(record.payload),relayId=record.payload.envelope.relayId;
+      if(record.recordId!==relayId)throw new Error('Relay record ID does not match its envelope.');
+      const existing=await fetchRelayRow(target,relayId);
+      if(existing){if(existing.fingerprint===fingerprint)return{ok:true,duplicate:true,recordId:relayId};throw new Error('Relay ID conflict.');}
+      const row={profile_id:target.profileId,record_type:RELAY_TYPE,record_id:relayId,payload:record.payload,client_updated_at:record.clientUpdatedAt};
+      const {error}=await client.from('atlas_records').insert(row);
+      if(error){if(error.code==='23505'){const raced=await fetchRelayRow(target,relayId);if(raced?.fingerprint===fingerprint)return{ok:true,duplicate:true,recordId:relayId};throw new Error('Relay ID conflict.')}throw markRelayAccess(error)}
+      return{ok:true,duplicate:false,recordId:relayId,completedAt:Date.now()};
+    }catch(error){return error?.relayAccessFailure?relayAccessError(error,'Relay append failed.'):{ok:false,error:errorMessage(error,'Relay append failed.')}}
+  }
+  async function getMeRelayEnvelope(recordId){
+    if(typeof recordId!=='string'||!recordId||recordId.trim()!==recordId||recordId.length>RELAY_ID_MAX)return{ok:false,error:'Invalid Relay ID.'};
+    let target;try{target=await resolveBackupTarget()}catch(error){return relayAccessError(error,'Relay access failed.')}
+    try{return{ok:true,record:await fetchRelayRow(target,recordId)}}catch(error){return error?.relayAccessFailure?relayAccessError(error,'Relay read failed.'):{ok:false,error:errorMessage(error,'Relay read failed.')}}
+  }
+  async function listMeRelayEnvelopes(options={}){
+    const limit=options.limit===undefined?50:options.limit;if(!Number.isInteger(limit)||limit<1||limit>50)return{ok:false,error:'Relay read limit must be between 1 and 50.'};
+    let target;try{target=await resolveBackupTarget()}catch(error){return relayAccessError(error,'Relay access failed.')}
+    try{
+      const query=client.from('atlas_records').select('profile_id,record_type,record_id,payload,client_updated_at,created_at,revision').eq('profile_id',target.profileId).eq('record_type',RELAY_TYPE).order('created_at',{ascending:false}).limit(limit);
+      const {data,error}=await query;if(error)throw error;if(!Array.isArray(data))throw new Error('Invalid Relay query response.');
+      const records=[],rejected=[];for(const row of data){try{records.push(await validateRelayRow(row,target.profileId))}catch(error){rejected.push(relayRejection(row,error))}}
+      return{ok:true,records,rejected,limit};
+    }catch(error){return relayAccessError(error,'Relay read failed.')}
+  }
   window.addEventListener?.('offline',()=>emit({state:'OFFLINE',message:'Atlas is available locally',authenticated:false,verified:false}));
   window.addEventListener?.('online',()=>{if(client)refreshSession();else init()});
-  window.AtlasCloud=Object.freeze({init,getStatus:snapshot,getSession:refreshSession,signIn,signOut,testAccess,invalidateVerification,meBackupExists,appendMeBackupSnapshot,latestMeBackupSnapshot,getMeBackupSnapshot});
+  window.AtlasCloud=Object.freeze({init,getStatus:snapshot,getSession:refreshSession,signIn,signOut,testAccess,invalidateVerification,meBackupExists,appendMeBackupSnapshot,latestMeBackupSnapshot,getMeBackupSnapshot,appendMeRelayEnvelope,listMeRelayEnvelopes,getMeRelayEnvelope});
 })();
