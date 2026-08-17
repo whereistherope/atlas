@@ -1,5 +1,5 @@
 // Persistent state, schema migrations and backups. Storage identifiers are compatibility contracts.
-const APP_VERSION='0.12.0'; const DATA_VERSION=6; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.12.3'; const DATA_VERSION=8; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -60,7 +60,9 @@ const demo={
   calendar:[],
   quickTodos:[],
   scratch:{me:'',alyssa:'',us:''},
-  activity:[{id:'a1',time:now()-3600000*2,text:'Atlas initialised from the Ground Operations Control Board concept.'}]
+  activity:[{id:'a1',time:now()-3600000*2,text:'Atlas initialised from the Ground Operations Control Board concept.'}],
+  relayReceipts:[],
+  relayLedger:{}
 };
 
 let state=clone(demo); let activeProjectId=''; let db=null; let dragging=null;
@@ -296,6 +298,19 @@ function migrateData(s){
     if(!['nodes','list','predict'].includes(s.settings.mapViewMode))s.settings.mapViewMode='nodes';if(!Number.isFinite(Number(s.settings.predictionSeed)))s.settings.predictionSeed=1;
     s.settings.sidePane='';
   }
+  if(from<7){
+    // Add receipt history without rewriting any existing content.
+    if(!Array.isArray(s.relayReceipts))s.relayReceipts=[];
+  }
+  if(from<8){
+    // Durable idempotency memory is separate from the bounded receipt UI history.
+    // Version-7 receipts cannot reconstruct the original request fingerprint, so
+    // retain their accepted identity conservatively and reject unverifiable reuse.
+    if(!s.relayLedger||typeof s.relayLedger!=='object'||Array.isArray(s.relayLedger))s.relayLedger={};
+    (s.relayReceipts||[]).filter(r=>r?.relayId&&r.status==='accepted').forEach(r=>{
+      if(!s.relayLedger[r.relayId])s.relayLedger[r.relayId]={relayId:r.relayId,fingerprint:r.fingerprint||'',profileId:r.profileId||'',operation:r.operation||'',recordId:r.recordId||'',time:r.time||0};
+    });
+  }
   s.version=DATA_VERSION;
   return s;
 }
@@ -306,7 +321,8 @@ function ensureState(s){
   if(!s.meta)s.meta={};
   if(!s.meta.createdAt)s.meta.createdAt=now();
   if(!s.settings)s.settings=clone(demo.settings);
-  for(const k of ['areas','links','projects','notes','daily','calendar','profiles','quickTodos','activity']) if(!Array.isArray(s[k])) s[k]=[];
+  for(const k of ['areas','links','projects','notes','daily','calendar','profiles','quickTodos','activity','relayReceipts']) if(!Array.isArray(s[k])) s[k]=[];
+  if(!s.relayLedger||typeof s.relayLedger!=='object'||Array.isArray(s.relayLedger))s.relayLedger={};
   s.profiles.forEach(p=>{if(!s.areas.some(a=>(a.profile||'me')===p.id))s.areas.push(...profileStarterAreas(p.id,p.kind))});if(!s.scratch||typeof s.scratch!=='object'||Array.isArray(s.scratch))s.scratch={};s.profiles.forEach(p=>{if(typeof s.scratch[p.id]!=='string')s.scratch[p.id]=''});
   s.settings.activeTab=s.settings.activeTab||'home'; s.settings.subtab=s.settings.subtab||'overview'; s.settings.sidePane=typeof s.settings.sidePane==='string'?s.settings.sidePane:''; s.settings.toolPaneFloating=!!s.settings.toolPaneFloating; s.settings.toolPaneDock=['top','left','right','float'].includes(s.settings.toolPaneDock)?s.settings.toolPaneDock:(s.settings.toolPaneFloating?'float':'top'); s.settings.toolPaneFloating=s.settings.toolPaneDock==='float'; s.settings.toolPaneX=Number.isFinite(Number(s.settings.toolPaneX))?Number(s.settings.toolPaneX):0; s.settings.toolPaneY=Number.isFinite(Number(s.settings.toolPaneY))?Number(s.settings.toolPaneY):0; s.settings.spaceFilter=s.settings.spaceFilter||'all'; s.settings.activeProfile=s.settings.activeProfile||'me'; s.settings.calendarCursor=s.settings.calendarCursor||''; s.settings.mapDepth=Number(s.settings.mapDepth)||4; s.settings.mapLabelOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapLabelOpacity))?Number(s.settings.mapLabelOpacity):.72)); s.settings.mapEdgeOpacity=Math.max(0,Math.min(1,Number.isFinite(Number(s.settings.mapEdgeOpacity))?Number(s.settings.mapEdgeOpacity):.32)); s.settings.editorTab=s.settings.editorTab||'structure'; s.settings.theme=s.settings.theme==='night'?'night':'day'; s.settings.mapViewMode=['nodes','list','predict'].includes(s.settings.mapViewMode)?s.settings.mapViewMode:'nodes';s.settings.predictionSeed=Number.isFinite(Number(s.settings.predictionSeed))?Number(s.settings.predictionSeed):1; if(!s.settings.widgetLayout||typeof s.settings.widgetLayout!=='object')s.settings.widgetLayout={}; if(!s.settings.widgetFloat||typeof s.settings.widgetFloat!=='object')s.settings.widgetFloat={}; s.settings.sidePane='';
   if(Number(s.settings.mapLayoutVersion||0)<3) s=applyWideMapLayout(s);

@@ -103,3 +103,10 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
 
 /* Map pucks: same material family; parents get a tonal ring. */
 .node .node-disc{fill:color-mix(in srgb,var(--slate) 44%,var(--surface-2))!important;stroke:none!important;opacity:.94!important}.node.has-children .node-disc{stroke:color-mix(in srgb,var(--sand) 44%,var(--slate))!important;stroke-width:1.15!important}.node:hover .node-disc,.node.active .node-disc{fill:color-mix(in srgb,var(--slate) 64%,var(--surface-2))!important;stroke:var(--ink)!important;stroke-width:1.1!important}.node text{font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,"Liberation Mono",monospace!important;font-weight:560!important;letter-spacing:.06em!important;stroke:none!important;paint-order:normal!important}.edge{stroke-width:.72!important}.edge.cross{stroke-width:.82!important}
+
+/* Relay is a restrained local receiver, not a network console. */
+.relay-state{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 0 10px;border-bottom:1px solid var(--line)}
+.relay-state strong{font:650 9px ui-monospace,monospace;letter-spacing:.08em}.relay-state span{font-size:9px;color:var(--muted)}
+.relay-receiver{display:grid;gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}.relay-receiver label{font:600 7px ui-monospace,monospace;text-transform:uppercase;color:var(--muted)}
+.relay-receiver textarea{width:100%;min-height:150px;resize:vertical;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);padding:8px;font:8px/1.45 ui-monospace,monospace}.relay-receiver pre{max-height:150px;overflow:auto;white-space:pre-wrap;margin:0;padding:8px;background:color-mix(in srgb,var(--surface-2) 80%,transparent);font:8px/1.5 ui-monospace,monospace;color:var(--muted)}
+.relay-receipts small{display:block;color:var(--muted);margin-top:2px}
