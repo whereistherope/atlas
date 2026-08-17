@@ -49,9 +49,10 @@ This document is the canonical development backlog for Atlas.
 
 ## P3 — Atlas Sync / backend
 
-- Cross-device data continuity.
-- Local IndexedDB remains the offline/local cache.
-- Cloud becomes the shared synchronisation layer.
+- **v0.12.4:** Me-only Supabase connection/authentication and a read-only RLS vault/profile test. IndexedDB remains the source of truth and no content is synchronized.
+- Next stages: safe Me-only backup; safe Me-only restore/pull; two-way Me sync with conflict handling; and cross-device validation.
+- Alyssa and Us remain local-only. Their cloud/sharing/Entangle design is a later, separate stage; the existing cloud Us row is dormant and untouched.
+- Later stages remain Relay authenticated transport and AI-backed Predict.
 - Preserve the profile model:
   - `Me`
   - `Alyssa`
