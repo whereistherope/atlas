@@ -1,4 +1,4 @@
-# Atlas architecture (v0.12.4)
+# Atlas architecture (v0.12.6)
 
 Atlas is a framework-free, browser-based local-first PWA. The v0.12 refactor separates the previously inline implementation without changing the DOM contracts, data schema, migrations, or user-facing design.
 
@@ -50,7 +50,7 @@ Current stable identifiers are:
 | Legacy imports | `groundOpsControlBoard_v2`, then `groundOpsControlBoard_v1` |
 | Current data version | `8` |
 
-v0.12.4 makes no data migration and changes none of these identifiers. IndexedDB remains the current source of truth; no Atlas content is uploaded by the cloud connection layer.
+v0.12.6 makes no data migration and changes none of these identifiers. IndexedDB remains the current source of truth; no Atlas content is uploaded by the cloud connection layer.
 
 The database upgrade creates missing stores only. It does not clear or recreate stores. Data migrations retain the original migration sequence, and a version/app transition creates a timestamped backup before normalization is persisted. JSON import also creates a pre-import backup. Manual reset remains an explicit user action in the editor and must never become part of boot or deployment.
 
@@ -83,3 +83,14 @@ The pinned Supabase UMD dependency is remote and deliberately excluded from `APP
 The first cloud content path is `js/cloud-backup.js`, loaded after the connection layer and before the runtime. It creates a field-whitelisted, canonical Me snapshot from profile-owned areas, safe intra-Me links, projects and nested work items, notes, daily entries, calendar entries without Entangle linkage, quick todos, and Me scratch. Missing legacy `profile` values follow the existing Me ownership convention. UI settings, layouts, activity, Relay metadata, Alyssa/Us records, Atlas Lock/auth stores, Supabase sessions, and credentials are excluded.
 
 `js/cloud.js` exposes only purpose-specific existence and append methods. Before every records query or insert it re-resolves the authenticated user's unique owned `Atlas` vault and exact owned `me` person profile. Rows are append-only `backup_snapshot_v1` records addressed by the canonical payload's SHA-256 fingerprint, independently recomputed and validated at the transport boundary. `client_updated_at` is the validated positive integer millisecond value written to the existing bigint column, not ISO text. IndexedDB identifiers and `DATA_VERSION = 8` are unchanged; no local migration or restore occurs.
+
+
+## v0.12.6 safe Me cloud restore/pull boundary
+
+`js/cloud-restore.js` provides a deliberately manual Me-only recovery path: **Preview restore → Restore Me**. Preview reads exactly the newest append-only `backup_snapshot_v1` row for the freshly re-resolved authenticated user's owned `Atlas` vault and exact `me` person profile. It independently validates the untrusted row, validates the exact payload shape and recursive values, rejects future data versions and security/auth, Relay, or Entangle fields, re-canonicalises the payload, and requires its SHA-256 fingerprint to equal `record_id`. A corrupt newest row is rejected rather than skipped. No restore is triggered by boot, sign-in, Test Access, reconnect, recency, or background work, and the restore path performs no cloud mutation.
+
+Preview does not mutate memory or storage and retains only the remote record ID plus a fingerprint of the current cloud-backed local Me slices. Confirm rechecks profile/auth/online/Test Access eligibility, recomputes that local fingerprint, re-fetches the exact prepared row, and repeats transport validation and hashing. A changed local Me snapshot requires a new preview. Confirm builds from a clone of the current full state, replaces only Me areas, safe links, projects, notes, daily, calendar, quick todos, and `scratch.me`, and preserves matching local-only fields (including Relay provenance and local Entangle linkage). Remote Entangle/Relay metadata is never accepted. Snapshot absence removes only cloud-backed Me records; Alyssa, Us, profiles, settings/theme/layout/map/navigation, activity, Relay receipts/ledger, Atlas Lock, Supabase auth, and unrelated top-level state remain untouched.
+
+Immediately before persistence, Confirm writes one full copy of the current state through `idbBackup()` with a restore-specific reason. It then uses the strict IndexedDB state write directly and changes the in-memory state only after that write succeeds. IndexedDB remains Atlas's normal source of truth. Prepared restores are invalidated by profile changes, sign-out/auth or verification loss, access errors, offline transitions, and every terminal Confirm attempt. Alyssa and Us remain `LOCAL ONLY`.
+
+Confirm closes asynchronous edit races by checking the local Me fingerprint both before and after the exact remote fetch, cloning the bound full local state, and checking again after the safety-backup await. A non-persisted interaction guard blocks normal Atlas UI mutations throughout the backup/write critical section and is always removed on success or failure. Remote validation also enforces graph integrity: area IDs are non-empty and unique, area parents remain inside the snapshot (or the historical Atlas root), and every link/project/note/daily/calendar area reference resolves inside that same Me snapshot. Broken references reject the entire row; Atlas never repairs or redirects them during restore.
