@@ -29,8 +29,16 @@ The Supabase v2 CDN remains optional and outside `APP_SHELL`; local cloud module
 1. v0.12.4 Me-only connection/auth — complete.
 2. v0.12.5 safe append-only Me cloud backup — complete.
 3. Safe Me cloud restore/pull from snapshot.
-4. Authenticated Relay transport / Send to Atlas foundation.
-5. Relay → Atlas ingestion.
+4. v0.12.7 authenticated Me-only Relay transport — complete; manual validation/preview only.
+5. v0.12.8 ChatGPT ingress + explicit Relay → Atlas ingestion.
 6. Cross-device/normalised sync design as needed.
 7. Alyssa/Us/Entangle cloud design later.
 8. AI-backed Predict later.
+
+## v0.12.7 Relay carriage
+
+Authenticated Relay carriage reuses `atlas_records` with insert-only `relay_envelope_v1` rows targeted to the freshly resolved owned Me profile. The exact transport payload contains only `schema`, transport `version`, a deterministic canonical-envelope SHA-256 `fingerprint`, and the Relay v1 `envelope`. Exact duplicates are no-ops; reuse of a Relay ID for different content is rejected without overwriting the original.
+
+The Relay widget checks at most the newest 50 records only after **CHECK CLOUD** is pressed. Remote rows are treated as untrusted and independently validated and re-hashed at the cloud boundary. A malformed row produces only sanitized rejection metadata and does not poison valid neighbours; its envelope never reaches local Relay. Validated envelopes are passed to local `AtlasRelay.validate()` and `AtlasRelay.preview()`, and local ledger matches are labelled already accepted. The check is locally read-only and does not save or ingest. The hard 512,000-byte transport ceiling safely accommodates approximately 100,000 multi-byte characters while remaining bounded. Genuine auth, session, RLS, and access failures invalidate verified readiness, but content validation failures do not.
+
+This release does **not** add automatic sync or ingestion, a ChatGPT sender, Alyssa/Us cloud Relay, background polling, cloud overwrite/delete, or cloud authority over IndexedDB. v0.12.8 is the planned ChatGPT ingress and explicit Relay-to-Atlas ingestion step; “Send to Atlas” is not complete in v0.12.7.

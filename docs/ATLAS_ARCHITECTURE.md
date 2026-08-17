@@ -1,4 +1,4 @@
-# Atlas architecture (v0.12.6)
+# Atlas architecture (v0.12.7)
 
 Atlas is a framework-free, browser-based local-first PWA. The v0.12 refactor separates the previously inline implementation without changing the DOM contracts, data schema, migrations, or user-facing design.
 
@@ -50,7 +50,7 @@ Current stable identifiers are:
 | Legacy imports | `groundOpsControlBoard_v2`, then `groundOpsControlBoard_v1` |
 | Current data version | `8` |
 
-v0.12.6 makes no data migration and changes none of these identifiers. IndexedDB remains the current source of truth; no Atlas content is uploaded by the cloud connection layer.
+v0.12.7 makes no data migration and changes none of these identifiers. IndexedDB remains the current source of truth.
 
 The database upgrade creates missing stores only. It does not clear or recreate stores. Data migrations retain the original migration sequence, and a version/app transition creates a timestamped backup before normalization is persisted. JSON import also creates a pre-import backup. Manual reset remains an explicit user action in the editor and must never become part of boot or deployment.
 
@@ -94,3 +94,11 @@ Preview does not mutate memory or storage and retains only the remote record ID 
 Immediately before persistence, Confirm writes one full copy of the current state through `idbBackup()` with a restore-specific reason. It then uses the strict IndexedDB state write directly and changes the in-memory state only after that write succeeds. IndexedDB remains Atlas's normal source of truth. Prepared restores are invalidated by profile changes, sign-out/auth or verification loss, access errors, offline transitions, and every terminal Confirm attempt. Alyssa and Us remain `LOCAL ONLY`.
 
 Confirm closes asynchronous edit races by checking the local Me fingerprint both before and after the exact remote fetch, cloning the bound full local state, and checking again after the safety-backup await. A non-persisted interaction guard blocks normal Atlas UI mutations throughout the backup/write critical section and is always removed on success or failure. Remote validation also enforces graph integrity: area IDs are non-empty and unique, area parents remain inside the snapshot (or the historical Atlas root), and every link/project/note/daily/calendar area reference resolves inside that same Me snapshot. Broken references reject the entire row; Atlas never repairs or redirects them during restore.
+
+## v0.12.7 authenticated Relay transport boundary
+
+`js/cloud.js` adds three narrow Me-only operations over the existing RLS-protected `atlas_records` table: append, list, and exact get for `relay_envelope_v1`. Every operation freshly resolves the authenticated user's exact owned Atlas vault and `me` person profile and requires successful Test Access. Rows are insert-only; duplicate IDs are independently re-read and re-hashed, returning a no-op only for identical envelopes and a conflict for changed content. Relay transport never updates, upserts, deletes, or exposes the Supabase client.
+
+The exact payload has four top-level fields: `schema: "atlas_relay_envelope"`, `version: 1`, `fingerprint: "sha256-…"`, and the existing Relay v1 `envelope`. The fingerprint is SHA-256 over deterministic canonical JSON for the envelope. Reads validate profile, type, IDs, schema and versions, operation, object shapes, a 512,000-byte hard ceiling, and fingerprint as untrusted input. The ceiling remains bounded while accommodating the local Relay contract's approximately 100,000-character bodies even when they use multi-byte UTF-8. Each row in a bounded list is validated independently: malformed or tampered rows become sanitized rejection descriptors, never expose their envelope, and do not prevent valid neighbouring rows from continuing. Atlas never repairs, skips, updates, or deletes those rows.
+
+`js/relay-transport.js` is a read-only runtime bridge. Only an explicit **CHECK CLOUD** action fetches the newest 50 Me rows. Cloud-boundary rejections are displayed without being passed to local Relay; validated envelopes alone proceed to `AtlasRelay.validate()` and `AtlasRelay.preview()`. The bridge compares IDs with the unchanged local `relayLedger` and prepares compact pending/already-accepted/rejected UI results. It never calls `AtlasRelay.ingest()`, saves, or mutates Atlas state. Auth, session, RLS, or access failures invalidate verified readiness; malformed envelope data alone does not masquerade as auth loss. Auth loss, Test Access loss, offline state, or leaving Me discards the in-memory result. There is no boot/reconnect/sign-in fetch, timer, background polling, Alyssa/Us cloud Relay, ChatGPT sender, automatic ingestion, cloud overwrite/delete, or change to local-first authority.
