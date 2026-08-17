@@ -15,6 +15,6 @@ const listeners={};const context={navigator:{onLine:true},CustomEvent:function(t
   assert.equal(result.ok,true);assert.equal(cloud.getStatus().verified,true);assert.deepEqual(queries.map(q=>q.table),['atlas_vaults','atlas_profiles']);
   assert.deepEqual(queries[0].filters,[['created_by','user-rls'],['name','Atlas']]);assert.equal(queries[0].limitValue,undefined);assert.deepEqual(queries[1].filters,[['vault_id','vault-rls'],['profile_key','me'],['kind','person'],['owner_user_id','user-rls']]);
   authChange('SIGNED_OUT',null);assert.equal(cloud.getStatus().verified,false);assert.equal(cloud.getStatus().authenticated,false);
-  assert.doesNotMatch(source,/\.limit\(1\)|\.insert\(|\.update\(|\.delete\(|from\(['"]atlas_records/);assert.doesNotMatch(source,/localStorage|indexedDB|console\./);
+  const testAccessSource=source.slice(source.indexOf('async function testAccess'),source.indexOf('async function resolveBackupTarget'));assert.doesNotMatch(testAccessSource,/\.limit\(1\)|\.insert\(|\.update\(|\.delete\(|from\(['"]atlas_records/);assert.doesNotMatch(source,/localStorage|indexedDB|console\./);
   context.navigator.onLine=false;listeners.offline();assert.equal(cloud.getStatus().state,'OFFLINE');console.log('Cloud runtime contracts: PASS');
 })().catch(error=>{console.error(error);process.exitCode=1});

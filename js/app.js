@@ -6,6 +6,7 @@ function log(text,profile=state?.settings?.activeProfile||'me'){state.activity.u
 function toast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1600)}
 function areaById(id){return state.areas.find(a=>a.id===id)} function projectById(id){return state.projects.find(p=>p.id===id)}
 function profileById(id){return state.profiles.find(p=>p.id===id)||{id:'me',name:'Me',kind:'person'}} function activeProfile(){return profileById(state.settings.activeProfile||'me')} function profileAllows(profile){return (profile||'me')===(state.settings.activeProfile||'me')}
+window.AtlasState=()=>state;
 function profileAreas(profile=state.settings.activeProfile||'me'){return state.areas.filter(a=>(a.profile||'me')===profile)}
 function profileLinks(profile=state.settings.activeProfile||'me'){return state.links.filter(l=>(l.profile||'me')===profile)}
 function areaAllows(a){return !!a&&profileAllows(a.profile)&&spaceAllows(a.space)}

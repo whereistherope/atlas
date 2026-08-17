@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atlas-shell-0.12.4-r1';
+const CACHE_NAME = 'atlas-shell-0.12.5-r1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const APP_SHELL = [
   './js/auth.js',
   './js/cloud-config.js',
   './js/cloud.js',
+  './js/cloud-backup.js',
   './js/app.js',
   './js/relay.js',
   './js/calendar.js',
