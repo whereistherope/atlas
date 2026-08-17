@@ -1,4 +1,4 @@
-# Atlas architecture (v0.12.3)
+# Atlas architecture (v0.12.4)
 
 Atlas is a framework-free, browser-based local-first PWA. The v0.12 refactor separates the previously inline implementation without changing the DOM contracts, data schema, migrations, or user-facing design.
 
@@ -11,6 +11,7 @@ Atlas is a framework-free, browser-based local-first PWA. The v0.12 refactor sep
 - `styles/map.css` owns the later Nodes/List/Predict presentation and refinements.
 - `js/db.js` owns constants, initial/demo data used only for a genuinely new install, data normalization, all historical migrations, IndexedDB transactions, and backup primitives.
 - `js/auth.js` owns Atlas Lock cryptography, four-digit PIN flows, recovery, throttling, and idle/session locking.
+- `js/cloud-config.js` contains only the browser-public Supabase project URL and publishable key. `js/cloud.js` owns the optional Supabase Auth client and read-only RLS access test.
 - `js/app.js` owns loading/saving, shared selectors, profile/space filtering, theme application, and primary non-calendar views.
 - `js/relay.js` owns the local-only Relay Envelope v1 validation, deterministic target preview, note create/append ingestion, provenance, and idempotent receipt interface. It contains no transport or network integration; see `docs/ATLAS_RELAY.md`.
 - `js/calendar.js` owns calendar rendering and linked `Us` Entangle event synchronization.
@@ -31,6 +32,8 @@ The JavaScript files remain ordered classic scripts rather than ES modules. This
 5. `load()` opens IndexedDB, reads the existing state, snapshots it before an app/data-version transition, applies existing migrations in memory, and saves the compatible result. Demo data is selected only when neither IndexedDB state nor a recognized legacy record exists.
 6. The UI renders and Atlas Lock initializes from its separate auth store.
 
+Cloud initialization is started independently and is never awaited by `load()`. A missing CDN library, offline browser, expired session, or Supabase error therefore changes only the Sync widget status; local boot and IndexedDB use continue normally. Atlas Lock is the local device/application lock, while Supabase Auth is a separate cloud identity and session managed by the official client.
+
 ## Persistence compatibility contract
 
 Current stable identifiers are:
@@ -47,6 +50,8 @@ Current stable identifiers are:
 | Legacy imports | `groundOpsControlBoard_v2`, then `groundOpsControlBoard_v1` |
 | Current data version | `8` |
 
+v0.12.4 makes no data migration and changes none of these identifiers. IndexedDB remains the current source of truth; no Atlas content is uploaded by the cloud connection layer.
+
 The database upgrade creates missing stores only. It does not clear or recreate stores. Data migrations retain the original migration sequence, and a version/app transition creates a timestamped backup before normalization is persisted. JSON import also creates a pre-import backup. Manual reset remains an explicit user action in the editor and must never become part of boot or deployment.
 
 Profiles use stable IDs (`me`, `alyssa`, and `us`). Filtering is applied to Areas, links, projects, notes, daily entries, quick todos, scratch state, events, activity, and rendered graph data. Entangle creates or updates a linked `us` calendar record through `entangledId`/`sourceEventId` rather than merging profile calendars.
@@ -62,6 +67,8 @@ The pre-refactor stylesheet accumulated sequential release passes (`0.10.2` thro
 All application URLs are `./` relative. `manifest.webmanifest` keeps a relative ID, start URL, scope, and icon paths. The service worker caches the HTML shell, manifest, icons, all extracted styles, and all extracted scripts. Navigation remains network-first and falls back to cached `index.html`/`./`; same-origin assets are refreshed network-first and served from cache offline.
 
 When adding an offline-critical local file, add it to `APP_SHELL` and increment `CACHE_NAME`. Do not change paths to root-absolute URLs because `/` points outside a GitHub Pages project deployment.
+
+The pinned Supabase UMD dependency is remote and deliberately excluded from `APP_SHELL`, so installing or loading the local shell never depends on the CDN. Local `cloud-config.js` and `cloud.js` are cached.
 
 ## Safe change checklist
 
