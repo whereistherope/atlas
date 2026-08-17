@@ -77,3 +77,9 @@ The pinned Supabase UMD dependency is remote and deliberately excluded from `APP
 3. Verify profile isolation and Atlas Lock independently.
 4. Verify persisted widget layout, map modes, calendar/Entangle, and themes after reload.
 5. Test both online first-load and offline reload from a non-root path when deployment-related files change.
+
+## v0.12.5 Me cloud backup boundary
+
+The first cloud content path is `js/cloud-backup.js`, loaded after the connection layer and before the runtime. It creates a field-whitelisted, canonical Me snapshot from profile-owned areas, safe intra-Me links, projects and nested work items, notes, daily entries, calendar entries without Entangle linkage, quick todos, and Me scratch. Missing legacy `profile` values follow the existing Me ownership convention. UI settings, layouts, activity, Relay metadata, Alyssa/Us records, Atlas Lock/auth stores, Supabase sessions, and credentials are excluded.
+
+`js/cloud.js` exposes only purpose-specific existence and append methods. Before every records query or insert it re-resolves the authenticated user's unique owned `Atlas` vault and exact owned `me` person profile. Rows are append-only `backup_snapshot_v1` records addressed by the canonical payload's SHA-256 fingerprint, independently recomputed and validated at the transport boundary. `client_updated_at` is the validated positive integer millisecond value written to the existing bigint column, not ISO text. IndexedDB identifiers and `DATA_VERSION = 8` are unchanged; no local migration or restore occurs.

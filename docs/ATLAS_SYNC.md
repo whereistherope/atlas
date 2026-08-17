@@ -1,32 +1,36 @@
 # Atlas Sync foundation
 
-## v0.12.4 boundary
+## v0.12.5 boundary
 
-Atlas remains local-first. The existing IndexedDB record is the current source of truth and the cloud layer does not upload, migrate, seed, restore, or synchronize Atlas content. Supabase supplies authenticated cloud infrastructure only: email/password sign-in, session handling, and a read-only RLS access check.
+Atlas is local-first: the existing IndexedDB record remains the source of truth. v0.12.5 adds Atlas's first cloud content write, an explicit **Preview → Confirm** append-only backup for the active local `me` profile. It is not restore, two-way sync, cross-device conflict handling, Relay network transport, or a background process.
 
-Atlas Lock and Supabase Auth are independent. Atlas Lock protects the local application/device using its existing PIN, recovery, throttling, session-unlock, and idle-lock behavior. Supabase Auth identifies a cloud user; the official browser client persists and refreshes its own session. Neither system replaces or unlocks the other.
+The preview builds and canonically serializes a whitelist-only Me snapshot, hashes it with browser-native SHA-256, reports content counts and encoded size, and checks only that exact Me snapshot ID remotely. Confirm rebuilds live local data and refuses if its fingerprint differs. Only Confirm can insert. An identical deterministic ID is reported as already backed up.
 
-The v0.12.4 feature is strictly Me-only. Local `me` may verify the owned cloud `me` person profile. Alyssa and Us remain entirely local-only. The existing shared cloud `us` row is deliberately dormant: this feature neither queries, displays, modifies, nor synchronizes it. There is no Entangle cloud behavior and no content sync yet.
+Each `public.atlas_records` row uses the RLS-resolved Me profile UUID as `profile_id`, fixed `record_type = backup_snapshot_v1`, `record_id = sha256-<64 lowercase hex characters>`, the generated snapshot as `payload`, and the local state's finite positive integer millisecond timestamp as bigint `client_updated_at`. Database defaults supply revision and creation fields. Atlas never updates, upserts, deletes, or overwrites a cloud row, and never writes vault, membership, profile, or Auth rows.
 
-## Client and security boundary
+```json
+{"profile_id":"<owned Me UUID>","record_type":"backup_snapshot_v1","record_id":"sha256-<64 lowercase hex>","payload":{"schema":"atlas_me_backup_snapshot","version":1,"profileKey":"me","dataVersion":8,"areas":[],"links":[],"projects":[],"notes":[],"daily":[],"calendar":[],"quickTodos":[],"scratch":""},"client_updated_at":1700000000000}
+```
 
-The client uses the official Supabase JavaScript v2 browser/UMD distribution through jsDelivr’s supported package entry point, pinned exactly to `2.111.0`. The CDN script is optional and excluded from the offline application shell; its failure cannot block classic-script bootstrap. The local config contains the project URL and an `sb_publishable_` key, both intentionally browser-public. Privileged keys—including secret and service-role credentials—are forbidden from client code.
+The cloud transport validates the payload allowlist and timestamp, independently canonicalizes and hashes the payload, and uses that recomputed ID for both the existence query and insert. A supplied mismatched ID is rejected rather than trusted.
 
-RLS remains the authorization boundary. `AtlasCloud.testAccess()` obtains the authenticated user, reads the unique RLS-visible `Atlas` vault whose `created_by` matches that user, then queries `atlas_profiles` specifically for `profile_key = me`, `kind = person`, the authenticated `owner_user_id`, and that visible vault. The result is verified across both queries. The operation is read-only.
+## Selection and isolation
 
-Existing cloud tables are `atlas_vaults`, `atlas_vault_members`, `atlas_profiles`, and `atlas_records`. v0.12.4 does not write to any of them and does not query `atlas_records`.
+The payload contains schema/version markers plus Me-owned areas, safe links whose endpoints are both Me areas, projects (including milestones/tasks), notes, daily entries, calendar entries, quick todos, and `scratch.me`. Legacy records with no `profile` field retain Atlas's established ownership rule and belong to Me. Field allowlists exclude transient settings, profiles, activity logs, Relay receipts/ledger, layout state, backups, browser storage, and calendar Entangle linkage fields. Alyssa and Us records are excluded. Atlas Lock PIN/hash/config/recovery material, the auth store, Supabase sessions/tokens, passwords, credentials, and unrelated browser data are never selected.
 
-## Failure behavior
+Supabase Auth remains separate from Atlas Lock. Preview and Confirm require active Me, online state, an authenticated session, and successful current Test Access. Both operations resolve again through the unique owned `Atlas` vault and its `me`/`person` profile owned by that authenticated user. Auth loss, offline state, client failure, failed verification, or any profile switch invalidates the prepared preview; returning to Me requires Test Access again.
 
-Offline, CDN-unavailable, authentication, session, and Supabase errors are contained inside `AtlasCloud`. Bootstrap does not await cloud initialization, there is no polling or retry loop, and the Sync widget reports a restrained local/offline/error state. All existing local profiles and features remain usable.
+## Failure and offline behavior
+
+The Supabase v2 CDN remains optional and outside `APP_SHELL`; local cloud modules remain cached. Cloud failures are contained and do not block local Atlas. There is no polling, retry loop, startup backup, sign-in backup, Test Access backup, or automatic write.
 
 ## Staged roadmap
 
-1. Me-only connection/auth — v0.12.4.
-2. Safe Me-only cloud backup.
-3. Safe Me-only cloud restore/pull.
-4. Two-way Me sync and conflict handling.
-5. Cross-device validation.
-6. Design Alyssa, Us, and Entangle separately later.
-7. Relay authenticated transport.
+1. v0.12.4 Me-only connection/auth — complete.
+2. v0.12.5 safe append-only Me cloud backup — complete.
+3. Safe Me cloud restore/pull from snapshot.
+4. Authenticated Relay transport / Send to Atlas foundation.
+5. Relay → Atlas ingestion.
+6. Cross-device/normalised sync design as needed.
+7. Alyssa/Us/Entangle cloud design later.
 8. AI-backed Predict later.

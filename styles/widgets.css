@@ -113,3 +113,6 @@ body[data-theme="night"] .home-network .map-wrap{background:radial-gradient(elli
 
 /* Optional Me-only cloud connection widget. */
 .cloud-login{display:grid;gap:6px;margin-top:10px}.cloud-login label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.cloud-login input{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px}.cloud-account{margin-top:10px;font-size:12px;overflow-wrap:anywhere}.cloud-result{display:grid;gap:3px;margin-top:10px;padding:9px;border:1px solid var(--line)}.cloud-result strong{font-size:10px;letter-spacing:.09em}.cloud-result span{font-size:12px}.cloud-result.error{border-color:var(--danger)}
+.cloud-backup{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.cloud-backup-summary{display:grid;gap:4px;margin-top:9px;font-size:10px;line-height:1.4;color:var(--muted)}
+.cloud-backup-summary strong{color:var(--ink);letter-spacing:.08em}
