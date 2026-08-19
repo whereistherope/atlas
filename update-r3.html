@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#202120" />
+<title>Atlas Update</title>
+<style>
+:root{color-scheme:light dark;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#202120;color:#f2f1eb}
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#202120}
+main{width:min(440px,calc(100vw - 40px));padding:28px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:#292a29;box-sizing:border-box}
+h1{font-size:20px;margin:0 0 10px}p{font-size:14px;line-height:1.55;color:#c9c8c2;margin:8px 0}.code{font:700 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:#9d9d96;text-transform:uppercase}.status{margin-top:18px;font:700 12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#f2f1eb}
+</style>
+</head>
+<body>
+<main>
+<div class="code">ATLAS / SAFE SHELL UPDATE / R3</div>
+<h1>Refreshing Atlas</h1>
+<p>This removes only old Atlas application-shell caches and service workers. Your Atlas records, local database, lock settings and cloud session are left untouched.</p>
+<div class="status" id="status">Starting…</div>
+</main>
+<script>
+(async()=>{
+  const status=document.getElementById('status');
+  try{
+    status.textContent='Removing old service worker…';
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.filter(r=>{try{return new URL(r.scope).pathname.startsWith('/atlas/')}catch(_){return false}}).map(r=>r.unregister()));
+    }
+    status.textContent='Removing old Atlas shell cache…';
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.filter(k=>k.startsWith('atlas-shell-')).map(k=>caches.delete(k)));
+    }
+    status.textContent='Done. Opening fresh Atlas…';
+    await new Promise(r=>setTimeout(r,650));
+    location.replace('./?atlas-update=r3&ts='+Date.now());
+  }catch(error){
+    status.textContent='Update could not complete: '+String(error&&error.message||error);
+  }
+})();
+</script>
+</body>
+</html>
