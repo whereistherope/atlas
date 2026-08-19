@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atlas-shell-0.13.1-r1';
+const CACHE_NAME = 'atlas-shell-0.13.1-r2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -25,6 +25,7 @@ const APP_SHELL = [
   './js/cloud-sync.js',
   './js/cloud-sync-hotfix.js',
   './js/note-editor.js',
+  './js/note-editor-loader-hotfix.js',
   './js/bootstrap.js',
   './atlas-192.png',
   './atlas-512.png'
@@ -59,7 +60,7 @@ self.addEventListener('fetch', event => {
 
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
+      fetch(request, {cache:'no-store'})
         .then(response => {
           if (response && response.ok) {
             const copy = response.clone();
@@ -77,7 +78,7 @@ self.addEventListener('fetch', event => {
   }
 
   event.respondWith(
-    fetch(request)
+    fetch(request, {cache:'no-store'})
       .then(response => {
         if (response && response.ok) {
           const copy = response.clone();

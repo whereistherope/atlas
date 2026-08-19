@@ -1,9 +1,13 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  async function loadScript(src,label){
+  const BUILD='0131r2';
+  const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
+
+  async function loadScript(src,label,{fresh=false}={}){
     await new Promise((resolve,reject)=>{
       const script=document.createElement('script');
-      script.src=src;
+      script.async=false;
+      script.src=fresh?`${versioned(src)}&t=${Date.now()}`:versioned(src);
       script.onload=resolve;
       script.onerror=()=>reject(new Error(`${label} failed to load.`));
       document.head.appendChild(script);
@@ -17,16 +21,21 @@
   // Migration hotfix intercepts future device merges and can recover unique records
   // from the pre-sync safety snapshot after the original device has joined.
   try { await loadScript('./js/cloud-sync-hotfix.js','Atlas canonical migration hotfix'); } catch (_) {}
-  // Direct note editor patches note rendering before the initial render. It keeps
-  // note bodies Markdown-backed while preserving all existing plain-text content.
+
+  // Load the editor with a build-specific URL so Safari/PWA HTTP caches cannot
+  // silently reuse the pre-editor asset. Retry once with a timestamp if needed.
   try { await loadScript('./js/note-editor.js','Atlas note editor'); } catch (_) {}
+  if(!window.AtlasMarkdown?.openNote){
+    try { await loadScript('./js/note-editor.js','Atlas note editor retry',{fresh:true}); } catch (_) {}
+  }
+  try { await loadScript('./js/note-editor-loader-hotfix.js','Atlas note editor activation'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
+      navigator.serviceWorker.register(`./sw.js?v=${BUILD}`,{updateViaCache:'none'}).catch(() => {});
     });
   }
 })();
