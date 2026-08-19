@@ -1,0 +1,56 @@
+/* Atlas v0.13.3 visual polish: one typography system, clearer glass surfaces, content-led editors. */
+:root{--atlas-ui-font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--atlas-code-font:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+
+/* Shared text/control typography. Reserve mono for labels, codes and telemetry only. */
+.atlas-vnote-sheet,.atlas-project-workspace,.atlas-widget .cloud-login,.atlas-widget .cloud-account,.atlas-widget .cloud-result,.atlas-widget .cloud-backup-summary,.atlas-widget .relay-state{font-family:var(--atlas-ui-font)}
+.atlas-vnote-sheet input,.atlas-vnote-sheet select,.atlas-vnote-sheet button,.atlas-project-workspace input,.atlas-project-workspace select,.atlas-project-workspace button,.atlas-project-rich-body,.atlas-widget .cloud-login input,.atlas-widget .cloud-login button,.atlas-widget .utility-actions-row button{font-family:var(--atlas-ui-font)}
+.atlas-vnote-sheet .code,.atlas-project-workspace .code,.atlas-project-workspace .field-label,.atlas-widget .cloud-login label,.atlas-widget .cloud-result strong,.atlas-widget .relay-state strong{font-family:var(--atlas-code-font)}
+#atlasCanonicalBanner,#atlasCanonicalBanner *{font-family:var(--atlas-ui-font)!important}
+#atlasCanonicalBanner button{font-family:var(--atlas-ui-font)!important;font-weight:700!important}
+
+/* Sync/Relay: readable content inside the Atlas frame. */
+.atlas-widget .relay-state{display:grid;gap:4px;padding:9px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+.atlas-widget .relay-state strong{font-size:8px;line-height:1.2;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.atlas-widget .relay-state span{font-size:10px;line-height:1.45;color:color-mix(in srgb,var(--ink) 78%,var(--muted))}
+.atlas-widget .cloud-login{display:grid;gap:6px;padding:10px 0}
+.atlas-widget .cloud-login label{font-size:7px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.atlas-widget .cloud-login input{width:100%;min-height:36px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface-2) 88%,transparent);color:var(--ink);padding:8px 9px;border-radius:4px;font-size:11px;line-height:1.2}
+.atlas-widget .cloud-account{padding:9px 0;font-size:10px;line-height:1.4;color:var(--ink);overflow-wrap:anywhere}
+.atlas-widget .cloud-result,.atlas-widget .cloud-backup-summary{display:grid;gap:4px;padding:9px 0;border-top:1px solid color-mix(in srgb,var(--line) 50%,transparent)}
+.atlas-widget .cloud-result strong,.atlas-widget .cloud-backup-summary strong{font-size:8px;letter-spacing:.055em;color:var(--ink)}
+.atlas-widget .cloud-result span,.atlas-widget .cloud-backup-summary span{font-size:9px;line-height:1.45;color:var(--muted)}
+
+/* Project Workspace */
+.atlas-project-workspace{color:var(--ink)}
+.atlas-project-workspace .project-editor{display:grid;gap:12px}
+.atlas-project-workspace .row3{align-items:end}
+.atlas-project-workspace .field input,.atlas-project-workspace .field select{font-family:var(--atlas-ui-font);font-size:12px;color:var(--ink)}
+.atlas-project-rich-field{display:grid;gap:0;border:1px solid color-mix(in srgb,var(--line) 86%,transparent);border-radius:10px;overflow:hidden;background:color-mix(in srgb,var(--surface-1) 88%,transparent)}
+.atlas-project-rich-field .field-label{padding:9px 11px 7px;font-size:8px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+.atlas-project-rich-toolbar{display:flex;gap:4px;align-items:center;flex-wrap:wrap;padding:7px 9px;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent);background:color-mix(in srgb,var(--surface-2) 58%,transparent)}
+.atlas-project-rich-toolbar button{min-height:30px;padding:5px 8px;border:1px solid var(--line);border-radius:5px;background:transparent;color:var(--ink);font-size:9px;font-weight:700}
+.atlas-project-rich-toolbar button:hover{background:color-mix(in srgb,var(--accent) 10%,transparent);border-color:var(--accent)}
+.atlas-project-rich-body{min-height:150px;max-height:480px;overflow:auto;padding:13px 14px;background:color-mix(in srgb,var(--bg) 80%,transparent);color:var(--ink);font-size:14px;line-height:1.62;outline:none}
+.atlas-project-rich-body:empty:before{content:attr(data-placeholder);color:var(--muted);opacity:.72;pointer-events:none}
+.atlas-project-rich-body:focus{box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--accent) 20%,transparent)}
+.atlas-project-rich-body p:first-child,.atlas-project-rich-body h1:first-child,.atlas-project-rich-body h2:first-child,.atlas-project-rich-body h3:first-child{margin-top:0}
+.atlas-project-rich-body .atlas-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:7px;margin:10px 0}
+.atlas-project-rich-body table{width:100%;min-width:360px;border-collapse:collapse}.atlas-project-rich-body th,.atlas-project-rich-body td{padding:8px 9px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.atlas-project-rich-body th{background:color-mix(in srgb,var(--surface-2) 75%,transparent)}
+.atlas-project-fold{border:1px solid color-mix(in srgb,var(--line) 82%,transparent);border-radius:8px;background:color-mix(in srgb,var(--surface-1) 76%,transparent);overflow:hidden}
+.atlas-project-fold>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 12px;list-style:none;cursor:pointer;font-size:11px;font-weight:700;color:var(--ink)}
+.atlas-project-fold>summary::-webkit-details-marker{display:none}.atlas-project-fold>summary:before{content:'›';font-size:16px;line-height:1;color:var(--muted);transition:transform .14s}.atlas-project-fold[open]>summary:before{transform:rotate(90deg)}
+.atlas-project-fold>summary>span:first-of-type{flex:1}.atlas-project-fold-body{padding:0 11px 11px;border-top:1px solid color-mix(in srgb,var(--line) 58%,transparent)}
+.atlas-project-fold-actions{display:flex;justify-content:flex-end;padding:9px 0 5px}.atlas-project-fold .mini-row{grid-template-columns:18px minmax(0,1fr) auto}.atlas-project-fold .mini-row input[type=text]{font-family:var(--atlas-ui-font);font-size:11px}
+.atlas-project-status{min-height:14px;font-size:9px;color:var(--muted)}
+
+/* Glass framing should not reduce legibility. */
+body:not([data-theme="night"]) .atlas-vnote-sheet,body:not([data-theme="night"]) .atlas-project-rich-field,body:not([data-theme="night"]) .atlas-project-fold{background-color:rgba(243,240,231,.94)}
+body:not([data-theme="night"]) .atlas-vnote-body,body:not([data-theme="night"]) .atlas-project-rich-body{background-color:rgba(249,247,240,.96);color:#252326}
+body[data-theme="night"] .atlas-project-rich-field,body[data-theme="night"] .atlas-project-fold{background:rgba(15,18,20,.92);border-color:#303a41}body[data-theme="night"] .atlas-project-rich-body{background:rgba(7,11,14,.82);color:#e5e4e2}
+
+@media(max-width:760px){
+ .atlas-project-workspace .row3{grid-template-columns:1fr 1fr}.atlas-project-workspace .row3>.field:first-child{grid-column:1/-1}
+ .atlas-project-rich-toolbar{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}.atlas-project-rich-toolbar button{flex:0 0 auto}
+ .atlas-project-rich-body{min-height:130px;max-height:42dvh;font-size:15px}
+ .atlas-project-fold>summary{padding:12px 10px}
+}
