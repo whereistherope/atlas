@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atlas-shell-0.12.8-r1';
+const CACHE_NAME = 'atlas-shell-0.13.0-r2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -20,6 +20,8 @@ const APP_SHELL = [
   './js/map.js',
   './js/ui.js',
   './js/widgets.js',
+  './js/v0130-safety.js',
+  './js/cloud-sync.js',
   './js/bootstrap.js',
   './atlas-192.png',
   './atlas-512.png'
