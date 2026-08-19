@@ -2,7 +2,7 @@
 (function(root){
   'use strict';
   const PROFILES=new Set(['me','alyssa','us']);
-  const OPERATIONS=new Set(['create_note','append_note']);
+  const OPERATIONS=new Set(['create_note','append_note','create_area']);
   const MAX_RECEIPTS=200;
   const text=(value,max=100000)=>typeof value==='string'?value.slice(0,max):'';
   const own=(object,key)=>Object.prototype.hasOwnProperty.call(object||{},key);
@@ -54,6 +54,19 @@
     if(area&&topic&&!descendantOf(topic,area,profileAreas(profileId)))errors.push('Topic does not belong to the supplied area.');
     return {profileId,inbox:false,area,topic,explicit:hasArea||hasTopic};
   }
+  function resolveParent(envelope,errors){
+    const target=envelope.target||{},raw=target.parentId??target.areaId;
+    if(target.root===true||['atlas','root'].includes(String(raw||'').trim().toLocaleLowerCase()))return {root:true,parent:null};
+    if(raw===null||raw===undefined||String(raw).trim()===''){errors.push('create_area requires an exact parent or explicit Atlas root.');return {root:false,parent:null}}
+    return {root:false,parent:exactArea(raw,envelope.profileId,'Parent',errors)};
+  }
+  function positionNewArea(area,parent){
+    const siblings=profileAreas(area.profile).filter(item=>item.id!==area.id&&item.parentId===area.parentId),index=siblings.length;
+    const centre=parent||{x:600,y:340},distance=parent?(Number(area.level)===3?145:108):215;
+    const angle=-Math.PI/2+(index%(parent?8:12))*(Math.PI*2/(parent?8:12));
+    area.x=Math.round((Number(centre.x)||600)+Math.cos(angle)*distance);
+    area.y=Math.round((Number(centre.y)||340)+Math.sin(angle)*distance);
+  }
   function findAppendNote(envelope,route,errors){
     const s=relayState(),target=envelope.target||{};
     if(!s)return null;
@@ -77,27 +90,37 @@
     if(!envelope||typeof envelope!=='object'||Array.isArray(envelope))return {ok:false,errors:['Envelope must be a JSON object.']};
     if(envelope.version!==1)errors.push('version must be 1.');
     if(!text(envelope.relayId,300).trim())errors.push('relayId is required.');
-    if(!OPERATIONS.has(envelope.operation))errors.push('operation must be create_note or append_note.');
+    if(!OPERATIONS.has(envelope.operation))errors.push('operation must be create_note, append_note, or create_area.');
     if(!PROFILES.has(envelope.profileId))errors.push('profileId must be me, alyssa, or us.');
     if(!envelope.target||typeof envelope.target!=='object'||Array.isArray(envelope.target))errors.push('target must be an object.');
     if(!envelope.content||typeof envelope.content!=='object'||Array.isArray(envelope.content))errors.push('content must be an object.');
     if(envelope.source!==undefined&&(!envelope.source||typeof envelope.source!=='object'||Array.isArray(envelope.source)))errors.push('source must be an object when supplied.');
     if(errors.length)return {ok:false,errors};
-    const content=envelope.content,route=resolveRoute(envelope,errors);
+    const content=envelope.content,route=envelope.operation==='create_area'?null:resolveRoute(envelope,errors);
     if(envelope.operation==='create_note'){
       if(!text(content.title,500).trim()&&!text(content.body).trim())errors.push('create_note requires a title or body.');
       if(!route.explicit)errors.push('create_note requires an exact Atlas target or explicit Inbox / unlinked target.');
     }
+    const parent=envelope.operation==='create_area'?resolveParent(envelope,errors):null;
+    if(envelope.operation==='create_area'){
+      if(!text(content.name,500).trim())errors.push('create_area requires content.name.');
+      if(content.space!==undefined&&!['work','personal'].includes(content.space))errors.push('content.space must be work or personal.');
+      if(content.type!==undefined&&typeof content.type!=='string')errors.push('content.type must be a string.');
+      if(content.initialNote!==undefined&&(!content.initialNote||typeof content.initialNote!=='object'||Array.isArray(content.initialNote)))errors.push('content.initialNote must be an object.');
+      if(content.initialNote?.tags!==undefined&&(!Array.isArray(content.initialNote.tags)||content.initialNote.tags.some(tag=>typeof tag!=='string')))errors.push('content.initialNote.tags must be an array of strings.');
+      if(content.initialNote?.showOnMap!==undefined&&typeof content.initialNote.showOnMap!=='boolean')errors.push('content.initialNote.showOnMap must be boolean.');
+    }
     if(content.tags!==undefined&&(!Array.isArray(content.tags)||content.tags.some(tag=>typeof tag!=='string')))errors.push('content.tags must be an array of strings.');
     if(content.showOnMap!==undefined&&typeof content.showOnMap!=='boolean')errors.push('content.showOnMap must be boolean.');
     const note=envelope.operation==='append_note'?findAppendNote(envelope,route,errors):null;
-    return {ok:errors.length===0,errors,route,note};
+    return {ok:errors.length===0,errors,route,parent,note};
   }
   function validate(envelope){const result=inspect(envelope);return {ok:result.ok,errors:result.errors.slice()}}
   function preview(envelope){
     const result=inspect(envelope);
     if(!result.ok)return {ok:false,errors:result.errors.slice(),text:`REJECTED\n${result.errors.join('\n')}`};
     const content=envelope.content||{},note=result.note,route=result.route;
+    if(envelope.operation==='create_area'){const where=result.parent.root?'Atlas':routeLabel({profileId:envelope.profileId,area:result.parent.parent,topic:null,inbox:false});return {ok:true,errors:[],operation:envelope.operation,profileId:envelope.profileId,recordId:null,route:{parentId:result.parent.parent?.id||'atlas'},text:`CREATE AREA\nProfile: ${profileName(envelope.profileId)}\nParent: ${where}\nName: ${text(content.name,500).trim()}`}}
     const effectiveRoute=note&&!route.explicit?{...route,area:profileAreas(envelope.profileId).find(a=>a.id===note.areaId)||null,topic:profileAreas(envelope.profileId).find(a=>a.id===note.topicId)||null,inbox:!note.areaId&&!note.topicId}:route;
     const lines=[envelope.operation==='create_note'?'CREATE NOTE':'APPEND NOTE',`Profile: ${profileName(envelope.profileId)}`];
     if(note)lines.push(`Existing note: ${note.title}`);
@@ -123,7 +146,8 @@
   }
   function requestFingerprint(envelope,checked){
     const content=envelope.content||{},source=envelope.source||{},route=checked.route,note=checked.note;
-    const request={version:1,profileId:envelope.profileId,operation:envelope.operation,target:{inbox:route.inbox,areaId:route.area?.id||'',topicId:route.topic?.id||'',noteId:note?.id||''},content:{body:text(content.body),tags:uniqueTags(content.tags)}};
+    const request={version:1,profileId:envelope.profileId,operation:envelope.operation,target:envelope.operation==='create_area'?{parentId:checked.parent.parent?.id||'atlas'}:{inbox:route.inbox,areaId:route.area?.id||'',topicId:route.topic?.id||'',noteId:note?.id||''},content:{body:text(content.body),tags:uniqueTags(content.tags)}};
+    if(envelope.operation==='create_area')request.content={name:text(content.name,500).trim(),code:text(content.code,30).trim(),type:text(content.type,60).trim(),space:content.space||'',description:text(content.description,5000),initialNote:content.initialNote||null};
     if(envelope.operation==='create_note')Object.assign(request.content,{title:text(content.title,500).trim(),type:text(content.type,60).trim()||'note',showOnMap:content.showOnMap===true});
     if(source.provider||source.threadKey)request.source={provider:text(source.provider,100),threadKey:text(source.threadKey,300)};
     return `v1-${compactHash(request)}`;
@@ -138,11 +162,17 @@
       if(accepted.fingerprint===fingerprint&&accepted.profileId===envelope.profileId&&accepted.operation===envelope.operation)return {ok:true,duplicate:true,recordId:accepted.recordId,receipt:{...accepted,status:'accepted'}};
       return {ok:false,errors:['Relay ID conflict: this relayId was already accepted for a different instruction.']};
     }
-    const content=envelope.content||{},stamp=Date.now(),source=provenance(envelope,stamp);let note=checked.note;
-    if(envelope.operation==='create_note'){
+    const content=envelope.content||{},stamp=Date.now(),source=provenance(envelope,stamp);let note=checked.note,record,leaf;
+    if(envelope.operation==='create_area'){
+      const parent=checked.parent.parent,level=parent?Math.min(4,Number(parent.level||2)+1):2;
+      record={id:uid('area'),profile:envelope.profileId,name:text(content.name,500).trim(),code:text(content.code,30).trim()||(typeof makeNodeCode==='function'?makeNodeCode(content.name):text(content.name,5).toUpperCase()),space:content.space||parent?.space||'personal',level,parentId:parent?.id||'atlas',description:text(content.description,5000),type:text(content.type,60).trim(),x:0,y:0,mapZ:0,status:'default',relaySource:source};
+      s.areas.push(record);positionNewArea(record,parent);leaf=record;
+      const initial=content.initialNote;if(initial&&(text(initial.title,500).trim()||text(initial.body).trim()))s.notes.unshift({id:uid('n'),profile:envelope.profileId,space:record.space,areaId:level===2?record.id:parent?.id||'',topicId:level>=3?record.id:'',type:text(initial.type,60).trim()||'note',title:text(initial.title,500).trim()||text(initial.body,70).trim()||'Untitled',body:text(initial.body),tags:uniqueTags(initial.tags),createdAt:stamp,updatedAt:stamp,showOnMap:initial.showOnMap===true,relaySource:source});
+    }else if(envelope.operation==='create_note'){
       const route=checked.route,leaf=route.topic||route.area;
       note={id:uid('n'),profile:envelope.profileId,space:leaf?.space||'personal',areaId:route.area?.id||(route.topic?.parentId==='atlas'?'':route.topic?.parentId)||'',topicId:route.topic?.id||'',type:text(content.type,60).trim()||'note',title:text(content.title,500).trim()||text(content.body,70).trim()||'Untitled',body:text(content.body),tags:uniqueTags(content.tags),createdAt:stamp,updatedAt:stamp,showOnMap:content.showOnMap===true,relaySource:source};
       s.notes.unshift(note);
+      record=note;
     }else{
       const incoming=text(content.body).trim();
       if(incoming)note.body=[String(note.body||'').trim(),incoming].filter(Boolean).join('\n\n');
@@ -150,14 +180,15 @@
       note.updatedAt=stamp;
       note.relaySources=[...(Array.isArray(note.relaySources)?note.relaySources:[]),source].slice(-20);
       if(checked.route.explicit){const route=checked.route,leaf=route.topic||route.area;note.areaId=route.inbox?'':route.area?.id||(route.topic?.parentId==='atlas'?'':route.topic?.parentId)||'';note.topicId=route.inbox?'':route.topic?.id||'';note.space=leaf?.space||note.space}
+      record=note;
     }
-    const leaf=checked.route.topic||checked.route.area||profileAreas(envelope.profileId).find(a=>a.id===(note.topicId||note.areaId));
-    const receipt={relayId:envelope.relayId,time:stamp,profileId:envelope.profileId,operation:envelope.operation,recordId:note.id,threadKey:source.threadKey,provider:source.provider,fingerprint,status:'accepted'};
-    ledger[envelope.relayId]={relayId:envelope.relayId,fingerprint,profileId:envelope.profileId,operation:envelope.operation,recordId:note.id,time:stamp};
+    leaf=leaf||checked.route?.topic||checked.route?.area||profileAreas(envelope.profileId).find(a=>a.id===(note?.topicId||note?.areaId));
+    const receipt={relayId:envelope.relayId,time:stamp,profileId:envelope.profileId,operation:envelope.operation,recordId:record.id,targetLabel:routeLabel({profileId:envelope.profileId,area:leaf,topic:null,inbox:!leaf}),threadKey:source.threadKey,provider:source.provider,fingerprint,status:'accepted'};
+    ledger[envelope.relayId]={relayId:envelope.relayId,fingerprint,profileId:envelope.profileId,operation:envelope.operation,recordId:record.id,time:stamp};
     s.relayReceipts=[receipt,...(s.relayReceipts||[])].slice(0,MAX_RECEIPTS);
     log(`Relay received · ${leaf?.name||'Inbox'}`,envelope.profileId);
     await save();
-    return {ok:true,duplicate:false,recordId:note.id,receipt:{...receipt}};
+    return {ok:true,duplicate:false,recordId:record.id,receipt:{...receipt}};
   }
   function uniqueTags(tags){
     const result=[],seen=new Set();

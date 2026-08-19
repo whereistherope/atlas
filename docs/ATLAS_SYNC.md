@@ -28,9 +28,9 @@ The Supabase v2 CDN remains optional and outside `APP_SHELL`; local cloud module
 
 1. v0.12.4 Me-only connection/auth — complete.
 2. v0.12.5 safe append-only Me cloud backup — complete.
-3. Safe Me cloud restore/pull from snapshot.
-4. v0.12.7 authenticated Me-only Relay transport — complete; manual validation/preview only.
-5. v0.12.8 ChatGPT ingress + explicit Relay → Atlas ingestion.
+3. v0.12.6 safe Me cloud restore/pull from snapshot — complete.
+4. v0.12.7 authenticated Me-only Relay transport — superseded for Relay ingress.
+5. v0.12.8 isolated automatic Me Send-to-Atlas ingestion — complete.
 6. Cross-device/normalised sync design as needed.
 7. Alyssa/Us/Entangle cloud design later.
 8. AI-backed Predict later.
@@ -41,4 +41,9 @@ Authenticated Relay carriage reuses `atlas_records` with insert-only `relay_enve
 
 The Relay widget checks at most the newest 50 records only after **CHECK CLOUD** is pressed. Remote rows are treated as untrusted and independently validated and re-hashed at the cloud boundary. A malformed row produces only sanitized rejection metadata and does not poison valid neighbours; its envelope never reaches local Relay. Validated envelopes are passed to local `AtlasRelay.validate()` and `AtlasRelay.preview()`, and local ledger matches are labelled already accepted. The check is locally read-only and does not save or ingest. The hard 512,000-byte transport ceiling safely accommodates approximately 100,000 multi-byte characters while remaining bounded. Genuine auth, session, RLS, and access failures invalidate verified readiness, but content validation failures do not.
 
-This release does **not** add automatic sync or ingestion, a ChatGPT sender, Alyssa/Us cloud Relay, background polling, cloud overwrite/delete, or cloud authority over IndexedDB. v0.12.8 is the planned ChatGPT ingress and explicit Relay-to-Atlas ingestion step; “Send to Atlas” is not complete in v0.12.7.
+v0.12.8 replaces this carriage for inbound Relay with an isolated RPC-only project. The main connection described above remains unchanged for backup and restore.
+
+
+## v0.12.8 isolated Relay ingress
+
+Me Relay ingestion is automatic while Atlas is visible and online, and checks once as local state loads. It polls about every five seconds and resumes on focus, visibility, and online events. Explicit “Send to Atlas” is the approval; Atlas does not ask for a second confirmation. The isolated transport is not general sync and cannot write Atlas content remotely.
