@@ -30,6 +30,7 @@
   try { await loadScript('./js/project-workspace.js','Atlas Project Workspace'); } catch (_) {}
   try { await loadScript('./js/editor-ux.js','Atlas editor UX'); } catch (_) {}
   try { await loadScript('./js/atlas-document.js','Atlas Document v1'); } catch (_) {}
+  try { await loadScript('./js/atlas-document-project-ui.js','Atlas Project Document controls'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
