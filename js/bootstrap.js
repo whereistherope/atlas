@@ -14,6 +14,9 @@
   // is taken after local state loads but before any shared Atlas adoption/merge.
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
+  // Migration hotfix intercepts future device merges and can recover unique records
+  // from the pre-sync safety snapshot after the original device has joined.
+  try { await loadScript('./js/cloud-sync-hotfix.js','Atlas canonical migration hotfix'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
