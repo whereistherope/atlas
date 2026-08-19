@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atlas-shell-0.13.2-r3';
+const CACHE_NAME = 'atlas-shell-0.13.3-r1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const APP_SHELL = [
   './styles/map.css',
   './styles/note-editor.css',
   './styles/visual-note-editor.css',
+  './styles/v0133-polish.css',
   './js/db.js',
   './js/auth.js',
   './js/cloud-config.js',
@@ -30,6 +31,7 @@ const APP_SHELL = [
   './js/visual-note-editor.js',
   './js/visual-table-controls.js',
   './js/rich-note-capture.js',
+  './js/project-workspace.js',
   './js/bootstrap.js',
   './atlas-192.png',
   './atlas-512.png'
