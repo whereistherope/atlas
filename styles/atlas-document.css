@@ -1,0 +1,11 @@
+/* Atlas v0.14.0 · structured document affordances */
+.atlas-vnote-body table,.atlas-project-rich-body table{table-layout:fixed}
+.atlas-vnote-body th,.atlas-vnote-body td,.atlas-project-rich-body th,.atlas-project-rich-body td{overflow-wrap:anywhere}
+.atlas-vnote-body [data-indent],.atlas-project-rich-body [data-indent]{transition:margin-left .12s ease}
+.atlas-vnote-body td[data-atlas-merge],.atlas-vnote-body th[data-atlas-merge],.atlas-project-rich-body td[data-atlas-merge],.atlas-project-rich-body th[data-atlas-merge]{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.atlas-col-resize{position:absolute;z-index:8;top:0;right:-6px;width:13px;height:100%;cursor:col-resize;touch-action:none;user-select:none;-webkit-user-select:none}
+.atlas-col-resize:after{content:"";position:absolute;top:15%;bottom:15%;left:6px;width:1px;background:color-mix(in srgb,var(--accent) 35%,transparent);opacity:.28;transition:opacity .12s,background .12s}
+.atlas-col-resize:hover:after,.atlas-col-resize:active:after{opacity:1;background:var(--accent)}
+body.atlas-resizing-column{cursor:col-resize!important;user-select:none!important;-webkit-user-select:none!important}
+body.atlas-resizing-column *{cursor:col-resize!important}
+@media(pointer:coarse){.atlas-col-resize{right:-9px;width:19px}.atlas-col-resize:after{left:9px;opacity:.4}}
