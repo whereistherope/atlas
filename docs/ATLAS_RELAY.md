@@ -1,6 +1,6 @@
 # Atlas Relay — local receptor (Envelope v1)
 
-Relay is the boundary through which a future trusted transport can ask Atlas to create or append a normal note. In v0.12.3 it is **local only**: it makes no network request and **does not yet allow ChatGPT to write directly into Atlas**. A backend or MCP adapter remains future work.
+Relay is the validated local mutation boundary for v0.12.8 automatic **Send to Atlas**. The isolated cloud transport is strictly Me-only and uses explicit user intent from ChatGPT; Alyssa and Us remain local-only. Local IndexedDB remains authoritative, and Relay is not general cloud sync.
 
 ## Receiving interface
 
@@ -41,13 +41,17 @@ Incoming strings are treated as untrusted text. Relay never evaluates content, i
 }
 ```
 
-`version`, `relayId`, `operation`, `profileId`, `target`, and `content` are required. Supported operations are only `create_note` and `append_note`. Profiles are the persisted IDs `me`, `alyssa`, and `us`; Relay never changes the active profile or searches another profile. `threadKey` is optional source metadata and is the durable semantic thread identifier. A provider conversation ID is not a routing key.
+`version`, `relayId`, `operation`, `profileId`, `target`, and `content` are required. Supported nondestructive operations are `create_note`, `append_note`, and `create_area`. The local receptor preserves the persisted profile IDs `me`, `alyssa`, and `us` for compatibility and diagnostics, but v0.12.8 isolated cloud ingress accepts only `me`. Relay never changes the active profile or searches another profile. `threadKey` is optional source metadata and is the durable semantic thread identifier. A provider conversation ID is not a routing key.
 
 ## Create and append semantics
 
 `create_note` requires an exact route or an explicit Inbox/unlinked request (`target.inbox: true`, or `areaId: "inbox"`/`"unlinked"`). It creates an ordinary entry in `state.notes`, including normal type, tags, map visibility, profile, area/topic, space, and timestamps.
 
 `append_note` resolves an exact `noteId` first. Otherwise it requires an exact title and exactly one match in the supplied profile and explicit target context. Zero or multiple matches are rejected. Body text is joined with one blank line, tags are unioned case-insensitively, and `updatedAt` is refreshed. The existing route is retained unless target routing was explicitly supplied.
+
+## Create area semantics
+
+`create_area` requires `content.name` and an exact parent ID, code, or unique case-insensitive name, or an explicit Atlas root. It creates an ordinary area using the existing profile, parent, level, inherited space, code, and map-position semantics. An optional `content.initialNote` creates an ordinary linked note. Existing area positions and unrelated content are not reset.
 
 ## Target resolution and isolation
 
@@ -61,14 +65,6 @@ An accepted instruction stores a compact deterministic request fingerprint in th
 
 Created notes hold `relaySource`; appended notes hold a bounded `relaySources` history. Provenance includes Relay ID, provider, thread key, sent time, and received time and does not alter the displayed note body. Existing notes do not require these optional fields.
 
-## Local manual test
+## Automatic isolated ingress (v0.12.8)
 
-1. Open **Widgets → Relay**.
-2. Confirm the state reads **LOCAL** and “External link not configured”.
-3. Select **Receive test**, paste an Envelope v1 JSON object, and select **Preview**. Editing the JSON after preview clears the acceptance state and requires another preview.
-4. Review the resolved profile, route, note/title, and tags.
-5. Select **Accept**. Confirm the note appears in normal Notes/List/Nodes surfaces as applicable and the receipt appears in Relay after reload.
-
-## Future transport boundary
-
-A later authenticated backend/MCP transport may call this same preview/ingest boundary. That work must provide authentication, authorisation, replay controls, delivery, and user consent outside this module. v0.12.3 includes no API key, OAuth flow, webhook, cloud database, MCP credential, external fetch, reverse retrieval, or direct ChatGPT connectivity.
+Me can configure a Relay Access Key, stored separately in the existing IndexedDB auth store and excluded from Atlas state, exports, and cloud backups. While Atlas is visible and online it calls only `fetch_atlas_relay` and `ack_atlas_relay` in the isolated Atlas Relay Supabase project, checking immediately after local state loads and approximately every five seconds thereafter. Valid instructions are ingested without a second approval. Invalid or ambiguous instructions are rejected safely and retained in local Relay activity. Alyssa and Us remain local only; this ingress is not cloud sync and does not alter the main backup/restore connection.

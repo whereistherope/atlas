@@ -3,7 +3,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 read=lambda p:(ROOT/p).read_text()
 db,cloud,config,index,sw,widgets=(read(p) for p in ('js/db.js','js/cloud.js','js/cloud-config.js','index.html','sw.js','js/widgets.js'))
-assert "APP_VERSION='0.12.7'" in db and 'DATA_VERSION=8' in db
+assert "APP_VERSION='0.12.8'" in db and 'DATA_VERSION=8' in db
 for token in ("DB_NAME='atlas_personal_os'","DB_VERSION=3","DB_STORE='state'","BACKUP_STORE='backups'","AUTH_STORE='auth'","AUTH_KEY='atlas-lock'","DB_KEY='atlas-v1'","FALLBACK_KEY='atlas_v1_fallback'"): assert token in db
 assert 'https://tqezgmpgjoibhckhnrfw.supabase.co' in config and 'sb_publishable_' in config
 for forbidden in ('sb_'+'secret_', 'service_'+'role'):
