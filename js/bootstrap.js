@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0131r3';
+  const BUILD='0132r1';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   async function loadScript(src,label,{fresh=false}={}){
@@ -22,15 +22,14 @@
   // from the pre-sync safety snapshot after the original device has joined.
   try { await loadScript('./js/cloud-sync-hotfix.js','Atlas canonical migration hotfix'); } catch (_) {}
 
-  // Load the editor with a build-specific URL so Safari/PWA HTTP caches cannot
-  // silently reuse the pre-editor asset. Retry once with a timestamp if needed.
-  try { await loadScript('./js/note-editor.js','Atlas note editor'); } catch (_) {}
+  // Base Markdown renderer / fallback editor.
+  try { await loadScript('./js/note-editor.js','Atlas note renderer'); } catch (_) {}
   if(!window.AtlasMarkdown?.openNote){
-    try { await loadScript('./js/note-editor.js','Atlas note editor retry',{fresh:true}); } catch (_) {}
+    try { await loadScript('./js/note-editor.js','Atlas note renderer retry',{fresh:true}); } catch (_) {}
   }
-  try { await loadScript('./js/note-editor-loader-hotfix.js','Atlas note editor activation'); } catch (_) {}
-  // Route new note-like captures through the same rich editor while leaving
-  // project, task and daily capture on their specialised forms.
+  // Visual editor overrides normal note opening while keeping Markdown as storage.
+  try { await loadScript('./js/visual-note-editor.js','Atlas visual note editor'); } catch (_) {}
+  // New note-like captures use whichever AtlasMarkdown.openNote implementation is current.
   try { await loadScript('./js/rich-note-capture.js','Atlas rich note capture'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
