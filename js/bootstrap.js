@@ -17,6 +17,9 @@
   // Migration hotfix intercepts future device merges and can recover unique records
   // from the pre-sync safety snapshot after the original device has joined.
   try { await loadScript('./js/cloud-sync-hotfix.js','Atlas canonical migration hotfix'); } catch (_) {}
+  // Direct note editor patches note rendering before the initial render. It keeps
+  // note bodies Markdown-backed while preserving all existing plain-text content.
+  try { await loadScript('./js/note-editor.js','Atlas note editor'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
