@@ -1,4 +1,4 @@
-// Atlas v0.13.1-r3: use the rich note editor for new note-like captures.
+// Atlas v0.13.2-r3: route every note-like creation path into the visual editor.
 (function(root){
   'use strict';
 
@@ -36,9 +36,9 @@
     const draft = makeDraft(type, areaId);
     pendingDraft = draft;
 
-    // The existing editor expects a note id already present in state. Insert the
-    // draft only long enough for the editor to populate, then remove it again so
-    // closing an unsaved note can never leak into local or canonical state.
+    // The editor expects a note id to exist while it populates. Keep the draft in
+    // state only for that synchronous open, then remove it again. Save materialises
+    // it immediately before the normal note save pipeline runs.
     state.notes.unshift(draft);
     try{
       root.AtlasMarkdown.openNote(draft.id);
@@ -54,14 +54,42 @@
     pendingDraft = null;
   }
 
-  function abandonDraft(){
-    pendingDraft = null;
+  function abandonDraft(){pendingDraft = null}
+
+  function noteCreateIntent(event){
+    const target = event.target;
+    if(!target?.closest)return null;
+
+    // Main Capture button is the default new-note action.
+    if(target.closest('#captureBtn')) return {type:'note',areaId:'',closeEditor:false};
+
+    // Area / Inbox quick-add controls can create several record types. Only route
+    // note-like types through the visual editor; specialised types stay legacy.
+    const quick = target.closest('[data-quick-add]');
+    if(quick){
+      const type = quick.dataset.quickAdd || 'note';
+      if(!legacyTypes.has(type)) return {type,areaId:quick.dataset.area || '',closeEditor:false};
+    }
+
+    // Notes management + Note button.
+    if(target.closest('[data-ed-action="add-note"]')) return {type:'note',areaId:'',closeEditor:true};
+
+    return null;
   }
 
-  // Window-capture listeners run before the editor's document-capture handlers.
-  // That lets Save materialise the draft just before the existing save pipeline
-  // runs, while Close/Escape simply discard the in-memory draft.
+  // Capture phase on window wins before the legacy element/document click handlers.
+  // This makes note creation deterministic instead of relying on reassignment of the
+  // old openCapture binding, which Safari could still reach through existing handlers.
   root.addEventListener('click',event=>{
+    const intent = noteCreateIntent(event);
+    if(intent){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if(intent.closeEditor){try{closeOverlay('editorOverlay')}catch(_){}}
+      openRichCapture(intent.type,intent.areaId);
+      return;
+    }
+
     if(!pendingDraft) return;
     if(event.target.closest?.('[data-note-save]')) materialiseDraftForSave();
     else if(event.target.closest?.('[data-note-close]')) abandonDraft();
@@ -74,9 +102,10 @@
   },true);
 
   if(legacyOpenCapture){
+    // Keep function replacement as a compatibility route for any code-created note.
     openCapture = openRichCapture;
     root.AtlasRichNoteCapture = Object.freeze({
-      version:'0.13.1-r3',
+      version:'0.13.2-r3',
       open:openRichCapture,
       pending:()=>!!pendingDraft
     });
