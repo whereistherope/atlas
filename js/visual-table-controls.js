@@ -112,9 +112,9 @@
     if(!cell||!table)return root.toast?.('Place the cursor inside a table first');
     const cols=table.rows[0]?.cells.length||0;
     if(cols<=1)return root.toast?.('Keep at least one column');
-    const index=cell.cellIndex;
+    const index=cell.cellIndex,rowIndex=cell.parentElement.rowIndex;
     [...table.rows].forEach(row=>row.cells[index]?.remove());
-    const target=table.rows[Math.min(cell.parentElement.rowIndex,table.rows.length-1)]?.cells[Math.min(index,cols-2)]||table.querySelector('th,td');if(target)placeCaret(target);
+    const target=table.rows[Math.min(rowIndex,table.rows.length-1)]?.cells[Math.min(index,cols-2)]||table.querySelector('th,td');if(target)placeCaret(target);
     root.toast?.('Column deleted');
   }
 
