@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0132r1';
+  const BUILD='0132r2';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   async function loadScript(src,label,{fresh=false}={}){
@@ -29,6 +29,8 @@
   }
   // Visual editor overrides normal note opening while keeping Markdown as storage.
   try { await loadScript('./js/visual-note-editor.js','Atlas visual note editor'); } catch (_) {}
+  // Table controls refine visual editor behaviour without changing note storage.
+  try { await loadScript('./js/visual-table-controls.js','Atlas visual table controls'); } catch (_) {}
   // New note-like captures use whichever AtlasMarkdown.openNote implementation is current.
   try { await loadScript('./js/rich-note-capture.js','Atlas rich note capture'); } catch (_) {}
 
