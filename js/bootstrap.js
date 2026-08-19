@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0131r2';
+  const BUILD='0131r3';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   async function loadScript(src,label,{fresh=false}={}){
@@ -29,6 +29,9 @@
     try { await loadScript('./js/note-editor.js','Atlas note editor retry',{fresh:true}); } catch (_) {}
   }
   try { await loadScript('./js/note-editor-loader-hotfix.js','Atlas note editor activation'); } catch (_) {}
+  // Route new note-like captures through the same rich editor while leaving
+  // project, task and daily capture on their specialised forms.
+  try { await loadScript('./js/rich-note-capture.js','Atlas rich note capture'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
