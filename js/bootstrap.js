@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0133r1';
+  const BUILD='0134r1';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -20,6 +20,7 @@
   }
 
   loadStyle('./styles/v0133-polish.css');
+  loadStyle('./styles/editor-ux.css');
 
   // Safety wrapper must load before cloud-sync so the pre-canonical local snapshot
   // is taken after local state loads but before any shared Atlas adoption/merge.
@@ -38,6 +39,7 @@
 
   // Project Workspace keeps project structure lightweight while rich-editing substantive fields.
   try { await loadScript('./js/project-workspace.js','Atlas Project Workspace'); } catch (_) {}
+  try { await loadScript('./js/editor-ux.js','Atlas editor UX'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
