@@ -1,8 +1,26 @@
-const CACHE_NAME = 'atlas-shell-0.11.3';
+const CACHE_NAME = 'atlas-shell-0.12.8-r1';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
+  './styles/tokens.css',
+  './styles/app.css',
+  './styles/widgets.css',
+  './styles/map.css',
+  './js/db.js',
+  './js/auth.js',
+  './js/cloud-config.js',
+  './js/cloud.js',
+  './js/cloud-backup.js',
+  './js/app.js',
+  './js/cloud-restore.js',
+  './js/relay.js',
+  './js/relay-transport.js',
+  './js/calendar.js',
+  './js/map.js',
+  './js/ui.js',
+  './js/widgets.js',
+  './js/bootstrap.js',
   './atlas-192.png',
   './atlas-512.png'
 ];

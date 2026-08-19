@@ -1,0 +1,52 @@
+/* Nodes, List and Predict view presentation. */
+/* Atlas 0.11.1 · branch list / clustered map / prediction view */
+.edge.cross,body[data-theme="night"] .edge.cross{opacity:var(--map-cross-opacity,.22)!important}
+.branch-view{position:absolute;inset:0;overflow:auto;padding:58px 24px 26px;color:var(--ink);box-sizing:border-box}
+.branch-root-list{display:grid;gap:22px;width:100%;margin:0}
+.branch-root{min-width:0;padding:0 0 20px;border-bottom:1px solid color-mix(in srgb,var(--line) 52%,transparent)}
+.branch-root:last-child{border-bottom:0}
+.branch-root-title{display:block;border:0;background:transparent;color:var(--ink);padding:3px 0 9px;text-align:left;font:650 10px/1.4 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;letter-spacing:.025em}
+.branch-root-title:hover{color:var(--accent)}
+.branch-tree,.branch-tree ul{list-style:none;margin:0;padding-left:22px}
+.branch-tree.root-children{padding-left:22px}
+.branch-tree li{position:relative;margin:0;padding:4px 0}
+.branch-tree li:before{content:"";position:absolute;left:-14px;top:0;height:100%;border-left:1px solid color-mix(in srgb,var(--line) 76%,transparent)}
+.branch-tree li:after{content:"";position:absolute;left:-14px;top:13px;width:10px;border-top:1px solid color-mix(in srgb,var(--line) 76%,transparent)}
+.branch-tree li:last-child:before{height:13px}
+.branch-node{display:inline-grid;grid-template-columns:minmax(44px,auto) minmax(0,1fr);gap:10px;align-items:baseline;max-width:100%;cursor:pointer}
+.branch-code{font:650 8px/1.4 ui-monospace,monospace;letter-spacing:.06em;color:var(--ink)}
+.branch-name{font:500 10px/1.4 ui-monospace,monospace;color:color-mix(in srgb,var(--ink) 72%,var(--muted))}
+.branch-note .branch-name{opacity:.72}.branch-node:hover .branch-code,.branch-node:hover .branch-name{color:var(--accent)}
+.prediction-mode .edge.prediction{fill:none;stroke:color-mix(in srgb,var(--ink) 58%,transparent);stroke-width:.62;opacity:.34;vector-effect:non-scaling-stroke}.prediction-mode .prediction-node .node-disc{fill:color-mix(in srgb,var(--ink) 80%,var(--surface-1));stroke:none!important}.prediction-mode .prediction-node.is-actual .node-disc{fill:var(--surface-3);stroke:color-mix(in srgb,var(--ink) 54%,transparent)!important;stroke-width:.8!important}.prediction-mode .prediction-node.minor{opacity:.62}.prediction-mode .prediction-node text{font-size:6.6px!important;font-weight:540!important;opacity:.62}.prediction-mode .prediction-node.is-actual text{font-size:8px!important;opacity:.82}.predict-note{align-self:center;font:550 7px/1 ui-monospace,monospace;letter-spacing:.07em;color:var(--muted);white-space:nowrap}
+@media(max-width:700px){.branch-view{padding:58px 14px 20px}.branch-tree,.branch-tree ul{padding-left:18px}}
+/* 0.11.2 refinements */
+.prediction-inspector{position:absolute;z-index:24;width:min(300px,calc(100% - 28px));display:none;background:color-mix(in srgb,var(--surface-2) 96%,transparent);border:1px solid var(--line-strong);box-shadow:0 18px 44px rgba(0,0,0,.22);color:var(--ink);padding:0;pointer-events:auto}
+.prediction-inspector.open{display:block}.predict-inspect-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line)}
+.predict-inspect-head strong{font:650 9px/1 ui-monospace,monospace;letter-spacing:.055em;text-transform:uppercase}.predict-inspect-head button{border:0;background:transparent;color:var(--muted);font-size:15px;padding:1px 4px}
+.predict-inspect-body{padding:11px 12px 12px}.predict-inspect-body h4{font-size:12px;line-height:1.35;margin:0 0 8px;font-weight:650}.predict-inspect-body p{font-size:10px;line-height:1.55;margin:0 0 10px;color:var(--muted)}
+.predict-inspect-grid{display:grid;grid-template-columns:70px 1fr;gap:6px 9px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);font:550 8px/1.45 ui-monospace,monospace}.predict-inspect-grid b{color:var(--muted);font-weight:550;text-transform:uppercase}.predict-inspect-grid span{color:var(--ink)}
+.prediction-node.is-predicted{cursor:pointer}.prediction-node.is-predicted:hover .node-disc{stroke:var(--ink)!important;stroke-width:1.2!important}
+/* Atlas 0.11.3 refinements */
+.topbar{position:relative!important;padding-bottom:8px!important}
+.prediction-inspector{width:min(330px,calc(100% - 24px))!important}.predict-inspect-body h4{font-size:13px!important;line-height:1.35!important;margin-bottom:8px!important}.predict-reason{padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent);color:var(--muted)!important;font-size:9px!important}
+.prediction-node.is-predicted.predict-ai .node-disc{stroke:var(--sand)!important;fill:color-mix(in srgb,var(--sand) 24%,var(--surface-2))!important}
+@media(max-width:920px){.topbar{padding-bottom:8px!important}}
+
+/* Atlas 0.12.2 · responsive map control rail */
+.map-wrap .map-controls{left:auto!important;right:10px!important;top:47px!important;bottom:auto!important;width:154px;display:block!important;pointer-events:none}
+.map-wrap .map-hud{display:grid!important;grid-template-columns:minmax(0,1fr);gap:5px!important;align-items:stretch!important}
+.map-wrap .map-hud>*{pointer-events:auto}
+.map-wrap .zoom-controls,.map-wrap .depth,.map-wrap .map-command{width:100%;box-sizing:border-box;background:color-mix(in srgb,var(--surface-1) 91%,transparent)!important;border:1px solid color-mix(in srgb,var(--line) 82%,transparent)!important;border-radius:2px!important;box-shadow:0 7px 22px rgba(0,0,0,.07);backdrop-filter:blur(9px)}
+.map-wrap .zoom-controls{display:grid!important;grid-template-columns:30px minmax(0,1fr) 30px;padding:3px!important;gap:2px!important}
+.map-wrap .zoom-controls button{width:auto!important;height:27px!important}.map-wrap .zoom-controls .zoom-reset{width:auto!important}
+.map-command{display:grid;grid-template-columns:1fr;border-bottom:0!important}
+.map-command button{min-height:29px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);font:650 8px/1 ui-monospace,monospace;text-transform:uppercase;letter-spacing:.06em}
+.map-command button:last-child{border-bottom:0}.map-command button:hover{background:color-mix(in srgb,var(--accent) 9%,transparent)}.map-command button.is-confirmed{color:var(--accent)}
+.map-wrap .depth{display:grid!important;grid-template-columns:38px minmax(0,1fr) 24px;gap:5px!important;padding:6px 7px!important}.map-wrap .depth input{width:100%!important;min-width:0}.map-wrap .depth strong{text-align:right;font-size:7px;color:var(--muted)}
+.map-wrap .predict-controls .predict-note{display:block;padding:5px 2px;white-space:normal;line-height:1.45}
+@media(max-width:700px){
+  .map-wrap .map-controls{left:8px!important;right:8px!important;top:auto!important;bottom:8px!important;width:auto;max-width:none}
+  .map-wrap .map-hud{grid-template-columns:minmax(132px,.8fr) repeat(3,minmax(105px,1fr))!important;overflow-x:auto;align-items:end!important;scrollbar-width:thin}
+  .map-wrap .map-command{grid-row:2;grid-column:1;grid-template-columns:1fr 1fr}.map-command button:first-child{border-bottom:0;border-right:1px solid var(--line)}
+  .map-wrap .depth{grid-template-columns:34px minmax(52px,1fr) 20px}
+}
