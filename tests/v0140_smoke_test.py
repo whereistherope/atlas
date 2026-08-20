@@ -56,7 +56,7 @@ def main():
     # Every dynamically loaded local runtime/style must be part of the offline shell.
     dynamic_assets = re.findall(r"(?:loadScript|loadStyle)\('([^']+)'", bootstrap)
     for asset in dynamic_assets:
-        require(sw, f"'{asset.lstrip('./')}'", f'offline shell asset {asset}')
+        require(sw, f"'{asset}'", f'offline shell asset {asset}')
         assert (ROOT / asset.lstrip('./')).exists(), f"loaded asset does not exist: {asset}"
 
     # Universal Capture owns main Capture; rich-note routing must not hijack it.
