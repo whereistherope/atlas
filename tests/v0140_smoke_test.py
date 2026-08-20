@@ -12,6 +12,14 @@ def require(text, needle, label):
     assert needle in text, f"missing {label}: {needle}"
 
 
+def cache_name_for_build(build):
+    match = re.fullmatch(r'(\d{2})(\d{2})r(\d+)', build)
+    assert match, f'unrecognised Atlas build format: {build}'
+    major = int(match.group(1))
+    minor = int(match.group(2))
+    return f'0.{major}.{minor}-r{match.group(3)}'
+
+
 def main():
     db = read('js/db.js')
     bootstrap = read('js/bootstrap.js')
@@ -24,6 +32,7 @@ def main():
     doc_r4 = read('js/atlas-document-r4-ui.js')
     table_width = read('js/table-width-resize.js')
     project = read('js/project-workspace.js')
+    command = read('js/command-palette.js')
 
     # Persisted compatibility contracts: these must never drift silently.
     for contract in [
@@ -46,11 +55,11 @@ def main():
     all_js = '\n'.join(p.read_text(encoding='utf-8') for p in (ROOT / 'js').glob('*.js'))
     assert 'indexedDB.deleteDatabase' not in all_js, 'destructive IndexedDB delete introduced'
 
-    # Build/cache must move together.
+    # Build/cache must move together across releases.
     build = re.search(r"const BUILD='([^']+)'", bootstrap)
     cache = re.search(r"CACHE_NAME = 'atlas-shell-([^']+)'", sw)
     assert build and cache, 'build/cache identifiers missing'
-    expected_cache = build.group(1).replace('0140', '0.14.0-', 1)
+    expected_cache = cache_name_for_build(build.group(1))
     assert cache.group(1) == expected_cache, f"bootstrap BUILD {build.group(1)} and SW cache {cache.group(1)} disagree"
 
     # Every dynamically loaded local runtime/style must be part of the offline shell.
@@ -92,7 +101,22 @@ def main():
     require(project, 'Milestones', 'milestone section')
     require(project, 'Tasks', 'task section')
 
-    print('Atlas v0.14 smoke contracts: PASS')
+    # v0.15 command palette: keyboard-first retrieval + natural object routing.
+    require(bootstrap, "./js/command-palette.js", 'command palette runtime load')
+    require(bootstrap, "./styles/command-palette.css", 'command palette style load')
+    require(command, "e.metaKey||e.ctrlKey", 'Cmd/Ctrl shortcut')
+    require(command, "e.key.toLowerCase()==='k'", 'K shortcut')
+    require(command, "target.closest?.('#searchBtn')", 'legacy Search replacement')
+    require(command, "root.AtlasMarkdown?.openNote?.(n.id)", 'note direct-open route')
+    require(command, "openProject?.(p.id)", 'project direct-open route')
+    require(command, "openCalendarEvent?.(e.id)", 'calendar direct-open route')
+    for kind in ['AREA', 'PROJECT', 'TASK', 'MILESTONE', 'DAILY', 'EVENT']:
+        require(command, f"kind:'{kind}'", f'command palette result kind {kind}')
+    for label in ['Capture', 'New Note', 'New Meeting', 'New Idea', 'New Reference', 'New Project', 'New Task', 'New Daily Entry', 'Home', 'Nodes', 'Predict', 'Inbox', 'Daily', 'Calendar', 'Edit Atlas']:
+        require(command, f"['{label}'", f'command {label}')
+    require(command, "AtlasCommandPalette", 'command palette export')
+
+    print('Atlas current smoke contracts: PASS')
 
 
 if __name__ == '__main__':
