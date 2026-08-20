@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0140r7';
+  const BUILD='0140r8';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -37,6 +37,7 @@
   try { await loadScript('./js/atlas-document-r4-ui.js','Atlas Document UI r4'); } catch (_) {}
   try { await loadScript('./js/table-width-resize.js','Atlas table width resize r6'); } catch (_) {}
   try { await loadScript('./js/capture-framework-r7.js','Atlas Capture framework r7'); } catch (_) {}
+  try { await loadScript('./js/capture-polish-r8.js','Atlas Capture polish r8'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
