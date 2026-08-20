@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0153r1';
+  const BUILD='0154r1';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -21,6 +21,7 @@
   loadStyle('./styles/command-palette.css');
   loadStyle('./styles/interaction-alignment.css');
   loadStyle('./styles/workspace-actions.css');
+  loadStyle('./styles/network-layout.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
@@ -45,6 +46,7 @@
   try { await loadScript('./js/interaction-alignment.js','Atlas interaction alignment v0.15.1'); } catch (_) {}
   try { await loadScript('./js/workspace-actions.js','Atlas workspace actions v0.15.2'); } catch (_) {}
   try { await loadScript('./js/graph-hierarchy-interactions.js','Atlas hierarchy drag v0.15.3'); } catch (_) {}
+  try { await loadScript('./js/network-layout.js','Atlas guided network layout v0.15.4'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
