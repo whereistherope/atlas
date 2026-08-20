@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0140r1';
+  const BUILD='0140r2';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -16,7 +16,6 @@
 
   loadStyle('./styles/v0133-polish.css');
   loadStyle('./styles/editor-ux.css');
-  loadStyle('./styles/atlas-document.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
@@ -29,8 +28,10 @@
   try { await loadScript('./js/rich-note-capture.js','Atlas unified note creation'); } catch (_) {}
   try { await loadScript('./js/project-workspace.js','Atlas Project Workspace'); } catch (_) {}
   try { await loadScript('./js/editor-ux.js','Atlas editor UX'); } catch (_) {}
-  try { await loadScript('./js/atlas-document.js','Atlas Document v1'); } catch (_) {}
-  try { await loadScript('./js/atlas-document-project-ui.js','Atlas Project Document controls'); } catch (_) {}
+
+  // v0.14.0 Atlas Document is intentionally disabled in r2 while the
+  // note-open regression is corrected. Existing body/objective/next fallbacks
+  // remain authoritative, so no user content or canonical data is removed.
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
