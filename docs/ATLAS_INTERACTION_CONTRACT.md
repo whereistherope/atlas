@@ -121,6 +121,25 @@ When Atlas shows a functional collection or relationship panel, that panel must 
 
 Relationship creation should happen in the same contextual sheet when the relationship is part of the user's intent. Do not require creating an object first and then hunting through another management screen merely to attach it.
 
+## 17. Graph movement follows hierarchy
+
+Every rendered Atlas node is individually selectable and draggable, regardless of its visual size or depth.
+
+Dragging a structural node translates that node and every descendant beneath it in the `parentId` hierarchy. Parent and sibling branches stay where they are.
+
+Conceptually:
+
+- moving a level 2 node moves levels 3, 4 and 5 beneath it;
+- moving level 3 moves levels 4 and 5 beneath it;
+- moving level 4 moves its level 5 descendants;
+- moving a level 5 node moves only that node.
+
+Associative/cross-links never pull unrelated nodes along with a drag. Movement follows structural ancestry only.
+
+Small visual nodes must retain an adequate invisible pointer/touch target so they remain easy to select without increasing their visible size.
+
+Anchoring a manually moved node should preserve its preferred position across reloads where that node type supports persisted layout state.
+
 ## Acceptance question
 
 For every workflow, ask:
