@@ -1,0 +1,55 @@
+name: Atlas Smoke Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: JavaScript syntax
+        run: node tests/js_syntax_smoke.js
+
+      - name: Current Atlas smoke contracts
+        run: python tests/v0140_smoke_test.py
+
+      - name: Existing static compatibility tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/v*_static_test.py; do
+            echo "==> $test"
+            python "$test"
+          done
+
+      - name: Existing Node runtime tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/*_test.js; do
+            case "$test" in
+              tests/js_syntax_smoke.js) continue ;;
+            esac
+            echo "==> $test"
+            node "$test"
+          done
