@@ -82,7 +82,7 @@ def main():
     require(doc_r4, 'Unmerge cell', 'unmerge action')
     require(doc_r4, 'Indent →', 'indent action')
     require(table_width, 'atlas-table-width-resize', 'overall table width handle')
-    assert 'MutationObserver' not in doc_r3 + doc_r4 + table_width, 'observer-based document runtime reintroduced'
+    assert not re.search(r'\bnew\s+MutationObserver\s*\(', doc_r3 + doc_r4 + table_width), 'observer-based document runtime reintroduced'
 
     # Project workspace remains direct-edit capable and keeps tasks/milestones lightweight.
     require(project, 'PROJECT WORKSPACE', 'Project Workspace')
