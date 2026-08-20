@@ -2,10 +2,40 @@
 .atlas-vnote-body table,.atlas-project-rich-body table{table-layout:fixed}
 .atlas-vnote-body th,.atlas-vnote-body td,.atlas-project-rich-body th,.atlas-project-rich-body td{overflow-wrap:anywhere}
 .atlas-vnote-body [data-indent],.atlas-project-rich-body [data-indent]{transition:margin-left .12s ease}
-.atlas-vnote-body td[data-atlas-merge],.atlas-vnote-body th[data-atlas-merge],.atlas-project-rich-body td[data-atlas-merge],.atlas-project-rich-body th[data-atlas-merge]{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.atlas-vnote-body td[data-atlas-merge],.atlas-vnote-body th[data-atlas-merge],.atlas-project-rich-body td[data-atlas-merge],.atlas-project-rich-body th[data-atlas-merge]{background:color-mix(in srgb,var(--green) 7%,transparent)}
 .atlas-col-resize{position:absolute;z-index:8;top:0;right:-6px;width:13px;height:100%;cursor:col-resize;touch-action:none;user-select:none;-webkit-user-select:none}
-.atlas-col-resize:after{content:"";position:absolute;top:15%;bottom:15%;left:6px;width:1px;background:color-mix(in srgb,var(--accent) 35%,transparent);opacity:.28;transition:opacity .12s,background .12s}
-.atlas-col-resize:hover:after,.atlas-col-resize:active:after{opacity:1;background:var(--accent)}
+.atlas-col-resize:after{content:"";position:absolute;top:15%;bottom:15%;left:6px;width:1px;background:color-mix(in srgb,var(--green) 35%,transparent);opacity:.28;transition:opacity .12s,background .12s}
+.atlas-col-resize:hover:after,.atlas-col-resize:active:after{opacity:1;background:var(--green)}
 body.atlas-resizing-column{cursor:col-resize!important;user-select:none!important;-webkit-user-select:none!important}body.atlas-resizing-column *{cursor:col-resize!important}
-.atlas-project-doc-table-menu{position:relative;flex:0 0 auto}.atlas-project-doc-table-menu summary{display:flex;align-items:center;min-height:30px;padding:5px 8px;border:1px solid var(--line);border-radius:5px;color:var(--ink);font-size:9px;font-weight:700;list-style:none;cursor:pointer}.atlas-project-doc-table-menu summary::-webkit-details-marker{display:none}.atlas-project-doc-table-menu>div{position:absolute;z-index:50;top:calc(100% + 5px);right:0;display:grid;min-width:190px;padding:5px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);box-shadow:0 14px 36px rgba(0,0,0,.24)}.atlas-project-doc-table-menu button{width:100%;text-align:left;border:0!important;background:transparent!important}.atlas-project-doc-table-menu button:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)!important}
+
+/* Table menus must read as menus, not transparent overlays on note content. */
+.atlas-table-menu-panel,
+.atlas-project-doc-table-menu>div,
+.atlas-project-doc-table-panel{
+  background:var(--paper)!important;
+  color:var(--ink)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:0 16px 42px rgba(0,0,0,.38)!important;
+  opacity:1!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.atlas-table-menu-panel{z-index:100120!important;min-width:190px}
+.atlas-table-menu-panel button,
+.atlas-project-doc-table-menu button,
+.atlas-project-doc-table-panel button{
+  color:var(--ink)!important;
+  background:var(--paper)!important;
+}
+.atlas-table-menu-panel button:hover,
+.atlas-table-menu-panel button:focus,
+.atlas-project-doc-table-menu button:hover,
+.atlas-project-doc-table-menu button:focus,
+.atlas-project-doc-table-panel button:hover,
+.atlas-project-doc-table-panel button:focus{
+  background:var(--paper2)!important;
+}
+.atlas-table-menu-panel button.danger{color:var(--red)!important}
+
+.atlas-project-doc-table-menu{position:relative;flex:0 0 auto}.atlas-project-doc-table-menu summary{display:flex;align-items:center;min-height:30px;padding:5px 8px;border:1px solid var(--line);border-radius:5px;color:var(--ink);font-size:9px;font-weight:700;list-style:none;cursor:pointer}.atlas-project-doc-table-menu summary::-webkit-details-marker{display:none}.atlas-project-doc-table-menu>div{position:absolute;z-index:100120;top:calc(100% + 5px);right:0;display:grid;min-width:190px;padding:5px;border-radius:8px}.atlas-project-doc-table-menu button{width:100%;text-align:left;border:0!important}
 @media(pointer:coarse){.atlas-col-resize{right:-9px;width:19px}.atlas-col-resize:after{left:9px;opacity:.4}}
