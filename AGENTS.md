@@ -21,6 +21,18 @@ These rules apply to the entire repository.
 - Do not silently change persisted setting names, widget zones/order/coordinates, theme values, calendar links, or graph identifiers.
 - Keep `index.html` as the DOM shell. Put behavior in `js/` and styling in `styles/`.
 
+## Interaction quality is a contract
+
+Read `docs/ATLAS_INTERACTION_CONTRACT.md` before adding or changing user-facing workflows.
+
+- Prefer the shortest sensible path; ordinary actions should not require a detour through an admin/editor screen.
+- Inherit safe context Atlas already knows, but never silently choose among ambiguous consequential targets.
+- A named object that looks actionable should open or act when selected.
+- Prefer shared reusable actions over separate navigation/create logic in Search, Predict, Activity, graph, widgets, and ordinary UI.
+- Keep touch and keyboard paths as interfaces to the same capability.
+- Preserve underlying working context when temporary surfaces open and close.
+- Treat unexplained friction — “why can’t I just…?” or “why do I have to do this just to do that?” — as a design defect unless required for safety or data integrity.
+
 ## Verification before committing
 
-At minimum, syntax-check JavaScript, verify every local shell asset exists and is cached, serve the site over HTTP, and smoke-test lock setup/unlock, all profiles, widgets, Nodes/List/Predict, Calendar/Entangle, theme switching, and reload persistence. Never test destructive migration behavior against the only copy of real user data.
+At minimum, syntax-check JavaScript, verify every local shell asset exists and is cached, serve the site over HTTP, and smoke-test lock setup/unlock, all profiles, widgets, Nodes/List/Predict, Calendar/Entangle, theme switching, and reload persistence. For interaction changes, also walk the relevant **create → find → open → edit → relate → return → act → recover** journey. Never test destructive migration behavior against the only copy of real user data.
