@@ -8,6 +8,12 @@
 .atlas-col-resize:hover:after,.atlas-col-resize:active:after{opacity:1;background:var(--green)}
 body.atlas-resizing-column{cursor:col-resize!important;user-select:none!important;-webkit-user-select:none!important}body.atlas-resizing-column *{cursor:col-resize!important}
 
+/* Far-right edge resizes the whole table while interior dividers resize columns. */
+.atlas-table-width-resize{position:absolute;z-index:10;top:0;right:-10px;width:20px;height:100%;cursor:ew-resize;touch-action:none;user-select:none;-webkit-user-select:none}
+.atlas-table-width-resize:after{content:"";position:absolute;top:8%;bottom:8%;left:9px;width:2px;border-radius:2px;background:color-mix(in srgb,var(--green) 55%,transparent);opacity:.38;transition:opacity .12s,background .12s}
+.atlas-table-width-resize:hover:after,.atlas-table-width-resize:active:after{opacity:1;background:var(--green)}
+body.atlas-resizing-table-width{cursor:ew-resize!important;user-select:none!important;-webkit-user-select:none!important}body.atlas-resizing-table-width *{cursor:ew-resize!important}
+
 /* Table menus must read as menus, not transparent overlays on note content. */
 .atlas-table-menu-panel,
 .atlas-project-doc-table-menu>div,
@@ -38,4 +44,4 @@ body.atlas-resizing-column{cursor:col-resize!important;user-select:none!importan
 .atlas-table-menu-panel button.danger{color:var(--red)!important}
 
 .atlas-project-doc-table-menu{position:relative;flex:0 0 auto}.atlas-project-doc-table-menu summary{display:flex;align-items:center;min-height:30px;padding:5px 8px;border:1px solid var(--line);border-radius:5px;color:var(--ink);font-size:9px;font-weight:700;list-style:none;cursor:pointer}.atlas-project-doc-table-menu summary::-webkit-details-marker{display:none}.atlas-project-doc-table-menu>div{position:absolute;z-index:100120;top:calc(100% + 5px);right:0;display:grid;min-width:190px;padding:5px;border-radius:8px}.atlas-project-doc-table-menu button{width:100%;text-align:left;border:0!important}
-@media(pointer:coarse){.atlas-col-resize{right:-9px;width:19px}.atlas-col-resize:after{left:9px;opacity:.4}}
+@media(pointer:coarse){.atlas-col-resize{right:-9px;width:19px}.atlas-col-resize:after{left:9px;opacity:.4}.atlas-table-width-resize{right:-13px;width:26px}.atlas-table-width-resize:after{left:12px;opacity:.5}}

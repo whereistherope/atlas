@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0140r5';
+  const BUILD='0140r6';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -30,10 +30,11 @@
   try { await loadScript('./js/project-workspace.js','Atlas Project Workspace'); } catch (_) {}
   try { await loadScript('./js/editor-ux.js','Atlas editor UX'); } catch (_) {}
 
-  // Atlas Document persistence remains observer-free. r4 adds only deterministic
-  // editor activation and remembered-selection handling for Safari/iPad controls.
+  // Atlas Document persistence remains observer-free. r4 adds deterministic
+  // editor activation/remembered selection; r6 adds overall table-width dragging.
   try { await loadScript('./js/atlas-document-r3.js','Atlas Document v1 r3'); } catch (_) {}
   try { await loadScript('./js/atlas-document-r4-ui.js','Atlas Document UI r4'); } catch (_) {}
+  try { await loadScript('./js/table-width-resize.js','Atlas table width resize r6'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
