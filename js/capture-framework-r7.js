@@ -8,6 +8,7 @@
 
   const choices=[
     ['note','Note','Full visual note editor'],
+    ['meeting','Meeting','Capture meeting notes with rich text'],
     ['idea','Idea','Capture an idea with rich text'],
     ['reference','Reference','Save reference material'],
     ['project','Project','Create a structured project'],
@@ -77,7 +78,7 @@
   }
 
   function choose(type){
-    if(['note','idea','reference'].includes(type)){
+    if(['note','meeting','idea','reference'].includes(type)){
       closeLauncher();
       root.AtlasRichNoteCapture?.open?.(type,'');
       return;
