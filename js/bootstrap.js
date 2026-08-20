@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0140r3';
+  const BUILD='0140r4';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -30,9 +30,10 @@
   try { await loadScript('./js/project-workspace.js','Atlas Project Workspace'); } catch (_) {}
   try { await loadScript('./js/editor-ux.js','Atlas editor UX'); } catch (_) {}
 
-  // Atlas Document r3 is explicit-event driven only: no MutationObserver or
-  // whole-app DOM scanning. The original v0.14.0 runtimes remain unloaded.
+  // Atlas Document persistence remains observer-free. r4 adds only deterministic
+  // editor activation and remembered-selection handling for Safari/iPad controls.
   try { await loadScript('./js/atlas-document-r3.js','Atlas Document v1 r3'); } catch (_) {}
+  try { await loadScript('./js/atlas-document-r4-ui.js','Atlas Document UI r4'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
