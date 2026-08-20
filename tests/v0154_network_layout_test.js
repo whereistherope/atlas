@@ -23,7 +23,8 @@ for(const token of [
 ]) assert(layout.includes(token),`missing guided-layout contract: ${token}`);
 
 assert(layout.includes("const gd=baseGraphData(scope),positions=guidedPositions(activeProfileId(),true)"),'scope/filter rendering must use the same guided geometry');
-assert(layout.includes("const total=cs.reduce((s,c)=>s+leafCount(c.id),0)"),'branch sectors must be weighted by descendant leaves');
+assert(layout.includes("total=cs.reduce((s,c)=>s+leafCount(c.id),0)"),'branch sectors must be weighted by descendant leaves');
+assert(layout.includes("usable*(leafCount(c.id)/Math.max(1,total))"),'child branch width must scale by descendant leaf share');
 assert(layout.includes("p.x-base[n.id].x-parent.x"),'anchor must persist local hierarchical offsets rather than absolute map replacement');
 assert(layout.includes("anchorMapLayout=anchorGuidedLayout"),'Anchor must use guided offset persistence');
 assert(layout.includes("button.onclick=()=>reformGuidedLayout(scope)"),'Reform must restore the deterministic guided constellation');
