@@ -1,4 +1,4 @@
-// Atlas v0.13.2-r3: route every note-like creation path into the visual editor.
+// Atlas v0.14.0-r7: route note-like creation into the visual editor without hijacking main Capture.
 (function(root){
   'use strict';
 
@@ -36,6 +36,10 @@
     const draft = makeDraft(type, areaId);
     pendingDraft = draft;
 
+    // Tell the rich-document UI that this is a genuinely fresh note before any
+    // editor activation retries can restore a previously opened document.
+    root.dispatchEvent(new CustomEvent('atlas:new-note-draft',{detail:{id:draft.id,type:draft.type}}));
+
     // The editor expects a note id to exist while it populates. Keep the draft in
     // state only for that synchronous open, then remove it again. Save materialises
     // it immediately before the normal note save pipeline runs.
@@ -60,8 +64,8 @@
     const target = event.target;
     if(!target?.closest)return null;
 
-    // Main Capture button is the default new-note action.
-    if(target.closest('#captureBtn')) return {type:'note',areaId:'',closeEditor:false};
+    // Main #captureBtn is intentionally NOT intercepted here. v0.14.0-r7 restores
+    // it as the universal creation launcher.
 
     // Area / Inbox quick-add controls can create several record types. Only route
     // note-like types through the visual editor; specialised types stay legacy.
@@ -77,9 +81,6 @@
     return null;
   }
 
-  // Capture phase on window wins before the legacy element/document click handlers.
-  // This makes note creation deterministic instead of relying on reassignment of the
-  // old openCapture binding, which Safari could still reach through existing handlers.
   root.addEventListener('click',event=>{
     const intent = noteCreateIntent(event);
     if(intent){
@@ -102,12 +103,12 @@
   },true);
 
   if(legacyOpenCapture){
-    // Keep function replacement as a compatibility route for any code-created note.
     openCapture = openRichCapture;
     root.AtlasRichNoteCapture = Object.freeze({
-      version:'0.13.2-r3',
+      version:'0.14.0-r7',
       open:openRichCapture,
-      pending:()=>!!pendingDraft
+      pending:()=>!!pendingDraft,
+      legacy:legacyOpenCapture
     });
   }
 })(window);
