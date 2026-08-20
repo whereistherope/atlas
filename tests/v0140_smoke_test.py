@@ -108,7 +108,8 @@ def main():
     require(command, "root.AtlasMarkdown?.openNote?.(n.id)", 'note direct-open route')
     require(command, "openProject?.(p.id)", 'project direct-open route')
     require(command, "openCalendarEvent?.(e.id)", 'calendar direct-open route')
-    for kind in ['AREA', 'PROJECT', 'TASK', 'MILESTONE', 'DAILY', 'EVENT']:
+    require(command, "kind:Number(a.level)>=4?'TOPIC':'AREA'", 'Area/Topic result routing')
+    for kind in ['PROJECT', 'TASK', 'MILESTONE', 'DAILY', 'EVENT']:
         require(command, f"kind:'{kind}'", f'command palette result kind {kind}')
     for label in ['Capture', 'New Note', 'New Meeting', 'New Idea', 'New Reference', 'New Project', 'New Task', 'New Daily Entry', 'Home', 'Nodes', 'Predict', 'Inbox', 'Daily', 'Calendar', 'Edit Atlas']:
         require(command, f"['{label}'", f'command {label}')
