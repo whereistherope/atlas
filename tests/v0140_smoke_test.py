@@ -13,11 +13,9 @@ def require(text, needle, label):
 
 
 def cache_name_for_build(build):
-    match = re.fullmatch(r'(\d{2})(\d{2})r(\d+)', build)
+    match = re.fullmatch(r'(\d)(\d{2})(\d)r(\d+)', build)
     assert match, f'unrecognised Atlas build format: {build}'
-    major = int(match.group(1))
-    minor = int(match.group(2))
-    return f'0.{major}.{minor}-r{match.group(3)}'
+    return f'{int(match.group(1))}.{int(match.group(2))}.{int(match.group(3))}-r{match.group(4)}'
 
 
 def main():
