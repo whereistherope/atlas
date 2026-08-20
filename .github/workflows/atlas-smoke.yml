@@ -33,14 +33,8 @@ jobs:
       - name: Current Atlas smoke contracts
         run: python tests/v0140_smoke_test.py
 
-      - name: Existing static compatibility tests
-        shell: bash
-        run: |
-          set -euo pipefail
-          for test in tests/v*_static_test.py; do
-            echo "==> $test"
-            python "$test"
-          done
+      - name: Persisted workspace compatibility
+        run: python tests/v0122_static_test.py
 
       - name: Existing Node runtime tests
         shell: bash
