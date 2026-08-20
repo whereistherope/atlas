@@ -108,6 +108,19 @@ Perceived responsiveness matters. Avoid global DOM observers, repeated whole-pag
 
 Prefer explicit lifecycle events and bounded work.
 
+## 16. Visible capability must be actionable in place
+
+When Atlas shows a functional collection or relationship panel, that panel must expose the natural action for that object without requiring navigation away from the current workspace.
+
+- Projects panels can create a Project in the current Area/Topic.
+- Next Move panels can select a relevant Project and set its Next Move.
+- Milestone panels can select a relevant Project and add a Milestone.
+- Notes panels can create a Note in the current context.
+- Topics panels can create a child Topic in the current context and, where useful, attach existing relevant Notes during the same flow.
+- Empty states are actions, not dead ends. A large empty panel that says "nothing here" should itself offer the obvious creation path, with the header `+` as an additional affordance.
+
+Relationship creation should happen in the same contextual sheet when the relationship is part of the user's intent. Do not require creating an object first and then hunting through another management screen merely to attach it.
+
 ## Acceptance question
 
 For every workflow, ask:
