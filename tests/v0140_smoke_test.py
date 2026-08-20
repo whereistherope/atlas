@@ -85,7 +85,8 @@ def main():
     assert not re.search(r'\bnew\s+MutationObserver\s*\(', doc_r3 + doc_r4 + table_width), 'observer-based document runtime reintroduced'
 
     # Project workspace remains direct-edit capable and keeps tasks/milestones lightweight.
-    require(project, 'PROJECT WORKSPACE', 'Project Workspace')
+    require(project, 'AtlasProjectWorkspace', 'Project Workspace export')
+    require(project, 'enhancedProjectEditor', 'Project Workspace editor function')
     require(project, 'epObjectiveRich', 'rich Objective editor')
     require(project, 'epNextRich', 'rich Next Move editor')
     require(project, 'Milestones', 'milestone section')
