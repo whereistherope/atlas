@@ -31,6 +31,8 @@ def main():
     table_width = read('js/table-width-resize.js')
     project = read('js/project-workspace.js')
     command = read('js/command-palette.js')
+    interaction = read('js/interaction-alignment.js')
+    interaction_contract = read('docs/ATLAS_INTERACTION_CONTRACT.md')
 
     # Persisted compatibility contracts: these must never drift silently.
     for contract in [
@@ -114,6 +116,26 @@ def main():
     for label in ['Capture', 'New Note', 'New Meeting', 'New Idea', 'New Reference', 'New Project', 'New Task', 'New Daily Entry', 'Home', 'Nodes', 'Predict', 'Inbox', 'Daily', 'Calendar', 'Edit Atlas']:
         require(command, f"['{label}'", f'command {label}')
     require(command, "AtlasCommandPalette", 'command palette export')
+
+    # v0.15.1 interaction alignment: context inheritance + direct manipulation.
+    require(bootstrap, "./js/interaction-alignment.js", 'interaction alignment runtime load')
+    require(bootstrap, "./styles/interaction-alignment.css", 'interaction alignment style load')
+    require(interaction, 'AtlasActions', 'shared Atlas action layer')
+    for action in ['home:goHome', 'tab:goTab', 'area:openArea', 'project:openProjectAction', 'note:openNoteAction', 'event:openEventAction', 'capture:alignedCapture']:
+        require(interaction, action, f'Atlas action {action}')
+    require(interaction, "state?.settings?.selectedArea", 'selected Area context inheritance')
+    require(interaction, "areaId||currentContextAreaId()", 'Capture context fallback')
+    require(interaction, "data-atlas-aligned-capture", 'aligned universal Capture choices')
+    require(interaction, "openTaskCreate", 'explicit task creation route')
+    require(interaction, "id=\"atlasDirectProject\"", 'explicit task Project selector')
+    require(interaction, "active.length===1?active[0].id:''", 'safe single-project suggestion only')
+    require(interaction, "openStructureCreate", 'direct Area/Topic creation route')
+    require(interaction, "Create a top-level Area directly", 'direct Area Capture choice')
+    require(interaction, "Create a Topic directly", 'direct Topic Capture choice')
+    require(interaction, "data-atlas-open-project", 'actionable project widget rows')
+    require(interaction, "data-atlas-open-note", 'actionable note widget rows')
+    require(interaction_contract, 'Atlas should feel inevitable', 'interaction contract principle')
+    require(interaction_contract, 'create → find → open → edit → relate → return → act → recover', 'core journey audit')
 
     print('Atlas current smoke contracts: PASS')
 
