@@ -1,0 +1,2 @@
+/* v0.15.4: interaction geometry must not alter the selected theme's node appearance. */
+.node .atlas-node-hit-target{fill:transparent!important;stroke:transparent!important;stroke-width:0!important;opacity:0!important;pointer-events:all!important}
