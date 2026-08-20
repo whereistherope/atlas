@@ -140,6 +140,24 @@ Small visual nodes must retain an adequate invisible pointer/touch target so the
 
 Anchoring a manually moved node should preserve its preferred position across reloads where that node type supports persisted layout state.
 
+## 18. The network is a guided map, not a force cloud
+
+Atlas should present the network as a stable visual navigation system rather than a random or force-driven cluster.
+
+- Major Areas own recognisable sectors of the map.
+- Descendant branches remain visually subordinate to and clustered around their structural parent.
+- Deeper levels progress outward through the branch so hierarchy can be read spatially.
+- Branch space is apportioned according to the amount of structure beneath it, reducing collisions without arbitrary drift.
+- Cross-links are drawn across the hierarchy but never influence canonical node placement.
+- The same hierarchy should produce the same base constellation across reloads and devices.
+- Depth, profile and Space filters decide what is visible; they must not reshuffle the underlying constellation.
+- Manual movement is stored as a local offset from the guided hierarchy rather than replacing the hierarchy with unrelated absolute coordinates.
+- Moving a parent therefore carries its descendant offsets naturally, while a manually adjusted child can retain its relative position within the branch.
+- Reform returns the current profile to the deterministic guided constellation.
+- Anchor preserves intentional manual offsets without destroying the guided layout model.
+
+The visual test is comprehension, not density: a user should be able to locate a major domain such as Ground Operations, visually read what branches from it, and follow the hierarchy without first decoding a chaotic cluster.
+
 ## Acceptance question
 
 For every workflow, ask:
