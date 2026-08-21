@@ -1,4 +1,4 @@
-// Atlas v0.15.8-r1: sun-centred deterministic network grammar.
+// Atlas v0.15.9-r1: sun-centred deterministic network grammar with tight recursive fans.
 (function(root){
   'use strict';
 
@@ -40,22 +40,22 @@
     return String(a.name||a.id).localeCompare(String(b.name||b.id));
   }
 
-  // Core domains are evenly anchored around one imaginary central sun.
+  // Core domains remain evenly anchored around one imaginary central sun.
   function assignRootAngles(roots){
     const ordered=roots.slice().sort(rootSort),out={};
     ordered.forEach((r,i)=>out[r.id]=ROOT_START+i*(Math.PI*2/Math.max(1,ordered.length)));
     return out;
   }
 
-  // Direct siblings always share equal angular intervals. The fan opens away
-  // from the parent, leaving the inward corridor quiet for hierarchy legibility.
+  // Restore the tighter v0.15.7 fan behaviour while keeping the v0.15.8 rule
+  // that every sibling in one fan shares exactly the same resolved radius.
   function childFanAngles(count,outward){
     if(count<=0)return[];
     if(count===1)return[outward];
-    const preferredStep=.72;
-    const span=Math.min(Math.PI*1.46,Math.max(1.24,preferredStep*(count-1)));
-    const step=span/(count-1);
-    return Array.from({length:count},(_,i)=>outward-span/2+i*step);
+    const step=clamp(.66-(Math.max(0,count-4)*.045),.42,.66);
+    const span=Math.min(Math.PI*1.48,step*(count-1));
+    const actualStep=span/(count-1);
+    return Array.from({length:count},(_,i)=>outward-span/2+i*actualStep);
   }
 
   function childRadius(count,angles){
@@ -154,25 +154,18 @@
     return{x:a.x+dx/d*r,y:a.y+dy/d*r};
   }
 
-  // Associative links between branches are routed through the intentional central
-  // void. Parallel links receive only a small lane offset inside that void.
-  function centreRoute(a,b,lane=0){
+  // Cross-network relationships are direct visual relationships. They do not
+  // detour around nodes or converge on an artificial hub.
+  function directCrossRoute(a,b){
     const start=clippedEndpoint(a,b),end=clippedEndpoint(b,a);
-    const laneAngle=(hash(`${a.id}|${b.id}`)%628)/100;
-    const laneDistance=lane*7;
-    const hub={x:CX+Math.cos(laneAngle)*laneDistance,y:CY+Math.sin(laneAngle)*laneDistance};
-    const c1={x:start.x+(hub.x-start.x)*.58,y:start.y+(hub.y-start.y)*.58};
-    const c2={x:end.x+(hub.x-end.x)*.58,y:end.y+(hub.y-end.y)*.58};
-    return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} Q ${c1.x.toFixed(2)} ${c1.y.toFixed(2)} ${hub.x.toFixed(2)} ${hub.y.toFixed(2)} Q ${c2.x.toFixed(2)} ${c2.y.toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
+    return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
   }
 
   function routeCrossEdges(scope){
     const svg=document.getElementById('network');if(!svg)return;const gd=graphData(scope),byId=Object.fromEntries(gd.nodes.map(n=>[n.id,n]));
-    const paths=[...svg.querySelectorAll('.edge.cross')].sort((p,q)=>`${p.dataset.source}|${p.dataset.target}`.localeCompare(`${q.dataset.source}|${q.dataset.target}`));
-    paths.forEach((path,index)=>{
+    [...svg.querySelectorAll('.edge.cross')].forEach(path=>{
       const a=byId[path.dataset.source],b=byId[path.dataset.target];if(!a||!b)return;
-      const lane=(index%5)-2;
-      path.setAttribute('d',centreRoute(a,b,lane));path.classList.add('centre-routed-cross');path.dataset.routeLane=String(lane);
+      path.setAttribute('d',directCrossRoute(a,b));path.classList.add('direct-cross-route');path.classList.remove('centre-routed-cross','tracked-cross-route');delete path.dataset.routeLane;
     });
   }
 
@@ -215,5 +208,5 @@
     return result;
   };
 
-  root.AtlasNetworkLayout=Object.freeze({version:'0.15.8-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,centreRoute,routeCrossEdges,placeLabelsBelow,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
+  root.AtlasNetworkLayout=Object.freeze({version:'0.15.9-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,directCrossRoute,routeCrossEdges,placeLabelsBelow,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
 })(window);
