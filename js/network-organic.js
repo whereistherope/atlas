@@ -1,4 +1,4 @@
-// Atlas v0.15.13-r1: organic deterministic settle layered over the hierarchy seed.
+// Atlas v0.15.14-r1: responsive organic settle with soft anchored starting positions.
 (function(root){
   'use strict';
 
@@ -26,7 +26,8 @@
       distanceScale:.70+distance*.006,
       collisionGap:10+collision*.30,
       centerShift:.012+center*.00028,
-      rootGravity:.00015+center*.0000045
+      rootGravity:.00015+center*.0000045,
+      rootRepel:1.9
     };
   }
 
@@ -44,16 +45,14 @@
     const base=child.level<=3?98:child.level===4?78:62;
     return base*p.distanceScale;
   }
-  function pinnedIds(nodes){
+
+  // Only the branch currently under the pointer is truly pinned. Persisted
+  // mapOffset values already influence the incoming coordinates, so they act as
+  // preferred starting positions without freezing nodes out of the force system.
+  function pinnedIds(){
     const out=new Set();
     const active=typeof dragging!=='undefined'&&dragging?.kind==='node-group'?dragging:null;
     Object.keys(active?.origins||{}).forEach(id=>out.add(id));
-    nodes.forEach(n=>{
-      const record=areaById?.(n.id)||(state.notes||[]).find(x=>x.id===n.id);
-      if(!record)return;
-      const moved=Math.abs(num(record.mapOffsetX))+Math.abs(num(record.mapOffsetY));
-      if(moved>.5)out.add(n.id);
-    });
     return out;
   }
 
@@ -62,7 +61,7 @@
     const ids=nodes.map(n=>n.id),parents=parentMap(nodes),branch=Object.fromEntries(ids.map(id=>[id,topRoot(id,parents)]));
     const pos=Object.fromEntries(nodes.map(n=>[n.id,{x:num(n.x)+unit(n.id+':ox')*4.5,y:num(n.y)+unit(n.id+':oy')*4.5,mapZ:num(n.mapZ??n.z)}]));
     const vel=Object.fromEntries(ids.map(id=>[id,{x:0,y:0}]));
-    const pinned=pinnedIds(nodes);
+    const pinned=pinnedIds();
     pinned.forEach(id=>{const n=byId[id];if(n)pos[id]={x:num(n.x),y:num(n.y),mapZ:num(n.mapZ??n.z)}});
     const tree=links.filter(l=>l.type==='tree'&&byId[l.source]&&byId[l.target]);
 
@@ -74,15 +73,15 @@
         const aid=ids[i],bid=ids[j],a=byId[aid],b=byId[bid];
         let dx=pos[bid].x-pos[aid].x,dy=pos[bid].y-pos[aid].y,d2=dx*dx+dy*dy;
         if(d2<1){const ang=(hash(`${aid}|${bid}|organic`)%6283)/1000;dx=Math.cos(ang);dy=Math.sin(ang);d2=1}
-        const d=Math.sqrt(d2),nx=dx/d,ny=dy/d,cross=branch[aid]!==branch[bid];
-        const charge=p.charge*nodeMass(a)*nodeMass(b)*(cross?1.18:1);
-        const repel=Math.min(2.6,charge/Math.max(520,d2))*cool;
+        const d=Math.sqrt(d2),nx=dx/d,ny=dy/d,cross=branch[aid]!==branch[bid],rootPair=a.level<=2&&b.level<=2;
+        const charge=p.charge*nodeMass(a)*nodeMass(b)*(cross?1.18:1)*(rootPair?p.rootRepel:1);
+        const repel=Math.min(rootPair?4.2:2.6,charge/Math.max(520,d2))*cool;
         if(!pinned.has(aid)){force[aid].x-=nx*repel;force[aid].y-=ny*repel}
         if(!pinned.has(bid)){force[bid].x+=nx*repel;force[bid].y+=ny*repel}
 
-        const min=collisionRadius(a,p)+collisionRadius(b,p)+(cross?p.collisionGap*.45:0);
+        const min=collisionRadius(a,p)+collisionRadius(b,p)+(cross?p.collisionGap*.45:0)+(rootPair?p.collisionGap*.9:0);
         if(d<min){
-          const push=Math.min(5,(min-d)*.34)*cool;
+          const push=Math.min(rootPair?7:5,(min-d)*(rootPair?.42:.34))*cool;
           if(!pinned.has(aid)){force[aid].x-=nx*push;force[aid].y-=ny*push}
           if(!pinned.has(bid)){force[bid].x+=nx*push;force[bid].y+=ny*push}
         }
@@ -97,8 +96,9 @@
         if(!pinned.has(b)){force[b].x-=nx*spring*childShare;force[b].y-=ny*spring*childShare}
       });
 
-      // Obsidian-like centring: translate the graph's centroid toward the canvas
-      // instead of pulling every node individually into a circular clump.
+      // Translate the graph centroid toward the canvas instead of pulling every
+      // individual node into the centre. This preserves an overall body while
+      // allowing empty space and irregular cluster shapes.
       const free=ids.filter(id=>!pinned.has(id));
       if(free.length){
         const centroidX=ids.reduce((s,id)=>s+pos[id].x,0)/ids.length;
@@ -107,8 +107,8 @@
         free.forEach(id=>{force[id].x+=shiftX;force[id].y+=shiftY});
       }
 
-      // Only root nodes receive a tiny gravity term. This gives the overall map a
-      // centre without preserving the old equal-angle root orbit as final geometry.
+      // Root/core nodes receive only a tiny common-centre gravity. Their stronger
+      // mutual repulsion keeps weakly connected roots from stacking at the centre.
       ids.forEach(id=>{
         if(pinned.has(id)||byId[id].level>2)return;
         force[id].x+=(CX-pos[id].x)*p.rootGravity*cool;
@@ -146,5 +146,5 @@
     return gd;
   };
 
-  root.AtlasOrganicNetwork=Object.freeze({version:'0.15.13-r1',settle,physics});
+  root.AtlasOrganicNetwork=Object.freeze({version:'0.15.14-r1',settle,physics,pinnedIds});
 })(window);
