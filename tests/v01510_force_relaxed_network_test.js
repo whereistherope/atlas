@@ -28,9 +28,9 @@ assert(layout.includes("const want=a.radius+b.radius+FORCE_BRANCH_GAP"),'branch 
 assert(layout.includes("delta[id].x+=(CX-pos[id].x)*FORCE_CENTER_STRENGTH"),'graph must retain a weak common centre force');
 assert(!layout.includes('profileLinks()'),'associative cross-links must not participate in force placement');
 assert(layout.includes('const nodes=sourceNodes(profileId),seed=computeSeedLayout(profileId);\n    return relaxLayout(nodes,seed);'),'radial geometry must be a seed followed by relaxation');
-assert(bootstrap.includes("const BUILD='01510r1'"),'bootstrap build not bumped');
+assert(bootstrap.includes("const BUILD='0160r1'"),'bootstrap build not bumped');
 assert(bootstrap.includes('Atlas constrained-force network grammar v0.15.10'),'bootstrap label missing');
-assert(sw.includes("atlas-shell-0.15.10-r1"),'service worker cache not bumped');
+assert(sw.includes("atlas-shell-0.16.0-r1"),'service worker cache not bumped');
 assert(docs.includes('deterministic constrained-force graph'),'current-state handoff must record the new layout model');
 assert(docs.includes('Associative/dotted cross-links are visual relationships only and exert zero layout force'),'handoff must protect zero-force cross-links');
 
