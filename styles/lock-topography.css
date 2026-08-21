@@ -1,10 +1,10 @@
-/* Atlas v0.16.7-r2 · layered topographic lock surface + restrained tactical map background. */
+/* Atlas v0.16.7-r3 · full-field layered topographic lock surface + restrained tactical map background. */
 .lock-screen{
   isolation:isolate;
   overflow:hidden;
   background:
-    radial-gradient(ellipse at 50% 58%,rgba(87,105,102,.105),transparent 34%),
-    radial-gradient(ellipse at 50% 105%,rgba(71,86,82,.085),transparent 38%),
+    radial-gradient(ellipse at 48% 52%,rgba(79,96,89,.13),transparent 38%),
+    radial-gradient(ellipse at 52% 88%,rgba(65,79,73,.10),transparent 42%),
     linear-gradient(180deg,#050706 0%,#090c0a 54%,#030504 100%);
   color:#d4d8d3;
 }
@@ -15,9 +15,9 @@
   z-index:0;
   pointer-events:none;
   background:
-    radial-gradient(ellipse at 50% 54%,transparent 0 37%,rgba(0,0,0,.08) 60%,rgba(0,0,0,.46) 100%),
-    linear-gradient(180deg,rgba(255,255,255,.012),transparent 22%,transparent 78%,rgba(0,0,0,.18));
-  box-shadow:inset 0 0 180px rgba(0,0,0,.38);
+    radial-gradient(ellipse at 50% 50%,transparent 0 45%,rgba(0,0,0,.06) 68%,rgba(0,0,0,.42) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.01),transparent 18%,transparent 80%,rgba(0,0,0,.16));
+  box-shadow:inset 0 0 190px rgba(0,0,0,.36);
 }
 .lock-screen::after{
   content:"";
@@ -25,60 +25,48 @@
   inset:0;
   z-index:6;
   pointer-events:none;
-  opacity:.24;
-  background-image:radial-gradient(rgba(222,226,218,.12) .48px,transparent .56px);
-  background-size:5px 5px;
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 24%,#000 78%,transparent 100%);
-  mask-image:linear-gradient(180deg,transparent 0,#000 24%,#000 78%,transparent 100%);
+  opacity:.14;
+  background-image:radial-gradient(rgba(222,226,218,.10) .45px,transparent .55px);
+  background-size:6px 6px;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 20%,#000 82%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 20%,#000 82%,transparent 100%);
 }
 .atlas-lock-surface{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
 .atlas-lock-relief{
   position:absolute;
-  left:50%;
-  top:58%;
-  width:min(1180px,112vw);
-  height:min(760px,70vh);
-  transform:translate(-50%,-50%);
-  opacity:.98;
+  inset:-10vh -8vw -12vh;
+  opacity:1;
+  overflow:hidden;
 }
 .atlas-lock-layer{
   position:absolute;
   left:50%;top:50%;
   width:max-content;
   margin:0;
-  color:rgba(167,181,171,.13);
-  font:500 clamp(7px,.61vw,10px)/.88 "SFMono-Regular",Consolas,"Liberation Mono",monospace;
-  letter-spacing:.08em;
+  color:rgba(174,190,179,.34);
+  font:500 clamp(7px,.54vw,10px)/.82 "SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  letter-spacing:.035em;
   white-space:pre;
   user-select:none;
   transform-origin:center;
-  text-shadow:0 0 14px rgba(138,158,147,.055);
+  text-shadow:0 0 10px rgba(143,164,151,.08);
+  mix-blend-mode:screen;
 }
-.atlas-lock-layer.layer-1{opacity:.34;transform:translate(-50%,-61%) scale(1.22)}
-.atlas-lock-layer.layer-2{opacity:.42;transform:translate(-50%,-55%) scale(1.14)}
-.atlas-lock-layer.layer-3{opacity:.50;transform:translate(-50%,-48%) scale(1.06)}
-.atlas-lock-layer.layer-4{opacity:.58;transform:translate(-50%,-40%) scale(.98)}
-.atlas-lock-layer.layer-5{opacity:.46;transform:translate(-50%,-31%) scale(.90)}
-.atlas-lock-layer.layer-6{opacity:.30;transform:translate(-50%,-21%) scale(.82)}
+.atlas-lock-layer.layer-1{opacity:.24;transform:translate(-54%,-76%) scale(1.54) rotate(-7deg)}
+.atlas-lock-layer.layer-2{opacity:.30;transform:translate(-48%,-66%) scale(1.42) rotate(-4deg)}
+.atlas-lock-layer.layer-3{opacity:.38;transform:translate(-53%,-55%) scale(1.30) rotate(-1deg)}
+.atlas-lock-layer.layer-4{opacity:.48;transform:translate(-47%,-44%) scale(1.18) rotate(2deg)}
+.atlas-lock-layer.layer-5{opacity:.42;transform:translate(-52%,-31%) scale(1.08) rotate(4deg)}
+.atlas-lock-layer.layer-6{opacity:.34;transform:translate(-46%,-18%) scale(.98) rotate(6deg)}
+.atlas-lock-layer.layer-7{opacity:.26;transform:translate(-50%,-5%) scale(.90) rotate(8deg)}
 .atlas-lock-relief::after{
   content:"";
   position:absolute;
-  left:50%;top:50%;
-  width:72%;height:52%;
-  transform:translate(-50%,-30%);
-  border-radius:50%;
-  background:radial-gradient(ellipse,rgba(133,151,140,.055),transparent 67%);
-  filter:blur(28px);
-}
-.atlas-lock-contour-caption{
-  position:absolute;
-  left:50%;top:79%;
-  transform:translateX(-50%);
-  color:rgba(163,176,167,.22);
-  font:500 8px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  white-space:nowrap;
+  inset:8%;
+  background:
+    radial-gradient(ellipse at 38% 42%,rgba(132,151,140,.07),transparent 28%),
+    radial-gradient(ellipse at 64% 61%,rgba(118,137,127,.06),transparent 32%);
+  filter:blur(26px);
 }
 .atlas-lock-status{
   position:absolute;
@@ -101,14 +89,6 @@
   margin-bottom:3px;
 }
 .atlas-lock-status .lock-utc{text-align:right}
-.atlas-lock-profile{
-  margin:-12px 0 28px;
-  color:rgba(189,197,190,.42);
-  font:500 9px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;
-  letter-spacing:.19em;
-  text-transform:uppercase;
-  text-align:center;
-}
 .lock-screen .lock-card{
   position:relative;
   z-index:4;
@@ -124,9 +104,10 @@
 }
 .lock-screen .lock-card::before{display:none!important;content:none!important}
 .lock-screen .lock-brand{
-  margin:0 0 22px;
+  margin:0 0 32px;
   color:#d9ddd8;
   text-align:center;
+  text-shadow:0 2px 22px rgba(0,0,0,.46);
 }
 .lock-screen .atlas-logo-lock{
   display:block;
@@ -134,48 +115,35 @@
   max-width:none;
   height:auto;
   margin:0 auto;
-  opacity:.88;
-  filter:grayscale(1) saturate(0) brightness(1.12) contrast(.92);
+  opacity:.92;
+  filter:grayscale(1) saturate(0) brightness(1.16) contrast(.95);
 }
 .lock-screen #lockContent{width:min(390px,86vw);margin:0 auto;text-align:left}
 .lock-screen .lock-title{
-  color:rgba(218,222,216,.83);
-  font:600 18px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;
-  letter-spacing:-.015em;
-  text-align:center;
-  margin-bottom:8px;
-}
-.lock-screen .lock-copy{
-  color:rgba(171,181,173,.52);
-  text-align:center;
-  font-size:11px;
-}
-.lock-screen .lock-field{margin:0 auto 13px;width:100%}
-.lock-screen .lock-field label{
-  color:rgba(171,181,173,.42);
-  font:500 8px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;
+  color:rgba(218,222,216,.82);
+  font:500 13px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;
   letter-spacing:.12em;
   text-transform:uppercase;
-  margin-bottom:7px;
+  text-align:center;
+  margin-bottom:14px;
 }
+.lock-screen .lock-copy{color:rgba(171,181,173,.50);text-align:center;font-size:11px}
+.lock-screen .lock-field{margin:0 auto 13px;width:100%}
+.lock-screen .lock-field label{color:rgba(171,181,173,.42);font:500 8px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
 .lock-screen .lock-field:has(.pin-input) label{display:none}
 .lock-screen .lock-field input,.lock-screen .lock-field select{
   width:100%;
   border:0;
-  border-bottom:1px solid rgba(182,194,184,.22);
+  border-bottom:1px solid rgba(189,202,191,.28);
   border-radius:0;
-  background:transparent;
+  background:rgba(5,8,6,.10);
   color:#d7ddd7;
   padding:11px 4px;
   outline:none;
   box-shadow:none;
   transition:border-color .16s ease,background .16s ease;
 }
-.lock-screen .lock-field input:focus,.lock-screen .lock-field select:focus{
-  border-color:rgba(205,215,207,.58);
-  background:linear-gradient(180deg,transparent,rgba(144,162,150,.025));
-  box-shadow:none;
-}
+.lock-screen .lock-field input:focus,.lock-screen .lock-field select:focus{border-color:rgba(215,224,216,.64);background:rgba(5,8,6,.18);box-shadow:none}
 .lock-screen .pin-input{
   width:min(246px,70vw)!important;
   display:block;
@@ -186,91 +154,40 @@
   padding:13px 0 12px .82em!important;
   caret-color:rgba(220,225,219,.82);
 }
-.lock-screen .lock-actions{
-  justify-content:center;
-  gap:24px;
-  margin-top:16px;
-}
+.lock-screen .lock-actions{justify-content:center;gap:24px;margin-top:16px}
 .lock-screen .lock-primary,.lock-screen .lock-secondary{
-  min-height:0;
-  border:0;
-  border-radius:0;
-  background:transparent;
-  padding:7px 1px 6px;
-  color:rgba(193,201,194,.52);
-  font:600 9px/1 Inter,ui-sans-serif,system-ui,sans-serif;
-  text-transform:uppercase;
-  letter-spacing:.16em;
-  transition:color .14s ease,border-color .14s ease;
+  min-height:0;border:0;border-radius:0;background:transparent;padding:7px 1px 6px;color:rgba(193,201,194,.52);font:600 9px/1 Inter,ui-sans-serif,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em;transition:color .14s ease,border-color .14s ease
 }
-.lock-screen .lock-primary{
-  color:rgba(223,228,222,.78);
-  border-bottom:1px solid rgba(204,214,205,.28);
-}
+.lock-screen .lock-primary{color:rgba(223,228,222,.78);border-bottom:1px solid rgba(204,214,205,.28)}
 .lock-screen .lock-primary:hover,.lock-screen .lock-secondary:hover{color:#eef1ed;border-color:rgba(224,230,224,.72);background:transparent}
 .lock-screen .lock-primary:disabled{opacity:.35}
-.lock-screen .lock-message{
-  min-height:16px;
-  text-align:center;
-  color:rgba(190,171,126,.72);
-  font:500 9px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;
-}
-.lock-screen .recovery-key{
-  border:1px solid rgba(174,189,178,.22);
-  background:rgba(8,11,9,.34);
-  color:#cbd3cc;
-}
+.lock-screen .lock-message{min-height:16px;text-align:center;color:rgba(190,171,126,.72);font:500 9px/1.45 Inter,ui-sans-serif,system-ui,sans-serif}
+.lock-screen .recovery-key{border:1px solid rgba(174,189,178,.22);background:rgba(8,11,9,.34);color:#cbd3cc}
 .lock-screen .lock-check{justify-content:center;color:rgba(174,184,176,.48)}
 
 /* Flat tactical language behind the live in-app network. Scenery only. */
 .network-stage .map-wrap{isolation:isolate}
 .network-stage .map-wrap::before{
-  content:"";
-  display:block!important;
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  opacity:.12;
-  background-image:
-    linear-gradient(rgba(92,119,132,.09) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(92,119,132,.09) 1px,transparent 1px),
-    linear-gradient(rgba(92,119,132,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(92,119,132,.03) 1px,transparent 1px);
+  content:"";display:block!important;position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.12;
+  background-image:linear-gradient(rgba(92,119,132,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(92,119,132,.09) 1px,transparent 1px),linear-gradient(rgba(92,119,132,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(92,119,132,.03) 1px,transparent 1px);
   background-size:96px 96px,96px 96px,24px 24px,24px 24px;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);
-  mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);
 }
 .network-stage .map-wrap::after{
-  content:"";
-  position:absolute;
-  inset:12px;
-  z-index:0;
-  pointer-events:none;
-  opacity:.14;
-  background:
-    linear-gradient(90deg,rgba(106,133,145,.16),rgba(106,133,145,.16)) left top/42px 1px no-repeat,
-    linear-gradient(rgba(106,133,145,.16),rgba(106,133,145,.16)) left top/1px 42px no-repeat,
-    linear-gradient(90deg,rgba(106,133,145,.16),rgba(106,133,145,.16)) right bottom/42px 1px no-repeat,
-    linear-gradient(rgba(106,133,145,.16),rgba(106,133,145,.16)) right bottom/1px 42px no-repeat;
+  content:"";position:absolute;inset:12px;z-index:0;pointer-events:none;opacity:.14;
+  background:linear-gradient(90deg,rgba(106,133,145,.16),rgba(106,133,145,.16)) left top/42px 1px no-repeat,linear-gradient(rgba(106,133,145,.16),rgba(106,133,145,.16)) left top/1px 42px no-repeat,linear-gradient(90deg,rgba(106,133,145,.16),rgba(106,133,145,.16)) right bottom/42px 1px no-repeat,linear-gradient(rgba(106,133,145,.16),rgba(106,133,145,.16)) right bottom/1px 42px no-repeat;
 }
 .network-stage #network,.network-stage .map-controls{position:relative;z-index:1}
 body:not([data-theme="night"]) .network-stage .map-wrap::before{opacity:.07}
 body:not([data-theme="night"]) .network-stage .map-wrap::after{opacity:.08}
 
 @media(max-width:700px){
-  .atlas-lock-status{top:16px;right:16px;gap:13px}
-  .atlas-lock-status strong{font-size:12px}
-  .atlas-lock-relief{top:61%;width:150vw;height:62vh}
-  .atlas-lock-layer{font-size:5.6px;letter-spacing:.045em}
-  .atlas-lock-contour-caption{top:83%;font-size:6px;letter-spacing:.22em}
+  .atlas-lock-status{top:16px;right:16px;gap:13px}.atlas-lock-status strong{font-size:12px}
+  .atlas-lock-relief{inset:-6vh -45vw -8vh}
+  .atlas-lock-layer{font-size:5.5px;letter-spacing:.02em}
   .lock-screen .atlas-logo-lock{width:min(285px,70vw)}
   .lock-screen .lock-card{width:min(390px,92vw)}
   .lock-screen #lockContent{width:min(330px,82vw)}
 }
-@media(max-height:700px){
-  .atlas-lock-relief{top:66%;opacity:.78}
-  .lock-screen .atlas-logo-lock{width:min(270px,64vw)}
-  .atlas-lock-profile{margin:-10px 0 19px}
-}
+@media(max-height:700px){.atlas-lock-layer{font-size:6px}.lock-screen .atlas-logo-lock{width:min(270px,64vw)}}
 @media(prefers-reduced-motion:reduce){.lock-screen *{transition:none!important}}
