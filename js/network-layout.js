@@ -1,4 +1,4 @@
-// Atlas v0.15.7-r1: deterministic recursive radial fans.
+// Atlas v0.15.8-r1: sun-centred deterministic network grammar.
 (function(root){
   'use strict';
 
@@ -6,10 +6,13 @@
   const baseDrawNetwork=typeof drawNetwork==='function'?drawNetwork:null;
   if(!baseGraphData||!baseDrawNetwork)return;
 
-  const CX=600,CY=340,ROOT_RX=265,ROOT_RY=178;
-  const ROOT_SLOTS=[-2.40,-1.61,-.79,.02,.80,1.60,2.39,3.12];
-  const PREFERRED_ROOT_SLOT={WRK:0,WORK:0,LIFE:2,CRTV:4,CREATIVE:4,DAIL:6,DAILY:6};
-  const CHILD_RADIUS_BY_PARENT={2:112,3:86,4:66,5:54,6:48};
+  const CX=600,CY=340;
+  const ROOT_RADIUS=184;
+  const ROOT_START=-Math.PI*.76;
+  const BASE_CHILD_RADIUS=84;
+  const MIN_SIBLING_CLEARANCE=58;
+  const LABEL_GAP=10;
+  const LABEL_LINE=10;
 
   const num=v=>Number.isFinite(Number(v))?Number(v):0;
   const round=v=>Math.round(Number(v||0)*10)/10;
@@ -30,70 +33,70 @@
   }
 
   function rootSort(a,b){
+    const order={WRK:0,WORK:0,LIFE:1,CRTV:2,CREATIVE:2,DAIL:3,DAILY:3,HOME:4};
     const ac=String(a.code||a.name||'').toUpperCase(),bc=String(b.code||b.name||'').toUpperCase();
-    const ai=PREFERRED_ROOT_SLOT[ac],bi=PREFERRED_ROOT_SLOT[bc];
+    const ai=order[ac],bi=order[bc];
     if(ai!==undefined||bi!==undefined){if(ai===undefined)return 1;if(bi===undefined)return-1;if(ai!==bi)return ai-bi}
     return String(a.name||a.id).localeCompare(String(b.name||b.id));
   }
 
+  // Core domains are evenly anchored around one imaginary central sun.
   function assignRootAngles(roots){
-    const out={},used=new Set(),deferred=[];
-    roots.slice().sort(rootSort).forEach(r=>{
-      const key=String(r.code||r.name||'').toUpperCase(),slot=PREFERRED_ROOT_SLOT[key];
-      if(slot!==undefined&&!used.has(slot)&&roots.length<=ROOT_SLOTS.length){out[r.id]=ROOT_SLOTS[slot];used.add(slot)}else deferred.push(r);
-    });
-    const free=ROOT_SLOTS.map((_,i)=>i).filter(i=>!used.has(i));
-    deferred.forEach((r,i)=>{
-      if(free[i]!==undefined&&roots.length<=ROOT_SLOTS.length){out[r.id]=ROOT_SLOTS[free[i]];return}
-      const ordered=roots.slice().sort(rootSort),idx=ordered.findIndex(x=>x.id===r.id);out[r.id]=-Math.PI/2+idx*Math.PI*2/Math.max(1,roots.length);
-    });
+    const ordered=roots.slice().sort(rootSort),out={};
+    ordered.forEach((r,i)=>out[r.id]=ROOT_START+i*(Math.PI*2/Math.max(1,ordered.length)));
     return out;
   }
 
-  function childFanAngles(parent,count,outward){
+  // Direct siblings always share equal angular intervals. The fan opens away
+  // from the parent, leaving the inward corridor quiet for hierarchy legibility.
+  function childFanAngles(count,outward){
     if(count<=0)return[];
     if(count===1)return[outward];
-    // Leave a quiet inward wedge toward the parent. All sibling angles are equal.
-    const step=clamp(.66-(Math.max(0,count-4)*.045),.42,.66);
-    const span=Math.min(Math.PI*1.48,step*(count-1));
-    const actualStep=span/(count-1);
-    return Array.from({length:count},(_,i)=>outward-span/2+i*actualStep);
+    const preferredStep=.72;
+    const span=Math.min(Math.PI*1.46,Math.max(1.24,preferredStep*(count-1)));
+    const step=span/(count-1);
+    return Array.from({length:count},(_,i)=>outward-span/2+i*step);
+  }
+
+  function childRadius(count,angles){
+    if(count<=1)return BASE_CHILD_RADIUS;
+    const step=Math.abs((angles[1]??0)-(angles[0]??0));
+    const minForClearance=step>0?MIN_SIBLING_CLEARANCE/(2*Math.sin(step/2)):BASE_CHILD_RADIUS;
+    return Math.ceil(Math.max(BASE_CHILD_RADIUS,minForClearance)/4)*4;
   }
 
   function computeBaseLayout(profileId=activeProfileId()){
     const nodes=sourceNodes(profileId),byId=Object.fromEntries(nodes.map(n=>[n.id,n])),kids={};
     nodes.forEach(n=>(kids[n.parentId||'atlas']??=[]).push(n));
     Object.values(kids).forEach(list=>list.sort((a,b)=>String(a.name||a.id).localeCompare(String(b.name||b.id))));
-    const roots=nodes.filter(n=>n.parentId==='atlas'||!byId[n.parentId]).sort(rootSort),rootAngles=assignRootAngles(roots);
-    const positions={};
+    const roots=nodes.filter(n=>n.parentId==='atlas'||!byId[n.parentId]).sort(rootSort),rootAngles=assignRootAngles(roots),positions={};
 
-    roots.forEach((r,i)=>{
-      const a=rootAngles[r.id]??(-Math.PI/2+i*Math.PI*2/Math.max(1,roots.length));
-      positions[r.id]={x:round(CX+Math.cos(a)*ROOT_RX),y:round(CY+Math.sin(a)*ROOT_RY),mapZ:round(signedUnit(r.id+'z')*12),angle:a,level:Number(r.level)||2,parentId:r.parentId||'atlas'};
+    roots.forEach(r=>{
+      const a=rootAngles[r.id]??ROOT_START;
+      positions[r.id]={x:round(CX+Math.cos(a)*ROOT_RADIUS),y:round(CY+Math.sin(a)*ROOT_RADIUS),mapZ:round(signedUnit(r.id+'z')*10),angle:a,level:Number(r.level)||2,parentId:r.parentId||'atlas'};
     });
 
     function placeFan(parent,ancestorPos){
-      const cs=(kids[parent.id]||[]).slice();if(!cs.length)return;
+      const cs=kids[parent.id]||[];if(!cs.length)return;
       const pp=positions[parent.id];if(!pp)return;
       const inward=ancestorPos?Math.atan2(ancestorPos.y-pp.y,ancestorPos.x-pp.x):Math.atan2(CY-pp.y,CX-pp.x);
       const outward=inward+Math.PI;
-      const angles=childFanAngles(parent,cs.length,outward);
-      const parentLevel=clamp(Number(parent.level)||2,2,6);
-      const radius=CHILD_RADIUS_BY_PARENT[parentLevel]||54;
+      const angles=childFanAngles(cs.length,outward);
+      const radius=childRadius(cs.length,angles);
 
       cs.forEach((child,index)=>{
-        const angle=angles[index],childLevel=clamp(Number(child.level)||Math.min(5,parentLevel+1),3,6);
+        const angle=angles[index],childLevel=clamp(Number(child.level)||Math.min(5,(Number(parent.level)||2)+1),3,6);
         positions[child.id]={
           x:round(pp.x+Math.cos(angle)*radius),
-          y:round(pp.y+Math.sin(angle)*radius*.92),
-          mapZ:round((pp.mapZ||0)*.24+signedUnit(child.id+'z')*14),
+          y:round(pp.y+Math.sin(angle)*radius),
+          mapZ:round((pp.mapZ||0)*.22+signedUnit(child.id+'z')*12),
           angle,level:childLevel,parentId:child.parentId||parent.id
         };
         placeFan(child,pp);
       });
     }
 
-    roots.forEach(root=>placeFan(root,{x:CX,y:CY}));
+    roots.forEach(rootNode=>placeFan(rootNode,{x:CX,y:CY}));
     return positions;
   }
 
@@ -136,60 +139,81 @@
     });
     delete mapDraftLayouts[profileId];await save?.();mapCamera(null).needsFit=false;drawNetwork(document.getElementById('network')?.dataset.scope||null);
     const button=document.querySelector('[data-map-anchor]');if(button){button.textContent='Anchored';button.classList.add('is-confirmed');setTimeout(()=>{if(button.isConnected){button.textContent='Anchor';button.classList.remove('is-confirmed')}},1400)}
-    toast?.('Radial constellation anchored');
+    toast?.('Sun-centred constellation anchored');
   }
 
   async function reformGuidedLayout(scope=null){
     const profileId=activeProfileId();
     (state.areas||[]).filter(a=>(a.profile||'me')===profileId).forEach(a=>{delete a.mapOffsetX;delete a.mapOffsetY;delete a.mapOffsetZ});
     (state.notes||[]).filter(n=>(n.profile||'me')===profileId).forEach(n=>{delete n.mapOffsetX;delete n.mapOffsetY;delete n.mapOffsetZ});
-    delete mapDraftLayouts[profileId];await save?.();const cam=mapCamera(scope);cam.needsFit=true;drawNetwork(scope);toast?.('Equal radial layout restored');
+    delete mapDraftLayouts[profileId];await save?.();const cam=mapCamera(scope);cam.needsFit=true;drawNetwork(scope);toast?.('Sun-centred layout restored');
   }
 
-  function crossCurve(a,b,lane=0){
-    const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,nx=-dy/d,ny=dx/d;
-    const ar=visualRadius(a)+1.5,br=visualRadius(b)+1.5;
-    const x1=a.x+(dx/d)*ar,y1=a.y+(dy/d)*ar,x2=b.x-(dx/d)*br,y2=b.y-(dy/d)*br;
-    const key=`${a.id}|${b.id}`;
-    const side=lane===0?(signedUnit(key)>=0?1:-1):(lane>0?1:-1);
-    const bend=Math.min(78,Math.max(20,d*.15)+Math.abs(lane)*9+(hash(key)%7));
-    const cx1=x1+dx*.32+nx*bend*side,cy1=y1+dy*.32+ny*bend*side;
-    const cx2=x1+dx*.68+nx*bend*side,cy2=y1+dy*.68+ny*bend*side;
-    return `M ${x1.toFixed(2)} ${y1.toFixed(2)} C ${cx1.toFixed(2)} ${cy1.toFixed(2)} ${cx2.toFixed(2)} ${cy2.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+  function clippedEndpoint(a,b){
+    const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,r=visualRadius(a)+1.5;
+    return{x:a.x+dx/d*r,y:a.y+dy/d*r};
+  }
+
+  // Associative links between branches are routed through the intentional central
+  // void. Parallel links receive only a small lane offset inside that void.
+  function centreRoute(a,b,lane=0){
+    const start=clippedEndpoint(a,b),end=clippedEndpoint(b,a);
+    const laneAngle=(hash(`${a.id}|${b.id}`)%628)/100;
+    const laneDistance=lane*7;
+    const hub={x:CX+Math.cos(laneAngle)*laneDistance,y:CY+Math.sin(laneAngle)*laneDistance};
+    const c1={x:start.x+(hub.x-start.x)*.58,y:start.y+(hub.y-start.y)*.58};
+    const c2={x:end.x+(hub.x-end.x)*.58,y:end.y+(hub.y-end.y)*.58};
+    return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} Q ${c1.x.toFixed(2)} ${c1.y.toFixed(2)} ${hub.x.toFixed(2)} ${hub.y.toFixed(2)} Q ${c2.x.toFixed(2)} ${c2.y.toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
   }
 
   function routeCrossEdges(scope){
     const svg=document.getElementById('network');if(!svg)return;const gd=graphData(scope),byId=Object.fromEntries(gd.nodes.map(n=>[n.id,n]));
     const paths=[...svg.querySelectorAll('.edge.cross')].sort((p,q)=>`${p.dataset.source}|${p.dataset.target}`.localeCompare(`${q.dataset.source}|${q.dataset.target}`));
-    const sourceGroups={};paths.forEach(path=>(sourceGroups[path.dataset.source]??=[]).push(path));
-    paths.forEach(path=>{
+    paths.forEach((path,index)=>{
       const a=byId[path.dataset.source],b=byId[path.dataset.target];if(!a||!b)return;
-      const group=sourceGroups[path.dataset.source]||[path],idx=group.indexOf(path),lane=idx-(group.length-1)/2;
-      path.setAttribute('d',crossCurve(a,b,lane));path.classList.add('tracked-cross-route');path.dataset.routeLane=String(lane);
+      const lane=(index%5)-2;
+      path.setAttribute('d',centreRoute(a,b,lane));path.classList.add('centre-routed-cross');path.dataset.routeLane=String(lane);
     });
   }
 
-  function placeRadialLabels(scope){
+  function estimatedLabelBox(node,label,y){
+    const text=String(label.textContent||'');
+    const width=Math.max(18,text.length*4.9),height=8.6;
+    return{x1:node.x-width/2-2,x2:node.x+width/2+2,y1:y-height*.25,y2:y+height+2};
+  }
+  function boxesOverlap(a,b){return a.x1<b.x2&&a.x2>b.x1&&a.y1<b.y2&&a.y2>b.y1}
+
+  // Labels use one neutral style and always live underneath their own node. A
+  // deterministic downward resolver prevents labels from occupying another node.
+  function placeLabelsBelow(scope){
     const svg=document.getElementById('network');if(!svg)return;const gd=graphData(scope),byId=Object.fromEntries(gd.nodes.map(n=>[n.id,n]));
-    svg.querySelectorAll('.node').forEach(group=>{
+    const nodeBoxes=gd.nodes.map(n=>{const r=visualRadius(n)+5;return{id:n.id,x1:n.x-r,x2:n.x+r,y1:n.y-r,y2:n.y+r}});
+    const placed=[];
+    const groups=[...svg.querySelectorAll('.node')].sort((a,b)=>(byId[a.dataset.node]?.y||0)-(byId[b.dataset.node]?.y||0));
+    groups.forEach(group=>{
       const node=byId[group.dataset.node],label=group.querySelector('.label');if(!node||!label)return;
-      const parent=byId[node.parentId],anchor=parent||{x:CX,y:CY};
-      let dx=node.x-anchor.x,dy=node.y-anchor.y,d=Math.hypot(dx,dy)||1;dx/=d;dy/=d;
-      const gap=visualRadius(node)+(node.level>=5?8:10);
-      label.setAttribute('x',(node.x+dx*gap).toFixed(2));label.setAttribute('y',(node.y+dy*gap).toFixed(2));
-      label.setAttribute('text-anchor',dx>.28?'start':dx<-.28?'end':'middle');
-      label.setAttribute('dominant-baseline',dy>.25?'hanging':dy<-.25?'auto':'middle');
+      let y=node.y+visualRadius(node)+LABEL_GAP,box;
+      for(let attempt=0;attempt<10;attempt++){
+        box=estimatedLabelBox(node,label,y);
+        const hitsNode=nodeBoxes.some(other=>other.id!==node.id&&boxesOverlap(box,other));
+        const hitsLabel=placed.some(other=>boxesOverlap(box,other));
+        if(!hitsNode&&!hitsLabel)break;
+        y+=LABEL_LINE;
+      }
+      label.setAttribute('x',node.x.toFixed(2));label.setAttribute('y',y.toFixed(2));
+      label.setAttribute('text-anchor','middle');label.setAttribute('dominant-baseline','hanging');
+      label.classList.add('atlas-uniform-label');placed.push(box||estimatedLabelBox(node,label,y));
     });
   }
 
   anchorMapLayout=anchorGuidedLayout;
 
   drawNetwork=function(scope){
-    const result=baseDrawNetwork(scope);routeCrossEdges(scope);placeRadialLabels(scope);
+    const result=baseDrawNetwork(scope);routeCrossEdges(scope);placeLabelsBelow(scope);
     document.querySelectorAll('[data-map-layout]').forEach(button=>{button.onclick=()=>reformGuidedLayout(scope)});
     document.querySelectorAll('[data-map-anchor]').forEach(button=>{button.onclick=()=>anchorGuidedLayout()});
     return result;
   };
 
-  root.AtlasNetworkLayout=Object.freeze({version:'0.15.7-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,childFanAngles,crossCurve,routeCrossEdges,placeRadialLabels,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
+  root.AtlasNetworkLayout=Object.freeze({version:'0.15.8-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,centreRoute,routeCrossEdges,placeLabelsBelow,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
 })(window);
