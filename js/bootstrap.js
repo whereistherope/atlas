@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0154r1';
+  const BUILD='0155r1';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -26,7 +26,6 @@
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync-hotfix.js','Atlas canonical migration hotfix'); } catch (_) {}
-
   try { await loadScript('./js/note-editor.js','Atlas note renderer'); } catch (_) {}
   if(!window.AtlasMarkdown?.openNote){try { await loadScript('./js/note-editor.js','Atlas note renderer retry',{fresh:true}); } catch (_) {}}
   try { await loadScript('./js/visual-note-editor.js','Atlas visual note editor'); } catch (_) {}
@@ -34,9 +33,6 @@
   try { await loadScript('./js/rich-note-capture.js','Atlas unified note creation'); } catch (_) {}
   try { await loadScript('./js/project-workspace.js','Atlas Project Workspace'); } catch (_) {}
   try { await loadScript('./js/editor-ux.js','Atlas editor UX'); } catch (_) {}
-
-  // Atlas Document persistence remains observer-free. r4 adds deterministic
-  // editor activation/remembered selection; r6 adds overall table-width dragging.
   try { await loadScript('./js/atlas-document-r3.js','Atlas Document v1 r3'); } catch (_) {}
   try { await loadScript('./js/atlas-document-r4-ui.js','Atlas Document UI r4'); } catch (_) {}
   try { await loadScript('./js/table-width-resize.js','Atlas table width resize r6'); } catch (_) {}
@@ -46,7 +42,7 @@
   try { await loadScript('./js/interaction-alignment.js','Atlas interaction alignment v0.15.1'); } catch (_) {}
   try { await loadScript('./js/workspace-actions.js','Atlas workspace actions v0.15.2'); } catch (_) {}
   try { await loadScript('./js/graph-hierarchy-interactions.js','Atlas hierarchy drag v0.15.3'); } catch (_) {}
-  try { await loadScript('./js/network-layout.js','Atlas guided network layout v0.15.4'); } catch (_) {}
+  try { await loadScript('./js/network-layout.js','Atlas orbital network grammar v0.15.5'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
