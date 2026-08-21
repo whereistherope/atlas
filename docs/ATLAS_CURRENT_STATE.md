@@ -23,7 +23,7 @@ Authoritative continuation checkpoint for future development sessions.
 - Level-5 nodes remain independently selectable and draggable.
 - Anchor preserves the settled/manual constellation as relative offsets; Reform clears those offsets and returns to the deterministic force-relaxed base layout.
 
-## Network geometry through v0.15.12
+## Network geometry through v0.15.13
 
 - The deterministic seed starts with core/root nodes at equal angular intervals on one compact circular orbit around an invisible centre (`ROOT_RADIUS=184`).
 - No preferred oversized gap exists between Work/Life/etc; hierarchy and node size communicate importance.
@@ -32,8 +32,8 @@ Authoritative continuation checkpoint for future development sessions.
 - Recursive seed expansion starts from `BASE_CHILD_RADIUS=84`.
 - A crowded seed fan may expand enough to preserve `MIN_SIBLING_CLEARANCE=58`; individual sibling radius jitter and two-ring splitting remain prohibited.
 - Child fans retain the tighter outward-biased spacing formula established in v0.15.7.
-- Seed coordinates are not final coordinates: the network relaxes them against node collisions, branch-envelope collisions, structural spring lengths and the common centre force.
-- Dense top-level branches must occupy separate readable territories; a large branch such as Ground Ops should push neighbouring clusters away rather than overlap them.
+- Seed coordinates are not final coordinates: the hierarchy-aware v0.15.11 settle provides a stable starting state, then v0.15.13 applies a final organic velocity-based settle with no angular memory.
+- Dense top-level branches must occupy separate readable territories; larger branches naturally claim more room because every node contributes charge/collision pressure rather than because a rigid branch envelope assigns them a fixed island.
 - Structural/tree links remain quiet straight relationships.
 - Associative/dotted cross-links represent the actual source-to-target relationship as a straight clipped line. They are not obstacle-routed and do not use a synthetic centre waypoint or routing lane.
 - All normal node labels use the same neutral level-4 typography, sit below their node, and use deterministic collision avoidance.
@@ -41,6 +41,8 @@ Authoritative continuation checkpoint for future development sessions.
 - `Reset defaults` restores all five physics values to `50`.
 - v0.15.12 consolidates every network control into one compact `Controls` details panel: zoom/fit percentage, Reform, Anchor, Depth, Type opacity, Links opacity and all five physics sliders.
 - The unified graph-control panel is collapsed by default and its open/closed UI state is deliberately not persisted. The map therefore keeps its canvas clear unless the user is actively tuning it.
+- v0.15.13 makes the final graph shape more Obsidian-like: structural links are springs, all nodes contribute size-aware repulsion/collision, the old fan directions do not constrain final angles, and the Center control recentres the graph centroid instead of gravitationally pulling every node into a circular clump.
+- Root nodes retain only a very weak common-centre gravity so the whole network has a coherent body without returning to a fixed root orbit.
 
 ## Version lineage relevant to network geometry
 
@@ -54,6 +56,7 @@ Authoritative continuation checkpoint for future development sessions.
 - v0.15.10: changes the radial/sun layout from final placement into a deterministic seed, then applies constrained force relaxation so nodes and whole branch envelopes respond to one another, stay separated and retain an overall centred shape.
 - v0.15.11: makes the force model live-tunable with canonical physics settings and a collapsible graph-physics control panel.
 - v0.15.12: replaces the split map-control rail plus physics flyout with one collapsible control surface and adds Anchor to the same layout-control group.
+- v0.15.13: adds a deterministic velocity-based final settle that removes final-angle memory, uses size-aware node charge/collision and spring links, and changes centre force from per-node gravity to centroid recentering for a looser Obsidian-style constellation.
 
 ## Development rule
 
