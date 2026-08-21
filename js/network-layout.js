@@ -1,4 +1,4 @@
-// Atlas v0.15.10-r1: deterministic constrained-force network grammar.
+// Atlas v0.15.11-r1: tunable deterministic constrained-force network grammar.
 (function(root){
   'use strict';
 
@@ -14,15 +14,12 @@
   const LABEL_GAP=10;
   const LABEL_LINE=10;
 
-  // The radial hierarchy is the deterministic seed. These forces then let the
-  // graph respond to itself without turning into an uncontrolled force cloud.
   const FORCE_ITERATIONS=360;
-  const FORCE_NODE_REPEL=1450;
-  const FORCE_LINK_STRENGTH=.058;
-  const FORCE_DIRECTION_MEMORY=.0025;
-  const FORCE_CENTER_STRENGTH=.0036;
-  const FORCE_BRANCH_GAP=18;
+  const FORCE_DIRECTION_MEMORY=.0016;
   const FORCE_MAX_STEP=4.5;
+  const PHYSICS_DEFAULTS=Object.freeze({center:50,repel:50,linkStrength:50,linkDistance:50,collision:50});
+  let baseLayoutCache=new Map();
+  let physicsRedrawTimer=null;
 
   const num=v=>Number.isFinite(Number(v))?Number(v):0;
   const round=v=>Math.round(Number(v||0)*10)/10;
@@ -41,6 +38,26 @@
     const notes=(state.notes||[]).filter(n=>(n.profile||'me')===profileId&&n.showOnMap&&areaIds.has(structuralParent(n))).map(n=>({id:n.id,name:n.title||'Untitled',code:makeNodeCode?.(n.title)||'',level:5,parentId:structuralParent(n),note:true}));
     return [...areas,...notes];
   }
+
+  function physicsSettings(){
+    const raw=state?.settings?.networkPhysics||{};
+    return Object.fromEntries(Object.entries(PHYSICS_DEFAULTS).map(([key,fallback])=>[key,clamp(num(raw[key]??fallback),0,100)]));
+  }
+
+  function resolvedPhysics(){
+    const p=physicsSettings();
+    return {...p,
+      nodeRepel:500+p.repel*19,
+      linkStrength:.018+p.linkStrength*.0008,
+      centerStrength:.0006+p.center*.00006,
+      linkDistanceScale:.65+p.linkDistance*.007,
+      collisionSpacing:6+p.collision*.22,
+      branchGap:8+p.collision*.20
+    };
+  }
+
+  function physicsKey(p=physicsSettings()){return `${p.center}:${p.repel}:${p.linkStrength}:${p.linkDistance}:${p.collision}`}
+  function clearBaseLayoutCache(){baseLayoutCache=new Map()}
 
   function rootSort(a,b){
     const order={WRK:0,WORK:0,LIFE:1,CRTV:2,CREATIVE:2,DAIL:3,DAILY:3,HOME:4};
@@ -124,6 +141,7 @@
     const pos=Object.fromEntries(ids.map(id=>[id,{x:num(seed[id].x),y:num(seed[id].y),mapZ:num(seed[id].mapZ)}]));
     const pinned=options.pinned||new Set();
     const iterations=options.iterations||FORCE_ITERATIONS;
+    const physics=options.physics||resolvedPhysics();
     const tree=nodes.filter(n=>n.parentId&&n.parentId!=='atlas'&&byId[n.parentId]&&pos[n.parentId]&&pos[n.id]).map(n=>({parent:n.parentId,child:n.id}));
     const branchOf=Object.fromEntries(ids.map(id=>[id,topRootId(id,byId)]));
     const branches={};ids.forEach(id=>(branches[branchOf[id]]??=[]).push(id));
@@ -131,7 +149,7 @@
 
     tree.forEach(edge=>{
       const p=seed[edge.parent],c=seed[edge.child],dx=c.x-p.x,dy=c.y-p.y,d=Math.hypot(dx,dy)||1;
-      targetDistance[`${edge.parent}|${edge.child}`]=d;
+      targetDistance[`${edge.parent}|${edge.child}`]=d*physics.linkDistanceScale;
       targetDirection[`${edge.parent}|${edge.child}`]={x:dx/d,y:dy/d};
     });
 
@@ -139,16 +157,14 @@
       const cool=1-.82*(iter/Math.max(1,iterations));
       const delta=Object.fromEntries(ids.map(id=>[id,{x:0,y:0}]));
 
-      // Obsidian-like charge + collision. Different top-level branches receive a
-      // little extra separation so one cluster cannot settle on top of another.
       for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){
         const a=ids[i],b=ids[j];let dx=pos[b].x-pos[a].x,dy=pos[b].y-pos[a].y,d2=dx*dx+dy*dy;
         if(d2<1){const n=deterministicNudge(a,b);dx=n.x;dy=n.y;d2=1}
         const d=Math.sqrt(d2),nx=dx/d,ny=dy/d,crossBranch=branchOf[a]!==branchOf[b];
-        const repel=Math.min(1.7,(FORCE_NODE_REPEL*(crossBranch?1.35:1))/Math.max(625,d2))*cool;
+        const repel=Math.min(1.9,(physics.nodeRepel*(crossBranch?1.35:1))/Math.max(625,d2))*cool;
         if(!pinned.has(a)){delta[a].x-=nx*repel;delta[a].y-=ny*repel}
         if(!pinned.has(b)){delta[b].x+=nx*repel;delta[b].y+=ny*repel}
-        const minDistance=collisionRadius(byId[a])+collisionRadius(byId[b])+(crossBranch?14:4);
+        const minDistance=collisionRadius(byId[a])+collisionRadius(byId[b])+physics.collisionSpacing+(crossBranch?physics.collisionSpacing*.7:0);
         if(d<minDistance){
           const push=(minDistance-d)*.26*cool;
           if(!pinned.has(a)){delta[a].x-=nx*push;delta[a].y-=ny*push}
@@ -156,11 +172,9 @@
         }
       }
 
-      // Structural links behave like springs. Dotted/cross-links are deliberately
-      // absent here: relationships are visible, but never pull clusters together.
       tree.forEach(({parent,child})=>{
         let dx=pos[child].x-pos[parent].x,dy=pos[child].y-pos[parent].y,d=Math.hypot(dx,dy)||1;
-        const nx=dx/d,ny=dy/d,key=`${parent}|${child}`,want=targetDistance[key]||BASE_CHILD_RADIUS,err=d-want,force=err*FORCE_LINK_STRENGTH*cool;
+        const nx=dx/d,ny=dy/d,key=`${parent}|${child}`,want=targetDistance[key]||BASE_CHILD_RADIUS,err=d-want,force=err*physics.linkStrength*cool;
         if(!pinned.has(parent)){delta[parent].x+=nx*force*.28;delta[parent].y+=ny*force*.28}
         if(!pinned.has(child)){delta[child].x-=nx*force*.72;delta[child].y-=ny*force*.72}
         const dir=targetDirection[key];
@@ -171,32 +185,27 @@
         }
       });
 
-      // Treat each top-level branch as an envelope as well as a set of individual
-      // nodes. This is the missing cluster-vs-cluster behaviour visible in the
-      // manually corrected screenshot.
       const envelopes={};
       Object.entries(branches).forEach(([branch,members])=>{
         const cx=members.reduce((s,id)=>s+pos[id].x,0)/members.length,cy=members.reduce((s,id)=>s+pos[id].y,0)/members.length;
-        const radius=Math.max(...members.map(id=>Math.hypot(pos[id].x-cx,pos[id].y-cy)+collisionRadius(byId[id])));
+        const radius=Math.max(...members.map(id=>Math.hypot(pos[id].x-cx,pos[id].y-cy)+collisionRadius(byId[id])+physics.collisionSpacing*.35));
         envelopes[branch]={cx,cy,radius,members};
       });
       const branchIds=Object.keys(envelopes);
       for(let i=0;i<branchIds.length;i++)for(let j=i+1;j<branchIds.length;j++){
         const a=envelopes[branchIds[i]],b=envelopes[branchIds[j]];let dx=b.cx-a.cx,dy=b.cy-a.cy,d=Math.hypot(dx,dy);
         if(d<1){const n=deterministicNudge(branchIds[i],branchIds[j]);dx=n.x;dy=n.y;d=1}
-        const want=a.radius+b.radius+FORCE_BRANCH_GAP;
+        const want=a.radius+b.radius+physics.branchGap;
         if(d>=want)continue;
-        const nx=dx/d,ny=dy/d,push=Math.min(2.35,(want-d)*.03)*cool;
+        const nx=dx/d,ny=dy/d,push=Math.min(2.65,(want-d)*.035)*cool;
         a.members.forEach(id=>{if(!pinned.has(id)){delta[id].x-=nx*push;delta[id].y-=ny*push}});
         b.members.forEach(id=>{if(!pinned.has(id)){delta[id].x+=nx*push;delta[id].y+=ny*push}});
       }
 
-      // A weak common centre gives the graph an overall body without fixing every
-      // root to an exact orbit after relaxation.
       ids.forEach(id=>{
         if(pinned.has(id))return;
-        delta[id].x+=(CX-pos[id].x)*FORCE_CENTER_STRENGTH*cool;
-        delta[id].y+=(CY-pos[id].y)*FORCE_CENTER_STRENGTH*cool;
+        delta[id].x+=(CX-pos[id].x)*physics.centerStrength*cool;
+        delta[id].y+=(CY-pos[id].y)*physics.centerStrength*cool;
       });
 
       ids.forEach(id=>{
@@ -211,8 +220,12 @@
   }
 
   function computeBaseLayout(profileId=activeProfileId()){
-    const nodes=sourceNodes(profileId),seed=computeSeedLayout(profileId);
-    return relaxLayout(nodes,seed);
+    const nodes=sourceNodes(profileId),physics=physicsSettings();
+    const structureKey=nodes.map(n=>`${n.id}:${n.parentId}:${n.level}:${n.code}`).join('|');
+    const key=`${profileId}|${physicsKey(physics)}|${structureKey}`;
+    if(baseLayoutCache.has(key))return baseLayoutCache.get(key);
+    const seed=computeSeedLayout(profileId),layout=relaxLayout(nodes,seed,{physics:resolvedPhysics()});
+    baseLayoutCache.set(key,layout);return layout;
   }
 
   function cumulativeOffsets(profileId=activeProfileId(),base=null){
@@ -234,8 +247,6 @@
         if(Math.hypot(out[id].x-anchored.x,out[id].y-anchored.y)>1)pinned.add(id);
       }else out[id]=anchored;
     });
-    // During manual movement, the moved branch stays under the pointer while the
-    // rest of the graph gets a short deterministic settle around it.
     return pinned.size?relaxLayout(nodes,out,{pinned,iterations:110}):out;
   }
 
@@ -267,7 +278,7 @@
     const profileId=activeProfileId();
     (state.areas||[]).filter(a=>(a.profile||'me')===profileId).forEach(a=>{delete a.mapOffsetX;delete a.mapOffsetY;delete a.mapOffsetZ});
     (state.notes||[]).filter(n=>(n.profile||'me')===profileId).forEach(n=>{delete n.mapOffsetX;delete n.mapOffsetY;delete n.mapOffsetZ});
-    delete mapDraftLayouts[profileId];await save?.();const cam=mapCamera(scope);cam.needsFit=true;drawNetwork(scope);toast?.('Force-relaxed layout restored');
+    delete mapDraftLayouts[profileId];clearBaseLayoutCache();await save?.();const cam=mapCamera(scope);cam.needsFit=true;drawNetwork(scope);toast?.('Force-relaxed layout restored');
   }
 
   function clippedEndpoint(a,b){const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,r=visualRadius(a)+1.5;return{x:a.x+dx/d*r,y:a.y+dy/d*r}}
@@ -296,8 +307,48 @@
     });
   }
 
-  anchorMapLayout=anchorGuidedLayout;
-  drawNetwork=function(scope){const result=baseDrawNetwork(scope);routeCrossEdges(scope);placeLabelsBelow(scope);document.querySelectorAll('[data-map-layout]').forEach(button=>{button.onclick=()=>reformGuidedLayout(scope)});document.querySelectorAll('[data-map-anchor]').forEach(button=>{button.onclick=()=>anchorGuidedLayout()});return result};
+  function setPhysicsValue(key,value,{persist=false}={}){
+    if(!(key in PHYSICS_DEFAULTS))return;
+    state.settings=state.settings||{};state.settings.networkPhysics=state.settings.networkPhysics||{};
+    state.settings.networkPhysics[key]=clamp(num(value),0,100);
+    clearBaseLayoutCache();
+    if(persist)save?.();
+  }
 
-  root.AtlasNetworkLayout=Object.freeze({version:'0.15.10-r1',computeSeedLayout,computeBaseLayout,relaxLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,directCrossRoute,routeCrossEdges,placeLabelsBelow,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
+  function schedulePhysicsRedraw(scope=null){
+    if(physicsRedrawTimer)clearTimeout(physicsRedrawTimer);
+    physicsRedrawTimer=setTimeout(()=>{physicsRedrawTimer=null;const cam=mapCamera(scope);cam.needsFit=false;drawNetwork(scope)},70);
+  }
+
+  function syncPhysicsControls(control){
+    const values=physicsSettings();
+    control.querySelectorAll('[data-physics]').forEach(input=>{const key=input.dataset.physics;if(key in values){input.value=String(values[key]);const output=control.querySelector(`[data-physics-output="${key}"]`);if(output)output.value=String(Math.round(values[key]))}});
+  }
+
+  function installPhysicsControls(scope=null){
+    const svg=document.getElementById('network');if(!svg)return;
+    const wrap=svg.closest?.('.map-wrap')||svg.parentElement;if(!wrap)return;
+    let control=wrap.querySelector?.('[data-network-physics]');
+    if(!control){
+      control=document.createElement('details');control.className='atlas-physics-control';control.dataset.networkPhysics='';
+      control.innerHTML=`<summary aria-label="Toggle graph physics controls">Physics</summary><div class="atlas-physics-panel"><div class="atlas-physics-heading">Graph physics</div>${[
+        ['center','Center'],['repel','Repel'],['linkStrength','Link'],['linkDistance','Distance'],['collision','Collision']
+      ].map(([key,label])=>`<label class="atlas-physics-row"><span>${label}<output data-physics-output="${key}"></output></span><input type="range" min="0" max="100" step="1" data-physics="${key}" aria-label="${label}"></label>`).join('')}<button type="button" class="atlas-physics-reset" data-physics-reset>Reset defaults</button></div>`;
+      wrap.appendChild(control);
+      control.querySelectorAll('[data-physics]').forEach(input=>{
+        input.addEventListener('input',()=>{setPhysicsValue(input.dataset.physics,input.value);syncPhysicsControls(control);schedulePhysicsRedraw(svg.dataset.scope||scope)});
+        input.addEventListener('change',()=>{setPhysicsValue(input.dataset.physics,input.value,{persist:true})});
+      });
+      control.querySelector('[data-physics-reset]')?.addEventListener('click',()=>{
+        Object.entries(PHYSICS_DEFAULTS).forEach(([key,value])=>setPhysicsValue(key,value));
+        syncPhysicsControls(control);save?.();schedulePhysicsRedraw(svg.dataset.scope||scope);
+      });
+    }
+    syncPhysicsControls(control);
+  }
+
+  anchorMapLayout=anchorGuidedLayout;
+  drawNetwork=function(scope){const result=baseDrawNetwork(scope);routeCrossEdges(scope);placeLabelsBelow(scope);installPhysicsControls(scope);document.querySelectorAll('[data-map-layout]').forEach(button=>{button.onclick=()=>reformGuidedLayout(scope)});document.querySelectorAll('[data-map-anchor]').forEach(button=>{button.onclick=()=>anchorGuidedLayout()});return result};
+
+  root.AtlasNetworkLayout=Object.freeze({version:'0.15.11-r1',computeSeedLayout,computeBaseLayout,relaxLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,physicsSettings,resolvedPhysics,setPhysicsValue,directCrossRoute,routeCrossEdges,placeLabelsBelow,installPhysicsControls,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
 })(window);
