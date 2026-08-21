@@ -1,2 +1,10 @@
-/* v0.15.4: interaction geometry must not alter the selected theme's node appearance. */
+/* Atlas network layout constraints. Functional geometry must not choose theme cosmetics. */
 .node .atlas-node-hit-target{fill:transparent!important;stroke:transparent!important;stroke-width:0!important;opacity:0!important;pointer-events:all!important}
+
+/* v0.15.8: hierarchy is communicated by node geometry, not label hierarchy. */
+#network .node .label,#network .node.level1 .label,#network .node.level2 .label,#network .node.level3 .label,#network .node.level4 .label,#network .node.level5 .label{
+  font-size:8.3px!important;
+  font-weight:800!important;
+  letter-spacing:.02em!important;
+  text-anchor:middle!important;
+}
