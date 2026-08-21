@@ -1,4 +1,4 @@
-// Atlas v0.15.8-r1: sun-centred deterministic network grammar.
+// Atlas v0.15.9-r1: sun-centred deterministic network grammar with restored radial fan spacing.
 (function(root){
   'use strict';
 
@@ -9,7 +9,7 @@
   const CX=600,CY=340;
   const ROOT_RADIUS=184;
   const ROOT_START=-Math.PI*.76;
-  const BASE_CHILD_RADIUS=84;
+  const CHILD_RADIUS_BY_PARENT={2:112,3:86,4:66,5:54,6:48};
   const MIN_SIBLING_CLEARANCE=58;
   const LABEL_GAP=10;
   const LABEL_LINE=10;
@@ -40,15 +40,16 @@
     return String(a.name||a.id).localeCompare(String(b.name||b.id));
   }
 
-  // Core domains are evenly anchored around one imaginary central sun.
+  // Core domains remain evenly anchored around one imaginary central sun.
   function assignRootAngles(roots){
     const ordered=roots.slice().sort(rootSort),out={};
     ordered.forEach((r,i)=>out[r.id]=ROOT_START+i*(Math.PI*2/Math.max(1,ordered.length)));
     return out;
   }
 
-  // Direct siblings always share equal angular intervals. The fan opens away
-  // from the parent, leaving the inward corridor quiet for hierarchy legibility.
+  // Direct siblings share equal angular intervals. Each generation keeps the
+  // tapered radial spacing that was approved in v0.15.7, while dense fans may
+  // expand only as much as required to retain minimum sibling clearance.
   function childFanAngles(count,outward){
     if(count<=0)return[];
     if(count===1)return[outward];
@@ -58,11 +59,12 @@
     return Array.from({length:count},(_,i)=>outward-span/2+i*step);
   }
 
-  function childRadius(count,angles){
-    if(count<=1)return BASE_CHILD_RADIUS;
+  function childRadius(parentLevel,count,angles){
+    const base=CHILD_RADIUS_BY_PARENT[clamp(Number(parentLevel)||2,2,6)]||54;
+    if(count<=1)return base;
     const step=Math.abs((angles[1]??0)-(angles[0]??0));
-    const minForClearance=step>0?MIN_SIBLING_CLEARANCE/(2*Math.sin(step/2)):BASE_CHILD_RADIUS;
-    return Math.ceil(Math.max(BASE_CHILD_RADIUS,minForClearance)/4)*4;
+    const minForClearance=step>0?MIN_SIBLING_CLEARANCE/(2*Math.sin(step/2)):base;
+    return Math.ceil(Math.max(base,minForClearance)/4)*4;
   }
 
   function computeBaseLayout(profileId=activeProfileId()){
@@ -82,10 +84,11 @@
       const inward=ancestorPos?Math.atan2(ancestorPos.y-pp.y,ancestorPos.x-pp.x):Math.atan2(CY-pp.y,CX-pp.x);
       const outward=inward+Math.PI;
       const angles=childFanAngles(cs.length,outward);
-      const radius=childRadius(cs.length,angles);
+      const parentLevel=clamp(Number(parent.level)||2,2,6);
+      const radius=childRadius(parentLevel,cs.length,angles);
 
       cs.forEach((child,index)=>{
-        const angle=angles[index],childLevel=clamp(Number(child.level)||Math.min(5,(Number(parent.level)||2)+1),3,6);
+        const angle=angles[index],childLevel=clamp(Number(child.level)||Math.min(5,parentLevel+1),3,6);
         positions[child.id]={
           x:round(pp.x+Math.cos(angle)*radius),
           y:round(pp.y+Math.sin(angle)*radius),
@@ -154,25 +157,19 @@
     return{x:a.x+dx/d*r,y:a.y+dy/d*r};
   }
 
-  // Associative links between branches are routed through the intentional central
-  // void. Parallel links receive only a small lane offset inside that void.
-  function centreRoute(a,b,lane=0){
+  function directCrossRoute(a,b){
     const start=clippedEndpoint(a,b),end=clippedEndpoint(b,a);
-    const laneAngle=(hash(`${a.id}|${b.id}`)%628)/100;
-    const laneDistance=lane*7;
-    const hub={x:CX+Math.cos(laneAngle)*laneDistance,y:CY+Math.sin(laneAngle)*laneDistance};
-    const c1={x:start.x+(hub.x-start.x)*.58,y:start.y+(hub.y-start.y)*.58};
-    const c2={x:end.x+(hub.x-end.x)*.58,y:end.y+(hub.y-end.y)*.58};
-    return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} Q ${c1.x.toFixed(2)} ${c1.y.toFixed(2)} ${hub.x.toFixed(2)} ${hub.y.toFixed(2)} Q ${c2.x.toFixed(2)} ${c2.y.toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
+    return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
   }
 
   function routeCrossEdges(scope){
     const svg=document.getElementById('network');if(!svg)return;const gd=graphData(scope),byId=Object.fromEntries(gd.nodes.map(n=>[n.id,n]));
-    const paths=[...svg.querySelectorAll('.edge.cross')].sort((p,q)=>`${p.dataset.source}|${p.dataset.target}`.localeCompare(`${q.dataset.source}|${q.dataset.target}`));
-    paths.forEach((path,index)=>{
+    svg.querySelectorAll('.edge.cross').forEach(path=>{
       const a=byId[path.dataset.source],b=byId[path.dataset.target];if(!a||!b)return;
-      const lane=(index%5)-2;
-      path.setAttribute('d',centreRoute(a,b,lane));path.classList.add('centre-routed-cross');path.dataset.routeLane=String(lane);
+      path.setAttribute('d',directCrossRoute(a,b));
+      path.classList.add('direct-cross-route');
+      path.classList.remove('centre-routed-cross','tracked-cross-route');
+      delete path.dataset.routeLane;
     });
   }
 
@@ -183,8 +180,6 @@
   }
   function boxesOverlap(a,b){return a.x1<b.x2&&a.x2>b.x1&&a.y1<b.y2&&a.y2>b.y1}
 
-  // Labels use one neutral style and always live underneath their own node. A
-  // deterministic downward resolver prevents labels from occupying another node.
   function placeLabelsBelow(scope){
     const svg=document.getElementById('network');if(!svg)return;const gd=graphData(scope),byId=Object.fromEntries(gd.nodes.map(n=>[n.id,n]));
     const nodeBoxes=gd.nodes.map(n=>{const r=visualRadius(n)+5;return{id:n.id,x1:n.x-r,x2:n.x+r,y1:n.y-r,y2:n.y+r}});
@@ -215,5 +210,5 @@
     return result;
   };
 
-  root.AtlasNetworkLayout=Object.freeze({version:'0.15.8-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,centreRoute,routeCrossEdges,placeLabelsBelow,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
+  root.AtlasNetworkLayout=Object.freeze({version:'0.15.9-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,directCrossRoute,routeCrossEdges,placeLabelsBelow,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
 })(window);
