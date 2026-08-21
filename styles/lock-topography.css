@@ -1,0 +1,187 @@
+/* Atlas v0.16.7-r1 · lock-screen topography + restrained tactical map surface. */
+.lock-screen{
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 44%,rgba(85,119,137,.09),transparent 28%),
+    radial-gradient(circle at 18% 18%,rgba(100,128,140,.045),transparent 24%),
+    linear-gradient(180deg,#020405 0%,#05080a 54%,#020304 100%);
+  color:#c5d1d7;
+}
+.lock-screen::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.46;
+  background-image:
+    linear-gradient(rgba(151,174,184,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(151,174,184,.045) 1px,transparent 1px);
+  background-size:32px 32px;
+  -webkit-mask-image:radial-gradient(circle at 50% 45%,#000 0 54%,transparent 88%);
+  mask-image:radial-gradient(circle at 50% 45%,#000 0 54%,transparent 88%);
+}
+.lock-screen::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:4;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.012),transparent 16%,transparent 82%,rgba(0,0,0,.24)),
+    radial-gradient(ellipse at center,transparent 42%,rgba(0,0,0,.42) 100%);
+  box-shadow:inset 0 0 140px rgba(0,0,0,.45);
+}
+.atlas-lock-surface{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.atlas-lock-topography{
+  position:absolute;
+  left:50%;top:50%;
+  width:max-content;
+  margin:0;
+  color:rgba(142,169,180,.13);
+  font:500 clamp(6px,.52vw,9px)/.82 "SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  letter-spacing:.16em;
+  white-space:pre;
+  user-select:none;
+  transform:translate(-50%,-49%) perspective(900px) rotateX(61deg) rotateZ(-8deg) scaleX(1.08);
+  transform-origin:center;
+  text-shadow:0 0 11px rgba(117,153,168,.07);
+}
+.atlas-lock-topography.layer-two{opacity:.46;transform:translate(-48.5%,-52%) perspective(900px) rotateX(61deg) rotateZ(-8deg) scaleX(1.05)}
+.atlas-lock-topography.layer-three{opacity:.22;transform:translate(-52%,-45%) perspective(900px) rotateX(61deg) rotateZ(-8deg) scaleX(1.12)}
+.atlas-lock-ghost{
+  position:absolute;
+  left:50%;top:47%;
+  width:min(760px,72vw);height:auto;
+  transform:translate(-50%,-50%);
+  opacity:.13;
+  filter:drop-shadow(0 0 14px rgba(123,160,177,.08));
+}
+.atlas-lock-ghost line{stroke:#86a4b1;stroke-width:.7;vector-effect:non-scaling-stroke}
+.atlas-lock-ghost circle{fill:#081016;stroke:#a1bac4;stroke-width:.8;vector-effect:non-scaling-stroke}
+.atlas-lock-ghost .atlas-lock-core{fill:#0d171d;stroke:#b9c9cf;stroke-width:1.05}
+.atlas-lock-status{
+  position:absolute;
+  z-index:3;
+  top:22px;right:24px;
+  display:grid;
+  grid-template-columns:auto auto;
+  column-gap:14px;
+  align-items:end;
+  color:rgba(170,190,198,.58);
+  font:700 8px/1.35 "SFMono-Regular",Consolas,monospace;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  pointer-events:none;
+}
+.atlas-lock-status strong{display:block;color:rgba(208,221,226,.82);font-size:13px;letter-spacing:.04em;font-weight:650}
+.atlas-lock-status .lock-utc{text-align:right}
+.atlas-lock-query{
+  position:absolute;
+  z-index:3;
+  left:24px;bottom:21px;
+  color:rgba(164,184,193,.47);
+  font:700 8px/1.2 "SFMono-Regular",Consolas,monospace;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  transition:opacity .22s ease,transform .22s ease;
+  pointer-events:none;
+}
+.atlas-lock-query::before{content:"// ";color:rgba(117,151,166,.42)}
+.atlas-lock-query.is-changing{opacity:0;transform:translateY(3px)}
+.lock-screen .lock-card{
+  position:relative;
+  z-index:3;
+  width:min(390px,92vw);
+  padding:27px 27px 25px;
+  border:1px solid rgba(136,159,169,.14);
+  border-top-color:rgba(173,193,201,.21);
+  border-bottom-color:rgba(98,124,136,.15);
+  border-radius:7px;
+  background:linear-gradient(180deg,rgba(7,12,15,.66),rgba(4,8,10,.52));
+  -webkit-backdrop-filter:blur(18px) saturate(.8);
+  backdrop-filter:blur(18px) saturate(.8);
+  box-shadow:0 28px 80px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.018);
+}
+.lock-screen .lock-card::before{
+  content:"ATLAS / ACCESS";
+  display:block;
+  margin:0 0 18px;
+  color:rgba(139,166,177,.48);
+  font:700 7px/1 "SFMono-Regular",Consolas,monospace;
+  letter-spacing:.18em;
+}
+.lock-screen .lock-brand{margin-bottom:22px;color:#cbd7dc}
+.lock-screen .atlas-logo-lock{max-width:215px;height:auto;opacity:.86;filter:grayscale(1) saturate(.25) brightness(1.08)}
+.lock-screen .lock-title{color:#cbd7dc;font-weight:620;letter-spacing:-.018em}
+.lock-screen .lock-copy{color:#758b95}
+.lock-screen .lock-field label{color:#718791;font-size:7.8px;letter-spacing:.11em}
+.lock-screen .lock-field input,.lock-screen .lock-field select{
+  border-color:rgba(126,153,165,.2);
+  background:rgba(1,4,6,.58);
+  color:#cdd9de;
+  border-radius:3px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.008);
+}
+.lock-screen .lock-field input:focus,.lock-screen .lock-field select:focus{border-color:rgba(162,190,202,.48);box-shadow:0 0 0 1px rgba(126,158,172,.08)}
+.lock-screen .pin-input{text-align:center;font:650 17px/1 "SFMono-Regular",Consolas,monospace;letter-spacing:.58em;padding-left:calc(12px + .58em)}
+.lock-screen .lock-primary,.lock-screen .lock-secondary{
+  min-height:36px;
+  border-radius:3px;
+  border-color:rgba(130,159,172,.28);
+  background:rgba(116,147,160,.07);
+  color:#aebfc6;
+  letter-spacing:.09em;
+  transition:background .14s,border-color .14s,color .14s;
+}
+.lock-screen .lock-primary{background:rgba(139,168,179,.13);border-color:rgba(162,189,199,.34);color:#c5d2d7}
+.lock-screen .lock-primary:hover,.lock-screen .lock-secondary:hover{background:rgba(141,172,184,.17);border-color:rgba(177,201,209,.5);color:#dde6e9}
+.lock-screen .lock-message{color:#b1a177}
+.lock-screen .recovery-key{background:rgba(1,4,6,.55);border-color:rgba(139,169,181,.34);color:#bcccd3}
+
+/* Flat tactical language behind the live in-app network. It remains scenery only. */
+.network-stage .map-wrap{isolation:isolate}
+.network-stage .map-wrap::before{
+  content:"";
+  display:block!important;
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  opacity:.16;
+  background-image:
+    linear-gradient(rgba(92,119,132,.10) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(92,119,132,.10) 1px,transparent 1px),
+    linear-gradient(rgba(92,119,132,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(92,119,132,.035) 1px,transparent 1px);
+  background-size:96px 96px,96px 96px,24px 24px,24px 24px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);
+}
+.network-stage .map-wrap::after{
+  content:"";
+  position:absolute;
+  inset:12px;
+  z-index:0;
+  pointer-events:none;
+  opacity:.18;
+  background:
+    linear-gradient(90deg,rgba(106,133,145,.16),rgba(106,133,145,.16)) left top/42px 1px no-repeat,
+    linear-gradient(rgba(106,133,145,.16),rgba(106,133,145,.16)) left top/1px 42px no-repeat,
+    linear-gradient(90deg,rgba(106,133,145,.16),rgba(106,133,145,.16)) right bottom/42px 1px no-repeat,
+    linear-gradient(rgba(106,133,145,.16),rgba(106,133,145,.16)) right bottom/1px 42px no-repeat;
+}
+.network-stage #network,.network-stage .map-controls{position:relative;z-index:1}
+body:not([data-theme="night"]) .network-stage .map-wrap::before{opacity:.08}
+body:not([data-theme="night"]) .network-stage .map-wrap::after{opacity:.1}
+
+@media(max-width:700px){
+  .atlas-lock-status{top:14px;right:15px;column-gap:9px}
+  .atlas-lock-status strong{font-size:11px}
+  .atlas-lock-query{left:15px;bottom:14px}
+  .atlas-lock-ghost{width:125vw;opacity:.09}
+  .atlas-lock-topography{font-size:5px;opacity:.72}
+  .lock-screen .lock-card{padding:24px 21px 22px;width:min(360px,92vw)}
+}
+@media(prefers-reduced-motion:reduce){.atlas-lock-query{transition:none}}
