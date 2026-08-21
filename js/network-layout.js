@@ -1,4 +1,4 @@
-// Atlas v0.15.8-r1: sun-centred deterministic network grammar.
+// Atlas v0.15.9-r1: sun-centred deterministic network grammar with direct cross-links.
 (function(root){
   'use strict';
 
@@ -7,10 +7,10 @@
   if(!baseGraphData||!baseDrawNetwork)return;
 
   const CX=600,CY=340;
-  const ROOT_RADIUS=184;
+  const ROOT_RADIUS=204;
   const ROOT_START=-Math.PI*.76;
-  const BASE_CHILD_RADIUS=84;
-  const MIN_SIBLING_CLEARANCE=58;
+  const BASE_CHILD_RADIUS=92;
+  const MIN_SIBLING_CLEARANCE=64;
   const LABEL_GAP=10;
   const LABEL_LINE=10;
 
@@ -40,7 +40,7 @@
     return String(a.name||a.id).localeCompare(String(b.name||b.id));
   }
 
-  // Core domains are evenly anchored around one imaginary central sun.
+  // Core domains remain evenly anchored around one imaginary central sun.
   function assignRootAngles(roots){
     const ordered=roots.slice().sort(rootSort),out={};
     ordered.forEach((r,i)=>out[r.id]=ROOT_START+i*(Math.PI*2/Math.max(1,ordered.length)));
@@ -154,25 +154,18 @@
     return{x:a.x+dx/d*r,y:a.y+dy/d*r};
   }
 
-  // Associative links between branches are routed through the intentional central
-  // void. Parallel links receive only a small lane offset inside that void.
-  function centreRoute(a,b,lane=0){
+  // Associative links are literal relationships: one straight source-to-target
+  // segment. They may cross the central void or other branches naturally.
+  function directCrossRoute(a,b){
     const start=clippedEndpoint(a,b),end=clippedEndpoint(b,a);
-    const laneAngle=(hash(`${a.id}|${b.id}`)%628)/100;
-    const laneDistance=lane*7;
-    const hub={x:CX+Math.cos(laneAngle)*laneDistance,y:CY+Math.sin(laneAngle)*laneDistance};
-    const c1={x:start.x+(hub.x-start.x)*.58,y:start.y+(hub.y-start.y)*.58};
-    const c2={x:end.x+(hub.x-end.x)*.58,y:end.y+(hub.y-end.y)*.58};
-    return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} Q ${c1.x.toFixed(2)} ${c1.y.toFixed(2)} ${hub.x.toFixed(2)} ${hub.y.toFixed(2)} Q ${c2.x.toFixed(2)} ${c2.y.toFixed(2)} ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
+    return `M ${start.x.toFixed(2)} ${start.y.toFixed(2)} L ${end.x.toFixed(2)} ${end.y.toFixed(2)}`;
   }
 
   function routeCrossEdges(scope){
     const svg=document.getElementById('network');if(!svg)return;const gd=graphData(scope),byId=Object.fromEntries(gd.nodes.map(n=>[n.id,n]));
-    const paths=[...svg.querySelectorAll('.edge.cross')].sort((p,q)=>`${p.dataset.source}|${p.dataset.target}`.localeCompare(`${q.dataset.source}|${q.dataset.target}`));
-    paths.forEach((path,index)=>{
+    svg.querySelectorAll('.edge.cross').forEach(path=>{
       const a=byId[path.dataset.source],b=byId[path.dataset.target];if(!a||!b)return;
-      const lane=(index%5)-2;
-      path.setAttribute('d',centreRoute(a,b,lane));path.classList.add('centre-routed-cross');path.dataset.routeLane=String(lane);
+      path.setAttribute('d',directCrossRoute(a,b));path.classList.add('direct-cross-route');path.classList.remove('centre-routed-cross','tracked-cross-route');delete path.dataset.routeLane;
     });
   }
 
@@ -215,5 +208,5 @@
     return result;
   };
 
-  root.AtlasNetworkLayout=Object.freeze({version:'0.15.8-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,centreRoute,routeCrossEdges,placeLabelsBelow,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
+  root.AtlasNetworkLayout=Object.freeze({version:'0.15.9-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,assignRootAngles,childFanAngles,childRadius,directCrossRoute,routeCrossEdges,placeLabelsBelow,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
 })(window);
