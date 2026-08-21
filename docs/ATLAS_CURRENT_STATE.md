@@ -13,17 +13,18 @@ Authoritative continuation checkpoint for future development sessions.
 
 - The network is a deterministic constrained-force graph seeded by the Atlas hierarchy; it is not a random force cloud and it is not a rigid fixed-coordinate diagram.
 - The same hierarchy and physics settings should produce the same settled base constellation on reload/device.
-- The hierarchy/sun grammar supplies the starting shape; a bounded relaxation pass lets nodes and top-level branch envelopes repel/collide so clusters do not overlap or become cramped.
-- A weak common centre force keeps the graph coherent and gives the network an overall body.
+- The hierarchy/sun grammar supplies the starting shape; bounded force passes let nodes repel/collide and structural links behave as springs so clusters remain readable.
+- A weak common centre model keeps the graph coherent and gives the network an overall body.
 - Structural parent-child links act as springs and keep recognizable local clusters together.
 - Associative/dotted cross-links are visual relationships only and exert zero layout force.
 - Filters/scoped views hide or show nodes without redefining the full-profile base constellation.
-- Manual dragging remains relative to the hierarchy. During a manual move, the moved branch is treated as fixed while surrounding nodes receive a short deterministic settle around it.
-- Dragging a parent carries descendants; dragging a lower-level child carries only its own descendants.
+- Manual dragging remains relative to the hierarchy. Dragging a parent carries descendants; dragging a lower-level child carries only its own descendants.
 - Level-5 nodes remain independently selectable and draggable.
-- Anchor preserves the settled/manual constellation as relative offsets; Reform clears those offsets and returns to the deterministic force-relaxed base layout.
+- Only the branch actively being dragged is physically pinned during the organic settle.
+- Anchor preserves a preferred manual constellation as relative offsets. Those offsets influence future starting positions but do not permanently pin nodes; the graph remains free to relax around them.
+- Reform clears manual offsets and returns to the deterministic force-relaxed base layout.
 
-## Network geometry through v0.15.13
+## Network geometry through v0.15.14
 
 - The deterministic seed starts with core/root nodes at equal angular intervals on one compact circular orbit around an invisible centre (`ROOT_RADIUS=184`).
 - No preferred oversized gap exists between Work/Life/etc; hierarchy and node size communicate importance.
@@ -32,17 +33,18 @@ Authoritative continuation checkpoint for future development sessions.
 - Recursive seed expansion starts from `BASE_CHILD_RADIUS=84`.
 - A crowded seed fan may expand enough to preserve `MIN_SIBLING_CLEARANCE=58`; individual sibling radius jitter and two-ring splitting remain prohibited.
 - Child fans retain the tighter outward-biased spacing formula established in v0.15.7.
-- Seed coordinates are not final coordinates: the hierarchy-aware v0.15.11 settle provides a stable starting state, then v0.15.13 applies a final organic velocity-based settle with no angular memory.
-- Dense top-level branches must occupy separate readable territories; larger branches naturally claim more room because every node contributes charge/collision pressure rather than because a rigid branch envelope assigns them a fixed island.
+- Seed coordinates are not final coordinates: the hierarchy-aware settle provides a stable starting state, then the organic velocity-based settle removes final angular memory.
+- Dense top-level branches must occupy separate readable territories; larger branches naturally claim more room because every node contributes charge/collision pressure.
 - Structural/tree links remain quiet straight relationships.
 - Associative/dotted cross-links represent the actual source-to-target relationship as a straight clipped line. They are not obstacle-routed and do not use a synthetic centre waypoint or routing lane.
 - All normal node labels use the same neutral level-4 typography, sit below their node, and use deterministic collision avoidance.
-- v0.15.11 exposes five user-tunable graph parameters: Center, Repel, Link, Distance and Collision. Defaults are all `50`, and each slider updates the settled layout live.
+- The graph exposes five user-tunable parameters: Center, Repel, Link, Distance and Collision. Defaults are all `50`, and each slider updates the settled layout live.
 - `Reset defaults` restores all five physics values to `50`.
-- v0.15.12 consolidates every network control into one compact `Controls` details panel: zoom/fit percentage, Reform, Anchor, Depth, Type opacity, Links opacity and all five physics sliders.
-- The unified graph-control panel is collapsed by default and its open/closed UI state is deliberately not persisted. The map therefore keeps its canvas clear unless the user is actively tuning it.
-- v0.15.13 makes the final graph shape more Obsidian-like: structural links are springs, all nodes contribute size-aware repulsion/collision, the old fan directions do not constrain final angles, and the Center control recentres the graph centroid instead of gravitationally pulling every node into a circular clump.
-- Root nodes retain only a very weak common-centre gravity so the whole network has a coherent body without returning to a fixed root orbit.
+- Every network control lives in one compact `Controls` details panel: zoom/fit percentage, Reform, Anchor, Depth, Type opacity, Links opacity and all five physics sliders.
+- The unified graph-control panel is collapsed by default and its open/closed UI state is deliberately not persisted.
+- The final graph uses structural springs, size-aware node charge/collision, no final fan-angle memory, and centroid recentering rather than per-node gravity.
+- Root nodes retain only very weak common-centre gravity, but root-to-root repulsion is stronger than ordinary node repulsion so weakly connected top-level nodes do not stack in the middle.
+- Persisted manual offsets are soft starting preferences, not permanent pins. Anchored nodes remain participants in repulsion, collision, spring and centre forces after release.
 
 ## Version lineage relevant to network geometry
 
@@ -53,11 +55,12 @@ Authoritative continuation checkpoint for future development sessions.
 - v0.15.7: approved equal-radius/equal-angle recursive radial fan behaviour.
 - v0.15.8: compact circular central-sun seed geometry, fixed recursive expansion/clearance model and uniform below-node labels. Its synthetic centre-hub cross-link routing was later rejected.
 - v0.15.9: direct source-to-target cross-links plus restoration of the tighter radial fan angles.
-- v0.15.10: changes the radial/sun layout from final placement into a deterministic seed, then applies constrained force relaxation so nodes and whole branch envelopes respond to one another, stay separated and retain an overall centred shape.
+- v0.15.10: changes the radial/sun layout from final placement into a deterministic seed, then applies constrained force relaxation so nodes and whole branch envelopes respond to one another.
 - v0.15.11: makes the force model live-tunable with canonical physics settings and a collapsible graph-physics control panel.
 - v0.15.12: replaces the split map-control rail plus physics flyout with one collapsible control surface and adds Anchor to the same layout-control group.
-- v0.15.13: adds a deterministic velocity-based final settle that removes final-angle memory, uses size-aware node charge/collision and spring links, and changes centre force from per-node gravity to centroid recentering for a looser Obsidian-style constellation.
+- v0.15.13: adds a deterministic velocity-based final settle that removes final-angle memory, uses size-aware node charge/collision and spring links, and changes centre force from per-node gravity to centroid recentering.
+- v0.15.14: fixes anchored/manual nodes being incorrectly treated as permanent pins and strengthens root-to-root repulsion so weakly connected core nodes distribute naturally instead of stacking at the graph centre.
 
 ## Development rule
 
-When changing network geometry, distinguish user-approved design constraints from implementation details in previous versions. The network should behave like an Obsidian-style responsive graph while remaining deterministic, hierarchical and visually restrained. Do not reintroduce rigid final radial placement, random physics, synthetic cross-link routing, or cross-link layout forces without explicit approval.
+When changing network geometry, distinguish user-approved design constraints from implementation details in previous versions. The network should behave like an Obsidian-style responsive graph while remaining deterministic, hierarchical and visually restrained. Do not reintroduce rigid final radial placement, permanent manual-offset pinning, random physics, synthetic cross-link routing, or cross-link layout forces without explicit approval.
