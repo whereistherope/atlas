@@ -1,4 +1,4 @@
-// Atlas v0.15.6-r1: deterministic contained constellation clusters.
+// Atlas v0.15.7-r1: deterministic recursive radial fans.
 (function(root){
   'use strict';
 
@@ -9,7 +9,7 @@
   const CX=600,CY=340,ROOT_RX=265,ROOT_RY=178;
   const ROOT_SLOTS=[-2.40,-1.61,-.79,.02,.80,1.60,2.39,3.12];
   const PREFERRED_ROOT_SLOT={WRK:0,WORK:0,LIFE:2,CRTV:4,CREATIVE:4,DAIL:6,DAILY:6};
-  const ORBIT={3:[92,132],4:[62,88],5:[43,61],6:[36,50]};
+  const CHILD_RADIUS_BY_PARENT={2:112,3:86,4:66,5:54,6:48};
 
   const num=v=>Number.isFinite(Number(v))?Number(v):0;
   const round=v=>Math.round(Number(v||0)*10)/10;
@@ -50,74 +50,50 @@
     return out;
   }
 
+  function childFanAngles(parent,count,outward){
+    if(count<=0)return[];
+    if(count===1)return[outward];
+    // Leave a quiet inward wedge toward the parent. All sibling angles are equal.
+    const step=clamp(.66-(Math.max(0,count-4)*.045),.42,.66);
+    const span=Math.min(Math.PI*1.48,step*(count-1));
+    const actualStep=span/(count-1);
+    return Array.from({length:count},(_,i)=>outward-span/2+i*actualStep);
+  }
+
   function computeBaseLayout(profileId=activeProfileId()){
     const nodes=sourceNodes(profileId),byId=Object.fromEntries(nodes.map(n=>[n.id,n])),kids={};
     nodes.forEach(n=>(kids[n.parentId||'atlas']??=[]).push(n));
     Object.values(kids).forEach(list=>list.sort((a,b)=>String(a.name||a.id).localeCompare(String(b.name||b.id))));
-    const roots=nodes.filter(n=>n.parentId==='atlas'||!byId[n.parentId]).sort(rootSort),rootAngles=assignRootAngles(roots),leafMemo={};
-
-    function leafCount(id){
-      if(leafMemo[id])return leafMemo[id];const cs=kids[id]||[];
-      return leafMemo[id]=cs.length?cs.reduce((s,c)=>s+leafCount(c.id),0):1;
-    }
-
+    const roots=nodes.filter(n=>n.parentId==='atlas'||!byId[n.parentId]).sort(rootSort),rootAngles=assignRootAngles(roots);
     const positions={};
+
     roots.forEach((r,i)=>{
       const a=rootAngles[r.id]??(-Math.PI/2+i*Math.PI*2/Math.max(1,roots.length));
-      positions[r.id]={x:round(CX+Math.cos(a)*ROOT_RX),y:round(CY+Math.sin(a)*ROOT_RY),mapZ:round(signedUnit(r.id+'z')*14),angle:a,level:Number(r.level)||2,parentId:r.parentId||'atlas'};
+      positions[r.id]={x:round(CX+Math.cos(a)*ROOT_RX),y:round(CY+Math.sin(a)*ROOT_RY),mapZ:round(signedUnit(r.id+'z')*12),angle:a,level:Number(r.level)||2,parentId:r.parentId||'atlas'};
     });
 
-    function orbitAngles(parent,count,ringIndex,ringCount,outward){
-      if(ringCount<=0)return[];
-      if(ringCount===1){
-        const bend=signedUnit(parent.id+':single:'+ringIndex)*.48;
-        return [outward+bend];
-      }
-      const span=count>=7?4.30:count>=5?3.95:count>=3?3.45:2.40;
-      const start=outward-span/2;
-      const phase=ringIndex?span/(Math.max(2,ringCount)*2):0;
-      return Array.from({length:ringCount},(_,i)=>start+phase+(span*(i+.5)/ringCount)+signedUnit(parent.id+':slot:'+ringIndex+':'+i)*.055);
-    }
-
-    function placeCluster(parent,ancestorPos){
+    function placeFan(parent,ancestorPos){
       const cs=(kids[parent.id]||[]).slice();if(!cs.length)return;
       const pp=positions[parent.id];if(!pp)return;
       const inward=ancestorPos?Math.atan2(ancestorPos.y-pp.y,ancestorPos.x-pp.x):Math.atan2(CY-pp.y,CX-pp.x);
       const outward=inward+Math.PI;
+      const angles=childFanAngles(parent,cs.length,outward);
+      const parentLevel=clamp(Number(parent.level)||2,2,6);
+      const radius=CHILD_RADIUS_BY_PARENT[parentLevel]||54;
 
-      // Larger subtrees get first access to the outer ring so their own packet has room.
-      cs.sort((a,b)=>leafCount(b.id)-leafCount(a.id)||String(a.name||a.id).localeCompare(String(b.name||b.id)));
-      const useTwoRings=cs.length>5;
-      const inner=[],outer=[];
-      cs.forEach((child,i)=>{
-        if(useTwoRings&&(leafCount(child.id)>1||i%2===1))outer.push(child);else inner.push(child);
-      });
-      if(useTwoRings&&outer.length===0)outer.push(inner.pop());
-
-      const groups=[inner,outer];
-      groups.forEach((group,ringIndex)=>{
-        if(!group.length)return;
-        const level=clamp(Number(group[0]?.level)||Math.min(5,(Number(parent.level)||2)+1),3,6),radii=ORBIT[level]||ORBIT[5];
-        const angles=orbitAngles(parent,cs.length,ringIndex,group.length,outward);
-        group.forEach((child,index)=>{
-          const childLevel=clamp(Number(child.level)||level,3,6);
-          const childRadii=ORBIT[childLevel]||radii;
-          const subtree=leafCount(child.id);
-          const baseDistance=(ringIndex?childRadii[1]:childRadii[0])+Math.min(24,Math.max(0,subtree-1)*3.5);
-          const distance=baseDistance*(1+signedUnit(child.id+':radius')*.075);
-          const angle=angles[index];
-          positions[child.id]={
-            x:round(pp.x+Math.cos(angle)*distance),
-            y:round(pp.y+Math.sin(angle)*distance*.88),
-            mapZ:round((pp.mapZ||0)*.28+signedUnit(child.id+'z')*17),
-            angle,level:childLevel,parentId:child.parentId||parent.id
-          };
-          placeCluster(child,pp);
-        });
+      cs.forEach((child,index)=>{
+        const angle=angles[index],childLevel=clamp(Number(child.level)||Math.min(5,parentLevel+1),3,6);
+        positions[child.id]={
+          x:round(pp.x+Math.cos(angle)*radius),
+          y:round(pp.y+Math.sin(angle)*radius*.92),
+          mapZ:round((pp.mapZ||0)*.24+signedUnit(child.id+'z')*14),
+          angle,level:childLevel,parentId:child.parentId||parent.id
+        };
+        placeFan(child,pp);
       });
     }
 
-    roots.forEach(root=>placeCluster(root,{x:CX,y:CY}));
+    roots.forEach(root=>placeFan(root,{x:CX,y:CY}));
     return positions;
   }
 
@@ -160,14 +136,14 @@
     });
     delete mapDraftLayouts[profileId];await save?.();mapCamera(null).needsFit=false;drawNetwork(document.getElementById('network')?.dataset.scope||null);
     const button=document.querySelector('[data-map-anchor]');if(button){button.textContent='Anchored';button.classList.add('is-confirmed');setTimeout(()=>{if(button.isConnected){button.textContent='Anchor';button.classList.remove('is-confirmed')}},1400)}
-    toast?.('Constellation anchored');
+    toast?.('Radial constellation anchored');
   }
 
   async function reformGuidedLayout(scope=null){
     const profileId=activeProfileId();
     (state.areas||[]).filter(a=>(a.profile||'me')===profileId).forEach(a=>{delete a.mapOffsetX;delete a.mapOffsetY;delete a.mapOffsetZ});
     (state.notes||[]).filter(n=>(n.profile||'me')===profileId).forEach(n=>{delete n.mapOffsetX;delete n.mapOffsetY;delete n.mapOffsetZ});
-    delete mapDraftLayouts[profileId];await save?.();const cam=mapCamera(scope);cam.needsFit=true;drawNetwork(scope);toast?.('Contained constellation restored');
+    delete mapDraftLayouts[profileId];await save?.();const cam=mapCamera(scope);cam.needsFit=true;drawNetwork(scope);toast?.('Equal radial layout restored');
   }
 
   function crossCurve(a,b,lane=0){
@@ -215,5 +191,5 @@
     return result;
   };
 
-  root.AtlasNetworkLayout=Object.freeze({version:'0.15.6-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,crossCurve,routeCrossEdges,placeRadialLabels,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
+  root.AtlasNetworkLayout=Object.freeze({version:'0.15.7-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,childFanAngles,crossCurve,routeCrossEdges,placeRadialLabels,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
 })(window);
