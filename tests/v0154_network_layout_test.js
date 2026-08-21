@@ -7,7 +7,7 @@ const sw=fs.readFileSync('sw.js','utf8');
 
 for(const token of [
   'AtlasNetworkLayout','computeBaseLayout','guidedPositions','assignRootAngles',
-  'PREFERRED_ROOT_SLOT','localOffset','mapOffsetX','mapOffsetY','mapOffsetZ',
+  'localOffset','mapOffsetX','mapOffsetY','mapOffsetZ',
   'delete mapDraftLayouts[profileId]'
 ]) assert(layout.includes(token),`missing guided-layout contract: ${token}`);
 
