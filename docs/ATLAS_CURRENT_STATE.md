@@ -8,7 +8,7 @@ Authoritative continuation checkpoint for future development sessions.
 - Local persistence remains an offline/cache/safety layer; it is not a second competing Atlas.
 - Network presentation changes must not create a local-only graph path or alter canonical payload semantics unless explicitly scoped.
 - Network physics preferences live in `state.settings.networkPhysics` so the chosen graph feel is part of the shared Atlas settings rather than browser-only state.
-- Network split-view preference lives in `state.settings.mapSplitRatio`; it is presentation state only and does not duplicate graph/list data.
+- Network split-view proportion lives in `state.settings.mapSplitRatio`; split pane order lives in `state.settings.mapSplitOrder`. Both are presentation state only and do not duplicate graph/list data.
 
 ## Network interaction contracts
 
@@ -25,7 +25,7 @@ Authoritative continuation checkpoint for future development sessions.
 - Anchor preserves a preferred manual constellation as relative offsets. Those offsets influence future starting positions but do not permanently pin nodes; the graph remains free to relax around them.
 - Reform clears manual offsets and returns to the deterministic force-relaxed base layout.
 
-## Network geometry through v0.15.15
+## Network geometry through v0.15.16
 
 - The deterministic seed starts with core/root nodes at equal angular intervals on one compact circular orbit around an invisible centre (`ROOT_RADIUS=184`).
 - No preferred oversized gap exists between Work/Life/etc; hierarchy and node size communicate importance.
@@ -52,10 +52,12 @@ Authoritative continuation checkpoint for future development sessions.
 - The network pane has four explicit modes: Nodes, List, Split and Predict.
 - Nodes is the full relationship map; List is the existing structural branch tree; Predict remains the procedural projection view.
 - Split renders the same live Nodes map and the same existing List branch tree simultaneously. It must not create a second graph state or a second list data source.
-- Split defaults to 60% map / 40% list and stores the chosen proportion in `state.settings.mapSplitRatio`.
-- The split divider is the resize control: dragging it changes the map/list proportion live. The ratio is clamped to 25–75% so neither pane can be collapsed accidentally.
+- Split defaults to 60% map / 40% list and stores the chosen map proportion in `state.settings.mapSplitRatio`.
+- The split divider is the resize control: dragging it changes the map/list proportion live. The map ratio is clamped to 25–75% so neither pane can be collapsed accidentally.
+- Split order is switchable with a compact Swap control. `state.settings.mapSplitOrder` persists either `map-first` or `list-first` without altering the saved map ratio.
+- On desktop this means Map | List or List | Map. On narrow/mobile layouts the same preference becomes Map over List or List over Map.
+- The divider remains physically intuitive after swapping: dragging toward the map reduces the map share and dragging away increases it.
 - The divider is keyboard accessible with arrow keys plus Home/End and exposes separator ARIA values.
-- On narrow/mobile layouts, Split changes from left/right columns to a top/bottom arrangement and applies the same saved ratio to height.
 - Nodes, List and Predict remain available as full-pane modes; Split is additive rather than replacing them.
 - The map inside Split uses the same camera, graph physics, hierarchy dragging and collapsed graph Controls panel as Nodes mode.
 
@@ -74,6 +76,7 @@ Authoritative continuation checkpoint for future development sessions.
 - v0.15.13: adds a deterministic velocity-based final settle that removes final-angle memory, uses size-aware node charge/collision and spring links, and changes centre force from per-node gravity to centroid recentering.
 - v0.15.14: fixes anchored/manual nodes being incorrectly treated as permanent pins and strengthens root-to-root repulsion so weakly connected core nodes distribute naturally instead of stacking at the graph centre.
 - v0.15.15: adds a persisted, resizable Split network view that composes the existing Nodes map and List branch tree side-by-side, with a responsive top/bottom arrangement on narrow screens.
+- v0.15.16: makes Split pane order switchable and persistent while preserving the saved map proportion across Map/List and List/Map arrangements.
 
 ## Development rule
 
