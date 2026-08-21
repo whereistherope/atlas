@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0166r1';
+  const BUILD='0167r1';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -23,7 +23,9 @@
   loadStyle('./styles/workspace-actions.css');
   loadStyle('./styles/network-layout.css');
   loadStyle('./styles/network-split.css');
+  loadStyle('./styles/lock-topography.css');
 
+  try { await loadScript('./js/lock-topography.js','Atlas lock topography v0.16.7'); } catch (_) {}
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync-hotfix.js','Atlas canonical migration hotfix'); } catch (_) {}
