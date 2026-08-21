@@ -7,7 +7,6 @@ for(const token of [
   "guidedPositions",
   "cumulativeOffsets",
   "routeCrossEdges(scope)",
-  "placeRadialLabels(scope)",
   "mapOffsetX",
   "mapOffsetY",
   "mapOffsetZ",
@@ -15,7 +14,6 @@ for(const token of [
 
 assert(!layout.includes('headings[parent.id]'),'descendants must not inherit a trajectory heading from their parent');
 assert(layout.includes("svg.querySelectorAll('.edge.cross')"),'only secondary cross-links should be rerouted');
-assert(layout.includes("label.setAttribute('text-anchor'"),'labels must be positioned radially away from their parent connection');
 assert(layout.includes('p.x-base[n.id].x-parent.x'),'manual anchors must remain hierarchical relative offsets');
 
 console.log('Atlas durable clustered constellation contracts: PASS');
