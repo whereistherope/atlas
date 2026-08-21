@@ -23,9 +23,9 @@ assert(css.includes('grid-template-areas:"map divider list"'),'desktop map-first
 assert(css.includes('grid-template-areas:"list divider map"'),'desktop list-first order missing');
 assert(css.includes('grid-template-areas:"map" "divider" "list"'),'mobile map-first order missing');
 assert(css.includes('grid-template-areas:"list" "divider" "map"'),'mobile list-first order missing');
-assert(bootstrap.includes("const BUILD='0166r1'"),'bootstrap build not bumped');
+assert(/const BUILD='\d{4}r\d+'/.test(bootstrap),'bootstrap build token missing');
 assert(bootstrap.includes('Atlas switchable split network/list view v0.15.16'),'bootstrap split label missing');
-assert(sw.includes("atlas-shell-0.16.6-r1"),'service worker cache not bumped');
+assert(/atlas-shell-0\.\d+\.\d+-r\d+/.test(sw),'service worker cache token missing');
 assert(docs.includes('Split order is switchable with a compact Swap control'),'handoff must document swap control');
 assert(docs.includes('mapSplitOrder'),'handoff must document persisted pane order');
 

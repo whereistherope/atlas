@@ -1,0 +1,193 @@
+/* Atlas v0.16.7-r3 · full-field layered topographic lock surface + restrained tactical map background. */
+.lock-screen{
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 48% 52%,rgba(79,96,89,.13),transparent 38%),
+    radial-gradient(ellipse at 52% 88%,rgba(65,79,73,.10),transparent 42%),
+    linear-gradient(180deg,#050706 0%,#090c0a 54%,#030504 100%);
+  color:#d4d8d3;
+}
+.lock-screen::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 50%,transparent 0 45%,rgba(0,0,0,.06) 68%,rgba(0,0,0,.42) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.01),transparent 18%,transparent 80%,rgba(0,0,0,.16));
+  box-shadow:inset 0 0 190px rgba(0,0,0,.36);
+}
+.lock-screen::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:6;
+  pointer-events:none;
+  opacity:.14;
+  background-image:radial-gradient(rgba(222,226,218,.10) .45px,transparent .55px);
+  background-size:6px 6px;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 20%,#000 82%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 20%,#000 82%,transparent 100%);
+}
+.atlas-lock-surface{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.atlas-lock-relief{
+  position:absolute;
+  inset:-10vh -8vw -12vh;
+  opacity:1;
+  overflow:hidden;
+}
+.atlas-lock-layer{
+  position:absolute;
+  left:50%;top:50%;
+  width:max-content;
+  margin:0;
+  color:rgba(174,190,179,.34);
+  font:500 clamp(7px,.54vw,10px)/.82 "SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  letter-spacing:.035em;
+  white-space:pre;
+  user-select:none;
+  transform-origin:center;
+  text-shadow:0 0 10px rgba(143,164,151,.08);
+  mix-blend-mode:screen;
+}
+.atlas-lock-layer.layer-1{opacity:.24;transform:translate(-54%,-76%) scale(1.54) rotate(-7deg)}
+.atlas-lock-layer.layer-2{opacity:.30;transform:translate(-48%,-66%) scale(1.42) rotate(-4deg)}
+.atlas-lock-layer.layer-3{opacity:.38;transform:translate(-53%,-55%) scale(1.30) rotate(-1deg)}
+.atlas-lock-layer.layer-4{opacity:.48;transform:translate(-47%,-44%) scale(1.18) rotate(2deg)}
+.atlas-lock-layer.layer-5{opacity:.42;transform:translate(-52%,-31%) scale(1.08) rotate(4deg)}
+.atlas-lock-layer.layer-6{opacity:.34;transform:translate(-46%,-18%) scale(.98) rotate(6deg)}
+.atlas-lock-layer.layer-7{opacity:.26;transform:translate(-50%,-5%) scale(.90) rotate(8deg)}
+.atlas-lock-relief::after{
+  content:"";
+  position:absolute;
+  inset:8%;
+  background:
+    radial-gradient(ellipse at 38% 42%,rgba(132,151,140,.07),transparent 28%),
+    radial-gradient(ellipse at 64% 61%,rgba(118,137,127,.06),transparent 32%);
+  filter:blur(26px);
+}
+.atlas-lock-status{
+  position:absolute;
+  z-index:4;
+  top:28px;right:31px;
+  display:flex;
+  gap:22px;
+  align-items:flex-start;
+  color:rgba(187,194,188,.42);
+  font:500 8px/1.35 Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  pointer-events:none;
+}
+.atlas-lock-status strong{
+  display:block;
+  color:rgba(222,226,221,.68);
+  font:500 14px/1.05 Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.025em;
+  margin-bottom:3px;
+}
+.atlas-lock-status .lock-utc{text-align:right}
+.lock-screen .lock-card{
+  position:relative;
+  z-index:4;
+  width:min(460px,90vw);
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:none;
+  text-align:center;
+}
+.lock-screen .lock-card::before{display:none!important;content:none!important}
+.lock-screen .lock-brand{
+  margin:0 0 32px;
+  color:#d9ddd8;
+  text-align:center;
+  text-shadow:0 2px 22px rgba(0,0,0,.46);
+}
+.lock-screen .atlas-logo-lock{
+  display:block;
+  width:min(330px,72vw);
+  max-width:none;
+  height:auto;
+  margin:0 auto;
+  opacity:.92;
+  filter:grayscale(1) saturate(0) brightness(1.16) contrast(.95);
+}
+.lock-screen #lockContent{width:min(390px,86vw);margin:0 auto;text-align:left}
+.lock-screen .lock-title{
+  color:rgba(218,222,216,.82);
+  font:500 13px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  text-align:center;
+  margin-bottom:14px;
+}
+.lock-screen .lock-copy{color:rgba(171,181,173,.50);text-align:center;font-size:11px}
+.lock-screen .lock-field{margin:0 auto 13px;width:100%}
+.lock-screen .lock-field label{color:rgba(171,181,173,.42);font:500 8px/1.2 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+.lock-screen .lock-field:has(.pin-input) label{display:none}
+.lock-screen .lock-field input,.lock-screen .lock-field select{
+  width:100%;
+  border:0;
+  border-bottom:1px solid rgba(189,202,191,.28);
+  border-radius:0;
+  background:rgba(5,8,6,.10);
+  color:#d7ddd7;
+  padding:11px 4px;
+  outline:none;
+  box-shadow:none;
+  transition:border-color .16s ease,background .16s ease;
+}
+.lock-screen .lock-field input:focus,.lock-screen .lock-field select:focus{border-color:rgba(215,224,216,.64);background:rgba(5,8,6,.18);box-shadow:none}
+.lock-screen .pin-input{
+  width:min(246px,70vw)!important;
+  display:block;
+  margin:0 auto;
+  text-align:center;
+  font:500 19px/1 Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.82em;
+  padding:13px 0 12px .82em!important;
+  caret-color:rgba(220,225,219,.82);
+}
+.lock-screen .lock-actions{justify-content:center;gap:24px;margin-top:16px}
+.lock-screen .lock-primary,.lock-screen .lock-secondary{
+  min-height:0;border:0;border-radius:0;background:transparent;padding:7px 1px 6px;color:rgba(193,201,194,.52);font:600 9px/1 Inter,ui-sans-serif,system-ui,sans-serif;text-transform:uppercase;letter-spacing:.16em;transition:color .14s ease,border-color .14s ease
+}
+.lock-screen .lock-primary{color:rgba(223,228,222,.78);border-bottom:1px solid rgba(204,214,205,.28)}
+.lock-screen .lock-primary:hover,.lock-screen .lock-secondary:hover{color:#eef1ed;border-color:rgba(224,230,224,.72);background:transparent}
+.lock-screen .lock-primary:disabled{opacity:.35}
+.lock-screen .lock-message{min-height:16px;text-align:center;color:rgba(190,171,126,.72);font:500 9px/1.45 Inter,ui-sans-serif,system-ui,sans-serif}
+.lock-screen .recovery-key{border:1px solid rgba(174,189,178,.22);background:rgba(8,11,9,.34);color:#cbd3cc}
+.lock-screen .lock-check{justify-content:center;color:rgba(174,184,176,.48)}
+
+/* Flat tactical language behind the live in-app network. Scenery only. */
+.network-stage .map-wrap{isolation:isolate}
+.network-stage .map-wrap::before{
+  content:"";display:block!important;position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.12;
+  background-image:linear-gradient(rgba(92,119,132,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(92,119,132,.09) 1px,transparent 1px),linear-gradient(rgba(92,119,132,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(92,119,132,.03) 1px,transparent 1px);
+  background-size:96px 96px,96px 96px,24px 24px,24px 24px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);
+}
+.network-stage .map-wrap::after{
+  content:"";position:absolute;inset:12px;z-index:0;pointer-events:none;opacity:.14;
+  background:linear-gradient(90deg,rgba(106,133,145,.16),rgba(106,133,145,.16)) left top/42px 1px no-repeat,linear-gradient(rgba(106,133,145,.16),rgba(106,133,145,.16)) left top/1px 42px no-repeat,linear-gradient(90deg,rgba(106,133,145,.16),rgba(106,133,145,.16)) right bottom/42px 1px no-repeat,linear-gradient(rgba(106,133,145,.16),rgba(106,133,145,.16)) right bottom/1px 42px no-repeat;
+}
+.network-stage #network,.network-stage .map-controls{position:relative;z-index:1}
+body:not([data-theme="night"]) .network-stage .map-wrap::before{opacity:.07}
+body:not([data-theme="night"]) .network-stage .map-wrap::after{opacity:.08}
+
+@media(max-width:700px){
+  .atlas-lock-status{top:16px;right:16px;gap:13px}.atlas-lock-status strong{font-size:12px}
+  .atlas-lock-relief{inset:-6vh -45vw -8vh}
+  .atlas-lock-layer{font-size:5.5px;letter-spacing:.02em}
+  .lock-screen .atlas-logo-lock{width:min(285px,70vw)}
+  .lock-screen .lock-card{width:min(390px,92vw)}
+  .lock-screen #lockContent{width:min(330px,82vw)}
+}
+@media(max-height:700px){.atlas-lock-layer{font-size:6px}.lock-screen .atlas-logo-lock{width:min(270px,64vw)}}
+@media(prefers-reduced-motion:reduce){.lock-screen *{transition:none!important}}
