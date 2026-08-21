@@ -1,4 +1,4 @@
-// Atlas v0.15.4-r1: deterministic guided network layout.
+// Atlas v0.15.5-r1: deterministic recursive orbital network grammar.
 (function(root){
   'use strict';
 
@@ -6,15 +6,16 @@
   const baseDrawNetwork=typeof drawNetwork==='function'?drawNetwork:null;
   if(!baseGraphData||!baseDrawNetwork)return;
 
-  const CX=600,CY=340,Y_SCALE=.60;
-  const RADII={1:72,2:150,3:280,4:395,5:470,6:520};
-  const ROOT_SLOTS=[-2.356,-1.571,-.785,0,.785,1.571,2.356,3.142];
+  const CX=600,CY=340,ROOT_RX=300,ROOT_RY=205;
+  const ROOT_SLOTS=[-2.42,-1.62,-.78,.04,.82,1.62,2.38,3.10];
   const PREFERRED_ROOT_SLOT={WRK:0,WORK:0,LIFE:2,CRTV:4,CREATIVE:4,DAIL:6,DAILY:6};
+  const STEP={2:0,3:132,4:94,5:68,6:54};
 
   const num=v=>Number.isFinite(Number(v))?Number(v):0;
   const round=v=>Math.round(Number(v||0)*10)/10;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  const angleDistance=(a,b)=>{let d=Math.abs(a-b)%(Math.PI*2);return d>Math.PI?Math.PI*2-d:d};
+  const hash=value=>{let h=2166136261;for(const c of String(value||''))h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0};
+  const signedUnit=value=>((hash(value)%2001)/1000)-1;
 
   function activeProfileId(){return state?.settings?.activeProfile||'me'}
   function structuralParent(note){return note?.topicId||note?.areaId||''}
@@ -39,12 +40,12 @@
     const out={},used=new Set(),deferred=[];
     roots.slice().sort(rootSort).forEach(r=>{
       const key=String(r.code||r.name||'').toUpperCase(),slot=PREFERRED_ROOT_SLOT[key];
-      if(slot!==undefined&&!used.has(slot)){out[r.id]=ROOT_SLOTS[slot];used.add(slot)}else deferred.push(r);
+      if(slot!==undefined&&!used.has(slot)&&roots.length<=ROOT_SLOTS.length){out[r.id]=ROOT_SLOTS[slot];used.add(slot)}else deferred.push(r);
     });
     const free=ROOT_SLOTS.map((_,i)=>i).filter(i=>!used.has(i));
     deferred.forEach((r,i)=>{
-      if(free[i]!==undefined){out[r.id]=ROOT_SLOTS[free[i]];used.add(free[i]);return}
-      out[r.id]=-Math.PI+i*Math.PI*2/Math.max(1,deferred.length);
+      if(free[i]!==undefined&&roots.length<=ROOT_SLOTS.length){out[r.id]=ROOT_SLOTS[free[i]];return}
+      const ordered=roots.slice().sort(rootSort),idx=ordered.findIndex(x=>x.id===r.id);out[r.id]=-Math.PI/2+idx*Math.PI*2/Math.max(1,roots.length);
     });
     return out;
   }
@@ -60,29 +61,51 @@
       return leafMemo[id]=cs.length?cs.reduce((s,c)=>s+leafCount(c.id),0):1;
     }
 
-    const positions={},angles={};
-    function assignBranch(node,start,end,rootAngle){
-      const cs=kids[node.id]||[];
-      if(!cs.length){angles[node.id]=(start+end)/2;return}
-      const span=Math.max(.001,end-start),gap=cs.length>1?Math.min(.028,span/(cs.length*6)):0;
-      const usable=Math.max(.001,span-gap*Math.max(0,cs.length-1)),total=cs.reduce((s,c)=>s+leafCount(c.id),0);let cursor=start;
-      cs.forEach((c,i)=>{
-        const part=usable*(leafCount(c.id)/Math.max(1,total)),s=cursor,e=s+part;assignBranch(c,s,e,rootAngle);cursor=e+(i<cs.length-1?gap:0);
+    const positions={},headings={};
+
+    roots.forEach((r,i)=>{
+      const a=rootAngles[r.id]??(-Math.PI/2+i*Math.PI*2/Math.max(1,roots.length));
+      const radialJitter=signedUnit(r.id+'root')*16;
+      positions[r.id]={x:round(CX+Math.cos(a)*(ROOT_RX+radialJitter)),y:round(CY+Math.sin(a)*(ROOT_RY+radialJitter*.55)),mapZ:round(signedUnit(r.id+'z')*18),angle:a,level:Number(r.level)||2,parentId:r.parentId||'atlas'};
+      headings[r.id]=a;
+    });
+
+    function placeChildren(parent){
+      const cs=kids[parent.id]||[];if(!cs.length)return;
+      const pp=positions[parent.id];if(!pp)return;
+      const heading=headings[parent.id]??Math.atan2(pp.y-CY,pp.x-CX);
+      const count=cs.length,total=cs.reduce((s,c)=>s+leafCount(c.id),0);
+      const spread=count<=1?0:clamp(.48+Math.log2(count+1)*.18,.52,1.34);
+      let cursor=-spread/2;
+
+      cs.forEach((child,index)=>{
+        const weight=leafCount(child.id)/Math.max(1,total);
+        const share=count<=1?0:spread*weight;
+        const centre=count<=1?0:cursor+share/2;
+        cursor+=share;
+
+        // Local orbital grammar: children fan around their own parent. Small,
+        // deterministic variation prevents ruler-lines without introducing chaos.
+        const angleJitter=signedUnit(child.id+'angle')*(count>4?.055:.08);
+        const childHeading=heading+centre+angleJitter;
+        const level=clamp(Number(child.level)||Math.min(5,(Number(parent.level)||2)+1),2,6);
+        const baseDistance=STEP[level]||68;
+        const densityBoost=Math.min(22,Math.max(0,count-3)*4);
+        const distance=baseDistance+densityBoost+signedUnit(child.id+'radius')*Math.min(13,baseDistance*.13);
+        const tangent=signedUnit(child.id+'tangent')*(level>=4?8:11);
+        const nx=Math.cos(childHeading),ny=Math.sin(childHeading),tx=-ny,ty=nx;
+        positions[child.id]={
+          x:round(pp.x+nx*distance+tx*tangent),
+          y:round(pp.y+ny*distance*.78+ty*tangent*.72),
+          mapZ:round((pp.mapZ||0)*.36+signedUnit(child.id+'z')*20),
+          angle:childHeading,level,parentId:child.parentId||parent.id
+        };
+        headings[child.id]=childHeading;
+        placeChildren(child);
       });
-      angles[node.id]=node.parentId==='atlas'?rootAngle:cs.reduce((sum,c)=>sum+(angles[c.id]||rootAngle)*leafCount(c.id),0)/Math.max(1,total);
     }
 
-    roots.forEach(root=>{
-      const center=rootAngles[root.id]??0,others=roots.filter(r=>r.id!==root.id).map(r=>angleDistance(center,rootAngles[r.id]??0));
-      const nearest=others.length?Math.min(...others):Math.PI*2;
-      const leaves=leafCount(root.id),half=roots.length===1?1.15:clamp(.36+Math.log2(leaves+1)*.075,.38,Math.min(.72,nearest*.40));
-      assignBranch(root,center-half,center+half,center);
-    });
-
-    nodes.forEach(n=>{
-      const level=clamp(Number(n.level)||2,1,6),angle=angles[n.id]??0,r=RADII[level]||RADII[5];
-      positions[n.id]={x:round(CX+Math.cos(angle)*r),y:round(CY+Math.sin(angle)*r*Y_SCALE),mapZ:round(stableOffset?.(n.id,18)||0),angle,level,parentId:n.parentId||'atlas'};
-    });
+    roots.forEach(placeChildren);
     return positions;
   }
 
@@ -104,16 +127,12 @@
     return out;
   }
 
-  // Graph geometry is always derived from hierarchy first. Scope, depth and Space
-  // filtering only decide what is shown; they do not reshuffle the underlying map.
   graphData=function(scope){
     const gd=baseGraphData(scope),positions=guidedPositions(activeProfileId(),true);
     gd.nodes.forEach(n=>{const p=positions[n.id];if(!p)return;n.x=p.x;n.y=p.y;n.mapZ=p.mapZ;n.z=p.mapZ});
     return gd;
   };
 
-  // A first drag must begin from the guided constellation, never legacy absolute
-  // coordinates. This keeps the rest of the map stable while a branch is moved.
   setMapDraftFromAreas=function(_areas,profileId=activeProfileId()){
     const positions=guidedPositions(profileId,false);mapDraftLayouts[profileId]=Object.fromEntries(Object.entries(positions).map(([id,p])=>[id,{x:p.x,y:p.y,mapZ:p.mapZ}]));return mapDraftLayouts[profileId];
   };
@@ -129,24 +148,44 @@
     });
     delete mapDraftLayouts[profileId];await save?.();mapCamera(null).needsFit=false;drawNetwork(document.getElementById('network')?.dataset.scope||null);
     const button=document.querySelector('[data-map-anchor]');if(button){button.textContent='Anchored';button.classList.add('is-confirmed');setTimeout(()=>{if(button.isConnected){button.textContent='Anchor';button.classList.remove('is-confirmed')}},1400)}
-    toast?.('Guided constellation anchored');
+    toast?.('Orbital constellation anchored');
   }
 
   async function reformGuidedLayout(scope=null){
     const profileId=activeProfileId();
     (state.areas||[]).filter(a=>(a.profile||'me')===profileId).forEach(a=>{delete a.mapOffsetX;delete a.mapOffsetY;delete a.mapOffsetZ});
     (state.notes||[]).filter(n=>(n.profile||'me')===profileId).forEach(n=>{delete n.mapOffsetX;delete n.mapOffsetY;delete n.mapOffsetZ});
-    delete mapDraftLayouts[profileId];await save?.();const cam=mapCamera(scope);cam.needsFit=true;drawNetwork(scope);toast?.('Guided constellation restored');
+    delete mapDraftLayouts[profileId];await save?.();const cam=mapCamera(scope);cam.needsFit=true;drawNetwork(scope);toast?.('Orbital constellation restored');
+  }
+
+  function edgeCurve(a,b,type,index=0){
+    const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,nx=-dy/d,ny=dx/d;
+    const ar=visualRadius(a)+1.5,br=visualRadius(b)+1.5;
+    const x1=a.x+(dx/d)*ar,y1=a.y+(dy/d)*ar,x2=b.x-(dx/d)*br,y2=b.y-(dy/d)*br;
+    const key=`${a.id}|${b.id}|${type}`;
+    const side=signedUnit(key)>=0?1:-1;
+    const bend=type==='cross'?Math.min(72,Math.max(18,d*.18+((hash(key)%4)-1.5)*7)):Math.min(22,Math.max(5,d*.055));
+    const cx=(x1+x2)/2+nx*bend*side,cy=(y1+y2)/2+ny*bend*side;
+    return `M ${x1.toFixed(2)} ${y1.toFixed(2)} Q ${cx.toFixed(2)} ${cy.toFixed(2)} ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+  }
+
+  function routeEdges(scope){
+    const svg=document.getElementById('network');if(!svg)return;const gd=graphData(scope),byId=Object.fromEntries(gd.nodes.map(n=>[n.id,n]));
+    svg.querySelectorAll('.edge').forEach((path,index)=>{
+      const a=byId[path.dataset.source],b=byId[path.dataset.target];if(!a||!b)return;
+      path.setAttribute('d',edgeCurve(a,b,path.classList.contains('cross')?'cross':'tree',index));
+      path.classList.add('orbital-route');
+    });
   }
 
   anchorMapLayout=anchorGuidedLayout;
 
   drawNetwork=function(scope){
-    const result=baseDrawNetwork(scope);
+    const result=baseDrawNetwork(scope);routeEdges(scope);
     document.querySelectorAll('[data-map-layout]').forEach(button=>{button.onclick=()=>reformGuidedLayout(scope)});
     document.querySelectorAll('[data-map-anchor]').forEach(button=>{button.onclick=()=>anchorGuidedLayout()});
     return result;
   };
 
-  root.AtlasNetworkLayout=Object.freeze({version:'0.15.4-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
+  root.AtlasNetworkLayout=Object.freeze({version:'0.15.5-r1',computeBaseLayout,guidedPositions,cumulativeOffsets,edgeCurve,routeEdges,reform:reformGuidedLayout,anchor:anchorGuidedLayout});
 })(window);
