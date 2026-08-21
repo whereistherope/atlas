@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0165r1';
+  const BUILD='0166r1';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -46,7 +46,7 @@
   try { await loadScript('./js/network-layout.js','Atlas tunable constrained-force network grammar v0.15.11'); } catch (_) {}
   try { await loadScript('./js/network-organic.js','Atlas responsive organic network settle v0.15.14'); } catch (_) {}
   try { await loadScript('./js/network-controls.js','Atlas unified graph controls v0.15.12'); } catch (_) {}
-  try { await loadScript('./js/network-split.js','Atlas resizable split network/list view v0.15.15'); } catch (_) {}
+  try { await loadScript('./js/network-split.js','Atlas switchable split network/list view v0.15.16'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
