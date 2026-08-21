@@ -9,8 +9,7 @@
   text-anchor:middle!important;
 }
 
-/* v0.15.11: compact Obsidian-style physics tuner. It floats above the map and
-   is collapsed by default, so it never consumes permanent network canvas. */
+/* v0.15.11: compact Obsidian-style physics tuner. */
 .map-wrap .atlas-physics-control{position:absolute;z-index:32;top:47px;right:174px;pointer-events:auto;font:650 8px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;color:var(--ink)}
 .map-wrap .atlas-physics-control summary{list-style:none;min-width:72px;box-sizing:border-box;padding:10px 11px;border:1px solid color-mix(in srgb,var(--line) 82%,transparent);border-radius:2px;background:color-mix(in srgb,var(--surface-1) 93%,transparent);box-shadow:0 7px 22px rgba(0,0,0,.07);backdrop-filter:blur(9px);cursor:pointer;text-align:center;text-transform:uppercase;letter-spacing:.06em;user-select:none}
 .map-wrap .atlas-physics-control summary::-webkit-details-marker{display:none}
@@ -23,7 +22,63 @@
 .map-wrap .atlas-physics-row input[type="range"]{display:block;width:100%;margin:0;accent-color:var(--accent)}
 .map-wrap .atlas-physics-reset{width:100%;min-height:27px;margin-top:2px;border:1px solid var(--line);border-radius:2px;background:transparent;color:var(--muted);font:650 7.5px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;text-transform:uppercase;letter-spacing:.055em;cursor:pointer}
 .map-wrap .atlas-physics-reset:hover{color:var(--ink);background:color-mix(in srgb,var(--accent) 7%,transparent)}
+
+/* v0.15.12: every graph control lives behind one collapsed-by-default trigger. */
+.map-wrap .map-controls{width:auto!important;pointer-events:none}
+.map-wrap .map-controls .atlas-graph-control{
+  position:relative!important;
+  z-index:32;
+  top:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  display:block;
+  pointer-events:auto;
+}
+.map-wrap .map-controls .atlas-graph-control>summary{min-width:84px;padding:9px 11px}
+.map-wrap .map-controls .atlas-graph-control .atlas-physics-panel{
+  top:calc(100% + 6px)!important;
+  right:0!important;
+  bottom:auto!important;
+  width:236px;
+  max-height:min(72vh,560px);
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+.map-wrap .atlas-map-controls-group{padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent)}
+.map-wrap .atlas-control-heading{padding-bottom:8px;text-transform:uppercase;letter-spacing:.065em;color:var(--muted)}
+.map-wrap .atlas-map-control-stack{display:block}
+.map-wrap .atlas-graph-control .map-hud{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:6px!important;
+  overflow:visible!important;
+  align-items:stretch!important;
+}
+.map-wrap .atlas-graph-control .map-hud>*{width:100%!important;box-sizing:border-box;pointer-events:auto}
+.map-wrap .atlas-graph-control .zoom-controls[aria-label="Map layout controls"]{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+}
+.map-wrap .atlas-graph-control .zoom-controls[aria-label="Map layout controls"] button{
+  min-width:0!important;
+}
+.map-wrap .atlas-graph-control .depth{grid-template-columns:42px minmax(0,1fr) 26px!important}
+.map-wrap .atlas-graph-control .atlas-physics-heading{margin-top:0}
+
 @media(max-width:700px){
-  .map-wrap .atlas-physics-control{top:auto;right:8px;bottom:82px}
-  .map-wrap .atlas-physics-panel{top:auto;right:0;bottom:calc(100% + 6px);width:min(220px,calc(100vw - 24px))}
+  .map-wrap .map-controls{
+    left:auto!important;
+    right:8px!important;
+    top:47px!important;
+    bottom:auto!important;
+    width:auto!important;
+    max-width:none!important;
+  }
+  .map-wrap .map-controls .atlas-graph-control .atlas-physics-panel{
+    top:calc(100% + 6px)!important;
+    right:0!important;
+    bottom:auto!important;
+    width:min(236px,calc(100vw - 24px));
+    max-height:min(68vh,520px);
+  }
 }
