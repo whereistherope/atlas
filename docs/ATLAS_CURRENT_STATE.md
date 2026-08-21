@@ -8,6 +8,7 @@ Authoritative continuation checkpoint for future development sessions.
 - Local persistence remains an offline/cache/safety layer; it is not a second competing Atlas.
 - Network presentation changes must not create a local-only graph path or alter canonical payload semantics unless explicitly scoped.
 - Network physics preferences live in `state.settings.networkPhysics` so the chosen graph feel is part of the shared Atlas settings rather than browser-only state.
+- Network split-view preference lives in `state.settings.mapSplitRatio`; it is presentation state only and does not duplicate graph/list data.
 
 ## Network interaction contracts
 
@@ -24,7 +25,7 @@ Authoritative continuation checkpoint for future development sessions.
 - Anchor preserves a preferred manual constellation as relative offsets. Those offsets influence future starting positions but do not permanently pin nodes; the graph remains free to relax around them.
 - Reform clears manual offsets and returns to the deterministic force-relaxed base layout.
 
-## Network geometry through v0.15.14
+## Network geometry through v0.15.15
 
 - The deterministic seed starts with core/root nodes at equal angular intervals on one compact circular orbit around an invisible centre (`ROOT_RADIUS=184`).
 - No preferred oversized gap exists between Work/Life/etc; hierarchy and node size communicate importance.
@@ -46,7 +47,19 @@ Authoritative continuation checkpoint for future development sessions.
 - Root nodes retain only very weak common-centre gravity, but root-to-root repulsion is stronger than ordinary node repulsion so weakly connected top-level nodes do not stack in the middle.
 - Persisted manual offsets are soft starting preferences, not permanent pins. Anchored nodes remain participants in repulsion, collision, spring and centre forces after release.
 
-## Version lineage relevant to network geometry
+## Network view contract
+
+- The network pane has four explicit modes: Nodes, List, Split and Predict.
+- Nodes is the full relationship map; List is the existing structural branch tree; Predict remains the procedural projection view.
+- Split renders the same live Nodes map and the same existing List branch tree simultaneously. It must not create a second graph state or a second list data source.
+- Split defaults to 60% map / 40% list and stores the chosen proportion in `state.settings.mapSplitRatio`.
+- The split divider is the resize control: dragging it changes the map/list proportion live. The ratio is clamped to 25–75% so neither pane can be collapsed accidentally.
+- The divider is keyboard accessible with arrow keys plus Home/End and exposes separator ARIA values.
+- On narrow/mobile layouts, Split changes from left/right columns to a top/bottom arrangement and applies the same saved ratio to height.
+- Nodes, List and Predict remain available as full-pane modes; Split is additive rather than replacing them.
+- The map inside Split uses the same camera, graph physics, hierarchy dragging and collapsed graph Controls panel as Nodes mode.
+
+## Version lineage relevant to network geometry and views
 
 - v0.15.3: hierarchy-aware dragging and independently movable level-5 nodes.
 - v0.15.4: deterministic guided-map model, relative offsets and Anchor/Reform contract.
@@ -60,7 +73,8 @@ Authoritative continuation checkpoint for future development sessions.
 - v0.15.12: replaces the split map-control rail plus physics flyout with one collapsible control surface and adds Anchor to the same layout-control group.
 - v0.15.13: adds a deterministic velocity-based final settle that removes final-angle memory, uses size-aware node charge/collision and spring links, and changes centre force from per-node gravity to centroid recentering.
 - v0.15.14: fixes anchored/manual nodes being incorrectly treated as permanent pins and strengthens root-to-root repulsion so weakly connected core nodes distribute naturally instead of stacking at the graph centre.
+- v0.15.15: adds a persisted, resizable Split network view that composes the existing Nodes map and List branch tree side-by-side, with a responsive top/bottom arrangement on narrow screens.
 
 ## Development rule
 
-When changing network geometry, distinguish user-approved design constraints from implementation details in previous versions. The network should behave like an Obsidian-style responsive graph while remaining deterministic, hierarchical and visually restrained. Do not reintroduce rigid final radial placement, permanent manual-offset pinning, random physics, synthetic cross-link routing, or cross-link layout forces without explicit approval.
+When changing network geometry, distinguish user-approved design constraints from implementation details in previous versions. The network should behave like an Obsidian-style responsive graph while remaining deterministic, hierarchical and visually restrained. Do not reintroduce rigid final radial placement, permanent manual-offset pinning, random physics, synthetic cross-link routing, or cross-link layout forces without explicit approval. Network view changes must reuse canonical graph/list data rather than forking presentation-specific copies.
