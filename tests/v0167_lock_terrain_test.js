@@ -24,11 +24,14 @@ for(const token of [
   '.atlas-lock-meta{',
   'left:calc(50% - 112px)!important',
   'left:calc(50% + 2px)',
+  'top:calc(50% - 180px)',
+  'background:transparent',
+  'mix-blend-mode:screen',
   '@media(prefers-reduced-motion:reduce)',
 ]) assert(css.includes(token),`missing lock GIF placement contract: ${token}`);
 
 assert(css.includes('width:clamp(170px,19vw,260px)'),'terrain animation must remain compact beside the login block');
-assert(css.includes('background:#000'),'GIF black field must be preserved rather than treated as a full-screen wallpaper');
+assert(!css.includes('pointer-events:none;overflow:hidden;background:#000'),'terrain container must not reintroduce a black tile behind the graphic');
 assert(bootstrap.includes("const BUILD='0167r1'"),'bootstrap build must be v0.16.7-r1');
 assert(bootstrap.includes("loadStyle('./styles/lock-terrain.css')"),'lock terrain stylesheet must load');
 assert(bootstrap.includes("loadScript('./js/lock-terrain.js','Atlas topographic lock identity v0.16.7')"),'lock terrain shell must load');
