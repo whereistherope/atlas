@@ -19,7 +19,7 @@
 }
 
 /* The mock-up is used as a placement reference: Atlas/auth sits centre-left and
-   the animated terrain occupies the adjacent upper-right slot in the same group. */
+   the animated terrain occupies the adjacent slot, optically aligned to the wordmark. */
 .lock-screen .lock-card{
   position:absolute!important;z-index:6!important;
   left:calc(50% - 112px)!important;top:50%!important;
@@ -37,14 +37,17 @@
 
 .atlas-lock-terrain{
   position:absolute;z-index:3;
-  left:calc(50% + 2px);top:calc(50% - 112px);
+  left:calc(50% + 2px);top:calc(50% - 180px);
   width:clamp(170px,19vw,260px);aspect-ratio:600/338;
-  pointer-events:none;overflow:hidden;background:#000;
+  pointer-events:none;overflow:visible;background:transparent;
   opacity:0;transition:opacity .28s ease;
 }
 .atlas-lock-terrain.is-ready{opacity:1}
 .atlas-lock-terrain.is-missing{display:none}
-.atlas-lock-terrain-gif{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.atlas-lock-terrain-gif{
+  display:block;width:100%;height:100%;object-fit:contain;object-position:center;
+  mix-blend-mode:screen;
+}
 
 .atlas-lock-meta{
   position:absolute;right:28px;top:24px;z-index:8;display:grid;grid-template-columns:auto auto;gap:13px;
@@ -81,12 +84,12 @@
 
 @media(max-width:700px){
   .lock-screen .lock-card{left:calc(50% - 92px)!important;width:min(190px,46vw)!important}
-  .atlas-lock-terrain{left:calc(50% + 5px);top:calc(50% - 104px);width:clamp(145px,34vw,200px)}
+  .atlas-lock-terrain{left:calc(50% + 5px);top:calc(50% - 160px);width:clamp(145px,34vw,200px)}
   .atlas-lock-meta{right:16px;top:16px;gap:8px}.atlas-lock-meta>div:first-child{display:none}
 }
 @media(max-width:480px){
   .lock-screen .lock-card{left:30px!important;right:30px!important;top:57%!important;width:auto!important}
-  .atlas-lock-terrain{left:auto;right:24px;top:24%;width:min(190px,54vw)}
+  .atlas-lock-terrain{left:auto;right:24px;top:18%;width:min(190px,54vw)}
   .lock-screen .lock-brand{margin-bottom:20px!important}
 }
 @media(prefers-reduced-motion:reduce){.atlas-lock-terrain{transition:none}}
