@@ -2,7 +2,7 @@
 (function(root){
   'use strict';
 
-  const GIF_SRC='./assets/lock-terrain.gif';
+  const GIF_SRC='./assets/lock-terrain.gif?v=0167r2';
   const phrases=['SHOULD YOU BE HERE?','WHERE ARE YOU GOING?','IDENTIFY.','ATLAS AWAITS.'];
   let clockTimer=null;
 
