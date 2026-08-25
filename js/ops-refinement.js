@@ -1,0 +1,92 @@
+// Atlas v0.16.8: Ops presentation layer and live network minimap.
+(function(root){
+  'use strict';
+
+  const SKIN='ops';
+  const SVG_NS='http://www.w3.org/2000/svg';
+
+  function setSkin(){
+    document.body.dataset.skin=SKIN;
+  }
+
+  function miniSvgEl(tag,attrs={}){
+    const el=document.createElementNS(SVG_NS,tag);
+    Object.entries(attrs).forEach(([key,value])=>el.setAttribute(key,String(value)));
+    return el;
+  }
+
+  function boundsFor(nodes){
+    if(!nodes?.length)return{x:0,y:0,w:1200,h:680};
+    let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+    nodes.forEach(n=>{
+      minX=Math.min(minX,Number(n.x)||0);maxX=Math.max(maxX,Number(n.x)||0);
+      minY=Math.min(minY,Number(n.y)||0);maxY=Math.max(maxY,Number(n.y)||0);
+    });
+    const pad=42;
+    return{x:minX-pad,y:minY-pad,w:Math.max(120,maxX-minX+pad*2),h:Math.max(80,maxY-minY+pad*2)};
+  }
+
+  function minimapHost(svg){
+    return svg?.closest?.('.network-split-map')||svg?.closest?.('.map-wrap')||null;
+  }
+
+  function removeDuplicateMinimaps(host){
+    const minis=[...host.querySelectorAll(':scope > .atlas-network-minimap')];
+    minis.slice(1).forEach(el=>el.remove());
+    return minis[0]||null;
+  }
+
+  function renderMinimap(scope=null){
+    const svg=document.getElementById('network');
+    const host=minimapHost(svg);
+    if(!svg||!host||typeof graphData!=='function'||typeof mapView!=='function')return;
+    const data=graphData(scope),nodes=data?.nodes||[],links=data?.links||[],byId=Object.fromEntries(nodes.map(n=>[n.id,n]));
+    let mini=removeDuplicateMinimaps(host);
+    if(!mini){
+      mini=document.createElement('button');
+      mini.type='button';
+      mini.className='atlas-network-minimap';
+      mini.setAttribute('aria-label','Network overview · fit map');
+      mini.title='Network overview · tap to fit';
+      mini.addEventListener('click',()=>{
+        try{fitMap(scope);renderMinimap(scope)}catch(_){ }
+      });
+      host.appendChild(mini);
+    }
+
+    const box=boundsFor(nodes),msvg=miniSvgEl('svg',{viewBox:`${box.x} ${box.y} ${box.w} ${box.h}`,'aria-hidden':'true'});
+    links.forEach(link=>{
+      const a=byId[link.source],b=byId[link.target];if(!a||!b)return;
+      msvg.appendChild(miniSvgEl('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,class:`mini-edge ${link.type==='cross'?'cross':'tree'}`}));
+    });
+    nodes.forEach(n=>msvg.appendChild(miniSvgEl('circle',{cx:n.x,cy:n.y,r:Number(n.level)===2?5:Number(n.level)===3?3.7:2.5,class:'mini-node'})));
+
+    const view=mapView(scope);
+    msvg.appendChild(miniSvgEl('rect',{x:view.x,y:view.y,width:view.w,height:view.h,class:'mini-viewport'}));
+    mini.replaceChildren(msvg);
+  }
+
+  const baseDraw=typeof root.drawNetwork==='function'?root.drawNetwork:null;
+  if(baseDraw){
+    root.drawNetwork=function(scope){
+      const result=baseDraw.apply(this,arguments);
+      requestAnimationFrame(()=>renderMinimap(scope||null));
+      return result;
+    };
+  }
+
+  const baseApply=typeof root.applyMapView==='function'?root.applyMapView:null;
+  if(baseApply){
+    root.applyMapView=function(svg,scope){
+      const result=baseApply.apply(this,arguments);
+      requestAnimationFrame(()=>renderMinimap(scope||null));
+      return result;
+    };
+  }
+
+  setSkin();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setSkin,{once:true});
+  root.addEventListener('resize',()=>requestAnimationFrame(()=>renderMinimap(document.getElementById('network')?.dataset?.scope||null)));
+
+  root.AtlasOpsRefinement=Object.freeze({version:'0.16.8-r1',skin:SKIN,renderMinimap});
+})(window);

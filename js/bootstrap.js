@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0167r2';
+  const BUILD='0168r1';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -24,6 +24,7 @@
   loadStyle('./styles/network-layout.css');
   loadStyle('./styles/network-split.css');
   loadStyle('./styles/lock-terrain.css');
+  loadStyle('./styles/ops-refinement.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
@@ -49,6 +50,7 @@
   try { await loadScript('./js/network-controls.js','Atlas unified graph controls v0.15.12'); } catch (_) {}
   try { await loadScript('./js/network-split.js','Atlas switchable split network/list view v0.15.16'); } catch (_) {}
   try { await loadScript('./js/lock-terrain.js','Atlas topographic lock identity v0.16.7'); } catch (_) {}
+  try { await loadScript('./js/ops-refinement.js','Atlas Ops refinement v0.16.8'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
