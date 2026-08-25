@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0168r3';
+  const BUILD='0168r4';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -56,6 +56,7 @@
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
+  document.documentElement.classList.add('atlas-ready');
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load',()=>{navigator.serviceWorker.register(`./sw.js?v=${BUILD}`,{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{})});
