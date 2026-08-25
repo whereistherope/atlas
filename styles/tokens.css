@@ -9,3 +9,10 @@ body[data-theme="night"]{
   --green:#1793d1;--green2:#33a9e6;--sand:#6f8797;--amber:#d7a84a;--red:#d46d67;--blue:#1793d1;
   --shadow:0 12px 34px rgba(0,0,0,.34)
 }
+
+/* Prevent a false Day-mode application shell from flashing while IndexedDB theme/lock state resolves. */
+html:not(.atlas-ready){background:#050505}
+html:not(.atlas-ready) body{background:#050505!important}
+html:not(.atlas-ready) body>.shell,
+html:not(.atlas-ready) body>.utility-pane,
+html:not(.atlas-ready) body>.utility-rail{visibility:hidden!important}
