@@ -1,0 +1,11 @@
+/* Atlas v0.16.9 · neutral network overview. No theme/skin ownership. */
+.map-wrap,.network-split-map{position:relative}
+.atlas-network-minimap{position:absolute;z-index:18;left:14px;bottom:14px;width:116px;height:74px;padding:6px;box-sizing:border-box;border:1px solid color-mix(in srgb,var(--line) 74%,transparent);background:color-mix(in srgb,var(--bg) 90%,transparent);opacity:.62;transition:opacity .14s ease,border-color .14s ease;cursor:pointer;touch-action:manipulation}
+.atlas-network-minimap:hover,.atlas-network-minimap:focus-visible{opacity:1;outline:none;border-color:var(--muted)}
+.atlas-network-minimap svg{display:block;width:100%;height:100%;overflow:visible}
+.atlas-network-minimap .mini-edge{stroke:var(--muted);stroke-width:.65;opacity:.26}
+.atlas-network-minimap .mini-edge.cross{stroke-dasharray:2 2;opacity:.18}
+.atlas-network-minimap .mini-node{fill:var(--muted);opacity:.6}
+.atlas-network-minimap .mini-viewport{fill:none;stroke:var(--ink);stroke-width:.8;opacity:.7}
+.split-mode .atlas-network-minimap{left:10px;bottom:10px;width:100px;height:64px}
+@media(max-width:700px){.atlas-network-minimap{width:90px;height:58px;left:10px;bottom:10px;opacity:.56}}
