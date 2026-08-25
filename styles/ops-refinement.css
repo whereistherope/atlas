@@ -1,187 +1,194 @@
-/* Atlas v0.16.8 · Ops refinement pass 1.
-   Presentation only: preserve behaviour, hierarchy, graph physics and persistence. */
+/* Atlas v0.16.8-r4 · Ops workstation refinement.
+   Ops is a neutral black/grey instrument skin: no coloured chrome, no decorative sci-fi effects. */
 
 body[data-skin="ops"]{
-  --ops-rule:color-mix(in srgb,var(--line) 58%,transparent);
-  --ops-rule-soft:color-mix(in srgb,var(--line) 34%,transparent);
-  --ops-surface:color-mix(in srgb,var(--surface-1) 72%,transparent);
-  --ops-surface-raised:color-mix(in srgb,var(--surface-2) 78%,transparent);
-  --ops-meta:color-mix(in srgb,var(--muted) 88%,transparent);
+  --ops-rule:rgba(145,145,145,.28);
+  --ops-rule-soft:rgba(145,145,145,.15);
+  --ops-surface:#090909;
+  --ops-surface-raised:#0d0d0d;
+  --ops-meta:#858585;
+  --ops-active:#d7d7d7;
+}
+body[data-skin="ops"][data-theme="night"]{
+  --bg:#030303;
+  --paper:#090909;
+  --paper2:#0d0d0d;
+  --ink:#d8d8d8;
+  --muted:#818181;
+  --line:#292929;
+  --green:#bcbcbc;
+  --green2:#d7d7d7;
+  --sand:#8c8c8c;
+  --amber:#a7a7a7;
+  --red:#a1a1a1;
+  --blue:#9b9b9b;
+  --shadow:0 12px 34px rgba(0,0,0,.34);
+}
+body[data-skin="ops"][data-theme="day"]{
+  --bg:#d8d8d5;
+  --paper:#ecece9;
+  --paper2:#e4e4e0;
+  --ink:#202020;
+  --muted:#666;
+  --line:#aaa;
+  --green:#555;
+  --green2:#333;
+  --sand:#888;
+  --amber:#777;
+  --red:#666;
+  --blue:#666;
 }
 
-/* Shell: quieter hierarchy, less bordered chrome. */
-body[data-skin="ops"] .shell{max-width:1760px!important;padding:12px 18px 30px!important}
+/* Shell: quiet application chrome rather than a dashboard banner. */
+body[data-skin="ops"] .shell{max-width:1760px!important;padding:10px 16px 28px!important}
 body[data-skin="ops"] .topbar{
-  min-height:50px!important;
-  padding:4px 0 7px!important;
+  min-height:46px!important;
+  padding:3px 0 6px!important;
+  border-top:0!important;
   border-bottom:1px solid var(--ops-rule)!important;
-  gap:8px 18px!important;
+  gap:6px 16px!important;
 }
-body[data-skin="ops"] .brand-home{width:126px!important}
-body[data-skin="ops"] .atlas-logo{width:122px!important;max-height:42px!important}
+body[data-skin="ops"] .brand-home{width:118px!important}
+body[data-skin="ops"] .atlas-logo{width:114px!important;max-height:38px!important;filter:grayscale(1)!important}
 body[data-skin="ops"] .page-chrono,
-body[data-skin="ops"] .chrono-strip{opacity:.62}
-body[data-skin="ops"] .top-actions{gap:4px!important}
+body[data-skin="ops"] .chrono-strip{opacity:.55;color:var(--ops-meta)!important}
+body[data-skin="ops"] .top-actions{gap:2px!important}
 body[data-skin="ops"] .command-btn,
 body[data-skin="ops"] .system-menu>summary{
-  min-height:32px!important;
-  height:32px!important;
-  border-color:transparent!important;
+  min-height:28px!important;
+  height:28px!important;
+  border:0!important;
+  border-radius:0!important;
   background:transparent!important;
-  color:color-mix(in srgb,var(--muted) 92%,transparent)!important;
+  color:var(--muted)!important;
 }
 body[data-skin="ops"] .command-btn:hover,
 body[data-skin="ops"] .command-btn:focus-visible,
 body[data-skin="ops"] .system-menu>summary:hover,
 body[data-skin="ops"] .system-menu[open]>summary{
   color:var(--ink)!important;
-  background:color-mix(in srgb,var(--surface-2) 48%,transparent)!important;
-  border-color:var(--ops-rule)!important;
+  background:#151515!important;
 }
-body[data-skin="ops"] .context-menu>summary{min-width:104px!important}
+body[data-skin="ops"] .context-menu>summary{min-width:100px!important}
 
-/* Network: one primary instrument rather than a boxed dashboard card. */
+/* Network: primary instrument. */
 body[data-skin="ops"] .network-stage,
 body[data-skin="ops"] .map-wrap{
   border-color:var(--ops-rule)!important;
-  background:color-mix(in srgb,var(--bg) 94%,var(--surface-1))!important;
+  background:var(--bg)!important;
   box-shadow:none!important;
 }
-body[data-skin="ops"] .map-wrap{
-  position:relative;
-  isolation:isolate;
-}
+body[data-skin="ops"] .map-wrap{position:relative;isolation:isolate}
 body[data-skin="ops"] .map-wrap:before,
 body[data-skin="ops"] .map-wrap:after{
-  content:"";
-  position:absolute;
-  z-index:4;
-  pointer-events:none;
-  width:18px;
-  height:18px;
-  opacity:.55;
+  content:"";position:absolute;z-index:4;pointer-events:none;width:18px;height:18px;opacity:.45
 }
-body[data-skin="ops"] .map-wrap:before{
-  left:10px;bottom:10px;
-  border-left:1px solid var(--ops-rule);
-  border-bottom:1px solid var(--ops-rule);
-}
-body[data-skin="ops"] .map-wrap:after{
-  right:10px;bottom:10px;
-  border-right:1px solid var(--ops-rule);
-  border-bottom:1px solid var(--ops-rule);
-}
+body[data-skin="ops"] .map-wrap:before{left:10px;bottom:10px;border-left:1px solid var(--ops-rule);border-bottom:1px solid var(--ops-rule)}
+body[data-skin="ops"] .map-wrap:after{right:10px;bottom:10px;border-right:1px solid var(--ops-rule);border-bottom:1px solid var(--ops-rule)}
 body[data-skin="ops"] .map-topline,
-body[data-skin="ops"] .map-meta{
-  color:var(--ops-meta)!important;
-}
-body[data-skin="ops"] .map-meta{
-  font-size:8px!important;
-  letter-spacing:.065em!important;
-}
-body[data-skin="ops"] .map-view-toggle{
-  border-color:var(--ops-rule)!important;
-  background:color-mix(in srgb,var(--surface-1) 48%,transparent)!important;
-  box-shadow:none!important;
-}
-body[data-skin="ops"] .map-view-toggle button{
-  min-height:30px!important;
-  color:var(--muted)!important;
-}
-body[data-skin="ops"] .map-view-toggle button.active{
-  color:var(--ink)!important;
-  background:color-mix(in srgb,var(--surface-2) 64%,transparent)!important;
-}
-body[data-skin="ops"] #network{
-  filter:saturate(.78) contrast(.98);
-}
-body[data-skin="ops"] .edge{opacity:calc(var(--map-edge-opacity,.32) * .88)!important}
-body[data-skin="ops"] .edge.cross{opacity:calc(var(--map-edge-opacity,.32) * .92)!important}
-body[data-skin="ops"] .node .node-disc{opacity:.78!important}
-body[data-skin="ops"] .node.has-children .node-disc{opacity:.92!important}
-body[data-skin="ops"] .node text{font-weight:540!important;letter-spacing:.045em!important}
+body[data-skin="ops"] .map-meta{color:var(--ops-meta)!important}
+body[data-skin="ops"] .map-meta{font-size:8px!important;letter-spacing:.065em!important}
+body[data-skin="ops"] .map-view-toggle{border-color:var(--ops-rule)!important;background:#080808!important;box-shadow:none!important;border-radius:0!important}
+body[data-skin="ops"] .map-view-toggle button{min-height:28px!important;color:var(--muted)!important;border-radius:0!important}
+body[data-skin="ops"] .map-view-toggle button.active{color:var(--ink)!important;background:#171717!important}
+body[data-skin="ops"] #network{filter:grayscale(1) contrast(.98)}
+body[data-skin="ops"] .edge{stroke:#555!important;opacity:calc(var(--map-edge-opacity,.32) * .88)!important}
+body[data-skin="ops"] .edge.cross{stroke:#6d6d6d!important;opacity:calc(var(--map-edge-opacity,.32) * .92)!important}
+body[data-skin="ops"] .node .node-disc{fill:#5f5f5f!important;stroke:#8a8a8a!important;opacity:.8!important}
+body[data-skin="ops"] .node.has-children .node-disc{fill:#787878!important;stroke:#aaa!important;opacity:.94!important}
+body[data-skin="ops"] .node text{fill:#aaa!important;font-weight:540!important;letter-spacing:.045em!important}
 
-/* Controls are still available, but visually subordinate to the map. */
 body[data-skin="ops"] .map-wrap .map-controls .atlas-graph-control>summary{
-  min-width:76px!important;
-  padding:8px 10px!important;
-  border-color:var(--ops-rule)!important;
-  background:color-mix(in srgb,var(--surface-1) 66%,transparent)!important;
-  box-shadow:none!important;
-  opacity:.78;
+  min-width:74px!important;padding:7px 9px!important;border:1px solid var(--ops-rule)!important;border-radius:0!important;background:#0a0a0a!important;box-shadow:none!important;opacity:.72
 }
 body[data-skin="ops"] .map-wrap .map-controls .atlas-graph-control>summary:hover,
-body[data-skin="ops"] .map-wrap .map-controls .atlas-graph-control[open]>summary{opacity:1}
-body[data-skin="ops"] .map-wrap .atlas-physics-panel{
-  border-color:var(--ops-rule)!important;
-  background:color-mix(in srgb,var(--surface-2) 96%,transparent)!important;
-  box-shadow:0 18px 46px rgba(0,0,0,.2)!important;
-}
+body[data-skin="ops"] .map-wrap .map-controls .atlas-graph-control[open]>summary{opacity:1;background:#151515!important}
+body[data-skin="ops"] .map-wrap .atlas-physics-panel{border-color:var(--ops-rule)!important;border-radius:0!important;background:#0c0c0c!important;box-shadow:0 18px 46px rgba(0,0,0,.24)!important}
 
 /* Live network overview / viewfinder. */
 body[data-skin="ops"] .atlas-network-minimap{
-  position:absolute;
-  z-index:18;
-  left:14px;
-  bottom:14px;
-  width:116px;
-  height:74px;
-  padding:6px;
-  box-sizing:border-box;
-  border:1px solid var(--ops-rule);
-  background:color-mix(in srgb,var(--bg) 88%,transparent);
-  opacity:.66;
-  transition:opacity .14s ease,border-color .14s ease;
-  cursor:pointer;
-  touch-action:manipulation;
+  position:absolute;z-index:18;left:14px;bottom:14px;width:116px;height:74px;padding:6px;box-sizing:border-box;border:1px solid var(--ops-rule);background:rgba(5,5,5,.88);opacity:.68;transition:opacity .14s ease,border-color .14s ease;cursor:pointer;touch-action:manipulation
 }
 body[data-skin="ops"] .atlas-network-minimap:hover,
-body[data-skin="ops"] .atlas-network-minimap:focus-visible{opacity:1;border-color:color-mix(in srgb,var(--muted) 62%,var(--line));outline:none}
+body[data-skin="ops"] .atlas-network-minimap:focus-visible{opacity:1;border-color:#777;outline:none}
 body[data-skin="ops"] .atlas-network-minimap svg{display:block;width:100%;height:100%;overflow:visible}
-body[data-skin="ops"] .atlas-network-minimap .mini-edge{stroke:var(--muted);stroke-width:.65;opacity:.27}
+body[data-skin="ops"] .atlas-network-minimap .mini-edge{stroke:#6d6d6d;stroke-width:.65;opacity:.27}
 body[data-skin="ops"] .atlas-network-minimap .mini-edge.cross{stroke-dasharray:2 2;opacity:.2}
-body[data-skin="ops"] .atlas-network-minimap .mini-node{fill:var(--muted);opacity:.62}
-body[data-skin="ops"] .atlas-network-minimap .mini-viewport{fill:none;stroke:var(--ink);stroke-width:.8;opacity:.7}
+body[data-skin="ops"] .atlas-network-minimap .mini-node{fill:#8a8a8a;opacity:.62}
+body[data-skin="ops"] .atlas-network-minimap .mini-viewport{fill:none;stroke:#ddd;stroke-width:.8;opacity:.72}
 body[data-skin="ops"] .split-mode .atlas-network-minimap{left:10px;bottom:10px;width:100px;height:64px}
 
-/* Widgets: less card weight; retain clear modules and direct manipulation. */
-body[data-skin="ops"] .atlas-board{--workspace-gap:9px}
-body[data-skin="ops"] .atlas-widget{
-  border-color:var(--ops-rule)!important;
-  background:color-mix(in srgb,var(--surface-1) 74%,transparent)!important;
-  box-shadow:none!important;
-}
-body[data-skin="ops"] .widget-head{
-  min-height:35px!important;
-  border-bottom-color:var(--ops-rule-soft)!important;
-  padding:0 10px!important;
-}
-body[data-skin="ops"] .widget-ident strong{
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;
-  font-size:9px!important;
-  font-weight:680!important;
-  letter-spacing:.035em!important;
-}
-body[data-skin="ops"] .widget-ident span{opacity:.72}
-body[data-skin="ops"] .widget-body{padding:11px!important}
+/* Widgets: workstation modules, not floating cards. */
+body[data-skin="ops"] .atlas-board{--workspace-gap:8px}
+body[data-skin="ops"] .atlas-widget{border-color:var(--ops-rule)!important;border-radius:0!important;background:#090909!important;box-shadow:none!important}
+body[data-skin="ops"] .widget-head{min-height:32px!important;border-bottom-color:var(--ops-rule-soft)!important;padding:0 9px!important;background:#0c0c0c!important}
+body[data-skin="ops"] .widget-ident strong{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important;font-size:9px!important;font-weight:680!important;letter-spacing:.035em!important}
+body[data-skin="ops"] .widget-ident span{opacity:.66}
+body[data-skin="ops"] .widget-body{padding:10px!important}
 body[data-skin="ops"] .widget-row,
 body[data-skin="ops"] .widget-note,
 body[data-skin="ops"] .widget-project,
 body[data-skin="ops"] .widget-log{border-bottom-color:var(--ops-rule-soft)!important}
-body[data-skin="ops"] .scratch-area{
-  border-color:var(--ops-rule)!important;
-  background:color-mix(in srgb,var(--bg) 54%,transparent)!important;
-  box-shadow:none!important;
-}
+body[data-skin="ops"] .scratch-area{border-color:var(--ops-rule)!important;border-radius:0!important;background:#050505!important;box-shadow:none!important}
 body[data-skin="ops"] .atlas-widget[data-widget="scratch"] .scratch-area{min-height:118px!important}
 
+/* Ops note editor: integrated application workspace inspired by technical workstation software. */
+body[data-skin="ops"] .atlas-vnote-overlay{background:transparent!important}
+body[data-skin="ops"] .atlas-vnote-backdrop{background:rgba(0,0,0,.34)!important;backdrop-filter:blur(8px)!important;-webkit-backdrop-filter:blur(8px)!important}
+body[data-skin="ops"] .atlas-vnote-sheet{
+  top:10px!important;left:10px!important;right:10px!important;width:calc(100vw - 20px)!important;max-width:none!important;max-height:calc(100dvh - 20px)!important;margin:0!important;border:0!important;border-radius:0!important;background:#070707!important;box-shadow:0 10px 28px rgba(0,0,0,.28)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important
+}
+body[data-skin="ops"] .atlas-vnote-head{
+  min-height:42px!important;padding:6px 8px!important;background:#0b0b0b!important;border-bottom:1px solid #242424!important;align-items:center!important
+}
+body[data-skin="ops"] .atlas-vnote-head .code{font-size:7px!important;letter-spacing:.08em!important;color:#707070!important}
+body[data-skin="ops"] .atlas-vnote-head strong{font-size:14px!important;font-weight:650!important;letter-spacing:0!important;color:#d3d3d3!important}
+body[data-skin="ops"] .atlas-vnote-head .btn{min-height:28px!important;padding:6px 10px!important;border:1px solid #303030!important;border-radius:0!important;background:#0a0a0a!important;color:#aaa!important;font-size:8px!important}
+body[data-skin="ops"] .atlas-vnote-head .btn.primary{background:#d5d5d5!important;color:#111!important;border-color:#d5d5d5!important}
+body[data-skin="ops"] .atlas-vnote-scroll{padding:0 8px 8px!important;background:#070707!important}
+body[data-skin="ops"] .atlas-vnote-fields{
+  gap:0!important;margin:0!important;padding:8px 0 7px!important;border-bottom:1px solid #202020!important;background:#080808!important
+}
+body[data-skin="ops"] .atlas-vnote-fields label{gap:4px!important;padding-right:8px!important;font-size:7px!important;color:#707070!important}
+body[data-skin="ops"] .atlas-vnote-fields label+label{padding-left:8px!important;border-left:1px solid #1e1e1e!important}
+body[data-skin="ops"] .atlas-vnote-fields input,
+body[data-skin="ops"] .atlas-vnote-fields select{
+  min-height:30px!important;padding:5px 6px!important;border:0!important;border-bottom:1px solid #454545!important;border-radius:0!important;background:#050505!important;color:#c9c9c9!important;box-shadow:none!important;font-size:10px!important
+}
+body[data-skin="ops"] .atlas-vnote-fields input:focus,
+body[data-skin="ops"] .atlas-vnote-fields select:focus{outline:none!important;border-bottom-color:#aaa!important}
+body[data-skin="ops"] .atlas-vnote-toolbar{
+  position:sticky!important;top:0!important;gap:0!important;padding:5px 0!important;margin:0!important;background:#0b0b0b!important;border-bottom:1px solid #242424!important;overflow-x:auto!important;flex-wrap:nowrap!important
+}
+body[data-skin="ops"] .atlas-vnote-toolbar button,
+body[data-skin="ops"] .atlas-table-menu summary{
+  flex:0 0 auto!important;min-height:28px!important;padding:5px 8px!important;margin-right:3px!important;border:1px solid #2a2a2a!important;border-radius:0!important;background:#0a0a0a!important;color:#aaa!important;font:650 9px/1 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif!important
+}
+body[data-skin="ops"] .atlas-vnote-toolbar button:hover,
+body[data-skin="ops"] .atlas-table-menu summary:hover{background:#171717!important;color:#ddd!important}
+body[data-skin="ops"] .atlas-vnote-toolbar button.active{background:#242424!important;border-color:#555!important;color:#eee!important}
+body[data-skin="ops"] .atlas-vnote-body{
+  width:100%!important;min-height:300px!important;max-height:min(62dvh,760px)!important;margin:8px 0 0!important;padding:14px 16px!important;border:1px solid #242424!important;border-radius:0!important;background:#050505!important;color:#d0d0d0!important;box-shadow:inset 0 0 0 1px #090909!important;font-size:14px!important;line-height:1.6!important
+}
+body[data-skin="ops"] .atlas-vnote-body:focus{border-color:#3b3b3b!important;box-shadow:inset 0 0 0 1px #111!important}
+body[data-skin="ops"] .atlas-vnote-fields-bottom{grid-template-columns:minmax(220px,2fr) minmax(150px,1fr)!important;margin-top:8px!important;padding:0!important;border-bottom:0!important;background:transparent!important}
+body[data-skin="ops"] .atlas-vnote-status{padding:5px 0 1px!important;margin:0!important;color:#6f6f6f!important}
+body[data-skin="ops"] .atlas-table-menu-panel{border:1px solid #303030!important;border-radius:0!important;background:#0a0a0a!important;box-shadow:0 12px 28px rgba(0,0,0,.4)!important}
+
 @media(max-width:900px){
-  body[data-skin="ops"] .shell{padding:10px 12px 24px!important}
-  body[data-skin="ops"] .brand-home{width:110px!important}
-  body[data-skin="ops"] .atlas-logo{width:106px!important}
+  body[data-skin="ops"] .shell{padding:9px 10px 24px!important}
+  body[data-skin="ops"] .brand-home{width:106px!important}
+  body[data-skin="ops"] .atlas-logo{width:102px!important}
   body[data-skin="ops"] .atlas-network-minimap{width:104px;height:66px;left:10px;bottom:10px}
 }
-
+@media(max-width:760px){
+  body[data-skin="ops"] .atlas-vnote-sheet{top:4px!important;left:4px!important;right:4px!important;width:calc(100vw - 8px)!important;max-height:calc(100dvh - 8px)!important}
+  body[data-skin="ops"] .atlas-vnote-scroll{padding-left:5px!important;padding-right:5px!important}
+  body[data-skin="ops"] .atlas-vnote-fields{grid-template-columns:1fr 1fr!important}
+  body[data-skin="ops"] .atlas-vnote-fields label{padding:4px!important;border-left:0!important}
+  body[data-skin="ops"] .atlas-vnote-fields label:nth-child(even){border-left:1px solid #1e1e1e!important}
+  body[data-skin="ops"] .atlas-vnote-body{max-height:54dvh!important;font-size:16px!important}
+}
 @media(max-width:700px){
   body[data-skin="ops"] .atlas-network-minimap{width:90px;height:58px;opacity:.58}
   body[data-skin="ops"] .map-wrap:before,
