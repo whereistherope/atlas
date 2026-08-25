@@ -36,14 +36,22 @@ jobs:
       - name: Persisted workspace compatibility
         run: python tests/v0122_static_test.py
 
-      - name: Existing baseline Node runtime tests
+      - name: Cloud and relay Node runtime tests
         shell: bash
         run: |
           set -euo pipefail
-          for test in tests/*_test.js; do
-            case "$test" in
-              tests/js_syntax_smoke.js|tests/v0167_lock_terrain_test.js|tests/v0169_stable_recovery_test.js) continue ;;
-            esac
+          for test in tests/cloud*_test.js tests/relay*_test.js; do
+            [ -f "$test" ] || continue
+            echo "==> $test"
+            node "$test"
+          done
+
+      - name: Network Node runtime tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for test in tests/v015*_test.js; do
+            [ -f "$test" ] || continue
             echo "==> $test"
             node "$test"
           done
