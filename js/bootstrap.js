@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0168r4';
+  const BUILD='0168r5';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -26,6 +26,7 @@
   loadStyle('./styles/lock-terrain.css');
   loadStyle('./styles/ops-refinement.css');
   loadStyle('./styles/window-material.css');
+  loadStyle('./styles/ops-r5.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}

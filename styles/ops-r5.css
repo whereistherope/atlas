@@ -1,0 +1,149 @@
+/* Atlas v0.16.8-r5 · resolved Ops palette.
+   Loaded after legacy/theme layers so Ops is genuinely neutral in both modes. */
+
+body[data-skin="ops"][data-theme="night"]{
+  --bg:#050505!important;
+  --surface-1:#0b0b0b!important;
+  --surface-2:#111!important;
+  --surface-3:#171717!important;
+  --paper:#0b0b0b!important;
+  --paper2:#111!important;
+  --ink:#d2d2d2!important;
+  --muted:#858585!important;
+  --line:#2c2c2c!important;
+  --line-strong:#454545!important;
+  --accent:#9a9a9a!important;
+  --green:#9a9a9a!important;
+  --green2:#c2c2c2!important;
+  --blue:#8e8e8e!important;
+  --sand:#8a8a8a!important;
+  --amber:#999!important;
+  --red:#969696!important;
+  --ops-panel:#0a0a0a;
+  --ops-panel-raised:#101010;
+  --ops-field:#060606;
+  --ops-hover:#181818;
+  --ops-active:#d4d4d4;
+  --ops-rule:#303030;
+  --ops-rule-soft:#202020;
+  --ops-map:#070707;
+  background:#050505!important;
+}
+
+body[data-skin="ops"][data-theme="day"]{
+  --bg:#303234!important;
+  --surface-1:#393b3e!important;
+  --surface-2:#414448!important;
+  --surface-3:#494c50!important;
+  --paper:#3a3c3f!important;
+  --paper2:#43464a!important;
+  --ink:#e1e1e1!important;
+  --muted:#aaa!important;
+  --line:#5a5d61!important;
+  --line-strong:#777b80!important;
+  --accent:#c2c2c2!important;
+  --green:#b8b8b8!important;
+  --green2:#ddd!important;
+  --blue:#b0b0b0!important;
+  --sand:#aaa!important;
+  --amber:#b6b6b6!important;
+  --red:#ababab!important;
+  --ops-panel:#383a3d;
+  --ops-panel-raised:#414347;
+  --ops-field:#292b2d;
+  --ops-hover:#505358;
+  --ops-active:#f0f0f0;
+  --ops-rule:#606368;
+  --ops-rule-soft:#4a4d51;
+  --ops-map:#343638;
+  background:#303234!important;
+}
+
+/* Kill the historical blue/sand ambient wash in Ops. */
+body[data-skin="ops"]:after{background:none!important}
+body[data-skin="ops"]{color:var(--ink)!important}
+
+/* Shell + navigation. */
+body[data-skin="ops"] .topbar,
+body[data-skin="ops"] .chrono-strip{border-color:var(--ops-rule)!important}
+body[data-skin="ops"] .page-chrono,
+body[data-skin="ops"] .chrono-strip,
+body[data-skin="ops"] .command-btn,
+body[data-skin="ops"] .system-menu>summary{color:var(--muted)!important}
+body[data-skin="ops"] .command-btn:hover,
+body[data-skin="ops"] .command-btn:focus-visible,
+body[data-skin="ops"] .system-menu>summary:hover,
+body[data-skin="ops"] .system-menu[open]>summary{background:var(--ops-hover)!important;color:var(--ink)!important}
+body[data-skin="ops"] .system-panel,
+body[data-skin="ops"] .widget-position-panel{background:var(--ops-panel-raised)!important;border-color:var(--ops-rule)!important;color:var(--ink)!important}
+
+/* Widgets use the active Ops mode instead of hard-coded black. */
+body[data-skin="ops"] .atlas-widget{background:var(--ops-panel)!important;border-color:var(--ops-rule)!important;color:var(--ink)!important}
+body[data-skin="ops"] .widget-head{background:var(--ops-panel-raised)!important;border-bottom-color:var(--ops-rule-soft)!important}
+body[data-skin="ops"] .scratch-area,
+body[data-skin="ops"] .quick-add input,
+body[data-skin="ops"] .widget-body input,
+body[data-skin="ops"] .widget-body textarea,
+body[data-skin="ops"] .widget-body select{background:var(--ops-field)!important;border-color:var(--ops-rule)!important;color:var(--ink)!important}
+body[data-skin="ops"] .widget-row,
+body[data-skin="ops"] .widget-note,
+body[data-skin="ops"] .widget-project,
+body[data-skin="ops"] .widget-log{border-bottom-color:var(--ops-rule-soft)!important}
+body[data-skin="ops"] .widget-row>i,
+body[data-skin="ops"] .widget-menu-panel .system-item.is-open:after{background:var(--muted)!important;border-color:var(--muted)!important}
+
+/* Network: neutral instrument field in both modes. */
+body[data-skin="ops"] .network-stage,
+body[data-skin="ops"] .map-wrap{background:var(--ops-map)!important;border-color:var(--ops-rule)!important}
+body[data-skin="ops"] .map-view-toggle,
+body[data-skin="ops"] .map-wrap .map-controls .atlas-graph-control>summary{background:var(--ops-panel)!important;border-color:var(--ops-rule)!important;color:var(--muted)!important}
+body[data-skin="ops"] .map-view-toggle button.active,
+body[data-skin="ops"] .map-wrap .map-controls .atlas-graph-control[open]>summary{background:var(--ops-hover)!important;color:var(--ink)!important}
+body[data-skin="ops"] .map-wrap .atlas-physics-panel{background:var(--ops-panel-raised)!important;border-color:var(--ops-rule)!important}
+body[data-skin="ops"] .atlas-network-minimap{background:color-mix(in srgb,var(--ops-panel) 92%,transparent)!important;border-color:var(--ops-rule)!important}
+body[data-skin="ops"] #network{filter:grayscale(1) contrast(1)!important}
+body[data-skin="ops"] .edge{stroke:#666!important}
+body[data-skin="ops"] .edge.cross{stroke:#858585!important}
+body[data-skin="ops"] .node .node-disc{fill:#6b6b6b!important;stroke:#a0a0a0!important}
+body[data-skin="ops"] .node.has-children .node-disc{fill:#898989!important;stroke:#c0c0c0!important}
+body[data-skin="ops"] .node text{fill:var(--muted)!important}
+
+/* Workspaces + editors inherit the mode instead of fixed black values. */
+body[data-skin="ops"] .modal,
+body[data-skin="ops"] .atlas-command-shell,
+body[data-skin="ops"] .atlas-vnote-sheet,
+body[data-skin="ops"] .atlas-vnote-scroll{background:var(--ops-panel)!important;color:var(--ink)!important}
+body[data-skin="ops"] .modal-head,
+body[data-skin="ops"] .atlas-command-input-row,
+body[data-skin="ops"] .atlas-command-meta,
+body[data-skin="ops"] .atlas-command-shell footer,
+body[data-skin="ops"] .atlas-vnote-head,
+body[data-skin="ops"] .atlas-vnote-toolbar,
+body[data-skin="ops"] .atlas-vnote-fields{background:var(--ops-panel-raised)!important;border-color:var(--ops-rule-soft)!important}
+body[data-skin="ops"] .field input,
+body[data-skin="ops"] .field select,
+body[data-skin="ops"] .field textarea,
+body[data-skin="ops"] .atlas-vnote-fields input,
+body[data-skin="ops"] .atlas-vnote-fields select,
+body[data-skin="ops"] .atlas-vnote-body,
+body[data-skin="ops"] .atlas-project-rich-body,
+body[data-skin="ops"] .atlas-project-workspace input,
+body[data-skin="ops"] .atlas-project-workspace select,
+body[data-skin="ops"] .atlas-project-workspace textarea{background:var(--ops-field)!important;color:var(--ink)!important;border-color:var(--ops-rule)!important}
+body[data-skin="ops"] .atlas-vnote-toolbar button,
+body[data-skin="ops"] .atlas-table-menu summary,
+body[data-skin="ops"] .atlas-vnote-head .btn{background:var(--ops-panel)!important;color:var(--muted)!important;border-color:var(--ops-rule)!important}
+body[data-skin="ops"] .atlas-vnote-toolbar button:hover,
+body[data-skin="ops"] .atlas-table-menu summary:hover,
+body[data-skin="ops"] .atlas-vnote-head .btn:hover{background:var(--ops-hover)!important;color:var(--ink)!important}
+body[data-skin="ops"] .atlas-vnote-head .btn.primary{background:var(--ops-active)!important;color:#111!important;border-color:var(--ops-active)!important}
+body[data-skin="ops"] .atlas-vnote-head strong{color:var(--ink)!important}
+body[data-skin="ops"] .atlas-vnote-head .code,
+body[data-skin="ops"] .atlas-vnote-fields label,
+body[data-skin="ops"] .atlas-vnote-status{color:var(--muted)!important}
+
+/* Capture and command surfaces stay neutral. */
+body[data-skin="ops"] .atlas-capture-choice,
+body[data-skin="ops"] .atlas-direct-create-modal{background:var(--ops-panel-raised)!important;border-color:var(--ops-rule)!important;color:var(--ink)!important}
+body[data-skin="ops"] .atlas-capture-choice:hover,
+body[data-skin="ops"] .atlas-capture-choice:focus-visible{background:var(--ops-hover)!important}
