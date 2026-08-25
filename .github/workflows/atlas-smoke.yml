@@ -36,14 +36,20 @@ jobs:
       - name: Persisted workspace compatibility
         run: python tests/v0122_static_test.py
 
-      - name: Existing Node runtime tests
+      - name: Existing baseline Node runtime tests
         shell: bash
         run: |
           set -euo pipefail
           for test in tests/*_test.js; do
             case "$test" in
-              tests/js_syntax_smoke.js) continue ;;
+              tests/js_syntax_smoke.js|tests/v0167_lock_terrain_test.js|tests/v0169_stable_recovery_test.js) continue ;;
             esac
             echo "==> $test"
             node "$test"
           done
+
+      - name: Preserved lock contract
+        run: node tests/v0167_lock_terrain_test.js
+
+      - name: Stable recovery contract
+        run: node tests/v0169_stable_recovery_test.js
