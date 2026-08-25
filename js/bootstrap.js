@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0168r2';
+  const BUILD='0168r3';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
