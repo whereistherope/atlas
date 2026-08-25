@@ -11,9 +11,61 @@ body[data-theme="night"]{
 }
 
 /* Initial paint guard: persisted theme and Atlas Lock are async IndexedDB state.
-   Keep the application shell out of view until boot resolves them so Day mode never flashes first. */
-html:not(.atlas-ready){background:#050505}
-html:not(.atlas-ready) body{background:#050505!important}
+   Before boot resolves, show a restrained Atlas acquisition field instead of flashing Day mode. */
+html:not(.atlas-ready){background:#050505;overflow:hidden}
+html:not(.atlas-ready) body{background:#050505!important;overflow:hidden!important}
 html:not(.atlas-ready) body>.shell,
 html:not(.atlas-ready) body>.utility-pane,
 html:not(.atlas-ready) body>.utility-rail{visibility:hidden!important}
+
+html:not(.atlas-ready)::before,
+html:not(.atlas-ready)::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:2147483646;
+  pointer-events:none;
+}
+html:not(.atlas-ready)::before{
+  background:
+    radial-gradient(circle at 18% 27%,rgba(205,205,205,.72) 0 1.2px,transparent 1.8px),
+    radial-gradient(circle at 28% 34%,rgba(205,205,205,.48) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 39% 22%,rgba(205,205,205,.56) 0 1.1px,transparent 1.8px),
+    radial-gradient(circle at 47% 44%,rgba(205,205,205,.78) 0 1.2px,transparent 1.9px),
+    radial-gradient(circle at 57% 31%,rgba(205,205,205,.42) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 64% 49%,rgba(205,205,205,.7) 0 1.2px,transparent 1.9px),
+    radial-gradient(circle at 74% 37%,rgba(205,205,205,.54) 0 1px,transparent 1.8px),
+    radial-gradient(circle at 83% 55%,rgba(205,205,205,.68) 0 1.1px,transparent 1.8px),
+    radial-gradient(circle at 24% 68%,rgba(205,205,205,.44) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 43% 73%,rgba(205,205,205,.6) 0 1.1px,transparent 1.8px),
+    radial-gradient(circle at 61% 69%,rgba(205,205,205,.5) 0 1px,transparent 1.7px),
+    radial-gradient(circle at 77% 76%,rgba(205,205,205,.74) 0 1.2px,transparent 1.9px),
+    linear-gradient(25deg,transparent 0 22%,rgba(155,155,155,.10) 22.1% 22.18%,transparent 22.3% 100%),
+    linear-gradient(151deg,transparent 0 39%,rgba(155,155,155,.08) 39.1% 39.17%,transparent 39.3% 100%),
+    linear-gradient(72deg,transparent 0 61%,rgba(155,155,155,.075) 61.1% 61.17%,transparent 61.3% 100%),
+    #050505;
+  animation:atlasBootField 2.8s ease-in-out infinite alternate;
+}
+html:not(.atlas-ready)::after{
+  width:clamp(150px,18vw,245px);
+  height:clamp(90px,11vw,150px);
+  inset:50% auto auto 50%;
+  transform:translate(-50%,-56%);
+  background:url('./../assets/lock-terrain.gif?v=0167r2') center/contain no-repeat;
+  mix-blend-mode:screen;
+  opacity:.4;
+  filter:grayscale(1) contrast(1.05);
+  animation:atlasBootTerrain 2.2s ease-in-out infinite alternate;
+}
+@keyframes atlasBootField{
+  from{opacity:.42;filter:brightness(.76)}
+  to{opacity:.74;filter:brightness(1.08)}
+}
+@keyframes atlasBootTerrain{
+  from{opacity:.22;transform:translate(-50%,-56%) scale(.98)}
+  to{opacity:.48;transform:translate(-50%,-56%) scale(1.015)}
+}
+@media(prefers-reduced-motion:reduce){
+  html:not(.atlas-ready)::before,
+  html:not(.atlas-ready)::after{animation:none!important}
+}
