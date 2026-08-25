@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atlas-shell-0.16.8-r2';
+const CACHE_NAME = 'atlas-shell-0.16.8-r3';
 const APP_SHELL = [
   './','./index.html','./manifest.webmanifest',
   './styles/tokens.css','./styles/app.css','./styles/widgets.css','./styles/map.css','./styles/note-editor.css','./styles/visual-note-editor.css','./styles/v0133-polish.css','./styles/editor-ux.css','./styles/atlas-document.css','./styles/capture-framework.css','./styles/command-palette.css','./styles/interaction-alignment.css','./styles/workspace-actions.css','./styles/network-layout.css','./styles/network-split.css','./styles/lock-terrain.css','./styles/ops-refinement.css','./styles/window-material.css',
