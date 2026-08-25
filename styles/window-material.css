@@ -1,4 +1,4 @@
-/* Atlas v0.16.8-r3 · shared overlay/window material.
+/* Atlas v0.16.8-r4 · shared overlay/window material.
    Backdrop blur belongs behind workspaces; editable fields stay solid and readable. */
 
 :root{
@@ -17,6 +17,22 @@ body[data-theme="night"]{
   --atlas-window-border:rgba(91,122,139,.24);
   --atlas-field-surface:#050b10;
   --atlas-field-surface-2:#081017;
+}
+body[data-skin="ops"][data-theme="night"]{
+  --atlas-overlay-dim:rgba(0,0,0,.34);
+  --atlas-window-surface:#080808;
+  --atlas-window-surface-raised:#0c0c0c;
+  --atlas-window-border:rgba(145,145,145,.22);
+  --atlas-field-surface:#050505;
+  --atlas-field-surface-2:#070707;
+}
+body[data-skin="ops"][data-theme="day"]{
+  --atlas-overlay-dim:rgba(30,30,30,.18);
+  --atlas-window-surface:#e8e8e5;
+  --atlas-window-surface-raised:#dededb;
+  --atlas-window-border:rgba(50,50,50,.22);
+  --atlas-field-surface:#f2f2ef;
+  --atlas-field-surface-2:#e7e7e4;
 }
 
 /* Separation happens in the backdrop, not by making the content fields translucent. */
@@ -82,24 +98,15 @@ body[data-theme="night"]{
   background:color-mix(in srgb,var(--atlas-field-surface-2) 90%,var(--ink) 10%)!important;
 }
 
-/* Ops: integrated workstation treatment. Remove the heavy enclosing card language. */
-body[data-skin="ops"]{
-  --atlas-window-blur:8px;
-}
+/* Ops uses flat application windows. */
+body[data-skin="ops"]{--atlas-window-blur:8px}
 body[data-skin="ops"] .modal,
 body[data-skin="ops"] .atlas-vnote-sheet,
 body[data-skin="ops"] .atlas-command-shell{
-  border-radius:2px!important;
+  border-radius:0!important;
   border-width:0!important;
-  box-shadow:0 12px 34px rgba(0,0,0,.18)!important;
-  background:color-mix(in srgb,var(--atlas-window-surface) 96%,var(--bg) 4%)!important;
-}
-body[data-skin="ops"] .atlas-vnote-sheet{
-  left:18px!important;
-  right:18px!important;
-  top:18px!important;
-  width:calc(100vw - 36px)!important;
-  max-width:none!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.2)!important;
+  background:var(--atlas-window-surface)!important;
 }
 body[data-skin="ops"] .modal-head,
 body[data-skin="ops"] .atlas-vnote-head,
@@ -107,44 +114,15 @@ body[data-skin="ops"] .atlas-vnote-toolbar,
 body[data-skin="ops"] .atlas-command-input-row,
 body[data-skin="ops"] .atlas-command-meta,
 body[data-skin="ops"] .atlas-command-shell footer{
-  border-color:color-mix(in srgb,var(--line) 48%,transparent)!important;
-}
-body[data-skin="ops"] .atlas-vnote-head{
-  padding-left:4px!important;
-  padding-right:4px!important;
-}
-body[data-skin="ops"] .atlas-vnote-scroll{
-  padding-left:4px!important;
-  padding-right:4px!important;
-}
-body[data-skin="ops"] .atlas-vnote-toolbar{
-  padding-left:0!important;
-  padding-right:0!important;
-}
-body[data-skin="ops"] .atlas-vnote-body{
-  border-radius:3px!important;
-  border-color:color-mix(in srgb,var(--line) 72%,transparent)!important;
+  border-color:var(--atlas-window-border)!important;
 }
 body[data-skin="ops"] .atlas-capture-launcher-modal,
-body[data-skin="ops"] .atlas-direct-create-modal{
-  border-radius:2px!important;
-}
+body[data-skin="ops"] .atlas-direct-create-modal{border-radius:0!important}
 
 @media(max-width:700px){
   :root{--atlas-window-blur:7px}
   .overlay,.atlas-command-backdrop,.atlas-vnote-backdrop{
     backdrop-filter:blur(6px) saturate(103%)!important;
     -webkit-backdrop-filter:blur(6px) saturate(103%)!important;
-  }
-  body[data-skin="ops"] .atlas-vnote-sheet{
-    top:8px!important;
-    left:8px!important;
-    right:8px!important;
-    width:calc(100vw - 16px)!important;
-  }
-  body[data-skin="ops"] .atlas-vnote-head,
-  body[data-skin="ops"] .atlas-vnote-scroll{
-    padding-left:2px!important;
-    padding-right:2px!important;
   }
 }
