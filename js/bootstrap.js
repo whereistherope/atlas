@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0168r5';
+  const BUILD='0169r1';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -24,9 +24,7 @@
   loadStyle('./styles/network-layout.css');
   loadStyle('./styles/network-split.css');
   loadStyle('./styles/lock-terrain.css');
-  loadStyle('./styles/ops-refinement.css');
-  loadStyle('./styles/window-material.css');
-  loadStyle('./styles/ops-r5.css');
+  loadStyle('./styles/network-overview.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
@@ -45,7 +43,7 @@
   try { await loadScript('./js/capture-polish-r8.js','Atlas Capture polish r8'); } catch (_) {}
   try { await loadScript('./js/command-palette.js','Atlas Command palette v0.15'); } catch (_) {}
   try { await loadScript('./js/interaction-alignment.js','Atlas interaction alignment v0.15.1'); } catch (_) {}
-  try { await loadScript('./js/capture-flow-fix.js','Atlas capture launcher handoff v0.16.8-r2'); } catch (_) {}
+  try { await loadScript('./js/capture-flow-fix.js','Atlas capture launcher handoff v0.16.9'); } catch (_) {}
   try { await loadScript('./js/workspace-actions.js','Atlas workspace actions v0.15.2'); } catch (_) {}
   try { await loadScript('./js/graph-hierarchy-interactions.js','Atlas hierarchy drag v0.15.3'); } catch (_) {}
   try { await loadScript('./js/network-layout.js','Atlas tunable constrained-force network grammar v0.15.11'); } catch (_) {}
@@ -53,7 +51,7 @@
   try { await loadScript('./js/network-controls.js','Atlas unified graph controls v0.15.12'); } catch (_) {}
   try { await loadScript('./js/network-split.js','Atlas switchable split network/list view v0.15.16'); } catch (_) {}
   try { await loadScript('./js/lock-terrain.js','Atlas topographic lock identity v0.16.7'); } catch (_) {}
-  try { await loadScript('./js/ops-refinement.js','Atlas Ops refinement v0.16.8'); } catch (_) {}
+  try { await loadScript('./js/network-overview.js','Atlas network overview v0.16.9'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
