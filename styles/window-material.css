@@ -1,0 +1,103 @@
+/* Atlas v0.16.8-r2 · shared overlay/window material.
+   Core treatment for Ops and future skins: translucent, readable, restrained. */
+
+:root{
+  --atlas-overlay-dim:rgba(8,10,11,.34);
+  --atlas-window-blur:16px;
+  --atlas-window-surface:color-mix(in srgb,var(--paper) 84%,transparent);
+  --atlas-window-surface-raised:color-mix(in srgb,var(--paper2) 88%,transparent);
+  --atlas-window-border:color-mix(in srgb,var(--line) 82%,transparent);
+}
+body[data-theme="night"]{
+  --atlas-overlay-dim:rgba(0,3,5,.38);
+  --atlas-window-surface:rgba(8,14,19,.80);
+  --atlas-window-surface-raised:rgba(11,18,24,.84);
+  --atlas-window-border:rgba(91,122,139,.30);
+}
+
+/* Shared backdrop: enough separation to focus, without blacking out Atlas. */
+.overlay,
+.atlas-command-backdrop{
+  background:var(--atlas-overlay-dim)!important;
+  backdrop-filter:blur(7px) saturate(108%);
+  -webkit-backdrop-filter:blur(7px) saturate(108%);
+}
+
+/* Shared floating window language. */
+.modal,
+.atlas-command-shell,
+.atlas-vnote-sheet{
+  background:var(--atlas-window-surface)!important;
+  border-color:var(--atlas-window-border)!important;
+  backdrop-filter:blur(var(--atlas-window-blur)) saturate(112%);
+  -webkit-backdrop-filter:blur(var(--atlas-window-blur)) saturate(112%);
+  box-shadow:0 22px 64px rgba(0,0,0,.24)!important;
+}
+body[data-theme="night"] .modal,
+body[data-theme="night"] .atlas-command-shell,
+body[data-theme="night"] .atlas-vnote-sheet{
+  box-shadow:0 24px 72px rgba(0,0,0,.36)!important;
+}
+
+.modal-head,
+.atlas-command-input-row,
+.atlas-command-meta,
+.atlas-command-shell footer,
+.atlas-vnote-head,
+.atlas-vnote-toolbar{
+  background:var(--atlas-window-surface-raised)!important;
+  border-color:var(--atlas-window-border)!important;
+  backdrop-filter:blur(calc(var(--atlas-window-blur) * .75));
+  -webkit-backdrop-filter:blur(calc(var(--atlas-window-blur) * .75));
+}
+
+/* Capture launcher: retain strong hierarchy while letting the workspace read through. */
+.atlas-capture-launcher-modal,
+.atlas-direct-create-modal{
+  background:var(--atlas-window-surface)!important;
+}
+.atlas-capture-choice{
+  background:color-mix(in srgb,var(--atlas-window-surface-raised) 78%,transparent)!important;
+  border-color:var(--atlas-window-border)!important;
+}
+.atlas-capture-choice:hover,
+.atlas-capture-choice:focus-visible{
+  background:color-mix(in srgb,var(--atlas-window-surface-raised) 94%,transparent)!important;
+}
+body[data-theme="night"] .atlas-capture-choice{
+  background:rgba(8,15,21,.62)!important;
+}
+body[data-theme="night"] .atlas-capture-choice:hover,
+body[data-theme="night"] .atlas-capture-choice:focus-visible{
+  background:rgba(13,23,31,.76)!important;
+}
+
+/* Visual editor already had blur; make the sheet itself lighter and the backdrop calmer. */
+.atlas-vnote-backdrop{
+  background:var(--atlas-overlay-dim)!important;
+  backdrop-filter:blur(7px) saturate(108%)!important;
+  -webkit-backdrop-filter:blur(7px) saturate(108%)!important;
+}
+body[data-theme="night"] .atlas-vnote-body,
+body[data-theme="night"] .atlas-vnote-fields input,
+body[data-theme="night"] .atlas-vnote-fields select{
+  background:rgba(3,8,12,.66)!important;
+}
+
+/* Ops remains the crisper skin: less blur, slightly more opacity than Frost will use. */
+body[data-skin="ops"]{
+  --atlas-window-blur:13px;
+}
+body[data-skin="ops"] .modal,
+body[data-skin="ops"] .atlas-command-shell,
+body[data-skin="ops"] .atlas-vnote-sheet{
+  background:color-mix(in srgb,var(--atlas-window-surface) 92%,var(--bg) 8%)!important;
+}
+
+@media(max-width:700px){
+  :root{--atlas-window-blur:12px}
+  .overlay,.atlas-command-backdrop,.atlas-vnote-backdrop{
+    backdrop-filter:blur(5px) saturate(106%)!important;
+    -webkit-backdrop-filter:blur(5px) saturate(106%)!important;
+  }
+}
