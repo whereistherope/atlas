@@ -1,5 +1,5 @@
-// Canonical sync safety layer: startup divergence is never trusted as stale cache,
-// and known pre-overwrite browser snapshots can be recovered additively.
+// Canonical recovery helpers retained for migration and manual snapshot recovery.
+// Durable cross-device reconciliation now lives in cloud-sync.js.
 (function(root){
   'use strict';
   const RECORD_TYPE='canonical_state_v1',RECORD_ID='primary';
@@ -42,19 +42,6 @@
     return merged;
   }
   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
-
-  // A persisted "joined" flag is not proof that a differing browser state is stale.
-  // Clear it before canonical sync initialises. Equal local/cloud content rejoins silently;
-  // divergent content falls through to the explicit migration path instead of being replaced.
-  function disarmPersistentJoinTrust(){
-    try{
-      const keys=[];
-      for(let i=0;i<localStorage.length;i++){
-        const key=localStorage.key(i);if(key&&key.startsWith(JOIN_PREFIX))keys.push(key);
-      }
-      keys.forEach(key=>localStorage.removeItem(key));
-    }catch(_){}
-  }
 
   async function ensureClient(){
     if(client)return client;
@@ -125,10 +112,7 @@
       busy=true;
       const result=await additiveWrite(buildPayload(incident.data));
       mark(recoveryKey());mark(joinKey());
-      if(result.changed){
-        root.toast?.('Morning Atlas state recovered');
-        await root.AtlasCloudSync?.refreshNow?.();
-      }
+      if(result.changed){root.toast?.('Morning Atlas state recovered');await root.AtlasCloudSync?.refreshNow?.()}
     }catch(error){console.error('Atlas incident recovery failed',error)}finally{busy=false}
   }
 
@@ -148,14 +132,6 @@
     }catch(error){console.error('Atlas pre-sync recovery failed',error)}finally{busy=false}
   }
 
-  function interceptMerge(event){
-    const button=event.target?.closest?.('#atlasCanonicalBanner button');if(!button)return;
-    if(String(button.textContent||'').trim().toUpperCase()!=='MERGE THIS DEVICE')return;
-    event.preventDefault();event.stopImmediatePropagation();button.disabled=true;button.textContent='MERGING…';safeMergeCurrentDevice();
-  }
-
-  disarmPersistentJoinTrust();
-  document.addEventListener('click',interceptMerge,true);
   root.addEventListener('load',()=>setTimeout(recoverIncidentBackupOnce,900));
   root.addEventListener('load',()=>setTimeout(recoverPreSyncBackupOnce,1500));
   setTimeout(recoverIncidentBackupOnce,1400);
