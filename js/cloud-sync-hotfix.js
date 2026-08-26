@@ -1,11 +1,13 @@
-// v0.13.0 migration hotfix: device onboarding is additive, never deletion-by-absence.
+// Canonical sync safety layer: startup divergence is never trusted as stale cache,
+// and known pre-overwrite browser snapshots can be recovered additively.
 (function(root){
   'use strict';
   const RECORD_TYPE='canonical_state_v1',RECORD_ID='primary';
   const COLLECTIONS=['profiles','areas','links','projects','notes','daily','calendar','quickTodos','activity'];
   const JOIN_PREFIX='atlas_canonical_joined_v1:';
-  const RECOVERY_PREFIX='atlas_v0130_additive_recovery_v1:';
+  const RECOVERY_PREFIX='atlas_canonical_incident_recovery_v2:';
   const PRE_SYNC_REASON='before Atlas v0.13.0 canonical sync';
+  const OVERWRITE_REASON='before first shared Atlas refresh';
   const cloneValue=value=>JSON.parse(JSON.stringify(value));
   const plain=value=>!!value&&Object.prototype.toString.call(value)==='[object Object]';
   let client=null,target=null,busy=false;
@@ -29,7 +31,7 @@
     for(const [key,value] of Object.entries(local)){
       const localText=String(value??''),remoteText=String(result[key]??'');
       if(!remoteText){result[key]=localText;continue}
-      if(localText&&localText!==remoteText&&!remoteText.includes(localText))result[key]=`${remoteText}\n\n--- Imported from another device ---\n\n${localText}`;
+      if(localText&&localText!==remoteText&&!remoteText.includes(localText))result[key]=`${remoteText}\n\n--- Recovered from another Atlas device ---\n\n${localText}`;
     }
     return result;
   }
@@ -40,6 +42,20 @@
     return merged;
   }
   const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+
+  // A persisted "joined" flag is not proof that a differing browser state is stale.
+  // Clear it before canonical sync initialises. Equal local/cloud content rejoins silently;
+  // divergent content falls through to the explicit migration path instead of being replaced.
+  function disarmPersistentJoinTrust(){
+    try{
+      const keys=[];
+      for(let i=0;i<localStorage.length;i++){
+        const key=localStorage.key(i);if(key&&key.startsWith(JOIN_PREFIX))keys.push(key);
+      }
+      keys.forEach(key=>localStorage.removeItem(key));
+    }catch(_){}
+  }
+
   async function ensureClient(){
     if(client)return client;
     const config=root.ATLAS_CLOUD_CONFIG,lib=root.supabase;
@@ -71,8 +87,8 @@
   async function additiveWrite(localPayload){
     for(let attempt=0;attempt<5;attempt++){
       const remote=await readCanonical();if(!remote)throw new Error('Shared Atlas is unavailable.');
-      const merged=unionPayload(remote.payload,localPayload);if(same(merged,remote.payload))return{changed:false,revision:remote.revision};
-      if(await writeCanonical(merged,remote.revision))return{changed:true,revision:Number(remote.revision)+1};
+      const merged=unionPayload(remote.payload,localPayload);if(same(merged,remote.payload))return{changed:false,revision:remote.revision,payload:remote.payload};
+      if(await writeCanonical(merged,remote.revision))return{changed:true,revision:Number(remote.revision)+1,payload:merged};
     }
     throw new Error('Atlas changed repeatedly while merging. Try again.');
   }
@@ -80,38 +96,69 @@
   function recoveryKey(){return target?.profileId?RECOVERY_PREFIX+target.profileId:''}
   function mark(key){try{if(key)localStorage.setItem(key,String(Date.now()))}catch(_){}}
   function has(key){try{return !!(key&&localStorage.getItem(key))}catch(_){return false}}
+
   async function safeMergeCurrentDevice(){
     if(busy)return;busy=true;
     try{
       await resolveTarget();
       if(typeof idbBackup==='function')await idbBackup(clone(state),'before safe additive device merge');
       await additiveWrite(buildPayload(state));
-      mark(joinKey());mark(recoveryKey());
+      mark(joinKey());
       root.toast?.('Device merged safely');
-      setTimeout(()=>location.reload(),500);
+      await root.AtlasCloudSync?.refreshNow?.();
     }catch(error){root.toast?.('Device merge failed');console.error('Atlas additive merge failed',error)}finally{busy=false}
   }
+
+  function containsIncidentMarker(snapshot){
+    const areas=Array.isArray(snapshot?.areas)?snapshot.areas:[];
+    const projects=Array.isArray(snapshot?.projects)?snapshot.projects:[];
+    return areas.some(item=>/go\s*safe/i.test(String(item?.name||'')))||projects.some(item=>/go\s*safe/i.test(String(item?.title||'')));
+  }
+  async function recoverIncidentBackupOnce(){
+    if(busy||typeof idbBackups!=='function')return;
+    try{
+      await resolveTarget();
+      if(has(recoveryKey()))return;
+      const backups=await idbBackups();
+      const incident=(backups||[]).find(item=>item?.reason===OVERWRITE_REASON&&item?.data&&containsIncidentMarker(item.data));
+      if(!incident)return;
+      busy=true;
+      const result=await additiveWrite(buildPayload(incident.data));
+      mark(recoveryKey());mark(joinKey());
+      if(result.changed){
+        root.toast?.('Morning Atlas state recovered');
+        await root.AtlasCloudSync?.refreshNow?.();
+      }
+    }catch(error){console.error('Atlas incident recovery failed',error)}finally{busy=false}
+  }
+
   async function recoverPreSyncBackupOnce(){
     if(busy||typeof idbBackups!=='function')return;
     try{
       await resolveTarget();
-      if(!has(joinKey())||has(recoveryKey()))return;
+      const legacyKey=target?.profileId?`atlas_v0130_additive_recovery_v1:${target.profileId}`:'';
+      if(has(legacyKey))return;
       const backups=await idbBackups();
       const backup=(backups||[]).find(item=>item?.reason===PRE_SYNC_REASON&&item?.data);
       if(!backup)return;
       busy=true;
       const result=await additiveWrite(buildPayload(backup.data));
-      mark(recoveryKey());
-      if(result.changed){root.toast?.('Pre-sync Atlas data recovered');setTimeout(()=>location.reload(),700)}
+      mark(legacyKey);mark(joinKey());
+      if(result.changed){root.toast?.('Pre-sync Atlas data recovered');await root.AtlasCloudSync?.refreshNow?.()}
     }catch(error){console.error('Atlas pre-sync recovery failed',error)}finally{busy=false}
   }
+
   function interceptMerge(event){
     const button=event.target?.closest?.('#atlasCanonicalBanner button');if(!button)return;
     if(String(button.textContent||'').trim().toUpperCase()!=='MERGE THIS DEVICE')return;
     event.preventDefault();event.stopImmediatePropagation();button.disabled=true;button.textContent='MERGING…';safeMergeCurrentDevice();
   }
+
+  disarmPersistentJoinTrust();
   document.addEventListener('click',interceptMerge,true);
-  root.addEventListener('load',()=>setTimeout(recoverPreSyncBackupOnce,1200));
-  setTimeout(recoverPreSyncBackupOnce,1800);
-  root.AtlasCanonicalMigrationHotfix=Object.freeze({safeMergeCurrentDevice,recoverPreSyncBackupOnce});
+  root.addEventListener('load',()=>setTimeout(recoverIncidentBackupOnce,900));
+  root.addEventListener('load',()=>setTimeout(recoverPreSyncBackupOnce,1500));
+  setTimeout(recoverIncidentBackupOnce,1400);
+  setTimeout(recoverPreSyncBackupOnce,2200);
+  root.AtlasCanonicalMigrationHotfix=Object.freeze({safeMergeCurrentDevice,recoverIncidentBackupOnce,recoverPreSyncBackupOnce});
 })(window);
