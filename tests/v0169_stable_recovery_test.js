@@ -19,20 +19,20 @@ assert(bootstrap.includes("loadScript('./js/sync-v2-core.js','Atlas record-level
 assert(bootstrap.includes("loadScript('./js/sync-v2.js','Atlas record-level sync')"),'record-level sync runtime must load');
 assert(!bootstrap.includes("loadScript('./js/cloud-sync.js'"),'legacy whole-snapshot sync must not boot');
 assert(!bootstrap.includes("loadScript('./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not boot');
-assert(!bootstrap.includes("loadScript('./js/sync-quarantine.js'"),'temporary quarantine must be retired when v2 boots');
+assert(!bootstrap.includes("loadScript('./js/sync-quarantine.js'"),'temporary quarantine must remain retired');
 assert(bootstrap.includes("document.documentElement.classList.add('atlas-ready')"),'boot guard must release after load');
 assert(capture.includes('[data-atlas-aligned-capture]'),'capture launcher handoff contract missing');
 assert(overview.includes('AtlasNetworkOverview'),'network overview runtime contract missing');
 assert(!overview.includes('dataset.skin'),'network overview must not own skin state');
 assert(overviewCss.includes('.atlas-network-minimap'),'network overview presentation missing');
-assert(sw.includes("atlas-shell-0.16.9-r5"),'record-level sync cache version missing');
+assert(sw.includes("atlas-shell-0.16.9-r6"),'automatic record-level sync cache version missing');
 assert(sw.includes("'./styles/network-overview.css'"),'network overview CSS must be cached');
 assert(sw.includes("'./js/network-overview.js'"),'network overview runtime must be cached');
 assert(sw.includes("'./js/capture-flow-fix.js'"),'capture fix must be cached');
 assert(sw.includes("'./js/sync-v2-core.js'"),'record-level sync core must be cached');
 assert(sw.includes("'./js/sync-v2.js'"),'record-level sync runtime must be cached');
-assert(!sw.includes("'./js/cloud-sync.js'"),'legacy snapshot sync must not be in the r5 app shell');
-assert(!sw.includes("'./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not be in the r5 app shell');
+assert(!sw.includes("'./js/cloud-sync.js'"),'legacy snapshot sync must not be in the r6 app shell');
+assert(!sw.includes("'./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not be in the r6 app shell');
 assert(sw.includes("'./assets/lock-terrain.gif'"),'lock terrain must remain offline-critical');
 
-console.log('Atlas v0.16.9 record-level sync recovery: PASS');
+console.log('Atlas v0.16.9 automatic record-level sync: PASS');

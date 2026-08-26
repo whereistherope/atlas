@@ -3,10 +3,11 @@
   'use strict';
   const Core=root.AtlasSyncV2Core;if(!Core)return;
   const ENTITY_TYPE='entity_state_v2',META_TYPE='entity_sync_v2_meta',META_ID='baseline';
+  const LEGACY_TYPE='canonical_state_v1',LEGACY_ID='primary';
   const BASE_PREFIX='atlas_entity_sync_v2_base:';
   const DEVICE_KEY='atlas_entity_sync_v2_device';
   const PAGE_SIZE=400;
-  let client=null,target=null,ready=false,loaded=false,busy=false,pollTimer=null,pushTimer=null,localSeq=0,lastMessage='';
+  let client=null,target=null,ready=false,loaded=false,busy=false,pollTimer=null,pushTimer=null,localSeq=0,lastMessage='',bootRecords={};
 
   const online=()=>typeof navigator==='undefined'||navigator.onLine!==false;
   const localFingerprint=()=>Core.canonical(Core.flattenState(state));
@@ -18,12 +19,6 @@
     lastMessage=message;
     const detail={state:stateName,message,joined:ready,dirty:stateName==='PENDING'||stateName==='SYNCING',revision:0,recordLevel:true,...extra};
     try{root.dispatchEvent(new CustomEvent('atlascanonicalstatus',{detail}))}catch(_){}return detail;
-  }
-  function removeBanner(){document.getElementById('atlasSyncV2Banner')?.remove()}
-  function migrationBanner(){
-    removeBanner();const el=document.createElement('div');el.id='atlasSyncV2Banner';el.style.cssText='position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:100000;max-width:min(760px,calc(100vw - 24px));background:#101719;color:#f4f1e8;border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:13px 14px;box-shadow:0 14px 42px rgba(0,0,0,.38);font:13px/1.4 system-ui,sans-serif;display:flex;gap:12px;align-items:center;flex-wrap:wrap';
-    const text=document.createElement('div');text.style.cssText='flex:1 1 360px';text.innerHTML='<strong>SAFE SYNC UPGRADE</strong><br>Cross-device snapshot sync is retired. On the device containing the Atlas state you want to keep, start the one-time record-level baseline. Other devices can then join safely.';el.appendChild(text);
-    const button=document.createElement('button');button.type='button';button.textContent='USE THIS DEVICE AS BASELINE';button.style.cssText='border:1px solid rgba(255,255,255,.24);background:#e9efec;color:#111;padding:9px 12px;border-radius:8px;font-weight:800;cursor:pointer';button.onclick=async()=>{button.disabled=true;button.textContent='CREATING SAFE BASELINE…';await initialiseFromThisDevice();if(!ready){button.disabled=false;button.textContent='TRY AGAIN'}};el.appendChild(button);document.body.appendChild(el);
   }
 
   async function ensureClient(){
@@ -43,6 +38,13 @@
     if(!target)await resolveTarget();const {data,error}=await client.from('atlas_records').select('record_id,payload,revision,created_at,updated_at').eq('profile_id',target.profileId).eq('record_type',META_TYPE).eq('record_id',META_ID).maybeSingle();if(error)throw error;return data||null;
   }
   function validMeta(row){return !!(row?.payload&&row.payload.schema==='atlas_entity_sync_meta'&&row.payload.version===2&&row.payload.status==='ready')}
+  function validLegacyPayload(payload){
+    return !!(Core.plain(payload)&&payload.schema==='atlas_canonical_state'&&payload.version===1&&Number.isInteger(payload.dataVersion)&&Core.COLLECTIONS.every(key=>Array.isArray(payload[key]))&&Core.plain(payload.scratch));
+  }
+  async function readLegacyCanonical(){
+    if(!target)await resolveTarget();const {data,error}=await client.from('atlas_records').select('record_id,payload,revision,client_updated_at,updated_at').eq('profile_id',target.profileId).eq('record_type',LEGACY_TYPE).eq('record_id',LEGACY_ID).maybeSingle();if(error)throw error;
+    if(!data)return null;if(!validLegacyPayload(data.payload))throw new Error('Existing shared Atlas data is invalid and was not migrated.');return data;
+  }
   async function readEntityRows(){
     if(!target)await resolveTarget();const rows=[];let from=0;
     while(true){const {data,error}=await client.from('atlas_records').select('record_id,payload,revision,client_updated_at,updated_at').eq('profile_id',target.profileId).eq('record_type',ENTITY_TYPE).order('record_id',{ascending:true}).range(from,from+PAGE_SIZE-1);if(error)throw error;const batch=Array.isArray(data)?data:[];rows.push(...batch);if(batch.length<PAGE_SIZE)break;from+=PAGE_SIZE}
@@ -70,31 +72,38 @@
     }
     const {error}=await client.from('atlas_records').insert({profile_id:target.profileId,record_type:ENTITY_TYPE,record_id:key,payload,client_updated_at:now,updated_by:target.userId});if(error){if(error.code==='23505')return false;throw error}return true;
   }
-  async function seedBaselineRecords(){
-    const desired=Core.flattenState(state);
+  async function seedMissingRecords(records){
+    const desired=records||{};
     for(let attempt=0;attempt<5;attempt++){
-      const remote=entriesFromRows(await readEntityRows()),keys=new Set([...Object.keys(remote),...Object.keys(desired)]);let conflict=false;
-      for(const key of keys){
-        const wanted=desired[key]||Core.tombstoneFor(remote[key]?.record);if(!wanted||Core.recordEqual(wanted,remote[key]?.record))continue;
-        if(!await writeMutation(key,wanted,remote[key])){conflict=true;break}
+      const remote=entriesFromRows(await readEntityRows());let conflicted=false;
+      for(const [key,record] of Object.entries(desired)){
+        if(remote[key])continue;
+        const ok=await writeMutation(key,record,null);if(!ok){conflicted=true;break}
       }
-      if(!conflict)return;
+      if(!conflicted)return;
     }
-    throw new Error('Could not establish a stable record-level baseline.');
+    throw new Error('Could not complete the shared Atlas migration.');
   }
-  async function insertMeta(){
-    const payload={schema:'atlas_entity_sync_meta',version:2,status:'ready',seededAt:Date.now(),seededByDevice:deviceId(),dataVersion:Number(state?.version||8)};
+  async function insertMeta(source,dataVersion){
+    const payload={schema:'atlas_entity_sync_meta',version:2,status:'ready',migratedAt:Date.now(),migrationSource:source,dataVersion:Number(dataVersion||8)};
     const {error}=await client.from('atlas_records').insert({profile_id:target.profileId,record_type:META_TYPE,record_id:META_ID,payload,client_updated_at:Date.now(),updated_by:target.userId});if(error&&error.code!=='23505')throw error;
   }
-  async function initialiseFromThisDevice(){
-    if(busy)return;busy=true;
+  async function migrateSharedCloud(){
+    if(busy)return false;busy=true;
     try{
-      emit('SYNCING','Creating record-level Atlas baseline…');await resolveTarget();const existing=await readMeta();if(validMeta(existing)){ready=true;removeBanner();return}
-      if(typeof idbBackup==='function')await idbBackup(Core.clone(state),'before Atlas Sync v2 baseline');
-      await seedBaselineRecords();await insertMeta();const meta=await readMeta();if(!validMeta(meta))throw new Error('Safe sync baseline was not confirmed.');
-      ready=true;removeBanner();const remote=entriesFromRows(await readEntityRows());await writeBase(remote);emit('SYNCED','Record-level Atlas baseline created.',{records:Object.keys(remote).length});startPolling();root.toast?.('Safe cross-device sync enabled');
-    }catch(error){ready=false;emit('ERROR',String(error?.message||'Could not create safe sync baseline.'));root.toast?.('Safe sync setup failed')}finally{busy=false}
-    if(ready)await syncNow();
+      emit('MIGRATING','Upgrading shared Atlas data to record-level sync…');await resolveTarget();const existing=await readMeta();if(validMeta(existing)){ready=true;return true}
+      const legacy=await readLegacyCanonical();
+      const sourceState=legacy?.payload||null;
+      if(sourceState){
+        await seedMissingRecords(Core.flattenState(sourceState));
+        await insertMeta('canonical_state_v1',sourceState.dataVersion);
+      }else{
+        // Only a genuinely empty cloud is bootstrapped from local data. This is not used when shared Atlas data already exists.
+        await seedMissingRecords(Core.flattenState(state));
+        await insertMeta('empty_cloud_bootstrap',Number(state?.version||8));
+      }
+      const confirmed=await readMeta();if(!validMeta(confirmed))throw new Error('Record-level Atlas migration was not confirmed.');ready=true;emit('SYNCED','Shared Atlas upgraded to record-level sync.');return true;
+    }catch(error){ready=false;emit('ERROR',String(error?.message||'Could not upgrade shared Atlas sync.'));return false}finally{busy=false}
   }
 
   function timeValue(item){
@@ -123,14 +132,14 @@
     try{
       emit('SYNCING','Reconciling Atlas records…');const base=await readBase(),baseRecords=base?.records||{},hasBase=!!base;
       for(let attempt=0;attempt<4;attempt++){
-        const remote=entriesFromRows(await readEntityRows()),local=Core.flattenState(state),plan=Core.reconcile(baseRecords,remote,local,hasBase);let conflicted=false;
+        const remote=entriesFromRows(await readEntityRows()),local=Core.flattenState(state),plan=hasBase?Core.reconcile(baseRecords,remote,local,true):Core.reconcileFirstContact(remote,bootRecords,local);let conflicted=false;
         for(const [key,record] of Object.entries(plan.mutations)){
           if(!localStillSame(startSeq,startFingerprint)){schedulePush(100);return}
           const ok=await writeMutation(key,record,remote[key]);if(!ok){conflicted=true;break}
         }
         if(conflicted)continue;
         const finalRemote=entriesFromRows(await readEntityRows());if(!localStillSame(startSeq,startFingerprint)){schedulePush(100);return}
-        const applied=await applyRemote(finalRemote,startSeq,startFingerprint);if(!applied){schedulePush(100);return}await writeBase(finalRemote);emit('SYNCED','Atlas synced safely by record.',{records:Object.keys(finalRemote).length});return;
+        const applied=await applyRemote(finalRemote,startSeq,startFingerprint);if(!applied){schedulePush(100);return}await writeBase(finalRemote);bootRecords=Core.flattenState(state);emit('SYNCED','Atlas synced safely by record.',{records:Object.keys(finalRemote).length});return;
       }
       throw new Error('Atlas records changed repeatedly while syncing. Retrying shortly.');
     }catch(error){emit(online()?'ERROR':'OFFLINE',String(error?.message||'Record-level sync failed.'));setTimeout(()=>schedulePush(1000),1600)}finally{busy=false}
@@ -138,17 +147,19 @@
   function schedulePush(delay=450){if(!ready)return;clearTimeout(pushTimer);pushTimer=setTimeout(syncNow,delay)}
   function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(()=>{if(document.visibilityState!=='hidden')syncNow()},5000)}
   async function initAfterLocalLoad(){
-    if(loaded)return;loaded=true;if(!online())return emit('OFFLINE','Atlas is local on this device. Safe sync will resume when online.');
-    try{await resolveTarget();const meta=await readMeta();if(!validMeta(meta)){ready=false;emit('SETUP','Safe record-level sync needs a one-time baseline.');migrationBanner();return}ready=true;removeBanner();await syncNow();startPolling()}
-    catch(error){ready=false;emit('LOCAL',String(error?.message||'Sign in to Atlas cloud to use safe sync.'))}
+    if(loaded)return;loaded=true;if(!online())return emit('OFFLINE','Atlas is local on this device. Sync will resume automatically when online.');
+    try{
+      await resolveTarget();let meta=await readMeta();if(!validMeta(meta)){const migrated=await migrateSharedCloud();if(!migrated)return;meta=await readMeta()}
+      if(!validMeta(meta))throw new Error('Shared Atlas sync is unavailable.');ready=true;await syncNow();startPolling();
+    }catch(error){ready=false;emit('LOCAL',String(error?.message||'Sign in to Atlas cloud to sync.'))}
   }
 
   const originalSave=save,originalLoad=load;
   save=async function(){const result=await originalSave.apply(this,arguments);localSeq++;if(ready){emit('PENDING','Local Atlas changes are waiting to sync.');schedulePush()}return result};
-  load=async function(){const result=await originalLoad.apply(this,arguments);await initAfterLocalLoad();return result};
+  load=async function(){const result=await originalLoad.apply(this,arguments);bootRecords=Core.flattenState(state);await initAfterLocalLoad();return result};
   root.addEventListener?.('focus',()=>{if(ready)syncNow()});
   root.addEventListener?.('online',()=>{if(!loaded){initAfterLocalLoad();return}if(!ready){loaded=false;initAfterLocalLoad()}else syncNow()});
   document.addEventListener?.('visibilitychange',()=>{if(document.visibilityState==='visible'&&ready)syncNow()});
   root.addEventListener?.('atlascloudstatus',event=>{if(event.detail?.authenticated&&!ready){loaded=false;initAfterLocalLoad()}});
-  root.AtlasCloudSync=Object.freeze({initAfterLocalLoad,refreshNow:syncNow,pushNow:syncNow,initialiseFromThisDevice,useSharedAtlas:syncNow,mergeThisDevice:syncNow,getStatus:()=>({ready,joined:ready,dirty:lastMessage.includes('waiting'),recordLevel:true,target:target?{profileId:target.profileId}:null})});
+  root.AtlasCloudSync=Object.freeze({initAfterLocalLoad,refreshNow:syncNow,pushNow:syncNow,migrateSharedCloud,getStatus:()=>({ready,joined:ready,dirty:lastMessage.includes('waiting'),recordLevel:true,target:target?{profileId:target.profileId}:null})});
 })(window);

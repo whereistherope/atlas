@@ -58,7 +58,7 @@
       else if(lc&&!rc)chosen=l;
       else if(rc&&!lc)chosen=r;
       else if(equal(l,r))chosen=l;
-      else if(l===undefined&&r!==undefined)chosen=r; // deletion vs concurrent edit: preserve the edit
+      else if(l===undefined&&r!==undefined)chosen=r;
       else if(r===undefined&&l!==undefined)chosen=l;
       else if(l!==undefined&&r!==undefined)chosen=mergeValue(b,r,l,[...path,id]);
       if(chosen!==undefined)result.push(clone(chosen));
@@ -88,7 +88,6 @@
       if(!remote)return local;if(!local||remote.includes(local))return remote;if(local.includes(remote))return local;
       return `${remote}\n\n--- Concurrent Atlas edit ---\n\n${local}`;
     }
-    // Scalar conflict. Local represents an actual edit since this device's acknowledged base.
     return clone(local!==undefined?local:remote);
   }
 
@@ -99,27 +98,23 @@
     if(local===undefined)return clone(remote);
     if(remote===undefined)return clone(local);
     if(local.deleted&&remote.deleted)return clone(local);
-    if(local.deleted&&!remote.deleted)return clone(remote); // preserve a concurrent remote edit over deletion
-    if(remote.deleted&&!local.deleted)return clone(local); // preserve a concurrent local edit over deletion
+    if(local.deleted&&!remote.deleted)return clone(remote);
+    if(remote.deleted&&!local.deleted)return clone(local);
     const data=local.kind==='scratch'
       ?mergeValue(base?.deleted?undefined:base?.data,remote.data,local.data,['scratch'])
       :mergeValue(base?.deleted?undefined:base?.data,remote.data,local.data,[local.kind]);
     return makeRecord(local.kind,local.id,data,false);
   }
 
-  // baseEntries/remoteEntries are keyed objects: { key: {record,revision?} }.
-  // localRecords is keyed object: { key: record }. It never contains implicit deletions.
+  // Normal reconciliation for a device that has a durable acknowledged base.
   function reconcile(baseEntries={},remoteEntries={},localRecords={},hasBase=true){
     const final={},mutations={};
     const keys=new Set([...Object.keys(baseEntries||{}),...Object.keys(remoteEntries||{}),...Object.keys(localRecords||{})]);
     for(const key of keys){
       const baseEntry=baseEntries?.[key],remoteEntry=remoteEntries?.[key],b=baseEntry?.record,rActual=remoteEntry?.record,lActual=localRecords?.[key];let chosen;
       if(!hasBase){
-        if(rActual!==undefined){
-          if(rActual.deleted)chosen=clone(rActual);
-          else if(lActual!==undefined&&rActual.kind==='scratch'&&!recordEqual(rActual,lActual))chosen=makeRecord('scratch',rActual.id,mergeValue(undefined,rActual.data,lActual.data,['scratch']),false);
-          else chosen=clone(rActual); // established v2 cloud record wins same-ID ambiguity on a new device
-        }else if(lActual!==undefined){chosen=clone(lActual)}
+        // First contact without history is pull-first: existing cloud wins and local-only leftovers are inert.
+        chosen=rActual!==undefined?clone(rActual):undefined;
       }else{
         const r=rActual!==undefined?rActual:b;
         let l=lActual;
@@ -129,6 +124,27 @@
       if(chosen===undefined)continue;
       final[key]=clone(chosen);
       if(!recordEqual(chosen,rActual))mutations[key]=clone(chosen);
+    }
+    return{final,mutations};
+  }
+
+  // First contact uses the local state present when this browser session loaded as an ephemeral base.
+  // Unchanged stale local-only records never upload. Genuine edits made after load can still merge safely.
+  function reconcileFirstContact(remoteEntries={},bootRecords={},localRecords={}){
+    const final={},mutations={};
+    const keys=new Set([...Object.keys(remoteEntries||{}),...Object.keys(bootRecords||{}),...Object.keys(localRecords||{})]);
+    for(const key of keys){
+      const remoteEntry=remoteEntries?.[key],r=remoteEntry?.record,b=bootRecords?.[key],l=localRecords?.[key],localChanged=!recordEqual(l,b);let chosen;
+      if(r!==undefined){
+        if(!localChanged)chosen=clone(r);
+        else if(l===undefined&&b!==undefined)chosen=mergeRecord(b,r,tombstoneFor(b));
+        else chosen=mergeRecord(b,r,l);
+      }else if(localChanged&&l!==undefined){
+        chosen=clone(l);
+      }
+      if(chosen===undefined)continue;
+      final[key]=clone(chosen);
+      if(!recordEqual(chosen,r))mutations[key]=clone(chosen);
     }
     return{final,mutations};
   }
@@ -143,5 +159,5 @@
     return makeRecord(payload.kind,payload.id,payload.data,false);
   }
 
-  return{COLLECTIONS,clone,plain,canonical,equal,keyFor,makeRecord,tombstoneFor,recordEqual,flattenState,mergeValue,mergeRecord,reconcile,payloadFor,recordFromPayload};
+  return{COLLECTIONS,clone,plain,canonical,equal,keyFor,makeRecord,tombstoneFor,recordEqual,flattenState,mergeValue,mergeRecord,reconcile,reconcileFirstContact,payloadFor,recordFromPayload};
 });
