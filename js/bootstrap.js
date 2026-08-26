@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
-// Record-level cross-device sync build r5.
+// Automatic record-level cross-device sync build r6.
 (async function(){
-  const BUILD='0169r5';
+  const BUILD='0169r6';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
