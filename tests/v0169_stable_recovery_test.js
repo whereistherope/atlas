@@ -15,17 +15,24 @@ assert(!bootstrap.includes('ops-r5.css'),'recovery must not load r5 palette laye
 assert(bootstrap.includes("loadStyle('./styles/network-overview.css')"),'network overview style must load');
 assert(bootstrap.includes("loadScript('./js/capture-flow-fix.js','Atlas capture launcher handoff v0.16.9')"),'capture handoff must remain');
 assert(bootstrap.includes("loadScript('./js/network-overview.js','Atlas network overview v0.16.9')"),'network overview must remain');
-assert(bootstrap.includes("loadScript('./js/recovery-inspector.js','Atlas recovery inspector')"),'recovery inspector must load');
+assert(bootstrap.includes("loadScript('./js/sync-v2-core.js','Atlas record-level sync core')"),'record-level sync core must load');
+assert(bootstrap.includes("loadScript('./js/sync-v2.js','Atlas record-level sync')"),'record-level sync runtime must load');
+assert(!bootstrap.includes("loadScript('./js/cloud-sync.js'"),'legacy whole-snapshot sync must not boot');
+assert(!bootstrap.includes("loadScript('./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not boot');
+assert(!bootstrap.includes("loadScript('./js/sync-quarantine.js'"),'temporary quarantine must be retired when v2 boots');
 assert(bootstrap.includes("document.documentElement.classList.add('atlas-ready')"),'boot guard must release after load');
 assert(capture.includes('[data-atlas-aligned-capture]'),'capture launcher handoff contract missing');
 assert(overview.includes('AtlasNetworkOverview'),'network overview runtime contract missing');
 assert(!overview.includes('dataset.skin'),'network overview must not own skin state');
 assert(overviewCss.includes('.atlas-network-minimap'),'network overview presentation missing');
-assert(sw.includes("atlas-shell-0.16.9-r3"),'durable sync cache version missing');
+assert(sw.includes("atlas-shell-0.16.9-r5"),'record-level sync cache version missing');
 assert(sw.includes("'./styles/network-overview.css'"),'network overview CSS must be cached');
 assert(sw.includes("'./js/network-overview.js'"),'network overview runtime must be cached');
 assert(sw.includes("'./js/capture-flow-fix.js'"),'capture fix must be cached');
-assert(sw.includes("'./js/recovery-inspector.js'"),'recovery inspector must be cached');
+assert(sw.includes("'./js/sync-v2-core.js'"),'record-level sync core must be cached');
+assert(sw.includes("'./js/sync-v2.js'"),'record-level sync runtime must be cached');
+assert(!sw.includes("'./js/cloud-sync.js'"),'legacy snapshot sync must not be in the r5 app shell');
+assert(!sw.includes("'./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not be in the r5 app shell');
 assert(sw.includes("'./assets/lock-terrain.gif'"),'lock terrain must remain offline-critical');
 
-console.log('Atlas v0.16.9 stable recovery: PASS');
+console.log('Atlas v0.16.9 record-level sync recovery: PASS');
