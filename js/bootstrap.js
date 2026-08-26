@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
-// Cross-device sync quarantine build r4.
+// Record-level cross-device sync build r5.
 (async function(){
-  const BUILD='0169r4';
+  const BUILD='0169r5';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -28,10 +28,9 @@
   loadStyle('./styles/network-overview.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
-  // IMPORTANT: canonical shared-snapshot sync is intentionally quarantined.
-  // Do not load cloud-sync.js or cloud-sync-hotfix.js while r4 is active.
-  try { await loadScript('./js/sync-quarantine.js','Atlas sync quarantine'); } catch (_) {}
-  try { await loadScript('./js/recovery-inspector.js','Atlas recovery inspector'); } catch (_) {}
+  // Snapshot-based canonical sync is permanently retired from the boot path.
+  try { await loadScript('./js/sync-v2-core.js','Atlas record-level sync core'); } catch (_) {}
+  try { await loadScript('./js/sync-v2.js','Atlas record-level sync'); } catch (_) {}
   try { await loadScript('./js/note-editor.js','Atlas note renderer'); } catch (_) {}
   if(!window.AtlasMarkdown?.openNote){try { await loadScript('./js/note-editor.js','Atlas note renderer retry',{fresh:true}); } catch (_) {}}
   try { await loadScript('./js/visual-note-editor.js','Atlas visual note editor'); } catch (_) {}
@@ -59,7 +58,6 @@
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
   document.documentElement.classList.add('atlas-ready');
-  try { await window.AtlasRecoveryInspector?.openIfNeeded?.(); } catch (_) {}
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load',()=>{navigator.serviceWorker.register(`./sw.js?v=${BUILD}`,{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{})});
