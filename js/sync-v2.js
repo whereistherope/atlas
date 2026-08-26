@@ -9,6 +9,8 @@
   let client=null,target=null,ready=false,loaded=false,busy=false,pollTimer=null,pushTimer=null,localSeq=0,lastMessage='';
 
   const online=()=>typeof navigator==='undefined'||navigator.onLine!==false;
+  const localFingerprint=()=>Core.canonical(Core.flattenState(state));
+  const localStillSame=(seq,fp)=>localSeq===seq&&localFingerprint()===fp;
   function deviceId(){
     try{let id=localStorage.getItem(DEVICE_KEY);if(id)return id;id=(crypto?.randomUUID?.()||`device-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,9)}`);localStorage.setItem(DEVICE_KEY,id);return id}catch(_){return`volatile-${Math.random().toString(36).slice(2,9)}`}
   }
@@ -61,9 +63,24 @@
     try{localStorage.setItem(key,JSON.stringify(value))}catch(_){}
   }
 
-  async function insertEntityBatch(records){
-    const rows=records.map(record=>({profile_id:target.profileId,record_type:ENTITY_TYPE,record_id:Core.keyFor(record.kind,record.id),payload:Core.payloadFor(record,deviceId(),Date.now()),client_updated_at:Date.now(),updated_by:target.userId}));
-    for(let i=0;i<rows.length;i+=100){const {error}=await client.from('atlas_records').insert(rows.slice(i,i+100));if(error&&error.code!=='23505')throw error}
+  async function writeMutation(key,record,remoteEntry){
+    const payload=Core.payloadFor(record,deviceId(),Date.now()),now=Date.now();
+    if(remoteEntry){
+      const {data,error}=await client.from('atlas_records').update({payload,client_updated_at:now,revision:Number(remoteEntry.revision||0)+1,updated_by:target.userId}).eq('profile_id',target.profileId).eq('record_type',ENTITY_TYPE).eq('record_id',key).eq('revision',Number(remoteEntry.revision||0)).select('record_id,revision');if(error)throw error;return Array.isArray(data)&&data.length===1;
+    }
+    const {error}=await client.from('atlas_records').insert({profile_id:target.profileId,record_type:ENTITY_TYPE,record_id:key,payload,client_updated_at:now,updated_by:target.userId});if(error){if(error.code==='23505')return false;throw error}return true;
+  }
+  async function seedBaselineRecords(){
+    const desired=Core.flattenState(state);
+    for(let attempt=0;attempt<5;attempt++){
+      const remote=entriesFromRows(await readEntityRows()),keys=new Set([...Object.keys(remote),...Object.keys(desired)]);let conflict=false;
+      for(const key of keys){
+        const wanted=desired[key]||Core.tombstoneFor(remote[key]?.record);if(!wanted||Core.recordEqual(wanted,remote[key]?.record))continue;
+        if(!await writeMutation(key,wanted,remote[key])){conflict=true;break}
+      }
+      if(!conflict)return;
+    }
+    throw new Error('Could not establish a stable record-level baseline.');
   }
   async function insertMeta(){
     const payload={schema:'atlas_entity_sync_meta',version:2,status:'ready',seededAt:Date.now(),seededByDevice:deviceId(),dataVersion:Number(state?.version||8)};
@@ -72,21 +89,14 @@
   async function initialiseFromThisDevice(){
     if(busy)return;busy=true;
     try{
-      emit('SYNCING','Creating record-level Atlas baseline…');await resolveTarget();const existing=await readMeta();if(validMeta(existing)){ready=true;removeBanner();busy=false;await syncNow();return}
+      emit('SYNCING','Creating record-level Atlas baseline…');await resolveTarget();const existing=await readMeta();if(validMeta(existing)){ready=true;removeBanner();return}
       if(typeof idbBackup==='function')await idbBackup(Core.clone(state),'before Atlas Sync v2 baseline');
-      const records=Object.values(Core.flattenState(state));await insertEntityBatch(records);await insertMeta();
-      const meta=await readMeta();if(!validMeta(meta))throw new Error('Safe sync baseline was not confirmed.');ready=true;removeBanner();
-      const remote=entriesFromRows(await readEntityRows());await writeBase(remote);emit('SYNCED','Record-level Atlas baseline created.',{records:Object.keys(remote).length});startPolling();root.toast?.('Safe cross-device sync enabled');
+      await seedBaselineRecords();await insertMeta();const meta=await readMeta();if(!validMeta(meta))throw new Error('Safe sync baseline was not confirmed.');
+      ready=true;removeBanner();const remote=entriesFromRows(await readEntityRows());await writeBase(remote);emit('SYNCED','Record-level Atlas baseline created.',{records:Object.keys(remote).length});startPolling();root.toast?.('Safe cross-device sync enabled');
     }catch(error){ready=false;emit('ERROR',String(error?.message||'Could not create safe sync baseline.'));root.toast?.('Safe sync setup failed')}finally{busy=false}
+    if(ready)await syncNow();
   }
 
-  async function writeMutation(key,record,remoteEntry){
-    const payload=Core.payloadFor(record,deviceId(),Date.now()),now=Date.now();
-    if(remoteEntry){
-      const {data,error}=await client.from('atlas_records').update({payload,client_updated_at:now,revision:Number(remoteEntry.revision||0)+1,updated_by:target.userId}).eq('profile_id',target.profileId).eq('record_type',ENTITY_TYPE).eq('record_id',key).eq('revision',Number(remoteEntry.revision||0)).select('record_id,revision');if(error)throw error;return Array.isArray(data)&&data.length===1;
-    }
-    const {error}=await client.from('atlas_records').insert({profile_id:target.profileId,record_type:ENTITY_TYPE,record_id:key,payload,client_updated_at:now,updated_by:target.userId});if(error){if(error.code==='23505')return false;throw error}return true;
-  }
   function timeValue(item){
     for(const key of ['updatedAt','modifiedAt','createdAt','time','start']){const raw=item?.[key];if(raw===undefined||raw===null)continue;const n=Number(raw);if(Number.isFinite(n)&&n>0)return n;const d=Date.parse(raw);if(Number.isFinite(d))return d}return 0;
   }
@@ -101,23 +111,26 @@
     }
     const scratch={};for(const record of records)if(record.kind==='scratch'&&!record.deleted)scratch[record.id]=String(record.data??'');candidate.scratch=scratch;return candidate;
   }
-  async function applyRemote(entries,startSeq){
-    if(localSeq!==startSeq)return false;const candidate=materialiseEntries(entries,state);
-    const before=Core.canonical(Core.flattenState(state)),after=Core.canonical(Core.flattenState(candidate));
+  async function applyRemote(entries,startSeq,startFingerprint){
+    if(!localStillSame(startSeq,startFingerprint))return false;const candidate=materialiseEntries(entries,state);
+    const before=localFingerprint(),after=Core.canonical(Core.flattenState(candidate));
     if(before!==after&&typeof idbBackup==='function')await idbBackup(Core.clone(state),'before Atlas Sync v2 remote apply');
-    if(localSeq!==startSeq)return false;state=ensureState(candidate);if(db)await idbSet(state);else try{localStorage.setItem(FALLBACK_KEY,JSON.stringify(state))}catch(_){};renderAll(false);return true;
+    if(!localStillSame(startSeq,startFingerprint))return false;state=ensureState(candidate);if(db)await idbSet(state);else try{localStorage.setItem(FALLBACK_KEY,JSON.stringify(state))}catch(_){};renderAll(false);return true;
   }
 
   async function syncNow(){
-    if(!ready||busy||!online())return;busy=true;const startSeq=localSeq;
+    if(!ready||busy||!online())return;busy=true;const startSeq=localSeq,startFingerprint=localFingerprint();
     try{
       emit('SYNCING','Reconciling Atlas records…');const base=await readBase(),baseRecords=base?.records||{},hasBase=!!base;
       for(let attempt=0;attempt<4;attempt++){
         const remote=entriesFromRows(await readEntityRows()),local=Core.flattenState(state),plan=Core.reconcile(baseRecords,remote,local,hasBase);let conflicted=false;
-        for(const [key,record] of Object.entries(plan.mutations)){if(localSeq!==startSeq){schedulePush(100);return}const ok=await writeMutation(key,record,remote[key]);if(!ok){conflicted=true;break}}
+        for(const [key,record] of Object.entries(plan.mutations)){
+          if(!localStillSame(startSeq,startFingerprint)){schedulePush(100);return}
+          const ok=await writeMutation(key,record,remote[key]);if(!ok){conflicted=true;break}
+        }
         if(conflicted)continue;
-        const finalRemote=entriesFromRows(await readEntityRows());if(localSeq!==startSeq){schedulePush(100);return}
-        const applied=await applyRemote(finalRemote,startSeq);if(!applied){schedulePush(100);return}await writeBase(finalRemote);emit('SYNCED','Atlas synced safely by record.',{records:Object.keys(finalRemote).length});return;
+        const finalRemote=entriesFromRows(await readEntityRows());if(!localStillSame(startSeq,startFingerprint)){schedulePush(100);return}
+        const applied=await applyRemote(finalRemote,startSeq,startFingerprint);if(!applied){schedulePush(100);return}await writeBase(finalRemote);emit('SYNCED','Atlas synced safely by record.',{records:Object.keys(finalRemote).length});return;
       }
       throw new Error('Atlas records changed repeatedly while syncing. Retrying shortly.');
     }catch(error){emit(online()?'ERROR':'OFFLINE',String(error?.message||'Record-level sync failed.'));setTimeout(()=>schedulePush(1000),1600)}finally{busy=false}
