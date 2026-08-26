@@ -15,15 +15,17 @@ assert(!bootstrap.includes('ops-r5.css'),'recovery must not load r5 palette laye
 assert(bootstrap.includes("loadStyle('./styles/network-overview.css')"),'network overview style must load');
 assert(bootstrap.includes("loadScript('./js/capture-flow-fix.js','Atlas capture launcher handoff v0.16.9')"),'capture handoff must remain');
 assert(bootstrap.includes("loadScript('./js/network-overview.js','Atlas network overview v0.16.9')"),'network overview must remain');
+assert(bootstrap.includes("loadScript('./js/recovery-inspector.js','Atlas recovery inspector')"),'recovery inspector must load');
 assert(bootstrap.includes("document.documentElement.classList.add('atlas-ready')"),'boot guard must release after load');
 assert(capture.includes('[data-atlas-aligned-capture]'),'capture launcher handoff contract missing');
 assert(overview.includes('AtlasNetworkOverview'),'network overview runtime contract missing');
 assert(!overview.includes('dataset.skin'),'network overview must not own skin state');
 assert(overviewCss.includes('.atlas-network-minimap'),'network overview presentation missing');
-assert(sw.includes("atlas-shell-0.16.9-r1"),'recovery cache version missing');
+assert(sw.includes("atlas-shell-0.16.9-r2"),'recovery cache version missing');
 assert(sw.includes("'./styles/network-overview.css'"),'network overview CSS must be cached');
 assert(sw.includes("'./js/network-overview.js'"),'network overview runtime must be cached');
 assert(sw.includes("'./js/capture-flow-fix.js'"),'capture fix must be cached');
+assert(sw.includes("'./js/recovery-inspector.js'"),'recovery inspector must be cached');
 assert(sw.includes("'./assets/lock-terrain.gif'"),'lock terrain must remain offline-critical');
 
 console.log('Atlas v0.16.9 stable recovery: PASS');
