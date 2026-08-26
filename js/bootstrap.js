@@ -1,4 +1,5 @@
 // Start only after every classic module has established its shared bindings.
+// Recovery hotfix build r2.
 (async function(){
   const BUILD='0169r2';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
