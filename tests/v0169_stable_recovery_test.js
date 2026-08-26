@@ -21,7 +21,7 @@ assert(capture.includes('[data-atlas-aligned-capture]'),'capture launcher handof
 assert(overview.includes('AtlasNetworkOverview'),'network overview runtime contract missing');
 assert(!overview.includes('dataset.skin'),'network overview must not own skin state');
 assert(overviewCss.includes('.atlas-network-minimap'),'network overview presentation missing');
-assert(sw.includes("atlas-shell-0.16.9-r2"),'recovery cache version missing');
+assert(sw.includes("atlas-shell-0.16.9-r3"),'durable sync cache version missing');
 assert(sw.includes("'./styles/network-overview.css'"),'network overview CSS must be cached');
 assert(sw.includes("'./js/network-overview.js'"),'network overview runtime must be cached');
 assert(sw.includes("'./js/capture-flow-fix.js'"),'capture fix must be cached');
