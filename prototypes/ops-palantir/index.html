@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Atlas Ops Prototype</title>
+<style>
+:root{
+  --bg:#0a0c10;--rail:#0b0f14;--surface:#11161d;--surface2:#161b22;--surface3:#1c232d;
+  --line:#30363d;--line-soft:#212832;--ink:#d6dde5;--muted:#8b949e;--faint:#59636e;
+  --blue:#58a6ff;--green:#3fb950;--amber:#d29922;--red:#f85149;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+body{min-height:100vh;overflow:auto}.app{min-height:100vh;display:grid;grid-template-columns:44px minmax(0,1fr)}
+.iconrail{position:sticky;top:0;height:100vh;background:#080b0f;border-right:1px solid var(--line-soft);display:flex;flex-direction:column;align-items:center;z-index:20}
+.brandmark{width:44px;height:44px;display:grid;place-items:center;border-bottom:1px solid var(--line-soft);font:800 15px/1 var(--mono);color:#fff}.railbtn{width:44px;height:44px;border:0;border-bottom:1px solid transparent;background:transparent;color:#737e89;font:700 11px/1 var(--mono);cursor:pointer}.railbtn.active{color:var(--blue);background:#182432;border-left:2px solid var(--blue)}.railspacer{flex:1}
+.shell{min-width:0}.topbar{height:44px;display:grid;grid-template-columns:minmax(250px,1fr) auto minmax(300px,1fr);align-items:center;border-bottom:1px solid var(--line);background:#11161d;padding:0 16px;position:sticky;top:0;z-index:15}
+.classification{font:800 9px/1 var(--mono);letter-spacing:.14em;color:var(--green)}.classification span{color:#5d6874;margin-left:12px}.nav{display:flex;align-items:stretch;height:100%}.nav button{height:100%;padding:0 15px;border:0;border-left:1px solid transparent;border-right:1px solid transparent;background:transparent;color:#aeb7c1;font:700 9px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase}.nav button.active{background:#1b222b;color:#fff;border-color:var(--line)}
+.telemetry{justify-self:end;display:flex;align-items:center;gap:14px;color:var(--muted);font:600 8px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}.profile{padding:5px 8px;border:1px solid var(--line);background:#0d1117;color:#c6cdd5}
+.workspace{display:grid;grid-template-columns:238px minmax(0,1fr) 286px;min-height:calc(100vh - 44px)}
+.left,.right{background:#0d1218;min-width:0}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}.center{min-width:0;background:#091018}
+.section{padding:14px 12px;border-bottom:1px solid var(--line-soft)}.eyebrow{font:800 8px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin-bottom:7px}.h1{font-size:15px;font-weight:750;margin:0 0 5px}.sub{font-size:10px;color:var(--muted);line-height:1.45}.metricgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}.metric{background:#090d12;border:1px solid var(--line-soft);padding:9px}.metric b{display:block;font:800 14px/1 var(--mono);color:#fff}.metric span{font:700 7px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.action{width:100%;border:1px solid #2e4357;background:#162333;color:#8fc5ff;padding:8px 10px;text-align:center;font:800 8px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;margin-top:10px}.listtitle{display:flex;justify-content:space-between;align-items:center;font:800 8px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:#83909d;margin-bottom:7px}.opsitem{padding:8px 7px;border:1px solid transparent;border-bottom-color:var(--line-soft)}.opsitem.active{background:#17202a;border-color:#33495e}.opsitem .row{display:flex;align-items:center;justify-content:space-between;gap:8px}.opsitem strong{font-size:10px}.opsitem p{margin:4px 0 0;color:var(--muted);font-size:9px;line-height:1.35}.pill{font:800 7px/1 var(--mono);padding:3px 5px;background:#142c1d;color:#6fe08a;text-transform:uppercase}.pill.warn{background:#2a2412;color:#e0b84f}.pill.info{background:#14283d;color:#70b7ff}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:6px}.quick button{background:#111820;border:1px solid var(--line);color:#aeb8c2;padding:9px 6px;font:700 8px/1 var(--mono);text-transform:uppercase}.quick button:hover{border-color:#4a5f73;color:#fff}
+.maphead{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--line);background:#11161d}.maphead .title{font:800 9px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em}.mapmeta{color:#73808c;font:700 8px/1 var(--mono);margin-left:10px}.seg{display:flex;border:1px solid var(--line);background:#0b1015}.seg button{border:0;border-left:1px solid var(--line-soft);background:transparent;color:#8e99a4;padding:8px 10px;font:800 8px/1 var(--mono);text-transform:uppercase}.seg button:first-child{border-left:0}.seg button.active{background:#203044;color:#d9ecff;box-shadow:inset 0 -2px var(--blue)}
+.map{height:570px;position:relative;overflow:hidden;background:radial-gradient(circle at 55% 45%,rgba(20,49,73,.18),transparent 42%),#071019}.map:before{content:"";position:absolute;inset:0;opacity:.24;background-image:linear-gradient(rgba(120,145,166,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(120,145,166,.13) 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(to bottom,black,transparent 96%)}
+.map svg{position:absolute;inset:0;width:100%;height:100%}.edge{stroke:#475462;stroke-width:1;opacity:.7}.edge.cross{stroke:#385169;stroke-dasharray:4 5;opacity:.58}.node circle{fill:#697681;stroke:#9ba7b2;stroke-width:1}.node.major circle{fill:#d6dde5;stroke:#fff}.node text{font:700 8px/1 var(--mono);fill:#b7c1ca;letter-spacing:.04em}.node.major text{fill:#eef3f7}.node.selected circle{fill:#58a6ff;stroke:#d8ebff;filter:drop-shadow(0 0 8px rgba(88,166,255,.72))}.node.selected text{fill:#99ceff}.maplabel{position:absolute;left:14px;top:14px;border:1px solid var(--line);background:#0c1219e8;padding:7px 9px;font:800 8px/1 var(--mono);letter-spacing:.08em;color:#aeb8c2}.controls{position:absolute;right:14px;top:14px;border:1px solid var(--line);background:#0c1219e8;color:#9aa6b2;padding:7px 10px;font:800 8px/1 var(--mono);text-transform:uppercase}.minimap{position:absolute;left:14px;bottom:14px;width:112px;height:78px;border:1px solid #38434e;background:#071018e8;padding:7px}.miniinner{width:100%;height:100%;border:1px solid #202a33;position:relative}.miniinner:before{content:"";position:absolute;left:14px;top:24px;width:58px;height:28px;border:1px solid #8a9cad}.miniinner:after{content:"·· · ··  · ···  ·· ·";position:absolute;inset:18px 8px;color:#6e8499;font:700 10px/1.4 var(--mono);letter-spacing:3px;white-space:normal}
+.timeline{height:136px;border-top:1px solid var(--line);background:#10161d;padding:10px 14px}.timelinehead{display:flex;justify-content:space-between;color:#7f8b97;font:800 8px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em}.track{position:relative;height:72px;margin-top:10px;border-top:1px solid #26313b;background:repeating-linear-gradient(90deg,transparent 0 11.9%,#1d2730 12%,transparent 12.1%)}.track .bar{position:absolute;height:17px;border:1px solid #335476;background:#18304a;color:#8bc4ff;font:800 7px/15px var(--mono);padding:0 7px;text-transform:uppercase}.track .bar.green{border-color:#2b6638;background:#15351d;color:#73d987}.track .bar.amber{border-color:#6f5a1f;background:#372f16;color:#e2bf55}.cursor{position:absolute;top:-8px;bottom:0;left:34%;width:1px;background:#e0e6ec;box-shadow:0 0 10px rgba(255,255,255,.35)}
+.inspecthead{padding:14px;border-bottom:1px solid var(--line);background:#202a34}.inspecthead .type{font:800 8px/1 var(--mono);color:var(--blue);letter-spacing:.15em;text-transform:uppercase}.inspecthead h2{font-size:14px;margin:7px 0 4px;text-transform:uppercase;letter-spacing:.08em}.inspecthead p{font-size:9px;margin:0;color:#9ca7b2}.inspectmetrics{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.inspectmetric{background:#0a0f14;border:1px solid var(--line-soft);padding:8px;text-align:center}.inspectmetric span{display:block;color:#77838f;font:700 7px/1 var(--mono);text-transform:uppercase}.inspectmetric b{font:800 12px/1.5 var(--mono);color:#fff}.inspectbtn{margin-top:10px;border:1px solid #365069;background:#111923;color:#a8c9ea;padding:7px 9px;font:800 8px/1 var(--mono);text-transform:uppercase}.inspectsection{padding:13px;border-bottom:1px solid var(--line-soft)}.inspectsection h3{font:800 8px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase;color:#7e8c99;margin:0 0 10px}.detailrow{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid #1c242c;font-size:9px}.detailrow span:first-child{color:#687580}.detailrow span:last-child{color:#c7d0d8;text-align:right}.note{background:#090e13;border:1px solid var(--line-soft);padding:9px;color:#98a4af;font-size:9px;line-height:1.45}.next{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:9px}.dot{width:6px;height:6px;margin-top:4px;background:var(--green);box-shadow:0 0 6px rgba(63,185,80,.35)}.dot.amber{background:var(--amber)}
+.statusbar{grid-column:1/-1;height:30px;border-top:1px solid var(--line);background:#0b1015;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;align-items:center;color:#77838f;font:700 7px/1 var(--mono);text-transform:uppercase;letter-spacing:.1em}.statusbar div{height:100%;display:flex;align-items:center;padding:0 12px;border-right:1px solid var(--line-soft)}.statusbar div:last-child{border-right:0;justify-content:flex-end}.ok{color:#67d782}.statusdot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-left:6px;box-shadow:0 0 7px rgba(63,185,80,.5)}
+@media(max-width:1100px){.workspace{grid-template-columns:210px minmax(0,1fr)}.right{display:none}.telemetry{display:none}.topbar{grid-template-columns:1fr auto}.map{height:520px}}
+@media(max-width:760px){.app{grid-template-columns:1fr}.iconrail{display:none}.topbar{position:relative;height:auto;min-height:48px;grid-template-columns:1fr;padding:8px 10px}.nav{display:none}.workspace{grid-template-columns:1fr}.left{display:none}.map{height:58vh}.timeline{height:118px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="iconrail">
+    <div class="brandmark">A</div>
+    <button class="railbtn active">NW</button><button class="railbtn">HM</button><button class="railbtn">PR</button><button class="railbtn">NT</button><button class="railbtn">CL</button><button class="railbtn">SR</button>
+    <div class="railspacer"></div><button class="railbtn">↓</button><button class="railbtn">⚙</button>
+  </aside>
+  <div class="shell">
+    <header class="topbar">
+      <div class="classification">ATLAS // PERSONAL OPS <span>KNOWLEDGE COMMAND</span></div>
+      <nav class="nav"><button class="active">Network</button><button>Home</button><button>Projects</button><button>Notes</button><button>Calendar</button></nav>
+      <div class="telemetry"><span>MEL 21:39:06</span><span>UTC 11:39:06</span><span class="profile">ME ▾</span><span>AUTOSAVE LIVE</span><span>⌕</span></div>
+    </header>
+    <main class="workspace">
+      <aside class="left">
+        <section class="section">
+          <div class="eyebrow">Current situation</div><h1 class="h1">Wednesday · 26 Aug</h1><div class="sub">4 active threads across Work, Life and Creative.</div>
+          <div class="metricgrid"><div class="metric"><b>4</b><span>active</span></div><div class="metric"><b>36</b><span>nodes</span></div></div>
+          <button class="action">Open daily briefing</button>
+        </section>
+        <section class="section"><div class="listtitle"><span>Active now</span><span>04</span></div>
+          <div class="opsitem active"><div class="row"><strong>Ground Operations</strong><span class="pill info">Active</span></div><p>Regulatory projects, surveillance work and current industry engagement.</p></div>
+          <div class="opsitem"><div class="row"><strong>Atlas</strong><span class="pill">Build</span></div><p>Second-brain product development and sync architecture.</p></div>
+          <div class="opsitem"><div class="row"><strong>Cars</strong><span class="pill warn">Decision</span></div><p>Family SUV shortlist and purchase planning.</p></div>
+          <div class="opsitem"><div class="row"><strong>Quantum Story</strong><span class="pill">Draft</span></div><p>Cold-war quantum causality narrative.</p></div>
+        </section>
+        <section class="section"><div class="listtitle"><span>Capture</span><span>⌘K</span></div><div class="quick"><button>Note</button><button>Task</button><button>Project</button><button>Idea</button></div></section>
+        <section class="section"><div class="listtitle"><span>Next</span><span>03</span></div><div class="sub">Review CASA bargaining note<br><br>Book GO SAFE travel<br><br>Refine Atlas visual system</div></section>
+      </aside>
+      <section class="center">
+        <div class="maphead"><div><span class="title">Relationship map</span><span class="mapmeta">ME / ALL SPACES / 36 NODES</span></div><div class="seg"><button class="active">Nodes</button><button>List</button><button>Split</button><button>Predict</button></div></div>
+        <div class="map">
+          <div class="maplabel">MAP / ME / LIVE CONTEXT</div><div class="controls">Controls ▾</div>
+          <svg viewBox="0 0 1000 570" aria-label="Atlas relationship graph">
+            <g>
+              <line class="edge" x1="260" y1="220" x2="205" y2="165"/><line class="edge" x1="260" y1="220" x2="170" y2="230"/><line class="edge" x1="260" y1="220" x2="315" y2="165"/><line class="edge" x1="260" y1="220" x2="330" y2="260"/><line class="edge" x1="260" y1="220" x2="220" y2="300"/>
+              <line class="edge" x1="625" y1="205" x2="570" y2="160"/><line class="edge" x1="625" y1="205" x2="680" y2="150"/><line class="edge" x1="625" y1="205" x2="720" y2="210"/><line class="edge" x1="625" y1="205" x2="675" y2="270"/><line class="edge" x1="625" y1="205" x2="575" y2="275"/>
+              <line class="edge" x1="510" y1="405" x2="455" y2="455"/><line class="edge" x1="510" y1="405" x2="570" y2="455"/><line class="edge" x1="510" y1="405" x2="565" y2="355"/><line class="edge" x1="510" y1="405" x2="455" y2="355"/>
+              <line class="edge cross" x1="260" y1="220" x2="625" y2="205"/><line class="edge cross" x1="260" y1="220" x2="510" y2="405"/><line class="edge cross" x1="625" y1="205" x2="510" y2="405"/><line class="edge cross" x1="330" y1="260" x2="575" y2="275"/>
+            </g>
+            <g class="node major selected"><circle cx="260" cy="220" r="7"/><text x="249" y="241">WRK</text></g><g class="node"><circle cx="205" cy="165" r="4"/><text x="190" y="154">AIR</text></g><g class="node"><circle cx="170" cy="230" r="4"/><text x="143" y="247">GOPS</text></g><g class="node"><circle cx="315" cy="165" r="4"/><text x="303" y="152">REG</text></g><g class="node"><circle cx="330" cy="260" r="4"/><text x="318" y="279">SURV</text></g><g class="node"><circle cx="220" cy="300" r="4"/><text x="207" y="319">CARE</text></g>
+            <g class="node major"><circle cx="625" cy="205" r="7"/><text x="614" y="227">LIFE</text></g><g class="node"><circle cx="570" cy="160" r="4"/><text x="553" y="146">FAM</text></g><g class="node"><circle cx="680" cy="150" r="4"/><text x="667" y="137">FIN</text></g><g class="node"><circle cx="720" cy="210" r="4"/><text x="710" y="228">HOME</text></g><g class="node"><circle cx="675" cy="270" r="4"/><text x="663" y="288">TECH</text></g><g class="node"><circle cx="575" cy="275" r="4"/><text x="564" y="293">CAR</text></g>
+            <g class="node major"><circle cx="510" cy="405" r="7"/><text x="492" y="427">CRTV</text></g><g class="node"><circle cx="455" cy="455" r="4"/><text x="436" y="473">QNTM</text></g><g class="node"><circle cx="570" cy="455" r="4"/><text x="557" y="473">IDEA</text></g><g class="node"><circle cx="565" cy="355" r="4"/><text x="548" y="342">ATLS</text></g><g class="node"><circle cx="455" cy="355" r="4"/><text x="438" y="342">READ</text></g>
+          </svg>
+          <div class="minimap"><div class="miniinner"></div></div>
+        </div>
+        <div class="timeline"><div class="timelinehead"><span>Context timeline</span><span>Now · 21:39</span></div><div class="track"><div class="cursor"></div><div class="bar" style="left:5%;top:9px;width:26%">CASA / Ground Ops</div><div class="bar amber" style="left:35%;top:33px;width:23%">Car decision window</div><div class="bar green" style="left:62%;top:9px;width:25%">Atlas build</div></div></div>
+      </section>
+      <aside class="right">
+        <div class="inspecthead"><div class="type">Selected area</div><h2>Ground Operations</h2><p>Work / Aviation / Ground Operations</p><div class="inspectmetrics"><div class="inspectmetric"><span>Projects</span><b>5</b></div><div class="inspectmetric"><span>Open tasks</span><b>8</b></div></div><button class="inspectbtn">Open workspace</button></div>
+        <section class="inspectsection"><h3>Situation</h3><div class="note">Primary operational knowledge area. Regulatory change, surveillance, GHSP engagement and current inspector work roll into this node.</div></section>
+        <section class="inspectsection"><h3>Details</h3><div class="detailrow"><span>Parent</span><span>Work</span></div><div class="detailrow"><span>Type</span><span>Area</span></div><div class="detailrow"><span>Last updated</span><span>Today 18:42</span></div><div class="detailrow"><span>Related nodes</span><span>12</span></div></section>
+        <section class="inspectsection"><h3>Next actions</h3><div class="next"><span class="dot"></span><span>Prepare ground handling industry engagement notes.</span></div><div class="next"><span class="dot amber"></span><span>Review bargaining statement and union support context.</span></div><div class="next"><span class="dot"></span><span>Capture surveillance follow-up into project workspace.</span></div></section>
+        <section class="inspectsection"><h3>Notes</h3><div class="note">Context, decisions and loose material can sit here without opening a separate modal. The inspector becomes the default secondary surface.</div></section>
+      </aside>
+    </main>
+    <footer class="statusbar"><div>LOCKED STATE <span class="statusdot"></span></div><div>MEL / UTC SYNCHRONISED</div><div>SYNC <span class="ok">OK</span><span class="statusdot"></span></div><div>PROTOTYPE · OPS 01</div></footer>
+  </div>
+</div>
+</body>
+</html>
