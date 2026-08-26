@@ -1,6 +1,6 @@
 // Start only after every classic module has established its shared bindings.
 (async function(){
-  const BUILD='0169r1';
+  const BUILD='0169r2';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -29,6 +29,7 @@
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
   try { await loadScript('./js/cloud-sync-hotfix.js','Atlas canonical migration hotfix'); } catch (_) {}
+  try { await loadScript('./js/recovery-inspector.js','Atlas recovery inspector'); } catch (_) {}
   try { await loadScript('./js/note-editor.js','Atlas note renderer'); } catch (_) {}
   if(!window.AtlasMarkdown?.openNote){try { await loadScript('./js/note-editor.js','Atlas note renderer retry',{fresh:true}); } catch (_) {}}
   try { await loadScript('./js/visual-note-editor.js','Atlas visual note editor'); } catch (_) {}
@@ -56,6 +57,7 @@
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
   document.documentElement.classList.add('atlas-ready');
+  try { await window.AtlasRecoveryInspector?.openIfNeeded?.(); } catch (_) {}
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load',()=>{navigator.serviceWorker.register(`./sw.js?v=${BUILD}`,{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{})});
