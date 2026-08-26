@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
-// Recovery hotfix build r2.
+// Durable canonical sync build r3.
 (async function(){
-  const BUILD='0169r2';
+  const BUILD='0169r3';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
