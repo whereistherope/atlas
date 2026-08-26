@@ -32,12 +32,12 @@ for(const token of [
 
 assert(css.includes('width:clamp(170px,19vw,260px)'),'terrain animation must remain compact beside the login block');
 assert(!css.includes('pointer-events:none;overflow:hidden;background:#000'),'terrain container must not reintroduce a black tile behind the graphic');
-assert(bootstrap.includes("const BUILD='0169r3'"),'bootstrap build must advance with durable canonical sync');
+assert(bootstrap.includes("const BUILD='0169r5'"),'bootstrap build must advance with record-level sync');
 assert(bootstrap.includes("loadStyle('./styles/lock-terrain.css')"),'lock terrain stylesheet must load');
 assert(bootstrap.includes("loadScript('./js/lock-terrain.js','Atlas topographic lock identity v0.16.7')"),'lock terrain shell must load');
-assert(sw.includes("atlas-shell-0.16.9-r3"),'service worker cache must advance with durable canonical sync');
+assert(sw.includes("atlas-shell-0.16.9-r5"),'service worker cache must advance with record-level sync');
 assert(sw.includes("'./styles/lock-terrain.css'"),'lock terrain stylesheet must be cached');
 assert(sw.includes("'./js/lock-terrain.js'"),'lock terrain shell must be cached');
 assert(sw.includes("'./assets/lock-terrain.gif'"),'terrain asset must remain available offline');
 
-console.log('Atlas v0.16.7 lock identity preserved through v0.16.9 recovery: PASS');
+console.log('Atlas v0.16.7 lock identity preserved through v0.16.9 record-level sync: PASS');
