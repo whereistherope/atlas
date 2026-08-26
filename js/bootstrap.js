@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
-// Durable canonical sync build r3.
+// Cross-device sync quarantine build r4.
 (async function(){
-  const BUILD='0169r3';
+  const BUILD='0169r4';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -28,8 +28,9 @@
   loadStyle('./styles/network-overview.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
-  try { await loadScript('./js/cloud-sync.js','Atlas cloud sync module'); } catch (_) {}
-  try { await loadScript('./js/cloud-sync-hotfix.js','Atlas canonical migration hotfix'); } catch (_) {}
+  // IMPORTANT: canonical shared-snapshot sync is intentionally quarantined.
+  // Do not load cloud-sync.js or cloud-sync-hotfix.js while r4 is active.
+  try { await loadScript('./js/sync-quarantine.js','Atlas sync quarantine'); } catch (_) {}
   try { await loadScript('./js/recovery-inspector.js','Atlas recovery inspector'); } catch (_) {}
   try { await loadScript('./js/note-editor.js','Atlas note renderer'); } catch (_) {}
   if(!window.AtlasMarkdown?.openNote){try { await loadScript('./js/note-editor.js','Atlas note renderer retry',{fresh:true}); } catch (_) {}}
