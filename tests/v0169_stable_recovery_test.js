@@ -4,6 +4,7 @@ const tokens=fs.readFileSync('styles/tokens.css','utf8');
 const overviewCss=fs.readFileSync('styles/network-overview.css','utf8');
 const overview=fs.readFileSync('js/network-overview.js','utf8');
 const capture=fs.readFileSync('js/capture-flow-fix.js','utf8');
+const visibility=fs.readFileSync('js/widget-visibility-hotfix.js','utf8');
 const theme=fs.readFileSync('styles/theme-system.css','utf8');
 const hotfix=fs.readFileSync('styles/r18-stability-hotfix.css','utf8');
 const bootstrap=fs.readFileSync('js/bootstrap.js','utf8');
@@ -18,8 +19,9 @@ assert(bootstrap.includes("loadStyle('./styles/network-overview.css')"),'network
 assert(bootstrap.includes("loadStyle('./styles/theme-system.css')"),'approved native refinement must load');
 assert(bootstrap.includes("loadStyle('./styles/r18-stability-hotfix.css')"),'r18 stability hotfix must remain loaded after the refinement layer');
 assert(!bootstrap.includes("loadScript('./js/window-drag.js'"),'global movable-window runtime must remain disabled');
-assert(bootstrap.includes('const SYNC_V2_ENABLED=false'),'automatic record-level sync must be explicitly paused during recovery');
-assert(bootstrap.includes("if(SYNC_V2_ENABLED)"),'sync runtime must be behind the emergency recovery gate');
+assert(bootstrap.includes('const SYNC_V2_ENABLED=false'),'automatic record-level sync must remain explicitly paused during recovery');
+assert(bootstrap.includes("loadScript('./js/widget-visibility-hotfix.js','Atlas widget visibility hotfix v0.16.9-r20')"),'widget visibility hotfix must load');
+assert(bootstrap.includes("if(SYNC_V2_ENABLED)"),'sync runtime must remain behind the emergency recovery gate');
 assert(bootstrap.includes("loadScript('./js/sync-v2.js','Atlas record-level sync')"),'sync runtime path must remain available behind the gate');
 assert(bootstrap.includes("paused:true"),'paused sync status must be exposed to the UI');
 assert(bootstrap.includes("loadScript('./js/capture-flow-fix.js','Atlas capture launcher handoff v0.16.9')"),'capture handoff must remain');
@@ -37,7 +39,11 @@ assert(theme.includes('--atlas-float-glass'),'production theme must expose float
 assert(theme.includes('.quick-todo span'),'To-do contrast fix must remain');
 assert(theme.includes('.atlas-physics-panel'),'network controls must share the glass system');
 assert(hotfix.includes('box-shadow:none!important'),'decorative pane shadows must remain removed');
-assert(sw.includes("atlas-shell-0.16.9-r19"),'recovery cache version missing');
+assert(visibility.includes('scrollIntoView'),'opened docked widgets must be revealed if outside the viewport');
+assert(visibility.includes('clampFloating'),'floating widgets must be clamped into the viewport');
+assert(!visibility.includes('SYNC_V2_ENABLED'),'widget visibility hotfix must not own sync state');
+assert(sw.includes("atlas-shell-0.16.9-r20"),'r20 cache version missing');
+assert(sw.includes("'./js/widget-visibility-hotfix.js'"),'widget visibility hotfix must be cached');
 assert(sw.includes("'./styles/theme-system.css'"),'native refinement CSS must be cached');
 assert(sw.includes("'./styles/r18-stability-hotfix.css'"),'stability hotfix CSS must be cached');
 assert(!sw.includes("'./js/window-drag.js'"),'disabled movable-window runtime must not remain in APP_SHELL');
@@ -50,4 +56,4 @@ assert(!sw.includes("'./js/cloud-sync.js'"),'legacy snapshot sync must not be in
 assert(!sw.includes("'./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not be in the app shell');
 assert(!sw.includes("'./assets/lock-terrain.gif'"),'removed lock artwork must not remain offline-critical');
 
-console.log('Atlas v0.16.9-r19 recovery sync pause compatibility: PASS');
+console.log('Atlas v0.16.9-r20 widget visibility + recovery compatibility: PASS');
