@@ -1,0 +1,31 @@
+/* Atlas v0.16.9-r18 stability hotfix.
+   Keep the approved glass/material system, but remove decorative shadows entirely. */
+.atlas-widget,
+.network-stage,
+.utility-pane,
+.panel,
+.fold,
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-project-workspace,
+.prediction-inspector,
+.widget-position-panel,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel,
+.widget-menu-panel,
+[class$="-menu-panel"],
+#atlasCaptureLauncher .atlas-capture-launcher-modal,
+.map-wrap .depth,
+.map-wrap .zoom-controls,
+.map-wrap .legend,
+.map-wrap .map-command,
+.map-view-toggle,
+.map-wrap .atlas-physics-control>summary,
+.map-wrap .atlas-physics-panel,
+.atlas-network-minimap{
+  box-shadow:none!important;
+}
