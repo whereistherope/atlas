@@ -1,0 +1,114 @@
+/* Atlas native refinement r16 · select consistency + reduced glass flare. */
+
+body[data-theme="night"]{
+  --atlas-float-glass:rgba(7,11,15,.28);
+  --atlas-float-head:rgba(8,12,16,.08);
+  --atlas-select-bg:#11171c;
+  --atlas-select-bg-hover:#1a232a;
+  --atlas-select-text:#e5e4e2;
+}
+body:not([data-theme="night"]){
+  --atlas-float-glass:rgba(229,233,235,.32);
+  --atlas-float-head:rgba(235,238,239,.10);
+  --atlas-select-bg:#d9dddf;
+  --atlas-select-bg-hover:#cbd1d5;
+  --atlas-select-text:#25282b;
+}
+
+/* Reduce flare: preserve transparency but minimise optical bloom behind panes. */
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-widget.widget-floating,
+.prediction-inspector,
+.widget-position-panel,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel,
+.widget-menu-panel,
+[class$="-menu-panel"],
+#atlasCaptureLauncher .atlas-capture-launcher-modal{
+  background:var(--atlas-float-glass)!important;
+  background-color:var(--atlas-float-glass)!important;
+  backdrop-filter:blur(3px)!important;
+  -webkit-backdrop-filter:blur(3px)!important;
+}
+.modal-head,
+.atlas-note-editor-head,
+.atlas-vnote-head,
+.atlas-command-input-row,
+.atlas-command-meta,
+.atlas-vnote-toolbar,
+.atlas-note-toolbar,
+#atlasCaptureLauncher .modal-head{
+  background:var(--atlas-float-head)!important;
+  background-color:var(--atlas-float-head)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+/* Note/editor selects should remain in-family in both closed and opened states. */
+.atlas-note-editor-sheet select,
+.atlas-vnote-sheet select,
+.atlas-project-workspace select,
+.modal select,
+.field select,
+.header-switch select,
+.space-switch select,
+.section-switch select{
+  appearance:auto;
+  -webkit-appearance:menulist;
+  color:var(--atlas-select-text)!important;
+  background-color:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  border:1px solid color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;
+  box-shadow:none!important;
+}
+.atlas-note-editor-sheet select:focus,
+.atlas-vnote-sheet select:focus,
+.atlas-project-workspace select:focus,
+.modal select:focus,
+.field select:focus{
+  border-color:color-mix(in srgb,var(--atlas-accent) 54%,transparent)!important;
+  outline:1px solid color-mix(in srgb,var(--atlas-accent) 30%,transparent)!important;
+  outline-offset:1px;
+}
+.atlas-note-editor-sheet select option,
+.atlas-note-editor-sheet select optgroup,
+.atlas-vnote-sheet select option,
+.atlas-vnote-sheet select optgroup,
+.atlas-project-workspace select option,
+.atlas-project-workspace select optgroup,
+.modal select option,
+.modal select optgroup,
+.field select option,
+.field select optgroup,
+.header-switch select option,
+.space-switch select option,
+.section-switch select option{
+  background:var(--atlas-select-bg)!important;
+  color:var(--atlas-select-text)!important;
+}
+.atlas-note-editor-sheet select option:checked,
+.atlas-vnote-sheet select option:checked,
+.atlas-project-workspace select option:checked,
+.modal select option:checked,
+.field select option:checked{
+  background:var(--atlas-select-bg-hover)!important;
+  color:var(--atlas-select-text)!important;
+}
+
+/* Firefox honours color-scheme for native popup widgets more reliably than option backgrounds alone. */
+body[data-theme="night"] .atlas-note-editor-sheet,
+body[data-theme="night"] .atlas-vnote-sheet,
+body[data-theme="night"] .modal,
+body[data-theme="night"] .atlas-project-workspace{
+  color-scheme:dark;
+}
+body:not([data-theme="night"]) .atlas-note-editor-sheet,
+body:not([data-theme="night"]) .atlas-vnote-sheet,
+body:not([data-theme="night"]) .modal,
+body:not([data-theme="night"]) .atlas-project-workspace{
+  color-scheme:light;
+}
