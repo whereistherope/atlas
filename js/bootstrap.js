@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // Emergency recovery build: automatic record-level sync is paused until data reconciliation is repaired.
 (async function(){
-  const BUILD='0169r19';
+  const BUILD='0169r20';
   const SYNC_V2_ENABLED=false;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -69,6 +69,7 @@
   try { await loadScript('./js/network-split.js','Atlas switchable split network/list view v0.15.16'); } catch (_) {}
   try { await loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r17'); } catch (_) {}
   try { await loadScript('./js/network-overview.js','Atlas network overview v0.16.9'); } catch (_) {}
+  try { await loadScript('./js/widget-visibility-hotfix.js','Atlas widget visibility hotfix v0.16.9-r20'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
