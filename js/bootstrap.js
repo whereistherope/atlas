@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // Emergency recovery build: automatic record-level sync is paused until data reconciliation is repaired.
 (async function(){
-  const BUILD='0169r20';
+  const BUILD='0169r21';
   const SYNC_V2_ENABLED=false;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -29,8 +29,10 @@
   loadStyle('./styles/network-overview.css');
   // Final visual arbitration layer: intentionally loaded last.
   loadStyle('./styles/theme-system.css');
-  // Small production hotfix: shadow removal only.
+  // Stability: keep decorative shadows removed.
   loadStyle('./styles/r18-stability-hotfix.css');
+  // Material balance: restore glass weight without bringing shadows back.
+  loadStyle('./styles/r21-material-balance.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   // Snapshot-based canonical sync is permanently retired from the boot path.
@@ -70,6 +72,7 @@
   try { await loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r17'); } catch (_) {}
   try { await loadScript('./js/network-overview.js','Atlas network overview v0.16.9'); } catch (_) {}
   try { await loadScript('./js/widget-visibility-hotfix.js','Atlas widget visibility hotfix v0.16.9-r20'); } catch (_) {}
+  try { await loadScript('./js/window-drag-local.js','Atlas local movable windows v0.16.9-r21'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
