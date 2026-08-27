@@ -12,12 +12,12 @@ assert(!terrain.includes('authConfig'),'visual layer must not own authentication
 assert(!terrain.includes('deriveVerifier'),'visual layer must not perform PIN verification');
 
 for(const token of ['.atlas-lock-terrain{display:none!important}','left:42%!important','transform:translate(-50%,-50%)!important','.atlas-lock-meta{']) assert(css.includes(token),`missing artwork-free lock placement contract: ${token}`);
-assert(bootstrap.includes("const BUILD='0169r21'"),'bootstrap build must advance with r21 material/window refinement');
+assert(bootstrap.includes("const BUILD='0169r22'"),'bootstrap build must advance with r22 material refinement');
 assert(bootstrap.includes("loadStyle('./styles/lock-terrain.css')"),'lock identity stylesheet must load');
-assert(bootstrap.includes("loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r17')"),'lock identity runtime must remain unchanged through r21');
-assert(sw.includes("atlas-shell-0.16.9-r21"),'service worker cache must advance with r21');
+assert(bootstrap.includes("loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r17')"),'lock identity runtime must remain unchanged through r22');
+assert(sw.includes("atlas-shell-0.16.9-r22"),'service worker cache must advance with r22');
 assert(sw.includes("'./styles/lock-terrain.css'"),'lock identity stylesheet must be cached');
 assert(sw.includes("'./js/lock-terrain.js'"),'lock identity runtime must be cached');
 assert(!sw.includes("'./assets/lock-terrain.gif'"),'removed terrain asset must not remain offline-critical');
 
-console.log('Atlas artwork-free lock identity preserved through r21: PASS');
+console.log('Atlas artwork-free lock identity preserved through r22: PASS');
