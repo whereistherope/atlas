@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // Emergency recovery build: automatic record-level sync is paused until data reconciliation is repaired.
 (async function(){
-  const BUILD='0169r21';
+  const BUILD='0169r22';
   const SYNC_V2_ENABLED=false;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -27,15 +27,12 @@
   loadStyle('./styles/network-split.css');
   loadStyle('./styles/lock-terrain.css');
   loadStyle('./styles/network-overview.css');
-  // Final visual arbitration layer: intentionally loaded last.
   loadStyle('./styles/theme-system.css');
-  // Stability: keep decorative shadows removed.
   loadStyle('./styles/r18-stability-hotfix.css');
-  // Material balance: restore glass weight without bringing shadows back.
   loadStyle('./styles/r21-material-balance.css');
+  loadStyle('./styles/r22-material-fields.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
-  // Snapshot-based canonical sync is permanently retired from the boot path.
   try { await loadScript('./js/sync-v2-core.js','Atlas record-level sync core'); } catch (_) {}
   if(SYNC_V2_ENABLED){
     try { await loadScript('./js/sync-v2.js','Atlas record-level sync'); } catch (_) {}

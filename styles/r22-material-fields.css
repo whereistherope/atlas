@@ -1,0 +1,85 @@
+/* Atlas v0.16.9-r22 · material + field consistency.
+   Increase glass pigment without increasing blur; make text-entry fields match selects. */
+
+body[data-theme="night"]{
+  --atlas-pane:rgba(8,12,15,.43)!important;
+  --atlas-pane-raised:rgba(8,13,17,.50)!important;
+  --atlas-float-glass:rgba(7,11,15,.46)!important;
+  --atlas-pane-header:rgba(8,13,17,.16)!important;
+  --atlas-float-head:rgba(8,12,16,.13)!important;
+}
+body:not([data-theme="night"]){
+  --atlas-pane:rgba(224,228,230,.48)!important;
+  --atlas-pane-raised:rgba(232,235,237,.54)!important;
+  --atlas-float-glass:rgba(229,233,235,.50)!important;
+  --atlas-pane-header:rgba(232,235,237,.18)!important;
+  --atlas-float-head:rgba(235,238,239,.15)!important;
+}
+
+/* Preserve low-flare glass: more pigment, same restrained 3px optical blur. */
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-widget.widget-floating,
+.prediction-inspector,
+.widget-position-panel,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel,
+.widget-menu-panel,
+[class$="-menu-panel"],
+#atlasCaptureLauncher .atlas-capture-launcher-modal{
+  background:var(--atlas-float-glass)!important;
+  background-color:var(--atlas-float-glass)!important;
+  backdrop-filter:blur(3px)!important;
+  -webkit-backdrop-filter:blur(3px)!important;
+  box-shadow:none!important;
+}
+.atlas-widget:not(.widget-floating),
+.network-stage,
+.utility-pane,
+.panel,
+.atlas-project-workspace,
+.fold{
+  background:var(--atlas-pane)!important;
+  box-shadow:none!important;
+}
+
+/* One field material across notes, projects, meetings and other modal editors.
+   This is deliberately the exact closed-select fill used by the approved r16 family. */
+:where(
+  .modal,
+  .atlas-note-editor-sheet,
+  .atlas-vnote-sheet,
+  .atlas-project-workspace
+) :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]),
+  textarea,
+  [contenteditable="true"]
+){
+  background:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  background-color:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  color:var(--atlas-select-text)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;
+  box-shadow:none!important;
+}
+
+/* Rich project/note bodies are text-entry surfaces too. */
+.atlas-project-rich-body,
+.atlas-note-compose,
+.atlas-vnote-body{
+  background:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  background-color:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  color:var(--atlas-select-text)!important;
+  border:1px solid color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;
+}
+
+/* Keep matching focus treatment between text fields and selects. */
+:where(.modal,.atlas-note-editor-sheet,.atlas-vnote-sheet,.atlas-project-workspace)
+:where(input,textarea,[contenteditable="true"]):focus{
+  border-color:color-mix(in srgb,var(--atlas-accent) 54%,transparent)!important;
+  outline:1px solid color-mix(in srgb,var(--atlas-accent) 30%,transparent)!important;
+  outline-offset:1px;
+}
