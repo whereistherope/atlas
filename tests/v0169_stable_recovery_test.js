@@ -1,18 +1,27 @@
 const fs=require('fs');
 const assert=require('assert');
 const tokens=fs.readFileSync('styles/tokens.css','utf8');
+const theme=fs.readFileSync('styles/theme-system.css','utf8');
 const overviewCss=fs.readFileSync('styles/network-overview.css','utf8');
 const overview=fs.readFileSync('js/network-overview.js','utf8');
 const capture=fs.readFileSync('js/capture-flow-fix.js','utf8');
 const bootstrap=fs.readFileSync('js/bootstrap.js','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 
-assert(tokens.includes('--bg:#070b10'),'original Atlas night palette must be restored');
+assert(tokens.includes('--bg:#070b10'),'original Atlas night palette must remain as historical fallback');
 assert(tokens.includes('html:not(.atlas-ready)'),'minimal no-flash boot guard must remain');
+assert(theme.includes('--atlas-canvas:#e7ebee'),'refined cool Day canvas missing');
+assert(theme.includes('--atlas-canvas:#090b0d'),'refined Atlas Night canvas missing');
+assert(theme.includes('--atlas-surface'),'semantic surface tokens missing');
+assert(theme.includes('--atlas-field'),'semantic field token missing');
+assert(!theme.includes('grid-template-columns:238px'),'theme layer must not introduce alternate app layout');
+assert(!theme.includes('position:fixed!important;z-index:120;width:min(390px'),'theme layer must not redefine widget geometry');
 assert(!bootstrap.includes('ops-refinement.css'),'recovery must not load Ops visual overrides');
 assert(!bootstrap.includes('window-material.css'),'recovery must not load experimental window material');
 assert(!bootstrap.includes('ops-r5.css'),'recovery must not load r5 palette layer');
 assert(bootstrap.includes("loadStyle('./styles/network-overview.css')"),'network overview style must load');
+assert(bootstrap.includes("loadStyle('./styles/theme-system.css')"),'native refinement theme must load');
+assert(bootstrap.indexOf("loadStyle('./styles/theme-system.css')")>bootstrap.indexOf("loadStyle('./styles/network-overview.css')"),'native refinement theme must load after historical visual layers');
 assert(bootstrap.includes("loadScript('./js/capture-flow-fix.js','Atlas capture launcher handoff v0.16.9')"),'capture handoff must remain');
 assert(bootstrap.includes("loadScript('./js/network-overview.js','Atlas network overview v0.16.9')"),'network overview must remain');
 assert(bootstrap.includes("loadScript('./js/sync-v2-core.js','Atlas record-level sync core')"),'record-level sync core must load');
@@ -25,14 +34,15 @@ assert(capture.includes('[data-atlas-aligned-capture]'),'capture launcher handof
 assert(overview.includes('AtlasNetworkOverview'),'network overview runtime contract missing');
 assert(!overview.includes('dataset.skin'),'network overview must not own skin state');
 assert(overviewCss.includes('.atlas-network-minimap'),'network overview presentation missing');
-assert(sw.includes("atlas-shell-0.16.9-r6"),'automatic record-level sync cache version missing');
+assert(sw.includes("atlas-shell-0.16.9-r7"),'native refinement cache version missing');
+assert(sw.includes("'./styles/theme-system.css'"),'native refinement CSS must be cached');
 assert(sw.includes("'./styles/network-overview.css'"),'network overview CSS must be cached');
 assert(sw.includes("'./js/network-overview.js'"),'network overview runtime must be cached');
 assert(sw.includes("'./js/capture-flow-fix.js'"),'capture fix must be cached');
 assert(sw.includes("'./js/sync-v2-core.js'"),'record-level sync core must be cached');
 assert(sw.includes("'./js/sync-v2.js'"),'record-level sync runtime must be cached');
-assert(!sw.includes("'./js/cloud-sync.js'"),'legacy snapshot sync must not be in the r6 app shell');
-assert(!sw.includes("'./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not be in the r6 app shell');
+assert(!sw.includes("'./js/cloud-sync.js'"),'legacy snapshot sync must not be in the r7 app shell');
+assert(!sw.includes("'./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not be in the r7 app shell');
 assert(sw.includes("'./assets/lock-terrain.gif'"),'lock terrain must remain offline-critical');
 
-console.log('Atlas v0.16.9 automatic record-level sync: PASS');
+console.log('Atlas v0.16.9 native refinement shell: PASS');
