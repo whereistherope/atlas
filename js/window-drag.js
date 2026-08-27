@@ -1,0 +1,16 @@
+// Atlas temporary window movement. Presentation state only; nothing is persisted.
+(function(root){
+  'use strict';
+  const handleSel='.modal-head,.atlas-vnote-head,.atlas-command-input-row,[data-atlas-window-handle]';
+  let active=null;
+  const interactive=t=>!!t.closest('button,a,input,textarea,select,summary,[contenteditable="true"],[data-no-window-drag]');
+  function make(win){if(!win||win.dataset.atlasMovable==='1')return;const h=win.querySelector(handleSel);if(!h)return;win.dataset.atlasMovable='1';win.classList.add('atlas-window-movable');h.classList.add('atlas-window-handle')}
+  function scan(rootNode=document){rootNode.querySelectorAll?.('.modal,.atlas-vnote-sheet,.atlas-command-shell').forEach(make)}
+  document.addEventListener('pointerdown',e=>{const h=e.target.closest?.(handleSel);if(!h||interactive(e.target))return;const w=h.closest('.modal,.atlas-vnote-sheet,.atlas-command-shell');if(!w||!w.classList.contains('atlas-window-movable'))return;const r=w.getBoundingClientRect();active={w,h,id:e.pointerId,sx:e.clientX,sy:e.clientY,x:parseFloat(w.style.getPropertyValue('--atlas-window-x'))||0,y:parseFloat(w.style.getPropertyValue('--atlas-window-y'))||0,width:r.width,height:r.height};w.classList.add('atlas-window-dragging');try{h.setPointerCapture(e.pointerId)}catch(_){ }e.preventDefault()},true);
+  document.addEventListener('pointermove',e=>{if(!active||e.pointerId!==active.id)return;const margin=8,r=active.w.getBoundingClientRect(),cx=parseFloat(active.w.style.getPropertyValue('--atlas-window-x'))||0,cy=parseFloat(active.w.style.getPropertyValue('--atlas-window-y'))||0,baseL=r.left-cx,baseT=r.top-cy;let x=active.x+e.clientX-active.sx,y=active.y+e.clientY-active.sy;x=Math.min(Math.max(x,margin-baseL),Math.max(margin-baseL,innerWidth-margin-active.width-baseL));y=Math.min(Math.max(y,margin-baseT),Math.max(margin-baseT,innerHeight-margin-Math.min(active.height,innerHeight-margin*2)-baseT));active.w.style.setProperty('--atlas-window-x',Math.round(x)+'px');active.w.style.setProperty('--atlas-window-y',Math.round(y)+'px');e.preventDefault()},true);
+  document.addEventListener('pointerup',e=>{if(!active||e.pointerId!==active.id)return;active.w.classList.remove('atlas-window-dragging');try{active.h.releasePointerCapture(e.pointerId)}catch(_){ }active=null},true);
+  document.addEventListener('pointercancel',e=>{if(!active||e.pointerId!==active.id)return;active.w.classList.remove('atlas-window-dragging');active=null},true);
+  new MutationObserver(records=>{for(const record of records){for(const node of record.addedNodes||[]){if(node.nodeType===1){make(node);scan(node)}}}}).observe(document.body,{childList:true,subtree:true});
+  scan();
+  root.AtlasWindowDrag=Object.freeze({scan});
+})(window);

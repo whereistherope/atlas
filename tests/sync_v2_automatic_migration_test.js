@@ -14,8 +14,8 @@ assert(sync.includes('Core.reconcileFirstContact(remote,bootRecords,local)'),'fi
 assert(!sync.includes('USE THIS DEVICE AS BASELINE'),'no device may be presented as an authoritative baseline');
 assert(!sync.includes('migrationBanner'),'baseline-device migration UI must be removed');
 assert(!sync.includes('initialiseFromThisDevice'),'sync v2 must not expose device-authoritative initialisation');
-assert(bootstrap.includes("const BUILD='0169r6'"),'automatic migration build must be r6');
-assert(sw.includes("atlas-shell-0.16.9-r6"),'automatic migration cache must be r6');
+assert(/const BUILD='\d+r\d+'/.test(bootstrap),'bootstrap must expose a versioned Atlas build');
+assert(/atlas-shell-\d+\.\d+\.\d+-r\d+/.test(sw),'service worker must expose a versioned Atlas shell cache');
 assert(!bootstrap.includes("loadScript('./js/cloud-sync.js'"),'legacy whole-snapshot sync must remain retired');
 
 console.log('Atlas Sync v2 automatic shared-cloud migration: PASS');

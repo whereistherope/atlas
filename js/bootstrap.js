@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
-// Automatic record-level cross-device sync build r6.
+// Automatic record-level cross-device sync + native visual refinement r17.
 (async function(){
-  const BUILD='0169r6';
+  const BUILD='0169r17';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -26,6 +26,8 @@
   loadStyle('./styles/network-split.css');
   loadStyle('./styles/lock-terrain.css');
   loadStyle('./styles/network-overview.css');
+  // Final visual arbitration layer: intentionally loaded last.
+  loadStyle('./styles/theme-system.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   // Snapshot-based canonical sync is permanently retired from the boot path.
@@ -52,8 +54,9 @@
   try { await loadScript('./js/network-organic.js','Atlas responsive organic network settle v0.15.14'); } catch (_) {}
   try { await loadScript('./js/network-controls.js','Atlas unified graph controls v0.15.12'); } catch (_) {}
   try { await loadScript('./js/network-split.js','Atlas switchable split network/list view v0.15.16'); } catch (_) {}
-  try { await loadScript('./js/lock-terrain.js','Atlas topographic lock identity v0.16.7'); } catch (_) {}
+  try { await loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r17'); } catch (_) {}
   try { await loadScript('./js/network-overview.js','Atlas network overview v0.16.9'); } catch (_) {}
+  try { await loadScript('./js/window-drag.js','Atlas movable windows v0.16.9-r17'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();

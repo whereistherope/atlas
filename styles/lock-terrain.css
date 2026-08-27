@@ -1,95 +1,26 @@
-/* Atlas v0.16.7 · animated terrain lock-screen identity */
+/* Atlas lock-screen identity · artwork-free */
 .lock-screen{
-  --lock-bg:#101110;
-  --lock-ink:#efede7;
-  --lock-muted:#777b77;
-  --lock-line:#5a5d59;
-  background:var(--lock-bg)!important;
-  color:var(--lock-ink)!important;
-  padding:0!important;
-  overflow:hidden!important;
-  align-items:stretch!important;
-  justify-content:stretch!important;
-  isolation:isolate;
+  --lock-bg:#101110;--lock-ink:#efede7;--lock-muted:#777b77;--lock-line:#5a5d59;
+  background:var(--lock-bg)!important;color:var(--lock-ink)!important;padding:0!important;overflow:hidden!important;
+  align-items:stretch!important;justify-content:stretch!important;isolation:isolate;
 }
-.lock-screen.open{display:block!important}
-.lock-screen:before{
-  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
-  background:#111211;opacity:.3;
-}
-
-/* The mock-up is used as a placement reference: Atlas/auth sits centre-left and
-   the animated terrain occupies the adjacent slot, optically aligned to the wordmark. */
+.lock-screen.open{display:block!important}.lock-screen:before{display:none!important}
 .lock-screen .lock-card{
-  position:absolute!important;z-index:6!important;
-  left:calc(50% - 112px)!important;top:50%!important;
-  transform:translateY(-50%)!important;
-  width:min(210px,38vw)!important;
-  padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+  position:absolute!important;z-index:6!important;left:42%!important;top:50%!important;transform:translate(-50%,-50%)!important;
+  width:min(224px,42vw)!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
   text-align:left!important;color:var(--lock-ink)!important;
 }
-.lock-screen .lock-brand{
-  position:static!important;width:112px!important;min-height:34px!important;
-  margin:0 0 24px!important;display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;
-  color:var(--lock-ink)!important;
-}
+.lock-screen .lock-brand{position:static!important;width:112px!important;min-height:34px!important;margin:0 0 24px!important;display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;color:var(--lock-ink)!important}
 .lock-screen .atlas-logo-lock{width:108px!important;height:auto!important;filter:invert(1) brightness(1.08)!important;opacity:.96!important}
-
-.atlas-lock-terrain{
-  position:absolute;z-index:3;
-  left:calc(50% + 2px);top:calc(50% - 180px);
-  width:clamp(170px,19vw,260px);aspect-ratio:600/338;
-  pointer-events:none;overflow:visible;background:transparent;
-  opacity:0;transition:opacity .28s ease;
-}
-.atlas-lock-terrain.is-ready{opacity:1}
-.atlas-lock-terrain.is-missing{display:none}
-.atlas-lock-terrain-gif{
-  display:block;width:100%;height:100%;object-fit:contain;object-position:center;
-  mix-blend-mode:screen;
-}
-
-.atlas-lock-meta{
-  position:absolute;right:28px;top:24px;z-index:8;display:grid;grid-template-columns:auto auto;gap:13px;
-  font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;text-transform:uppercase;
-}
-.atlas-lock-meta>div{display:grid;grid-template-columns:auto auto;gap:6px;align-items:baseline}
-.atlas-lock-meta span{font-size:7px;letter-spacing:.12em;color:#555955}
-.atlas-lock-meta strong{font-size:8px;font-weight:500;letter-spacing:.07em;color:#787c78}
-
-#lockContent{display:grid;justify-items:stretch;gap:0}
-.atlas-lock-prompt{display:none}
+.atlas-lock-terrain{display:none!important}
+.atlas-lock-meta{position:absolute;right:28px;top:24px;z-index:8;display:grid;grid-template-columns:auto auto;gap:13px;font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace;text-transform:uppercase}
+.atlas-lock-meta>div{display:grid;grid-template-columns:auto auto;gap:6px;align-items:baseline}.atlas-lock-meta span{font-size:7px;letter-spacing:.12em;color:#555955}.atlas-lock-meta strong{font-size:8px;font-weight:500;letter-spacing:.07em;color:#787c78}
+#lockContent{display:grid;justify-items:stretch;gap:0}.atlas-lock-prompt{display:none}
 .lock-screen .lock-title{margin:0 0 12px!important;font:500 8px/1.25 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace!important;letter-spacing:.18em!important;color:#676b67!important;text-transform:lowercase!important}
-.lock-screen .lock-copy{margin:0 0 12px!important;color:#666a66!important;font-size:9px!important;line-height:1.45!important}
-.lock-screen .lock-field{width:100%;margin:0 0 8px!important}
-.lock-screen .lock-field label{display:block!important;margin:0 0 3px!important;color:#5f635f!important;font:500 7px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace!important;letter-spacing:.22em!important;text-transform:lowercase!important}
-.lock-screen .lock-field input.pin-input,
-.lock-screen .lock-field input:not(.pin-input),
-.lock-screen .lock-field select{
-  display:block!important;width:100%!important;margin:0!important;padding:4px 0 6px!important;
-  border:0!important;border-bottom:1px dotted var(--lock-line)!important;border-radius:0!important;
-  background:transparent!important;color:#d9d7d1!important;outline:0!important;box-shadow:none!important;
-  text-align:left!important;text-indent:0!important;font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace!important;
-}
-.lock-screen .lock-field input.pin-input{letter-spacing:.62em!important;font-size:15px!important;caret-color:#aaa}
-.lock-screen .lock-field input:focus,.lock-screen .lock-field select:focus{border-bottom-color:#a3a49f!important}
-.lock-screen .lock-actions{justify-content:flex-start!important;margin-top:14px!important;gap:15px!important}
-.lock-screen .lock-primary,.lock-screen .lock-secondary{
-  border:0!important;background:transparent!important;color:#d2d0ca!important;padding:4px 0!important;
-  font:500 8px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace!important;letter-spacing:.22em!important;text-transform:lowercase!important;
-}
-.lock-screen .lock-primary:hover,.lock-screen .lock-secondary:hover{color:#fff!important}
-.lock-screen .lock-message{min-height:12px!important;margin-top:7px!important;color:#8e8377!important;font-size:8px!important}
-.lock-screen .recovery-key{border:0!important;border-bottom:1px dotted var(--lock-line)!important;background:transparent!important;color:#aaa!important;padding:8px 0!important;text-align:left!important}
-
-@media(max-width:700px){
-  .lock-screen .lock-card{left:calc(50% - 92px)!important;width:min(190px,46vw)!important}
-  .atlas-lock-terrain{left:calc(50% + 5px);top:calc(50% - 160px);width:clamp(145px,34vw,200px)}
-  .atlas-lock-meta{right:16px;top:16px;gap:8px}.atlas-lock-meta>div:first-child{display:none}
-}
-@media(max-width:480px){
-  .lock-screen .lock-card{left:30px!important;right:30px!important;top:57%!important;width:auto!important}
-  .atlas-lock-terrain{left:auto;right:24px;top:18%;width:min(190px,54vw)}
-  .lock-screen .lock-brand{margin-bottom:20px!important}
-}
-@media(prefers-reduced-motion:reduce){.atlas-lock-terrain{transition:none}}
+.lock-screen .lock-copy{margin:0 0 12px!important;color:#666a66!important;font-size:9px!important;line-height:1.45!important}.lock-screen .lock-field{width:100%;margin:0 0 8px!important}.lock-screen .lock-field label{display:block!important;margin:0 0 3px!important;color:#5f635f!important;font:500 7px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace!important;letter-spacing:.22em!important;text-transform:lowercase!important}
+.lock-screen .lock-field input.pin-input,.lock-screen .lock-field input:not(.pin-input),.lock-screen .lock-field select{display:block!important;width:100%!important;margin:0!important;padding:4px 0 6px!important;border:0!important;border-bottom:1px dotted var(--lock-line)!important;border-radius:0!important;background:transparent!important;color:#d9d7d1!important;outline:0!important;box-shadow:none!important;text-align:left!important;text-indent:0!important;font-family:ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace!important}
+.lock-screen .lock-field input.pin-input{letter-spacing:.62em!important;font-size:15px!important;caret-color:#aaa}.lock-screen .lock-field input:focus,.lock-screen .lock-field select:focus{border-bottom-color:#a3a49f!important}
+.lock-screen .lock-actions{justify-content:flex-start!important;margin-top:14px!important;gap:15px!important}.lock-screen .lock-primary,.lock-screen .lock-secondary{border:0!important;background:transparent!important;color:#d2d0ca!important;padding:4px 0!important;font:500 8px/1 ui-monospace,"SFMono-Regular",Menlo,Monaco,Consolas,monospace!important;letter-spacing:.22em!important;text-transform:lowercase!important}.lock-screen .lock-primary:hover,.lock-screen .lock-secondary:hover{color:#fff!important}
+.lock-screen .lock-message{min-height:12px!important;margin-top:7px!important;color:#8e8377!important;font-size:8px!important}.lock-screen .recovery-key{border:0!important;border-bottom:1px dotted var(--lock-line)!important;background:transparent!important;color:#aaa!important;padding:8px 0!important;text-align:left!important}
+@media(max-width:700px){.lock-screen .lock-card{left:38%!important;width:min(204px,50vw)!important}.atlas-lock-meta{right:16px;top:16px;gap:8px}.atlas-lock-meta>div:first-child{display:none}}
+@media(max-width:480px){.lock-screen .lock-card{left:30px!important;right:30px!important;top:54%!important;transform:translateY(-50%)!important;width:auto!important}.lock-screen .lock-brand{margin-bottom:20px!important}}
