@@ -1,0 +1,142 @@
+/* Atlas native refinement r13 · contrast first, quieter edges, stronger transparency. */
+
+/* Keep Current Night's readable text hierarchy. */
+body[data-theme="night"]{
+  --atlas-text:#e5e4e2!important;
+  --atlas-text-muted:#8b9294!important;
+  --ink:#e5e4e2!important;
+  --muted:#8b9294!important;
+  --atlas-pane:rgba(10,14,17,.28)!important;
+  --atlas-pane-raised:rgba(12,17,21,.34)!important;
+  --atlas-pane-header:rgba(12,17,21,.13)!important;
+  --atlas-field-glass:rgba(6,10,13,.42)!important;
+}
+body:not([data-theme="night"]){
+  --atlas-text:#25282b!important;
+  --atlas-text-muted:#596168!important;
+  --ink:#25282b!important;
+  --muted:#596168!important;
+  --atlas-pane:rgba(226,230,232,.30)!important;
+  --atlas-pane-raised:rgba(236,239,240,.38)!important;
+  --atlas-pane-header:rgba(236,239,240,.12)!important;
+  --atlas-field-glass:rgba(243,245,246,.48)!important;
+}
+
+/* Pane edges should be almost implied, not drawn as white boxes. */
+.atlas-widget,
+.atlas-widget.widget-floating,
+.network-stage,
+.utility-pane,
+.panel,
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-project-workspace,
+.prediction-inspector,
+.widget-position-panel,
+.fold{
+  border-color:color-mix(in srgb,var(--atlas-border) 34%,transparent)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),-8px 10px 18px -14px rgba(0,0,0,.28),-24px 30px 50px -32px rgba(0,0,0,.50)!important;
+}
+body:not([data-theme="night"]) .atlas-widget,
+body:not([data-theme="night"]) .network-stage,
+body:not([data-theme="night"]) .panel,
+body:not([data-theme="night"]) .modal,
+body:not([data-theme="night"]) .atlas-note-editor-sheet,
+body:not([data-theme="night"]) .atlas-vnote-sheet,
+body:not([data-theme="night"]) .atlas-command-shell{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.20),-8px 10px 18px -14px rgba(30,38,43,.13),-24px 30px 50px -32px rgba(30,38,43,.24)!important;
+}
+
+/* Docked panes remain performant but visibly translucent. */
+.atlas-widget:not(.widget-floating),
+.network-stage,
+.utility-pane,
+.panel,
+.atlas-project-workspace,
+.fold{
+  background:var(--atlas-pane)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+/* Floating windows get the actual frost treatment. */
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-widget.widget-floating,
+.widget-position-panel,
+.prediction-inspector,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel{
+  background:var(--atlas-pane-raised)!important;
+  backdrop-filter:blur(18px) saturate(108%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(108%)!important;
+}
+
+/* Capture must use the same outer material as every other floating surface. */
+.atlas-capture-launcher-modal,
+.atlas-capture-launcher .modal{
+  background:var(--atlas-pane-raised)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 30%,transparent)!important;
+  backdrop-filter:blur(18px) saturate(108%)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(108%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),-10px 13px 24px -14px rgba(0,0,0,.34),-32px 40px 66px -34px rgba(0,0,0,.58)!important;
+}
+
+/* Quiet headers and separators. */
+.widget-head,.panel-head,.modal-head,.atlas-note-editor-head,.atlas-vnote-head,.atlas-command-input-row,.atlas-command-meta,.network-head,.utility-pane-head{
+  background:var(--atlas-pane-header)!important;
+  border-bottom-color:color-mix(in srgb,var(--atlas-border) 24%,transparent)!important;
+}
+.widget-body,.atlas-note-editor-scroll,.atlas-vnote-scroll,.atlas-project-workspace .project-editor{color:var(--atlas-text)!important}
+
+/* To-do legibility: unfinished tasks are primary text, done tasks recede only modestly. */
+.quick-todo{color:var(--atlas-text)!important;border-bottom-color:color-mix(in srgb,var(--atlas-border) 26%,transparent)!important}
+.quick-todo span{color:var(--atlas-text)!important;opacity:.96!important;font-weight:480}
+.quick-todo.done span{color:var(--atlas-text-muted)!important;opacity:.62!important;text-decoration-thickness:1px}
+.quick-todo button{color:var(--atlas-text-muted)!important;opacity:.82}
+.quick-add input{color:var(--atlas-text)!important;background:var(--atlas-field-glass)!important;border-color:color-mix(in srgb,var(--atlas-border) 34%,transparent)!important}
+.quick-add input::placeholder{color:var(--atlas-text-muted)!important;opacity:.82}
+.quick-add button{border-color:color-mix(in srgb,var(--atlas-accent) 44%,transparent)!important;color:var(--atlas-accent-strong)!important;background:transparent!important}
+
+/* Frameless content rows: separators organise, containers do not. */
+.widget-row,.widget-project,.widget-note,.widget-log,.widget-kpi,.atlas-capture-choice,.atlas-command-result,.atlas-project-fold{
+  border-color:color-mix(in srgb,var(--atlas-border) 25%,transparent)!important;
+}
+.atlas-capture-choice-grid{border-top-color:color-mix(in srgb,var(--atlas-border) 24%,transparent)!important}
+.atlas-capture-choice:nth-child(odd){border-right-color:color-mix(in srgb,var(--atlas-border) 20%,transparent)!important}
+.atlas-capture-choice strong{color:var(--atlas-text)!important}
+.atlas-capture-choice span{color:var(--atlas-text-muted)!important;opacity:.9}
+
+/* Text inside all widgets stays readable regardless of docking state. */
+.atlas-widget{color:var(--atlas-text)!important}
+.atlas-widget strong,.atlas-widget .widget-ident strong,.atlas-widget .widget-row strong,.atlas-widget .widget-project strong,.atlas-widget .widget-note strong{color:var(--atlas-text)!important}
+.atlas-widget small,.atlas-widget .widget-ident span,.atlas-widget .widget-row small,.atlas-widget .widget-note p,.atlas-widget .widget-log time,.atlas-widget .utility-help{color:var(--atlas-text-muted)!important}
+
+/* Inputs are translucent, but never so transparent that their value disappears. */
+.field input,.field select,.field textarea,.atlas-note-fields input,.atlas-note-fields select,.atlas-vnote-fields input,.atlas-vnote-fields select,.atlas-vnote-body,.atlas-project-workspace .field input,.atlas-project-workspace .field select,.quick-add input,.scratch-area{
+  background:var(--atlas-field-glass)!important;
+  color:var(--atlas-text)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 32%,transparent)!important;
+}
+
+/* Backdrops remain nearly absent so floating glass reads against real Atlas content. */
+.overlay,.atlas-note-editor-backdrop,.atlas-vnote-backdrop,.atlas-command-backdrop{
+  background:rgba(0,0,0,.035)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+body[data-theme="night"] .overlay,
+body[data-theme="night"] .atlas-note-editor-backdrop,
+body[data-theme="night"] .atlas-vnote-backdrop,
+body[data-theme="night"] .atlas-command-backdrop{background:rgba(0,0,0,.055)!important}
+
+/* Keep map chrome quieter than the graph itself. */
+.map-wrap .zoom-controls,.map-wrap .depth,.map-wrap .map-command,.atlas-network-minimap{
+  border-color:color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;
+}
