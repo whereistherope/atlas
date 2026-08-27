@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
-// Automatic record-level cross-device sync build r6.
+// Automatic record-level cross-device sync + native visual refinement r8.
 (async function(){
-  const BUILD='0169r7';
+  const BUILD='0169r8';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -26,8 +26,7 @@
   loadStyle('./styles/network-split.css');
   loadStyle('./styles/lock-terrain.css');
   loadStyle('./styles/network-overview.css');
-  // Native refinement is deliberately last: it owns shared presentation tokens,
-  // not layout geometry or interaction behaviour.
+  // Native refinement remains last so historical components consume one shared material system.
   loadStyle('./styles/theme-system.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
@@ -50,12 +49,13 @@
   try { await loadScript('./js/interaction-alignment.js','Atlas interaction alignment v0.15.1'); } catch (_) {}
   try { await loadScript('./js/capture-flow-fix.js','Atlas capture launcher handoff v0.16.9'); } catch (_) {}
   try { await loadScript('./js/workspace-actions.js','Atlas workspace actions v0.15.2'); } catch (_) {}
+  try { await loadScript('./js/window-drag.js','Atlas movable temporary windows v0.16.9-r8'); } catch (_) {}
   try { await loadScript('./js/graph-hierarchy-interactions.js','Atlas hierarchy drag v0.15.3'); } catch (_) {}
   try { await loadScript('./js/network-layout.js','Atlas tunable constrained-force network grammar v0.15.11'); } catch (_) {}
   try { await loadScript('./js/network-organic.js','Atlas responsive organic network settle v0.15.14'); } catch (_) {}
   try { await loadScript('./js/network-controls.js','Atlas unified graph controls v0.15.12'); } catch (_) {}
   try { await loadScript('./js/network-split.js','Atlas switchable split network/list view v0.15.16'); } catch (_) {}
-  try { await loadScript('./js/lock-terrain.js','Atlas topographic lock identity v0.16.7'); } catch (_) {}
+  try { await loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r8'); } catch (_) {}
   try { await loadScript('./js/network-overview.js','Atlas network overview v0.16.9'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
