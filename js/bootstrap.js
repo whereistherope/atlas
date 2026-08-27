@@ -1,8 +1,7 @@
 // Start only after every classic module has established its shared bindings.
-// Emergency recovery build: automatic record-level sync is paused until data reconciliation is repaired.
+// Canonical cloud recovery + epoch-gated cross-device sync.
 (async function(){
-  const BUILD='0169r22';
-  const SYNC_V2_ENABLED=false;
+  const BUILD='0169r23';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -33,18 +32,10 @@
   loadStyle('./styles/r22-material-fields.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
-  try { await loadScript('./js/sync-v2-core.js','Atlas record-level sync core'); } catch (_) {}
-  if(SYNC_V2_ENABLED){
-    try { await loadScript('./js/sync-v2.js','Atlas record-level sync'); } catch (_) {}
-  }else{
-    window.AtlasCloudSync=Object.freeze({
-      initAfterLocalLoad:async()=>false,
-      refreshNow:async()=>false,
-      pushNow:async()=>false,
-      migrateSharedCloud:async()=>false,
-      getStatus:()=>({ready:false,joined:false,dirty:false,recordLevel:true,paused:true})
-    });
-  }
+  try { await loadScript('./js/sync-v2-core.js','Atlas record reconciliation core'); } catch (_) {}
+  try { await loadScript('./js/sync-v2-recovery.js','Atlas canonical recovery promotion v0.16.9-r23'); } catch (_) {}
+  try { await loadScript('./js/sync-v3.js','Atlas canonical epoch sync v0.16.9-r23'); } catch (_) {}
+  try { await loadScript('./js/sync-recovery-ui.js','Atlas canonical recovery controls v0.16.9-r23'); } catch (_) {}
   try { await loadScript('./js/note-editor.js','Atlas note renderer'); } catch (_) {}
   if(!window.AtlasMarkdown?.openNote){try { await loadScript('./js/note-editor.js','Atlas note renderer retry',{fresh:true}); } catch (_) {}}
   try { await loadScript('./js/visual-note-editor.js','Atlas visual note editor'); } catch (_) {}
@@ -73,9 +64,6 @@
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
-  if(!SYNC_V2_ENABLED){
-    try{window.dispatchEvent(new CustomEvent('atlascanonicalstatus',{detail:{state:'PAUSED',message:'Automatic sync paused for data recovery.',joined:false,dirty:false,recordLevel:true,paused:true}}))}catch(_){}
-  }
   document.documentElement.classList.add('atlas-ready');
 
   if ('serviceWorker' in navigator) {
