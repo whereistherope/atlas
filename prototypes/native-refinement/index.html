@@ -10,33 +10,72 @@
 </head>
 <body>
 <div class="bar">
-  <span class="title">Atlas · Native Refinement r8</span><span class="tag">preview only</span>
+  <span class="title">Atlas · Native Refinement r9</span><span class="tag">preview only</span>
   <button id="refined" class="active">Refined</button><button id="current">Current</button>
   <button id="night" class="active">Night</button><button id="day">Day</button>
-  <span class="note">Glass + movable windows · no settings saved</span>
+  <span class="note">Authoritative preview mode · no settings saved</span>
 </div>
 <iframe id="atlas" src="../../index.html" title="Atlas refinement preview"></iframe>
 <script>
 const frame=document.getElementById('atlas');
 const refinedBtn=document.getElementById('refined'),currentBtn=document.getElementById('current');
 const nightBtn=document.getElementById('night'),dayBtn=document.getElementById('day');
-let refined=true,mode='night';
+let refined=true,mode='night',themeObserver=null,bootPoll=null;
+
+function setPreviewTheme(doc){
+  const body=doc.body,html=doc.documentElement;if(!body||!html)return;
+  html.dataset.atlasPreviewTheme=mode;
+  body.dataset.atlasPreviewTheme=mode;
+  if(mode==='night')body.dataset.theme='night';else delete body.dataset.theme;
+}
+
 function ensureAssets(doc){
   let link=doc.getElementById('atlas-native-refinement-preview');
-  if(!link){link=doc.createElement('link');link.id='atlas-native-refinement-preview';link.rel='stylesheet';link.href='./prototypes/native-refinement/theme-system.css?v=8';doc.head.appendChild(link)}
+  if(!link){link=doc.createElement('link');link.id='atlas-native-refinement-preview';link.rel='stylesheet';link.href='./prototypes/native-refinement/theme-system.css?v=9';doc.head.appendChild(link)}
+  // Keep the preview override last even when Atlas appends late-loaded styles.
+  if(link.parentNode===doc.head&&doc.head.lastElementChild!==link)doc.head.appendChild(link);
   let script=doc.getElementById('atlas-window-drag-preview');
-  if(!script){script=doc.createElement('script');script.id='atlas-window-drag-preview';script.src='./prototypes/native-refinement/window-drag.js?v=8';doc.body.appendChild(script)}
+  if(!script){script=doc.createElement('script');script.id='atlas-window-drag-preview';script.src='./prototypes/native-refinement/window-drag.js?v=9';doc.body.appendChild(script)}
   return link;
 }
+
 function apply(){
-  const doc=frame.contentDocument;if(!doc)return;
+  const doc=frame.contentDocument;if(!doc?.body)return;
   const link=ensureAssets(doc);link.disabled=!refined;
-  if(mode==='night')doc.body.dataset.theme='night';else delete doc.body.dataset.theme;
+  setPreviewTheme(doc);
   const terrain=doc.querySelector('.atlas-lock-terrain');if(refined&&terrain)terrain.style.display='none';else if(terrain)terrain.style.removeProperty('display');
   refinedBtn.classList.toggle('active',refined);currentBtn.classList.toggle('active',!refined);nightBtn.classList.toggle('active',mode==='night');dayBtn.classList.toggle('active',mode==='day');
 }
-frame.addEventListener('load',()=>{setTimeout(apply,180)});
-refinedBtn.onclick=()=>{refined=true;apply()};currentBtn.onclick=()=>{refined=false;apply()};nightBtn.onclick=()=>{mode='night';apply()};dayBtn.onclick=()=>{mode='day';apply()};
+
+function startAuthoritativePreview(){
+  const doc=frame.contentDocument;if(!doc?.body)return;
+  clearInterval(bootPoll);
+  apply();
+  themeObserver?.disconnect();
+  themeObserver=new MutationObserver(()=>{
+    if(!refined)return;
+    const body=doc.body;
+    const wrong=(mode==='night'&&body.dataset.theme!=='night')||(mode==='day'&&body.dataset.theme==='night');
+    if(wrong)setPreviewTheme(doc);
+    const link=doc.getElementById('atlas-native-refinement-preview');
+    if(link&&doc.head.lastElementChild!==link)doc.head.appendChild(link);
+  });
+  themeObserver.observe(doc.documentElement,{attributes:true,subtree:true,childList:true,attributeFilter:['data-theme','class']});
+  themeObserver.observe(doc.head,{childList:true});
+}
+
+frame.addEventListener('load',()=>{
+  const doc=frame.contentDocument;
+  let tries=0;
+  bootPoll=setInterval(()=>{
+    tries++;
+    if(doc?.documentElement?.classList.contains('atlas-ready')||tries>60)startAuthoritativePreview();
+  },100);
+});
+refinedBtn.onclick=()=>{refined=true;startAuthoritativePreview()};
+currentBtn.onclick=()=>{refined=false;apply()};
+nightBtn.onclick=()=>{mode='night';apply()};
+dayBtn.onclick=()=>{mode='day';apply()};
 </script>
 </body>
 </html>
