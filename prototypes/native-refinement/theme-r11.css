@@ -1,0 +1,48 @@
+/* Atlas native refinement r11 · lightweight glass performance pass. */
+
+/* Docked/static panes keep translucency but avoid expensive backdrop-filter compositing. */
+.atlas-widget,
+.network-stage,
+.utility-pane,
+.panel,
+.fold{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  background:color-mix(in srgb,var(--atlas-surface) 46%,transparent)!important;
+}
+body[data-theme="night"] .atlas-widget,
+body[data-theme="night"] .network-stage,
+body[data-theme="night"] .utility-pane,
+body[data-theme="night"] .panel,
+body[data-theme="night"] .fold{
+  background:rgba(15,20,24,.46)!important;
+}
+
+/* Only genuinely floating windows get modest live frost. */
+.modal,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.widget-position-panel,
+.prediction-inspector,
+.atlas-widget.widget-floating{
+  backdrop-filter:blur(14px) saturate(108%)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(108%)!important;
+}
+
+.widget-head,.panel-head,.network-head,.utility-pane-head{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.modal-head,.atlas-vnote-head,.atlas-vnote-toolbar,.atlas-command-input-row,.atlas-command-meta,.atlas-command-shell footer{
+  backdrop-filter:blur(8px)!important;
+  -webkit-backdrop-filter:blur(8px)!important;
+}
+
+/* Map controls are translucent, not blurred. */
+.map-wrap .zoom-controls,.map-wrap .depth,.map-wrap .map-command,.atlas-network-minimap{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+/* Disable transition-heavy effects on large pane surfaces. */
+.atlas-widget,.network-stage,.panel,.fold{transition:none!important}
