@@ -1,5 +1,5 @@
-// Atlas v0.16.9-r23: explicit canonical recovery promotion.
-// Used once to promote a trusted local Atlas after a stale cloud-baseline incident.
+// Atlas v0.16.9-r24: explicit one-time Shared Atlas recovery.
+// This restores the good local recovery copy into Shared Atlas once; the browser does not remain authoritative afterward.
 (function(root){
   'use strict';
   const Core=root.AtlasSyncV2Core;if(!Core)return;
@@ -50,22 +50,22 @@
     const id=recoveryId(label),payload={schema:'atlas_entity_recovery_snapshot',version:1,label,createdAt:Date.now(),previousMeta:meta?.payload||null,records:Object.fromEntries(Object.entries(entries||{}).map(([key,entry])=>[key,{record:Core.clone(entry.record||entry),revision:Number(entry.revision||0)}]))};
     const {error}=await client.from('atlas_records').insert({profile_id:target.profileId,record_type:RECOVERY_TYPE,record_id:id,payload,client_updated_at:Date.now(),updated_by:target.userId});if(error)throw error;return id;
   }
-  async function appendTrustedMeBackup(){
+  async function appendRecoveryMeBackup(){
     const backup=root.AtlasCloudBackup,cloud=root.AtlasCloud;if(!backup?.buildMeSnapshot||!cloud?.appendMeBackupSnapshot)return null;
     const payload=backup.buildMeSnapshot(state),recordId=await backup.fingerprint(payload),result=await cloud.appendMeBackupSnapshot({recordType:backup.RECORD_TYPE,recordId,payload,clientUpdatedAt:Number(state.meta?.lastSavedAt||Date.now())});
-    if(!result?.ok)throw new Error(result?.error||'Could not preserve trusted Me backup.');return recordId;
+    if(!result?.ok)throw new Error(result?.error||'Could not preserve local recovery backup.');return recordId;
   }
   async function writeRecord(key,record,remoteEntry){
-    const payload=Core.payloadFor(record,'canonical-recovery',Date.now()),now=Date.now();
+    const payload=Core.payloadFor(record,'shared-atlas-recovery',Date.now()),now=Date.now();
     if(remoteEntry){
       const {data,error}=await client.from('atlas_records').update({payload,client_updated_at:now,revision:Number(remoteEntry.revision||0)+1,updated_by:target.userId}).eq('profile_id',target.profileId).eq('record_type',ENTITY_TYPE).eq('record_id',key).eq('revision',Number(remoteEntry.revision||0)).select('record_id,revision');if(error)throw error;return Array.isArray(data)&&data.length===1;
     }
     const {error}=await client.from('atlas_records').insert({profile_id:target.profileId,record_type:ENTITY_TYPE,record_id:key,payload,client_updated_at:now,updated_by:target.userId});if(error){if(error.code==='23505')return false;throw error}return true;
   }
-  async function writeMeta(meta,newEpoch,canonicalFingerprint){
-    const payload={schema:'atlas_entity_sync_meta',version:2,status:'ready',canonicalEpoch:newEpoch,canonicalFingerprint,recoveredAt:Date.now(),recoverySource:'trusted_local_promotion',dataVersion:Number(state?.version||8)};
+  async function writeMeta(meta,newEpoch,sharedFingerprint){
+    const payload={schema:'atlas_entity_sync_meta',version:2,status:'ready',canonicalEpoch:newEpoch,canonicalFingerprint:sharedFingerprint,recoveredAt:Date.now(),recoverySource:'local_recovery_copy',dataVersion:Number(state?.version||8)};
     if(meta){
-      const {data,error}=await client.from('atlas_records').update({payload,client_updated_at:Date.now(),revision:Number(meta.revision||0)+1,updated_by:target.userId}).eq('profile_id',target.profileId).eq('record_type',META_TYPE).eq('record_id',META_ID).eq('revision',Number(meta.revision||0)).select('record_id,revision');if(error)throw error;if(!Array.isArray(data)||data.length!==1)throw new Error('Canonical metadata changed during recovery. Preview again.');
+      const {data,error}=await client.from('atlas_records').update({payload,client_updated_at:Date.now(),revision:Number(meta.revision||0)+1,updated_by:target.userId}).eq('profile_id',target.profileId).eq('record_type',META_TYPE).eq('record_id',META_ID).eq('revision',Number(meta.revision||0)).select('record_id,revision');if(error)throw error;if(!Array.isArray(data)||data.length!==1)throw new Error('Shared Atlas changed during recovery. Preview again.');
     }else{
       const {error}=await client.from('atlas_records').insert({profile_id:target.profileId,record_type:META_TYPE,record_id:META_ID,payload,client_updated_at:Date.now(),updated_by:target.userId});if(error)throw error;
     }
@@ -73,34 +73,34 @@
   }
 
   async function preview(){
-    prepared=null;lastResult=null;if(!eligible())return{ok:false,error:'Sign in, select Me, and Test Access on the trusted desktop before previewing canonical recovery.'};
+    prepared=null;lastResult=null;if(!eligible())return{ok:false,error:'Sign in, select Me, and Test Access before previewing Shared Atlas recovery.'};
     try{
       await resolveTarget();const meta=await readMeta(),remote=entriesFromRows(await readEntityRows()),local=localRecords(),fp=fingerprint(local);
       prepared={fingerprint:fp,localCount:recordCount(local),remoteCount:recordCount(remote),metaRevision:Number(meta?.revision||0),previousEpoch:meta?.payload?.canonicalEpoch||''};
-      const result={ok:true,...prepared,hasCanonicalEpoch:!!prepared.previousEpoch};lastResult=result;emit('RECOVERY PREVIEW','Trusted desktop is ready to become the canonical Atlas.',result);return result;
-    }catch(error){const result={ok:false,error:String(error?.message||'Canonical recovery preview failed.')};lastResult=result;return result}
+      const result={ok:true,...prepared,hasCanonicalEpoch:!!prepared.previousEpoch};lastResult=result;emit('RECOVERY PREVIEW','This browser copy is ready to restore Shared Atlas once.',result);return result;
+    }catch(error){const result={ok:false,error:String(error?.message||'Shared Atlas recovery preview failed.')};lastResult=result;return result}
   }
 
   async function confirm(){
-    if(busy)return{ok:false,error:'Canonical recovery is already running.'};if(!prepared||!eligible())return{ok:false,error:'Preview canonical recovery first on the trusted desktop.'};
+    if(busy)return{ok:false,error:'Shared Atlas recovery is already running.'};if(!prepared||!eligible())return{ok:false,error:'Preview Shared Atlas recovery first.'};
     const current=localRecords(),currentFingerprint=fingerprint(current);if(currentFingerprint!==prepared.fingerprint){prepared=null;return{ok:false,previewRequired:true,error:'Atlas changed since the recovery preview. Preview again.'}}
-    busy=true;emit('RECOVERING','Preserving both copies before canonical promotion…');
+    busy=true;emit('RECOVERING','Preserving both copies before restoring Shared Atlas…');
     try{
-      await resolveTarget();const meta=await readMeta();if(Number(meta?.revision||0)!==prepared.metaRevision){prepared=null;throw new Error('Cloud Atlas changed since preview. Preview again.')}
+      await resolveTarget();const meta=await readMeta();if(Number(meta?.revision||0)!==prepared.metaRevision){prepared=null;throw new Error('Shared Atlas changed since preview. Preview again.')}
       const remote=entriesFromRows(await readEntityRows());
-      if(typeof idbBackup==='function')await idbBackup(Core.clone(state),'before canonical cloud promotion');
-      const trustedBackupId=await appendTrustedMeBackup();
-      const oldCloudSnapshotId=await appendRecoverySnapshot('old-cloud-before-promotion',remote,meta);
-      const trustedLocalSnapshotId=await appendRecoverySnapshot('trusted-local-before-promotion',Object.fromEntries(Object.entries(current).map(([key,record])=>[key,{record,revision:0}])),meta);
-      emit('RECOVERING','Recovery snapshots saved. Promoting trusted desktop…',{trustedBackupId,oldCloudSnapshotId,trustedLocalSnapshotId});
+      if(typeof idbBackup==='function')await idbBackup(Core.clone(state),'before Shared Atlas recovery');
+      const localBackupId=await appendRecoveryMeBackup();
+      const oldCloudSnapshotId=await appendRecoverySnapshot('old-shared-atlas-before-recovery',remote,meta);
+      const localRecoverySnapshotId=await appendRecoverySnapshot('local-recovery-copy-before-restore',Object.fromEntries(Object.entries(current).map(([key,record])=>[key,{record,revision:0}])),meta);
+      emit('RECOVERING','Recovery snapshots saved. Restoring Shared Atlas…',{localBackupId,oldCloudSnapshotId,localRecoverySnapshotId});
       const keys=new Set([...Object.keys(remote),...Object.keys(current)]);
-      for(const key of keys){const desired=current[key]||Core.tombstoneFor(remote[key]?.record);if(!desired)continue;const ok=await writeRecord(key,desired,remote[key]);if(!ok)throw new Error('Cloud Atlas changed during promotion. Recovery snapshots are safe; preview and retry.')}
+      for(const key of keys){const desired=current[key]||Core.tombstoneFor(remote[key]?.record);if(!desired)continue;const ok=await writeRecord(key,desired,remote[key]);if(!ok)throw new Error('Shared Atlas changed during recovery. Recovery snapshots are safe; preview and retry.')}
       const newEpoch=epoch(),finalFingerprint=fingerprint(current);await writeMeta(meta,newEpoch,finalFingerprint);
-      prepared=null;const result={ok:true,canonicalEpoch:newEpoch,records:recordCount(current),trustedBackupId,oldCloudSnapshotId,trustedLocalSnapshotId,completedAt:Date.now()};lastResult=result;
-      emit('CANONICAL READY','This desktop is now the canonical cloud Atlas. Other devices will pull this epoch before they can write.',result);
+      prepared=null;const result={ok:true,canonicalEpoch:newEpoch,records:recordCount(current),localBackupId,oldCloudSnapshotId,localRecoverySnapshotId,completedAt:Date.now()};lastResult=result;
+      emit('SHARED ATLAS READY','Shared Atlas has been restored. This browser is now an ordinary client like every other device.',result);
       try{root.dispatchEvent(new CustomEvent('atlascanonicalrecovered',{detail:result}))}catch(_){}
       return result;
-    }catch(error){const result={ok:false,error:String(error?.message||'Canonical recovery failed. Recovery snapshots already written are preserved.')};lastResult=result;emit('RECOVERY ERROR',result.error);return result}finally{busy=false}
+    }catch(error){const result={ok:false,error:String(error?.message||'Shared Atlas recovery failed. Recovery snapshots already written are preserved.')};lastResult=result;emit('RECOVERY ERROR',result.error);return result}finally{busy=false}
   }
 
   function status(){return{prepared:!!prepared,busy,lastResult:plain(lastResult)?{...lastResult}:lastResult}}
