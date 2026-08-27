@@ -5,7 +5,7 @@ const overviewCss=fs.readFileSync('styles/network-overview.css','utf8');
 const overview=fs.readFileSync('js/network-overview.js','utf8');
 const capture=fs.readFileSync('js/capture-flow-fix.js','utf8');
 const theme=fs.readFileSync('styles/theme-system.css','utf8');
-const drag=fs.readFileSync('js/window-drag.js','utf8');
+const hotfix=fs.readFileSync('styles/r18-stability-hotfix.css','utf8');
 const bootstrap=fs.readFileSync('js/bootstrap.js','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 
@@ -16,7 +16,8 @@ assert(!bootstrap.includes('window-material.css'),'must not load rejected experi
 assert(!bootstrap.includes('ops-r5.css'),'must not load rejected r5 palette layer');
 assert(bootstrap.includes("loadStyle('./styles/network-overview.css')"),'network overview style must load');
 assert(bootstrap.includes("loadStyle('./styles/theme-system.css')"),'approved native refinement must load');
-assert(bootstrap.includes("loadScript('./js/window-drag.js','Atlas movable windows v0.16.9-r17')"),'movable window runtime must load');
+assert(bootstrap.includes("loadStyle('./styles/r18-stability-hotfix.css')"),'r18 stability hotfix must load after the refinement layer');
+assert(!bootstrap.includes("loadScript('./js/window-drag.js'"),'global movable-window runtime must remain disabled in r18');
 assert(bootstrap.includes("loadScript('./js/capture-flow-fix.js','Atlas capture launcher handoff v0.16.9')"),'capture handoff must remain');
 assert(bootstrap.includes("loadScript('./js/network-overview.js','Atlas network overview v0.16.9')"),'network overview must remain');
 assert(bootstrap.includes("loadScript('./js/sync-v2-core.js','Atlas record-level sync core')"),'record-level sync core must load');
@@ -33,11 +34,11 @@ assert(theme.includes('#atlasCaptureLauncher'),'production theme must explicitly
 assert(theme.includes('--atlas-float-glass'),'production theme must expose floating glass material');
 assert(theme.includes('.quick-todo span'),'To-do contrast fix must remain');
 assert(theme.includes('.atlas-physics-panel'),'network controls must share the glass system');
-assert(drag.includes('pointerdown'),'movable windows must use Pointer Events');
-assert(!drag.includes('attributes:true'),'window drag runtime must not observe broad class mutations');
-assert(sw.includes("atlas-shell-0.16.9-r17"),'native refinement cache version missing');
+assert(hotfix.includes('box-shadow:none!important'),'r18 must remove decorative pane shadows');
+assert(sw.includes("atlas-shell-0.16.9-r18"),'r18 cache version missing');
 assert(sw.includes("'./styles/theme-system.css'"),'native refinement CSS must be cached');
-assert(sw.includes("'./js/window-drag.js'"),'movable window runtime must be cached');
+assert(sw.includes("'./styles/r18-stability-hotfix.css'"),'r18 stability hotfix CSS must be cached');
+assert(!sw.includes("'./js/window-drag.js'"),'disabled movable-window runtime must not remain in APP_SHELL');
 assert(sw.includes("'./styles/network-overview.css'"),'network overview CSS must be cached');
 assert(sw.includes("'./js/network-overview.js'"),'network overview runtime must be cached');
 assert(sw.includes("'./js/capture-flow-fix.js'"),'capture fix must be cached');
@@ -47,4 +48,4 @@ assert(!sw.includes("'./js/cloud-sync.js'"),'legacy snapshot sync must not be in
 assert(!sw.includes("'./js/cloud-sync-hotfix.js'"),'legacy snapshot hotfix must not be in the app shell');
 assert(!sw.includes("'./assets/lock-terrain.gif'"),'removed lock artwork must not remain offline-critical');
 
-console.log('Atlas v0.16.9-r17 native refinement compatibility: PASS');
+console.log('Atlas v0.16.9-r18 stability hotfix compatibility: PASS');
