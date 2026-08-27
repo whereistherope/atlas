@@ -1,0 +1,140 @@
+/* Atlas native refinement r14 · restrained glass everywhere.
+   Use low-opacity material + modest blur so the context remains visible, not blown out. */
+
+body[data-theme="night"]{
+  --atlas-pane:rgba(8,12,15,.30)!important;
+  --atlas-pane-raised:rgba(8,13,17,.46)!important;
+  --atlas-pane-header:rgba(8,13,17,.16)!important;
+  --atlas-field-glass:rgba(5,9,12,.46)!important;
+  --atlas-control-glass:rgba(7,12,16,.46);
+  --atlas-menu-glass:rgba(7,12,16,.54);
+}
+body:not([data-theme="night"]){
+  --atlas-pane:rgba(224,228,230,.30)!important;
+  --atlas-pane-raised:rgba(232,235,237,.46)!important;
+  --atlas-pane-header:rgba(232,235,237,.16)!important;
+  --atlas-field-glass:rgba(239,242,243,.50)!important;
+  --atlas-control-glass:rgba(228,232,234,.48);
+  --atlas-menu-glass:rgba(233,236,238,.56);
+}
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-widget.widget-floating,
+.prediction-inspector,
+.widget-position-panel,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel,
+.widget-menu-panel,
+[class$="-menu-panel"]{
+  background:var(--atlas-pane-raised)!important;
+  backdrop-filter:blur(8px) saturate(104%)!important;
+  -webkit-backdrop-filter:blur(8px) saturate(104%)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 24%,transparent)!important;
+}
+.atlas-capture-launcher-modal,
+.atlas-capture-launcher .modal{
+  background:var(--atlas-pane-raised)!important;
+  backdrop-filter:blur(8px) saturate(104%)!important;
+  -webkit-backdrop-filter:blur(8px) saturate(104%)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 22%,transparent)!important;
+}
+.widget-position-panel,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel,
+.widget-menu-panel,
+[class$="-menu-panel"]{
+  background:var(--atlas-menu-glass)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),-8px 11px 24px -18px rgba(0,0,0,.42),-20px 26px 48px -28px rgba(0,0,0,.56)!important;
+}
+.widget-position-panel button,
+.atlas-table-menu-panel button,
+.system-menu-panel button,
+.profile-menu-panel button,
+.space-menu-panel button,
+.widget-menu-panel button,
+.system-item,
+[class$="-menu-panel"] button{
+  background:transparent!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+.widget-position-panel button:hover,
+.atlas-table-menu-panel button:hover,
+.system-menu-panel button:hover,
+.profile-menu-panel button:hover,
+.space-menu-panel button:hover,
+.widget-menu-panel button:hover,
+.system-item:hover,
+[class$="-menu-panel"] button:hover{
+  background:color-mix(in srgb,var(--atlas-accent) 8%,transparent)!important;
+}
+.header-switch select,
+.space-switch select,
+.section-switch select,
+select{
+  background-color:color-mix(in srgb,var(--atlas-control-glass) 92%,transparent)!important;
+  color:var(--atlas-text)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;
+  box-shadow:none!important;
+}
+.map-wrap .depth,
+.map-wrap .zoom-controls,
+.map-wrap .legend,
+.map-wrap .map-command,
+.map-view-toggle,
+.map-wrap .atlas-physics-control>summary,
+.map-wrap .atlas-physics-control summary,
+.map-wrap .atlas-physics-panel,
+.map-wrap .atlas-graph-control>summary,
+.atlas-network-minimap{
+  background:var(--atlas-control-glass)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 25%,transparent)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),-6px 9px 18px -15px rgba(0,0,0,.42)!important;
+  backdrop-filter:blur(7px) saturate(103%)!important;
+  -webkit-backdrop-filter:blur(7px) saturate(103%)!important;
+}
+.map-wrap .atlas-physics-panel{background:var(--atlas-menu-glass)!important}
+.map-wrap .zoom-controls button,
+.map-view-toggle button,
+.map-wrap .atlas-physics-reset,
+.map-wrap .atlas-physics-panel button{
+  background:transparent!important;
+  box-shadow:none!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 20%,transparent)!important;
+}
+.map-wrap .zoom-controls button:hover,
+.map-view-toggle button:hover,
+.map-wrap .atlas-physics-reset:hover,
+.map-wrap .atlas-physics-panel button:hover{
+  background:color-mix(in srgb,var(--atlas-accent) 8%,transparent)!important;
+  color:var(--atlas-text)!important;
+}
+.map-view-toggle button.active,
+.map-wrap .atlas-physics-control[open]>summary,
+.map-wrap .atlas-physics-control[open] summary{
+  background:color-mix(in srgb,var(--atlas-accent) 10%,transparent)!important;
+  color:var(--atlas-text)!important;
+}
+.map-wrap .depth,
+.map-wrap .zoom-controls,
+.map-wrap .legend,
+.map-wrap .map-command,
+.map-view-toggle,
+.map-wrap .atlas-physics-control,
+.map-wrap .atlas-physics-panel{color:var(--atlas-text)!important}
+.map-wrap .atlas-physics-heading,
+.map-wrap .atlas-control-heading,
+.map-wrap .atlas-physics-row output{color:var(--atlas-text-muted)!important}
+.atlas-widget:not(.widget-floating),
+.network-stage,
+.panel,
+.fold{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
