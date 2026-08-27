@@ -10,10 +10,10 @@
 </head>
 <body>
 <div class="bar">
-  <span class="title">Atlas · Native Refinement</span><span class="tag">preview only</span>
+  <span class="title">Atlas · Native Refinement r8</span><span class="tag">preview only</span>
   <button id="refined" class="active">Refined</button><button id="current">Current</button>
   <button id="night" class="active">Night</button><button id="day">Day</button>
-  <span class="note">No preview settings are saved</span>
+  <span class="note">Glass + movable windows · no settings saved</span>
 </div>
 <iframe id="atlas" src="../../index.html" title="Atlas refinement preview"></iframe>
 <script>
@@ -21,12 +21,18 @@ const frame=document.getElementById('atlas');
 const refinedBtn=document.getElementById('refined'),currentBtn=document.getElementById('current');
 const nightBtn=document.getElementById('night'),dayBtn=document.getElementById('day');
 let refined=true,mode='night';
+function ensureAssets(doc){
+  let link=doc.getElementById('atlas-native-refinement-preview');
+  if(!link){link=doc.createElement('link');link.id='atlas-native-refinement-preview';link.rel='stylesheet';link.href='./prototypes/native-refinement/theme-system.css?v=8';doc.head.appendChild(link)}
+  let script=doc.getElementById('atlas-window-drag-preview');
+  if(!script){script=doc.createElement('script');script.id='atlas-window-drag-preview';script.src='./prototypes/native-refinement/window-drag.js?v=8';doc.body.appendChild(script)}
+  return link;
+}
 function apply(){
   const doc=frame.contentDocument;if(!doc)return;
-  let link=doc.getElementById('atlas-native-refinement-preview');
-  if(refined&&!link){link=doc.createElement('link');link.id='atlas-native-refinement-preview';link.rel='stylesheet';link.href='./prototypes/native-refinement/theme-system.css?v=1';doc.head.appendChild(link)}
-  if(link)link.disabled=!refined;
+  const link=ensureAssets(doc);link.disabled=!refined;
   if(mode==='night')doc.body.dataset.theme='night';else delete doc.body.dataset.theme;
+  const terrain=doc.querySelector('.atlas-lock-terrain');if(refined&&terrain)terrain.style.display='none';else if(terrain)terrain.style.removeProperty('display');
   refinedBtn.classList.toggle('active',refined);currentBtn.classList.toggle('active',!refined);nightBtn.classList.toggle('active',mode==='night');dayBtn.classList.toggle('active',mode==='day');
 }
 frame.addEventListener('load',()=>{setTimeout(apply,180)});
