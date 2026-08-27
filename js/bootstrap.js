@@ -1,7 +1,8 @@
 // Start only after every classic module has established its shared bindings.
-// Automatic record-level cross-device sync + native visual refinement r18 stability hotfix.
+// Emergency recovery build: automatic record-level sync is paused until data reconciliation is repaired.
 (async function(){
-  const BUILD='0169r18';
+  const BUILD='0169r19';
+  const SYNC_V2_ENABLED=false;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -34,7 +35,17 @@
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   // Snapshot-based canonical sync is permanently retired from the boot path.
   try { await loadScript('./js/sync-v2-core.js','Atlas record-level sync core'); } catch (_) {}
-  try { await loadScript('./js/sync-v2.js','Atlas record-level sync'); } catch (_) {}
+  if(SYNC_V2_ENABLED){
+    try { await loadScript('./js/sync-v2.js','Atlas record-level sync'); } catch (_) {}
+  }else{
+    window.AtlasCloudSync=Object.freeze({
+      initAfterLocalLoad:async()=>false,
+      refreshNow:async()=>false,
+      pushNow:async()=>false,
+      migrateSharedCloud:async()=>false,
+      getStatus:()=>({ready:false,joined:false,dirty:false,recordLevel:true,paused:true})
+    });
+  }
   try { await loadScript('./js/note-editor.js','Atlas note renderer'); } catch (_) {}
   if(!window.AtlasMarkdown?.openNote){try { await loadScript('./js/note-editor.js','Atlas note renderer retry',{fresh:true}); } catch (_) {}}
   try { await loadScript('./js/visual-note-editor.js','Atlas visual note editor'); } catch (_) {}
@@ -61,6 +72,9 @@
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
+  if(!SYNC_V2_ENABLED){
+    try{window.dispatchEvent(new CustomEvent('atlascanonicalstatus',{detail:{state:'PAUSED',message:'Automatic sync paused for data recovery.',joined:false,dirty:false,recordLevel:true,paused:true}}))}catch(_){}
+  }
   document.documentElement.classList.add('atlas-ready');
 
   if ('serviceWorker' in navigator) {
