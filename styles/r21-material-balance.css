@@ -96,3 +96,16 @@ body:not([data-theme="night"]){
 .widget-position-panel{
   border-color:color-mix(in srgb,var(--atlas-border) 25%,transparent)!important;
 }
+
+/* Local draggable-window presentation. Individual translate composes with existing transforms. */
+.atlas-window-movable{
+  translate:var(--atlas-window-x,0px) var(--atlas-window-y,0px)!important;
+  will-change:translate;
+}
+.atlas-window-handle{
+  cursor:grab!important;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.atlas-window-dragging .atlas-window-handle{cursor:grabbing!important}
