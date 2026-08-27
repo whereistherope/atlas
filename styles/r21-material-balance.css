@@ -1,0 +1,111 @@
+/* Atlas v0.16.9-r21 · material balance.
+   Restore visual weight after shadow removal while preserving restrained transparency. */
+
+body[data-theme="night"]{
+  --atlas-pane:rgba(8,12,15,.36)!important;
+  --atlas-pane-raised:rgba(8,13,17,.42)!important;
+  --atlas-pane-header:rgba(8,13,17,.14)!important;
+  --atlas-float-glass:rgba(7,11,15,.38)!important;
+  --atlas-float-head:rgba(8,12,16,.11)!important;
+  --atlas-control-glass:rgba(7,12,16,.50)!important;
+  --atlas-menu-glass:rgba(7,12,16,.58)!important;
+}
+body:not([data-theme="night"]){
+  --atlas-pane:rgba(224,228,230,.40)!important;
+  --atlas-pane-raised:rgba(232,235,237,.46)!important;
+  --atlas-pane-header:rgba(232,235,237,.15)!important;
+  --atlas-float-glass:rgba(229,233,235,.42)!important;
+  --atlas-float-head:rgba(235,238,239,.13)!important;
+  --atlas-control-glass:rgba(228,232,234,.53)!important;
+  --atlas-menu-glass:rgba(233,236,238,.60)!important;
+}
+
+/* Floating windows keep the approved low-flare 3px frost. */
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-widget.widget-floating,
+.prediction-inspector,
+.widget-position-panel,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel,
+.widget-menu-panel,
+[class$="-menu-panel"],
+#atlasCaptureLauncher .atlas-capture-launcher-modal{
+  background:var(--atlas-float-glass)!important;
+  background-color:var(--atlas-float-glass)!important;
+  backdrop-filter:blur(3px)!important;
+  -webkit-backdrop-filter:blur(3px)!important;
+  box-shadow:none!important;
+}
+
+/* Docked organisational panes gain body through pigment, never blur or shadow. */
+.atlas-widget:not(.widget-floating),
+.network-stage,
+.utility-pane,
+.panel,
+.atlas-project-workspace,
+.fold{
+  background:var(--atlas-pane)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:none!important;
+}
+
+.widget-head,
+.panel-head,
+.modal-head,
+.atlas-note-editor-head,
+.atlas-vnote-head,
+.network-head,
+.utility-pane-head,
+.atlas-command-input-row,
+.atlas-command-meta,
+.atlas-command-shell footer,
+.atlas-vnote-toolbar,
+.atlas-note-toolbar{
+  background:var(--atlas-pane-header)!important;
+  box-shadow:none!important;
+}
+.modal-head,
+.atlas-note-editor-head,
+.atlas-vnote-head,
+.atlas-command-input-row,
+.atlas-command-meta,
+.atlas-vnote-toolbar,
+.atlas-note-toolbar,
+#atlasCaptureLauncher .modal-head{
+  background:var(--atlas-float-head)!important;
+}
+
+/* Keep boundaries quiet: material should define the pane more than outlines do. */
+.atlas-widget,
+.network-stage,
+.utility-pane,
+.panel,
+.fold,
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-project-workspace,
+.prediction-inspector,
+.widget-position-panel{
+  border-color:color-mix(in srgb,var(--atlas-border) 25%,transparent)!important;
+}
+
+/* Local draggable-window presentation. Individual translate composes with existing transforms. */
+.atlas-window-movable{
+  translate:var(--atlas-window-x,0px) var(--atlas-window-y,0px)!important;
+  will-change:translate;
+}
+.atlas-window-handle{
+  cursor:grab!important;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.atlas-window-dragging .atlas-window-handle{cursor:grabbing!important}
