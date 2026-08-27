@@ -10,10 +10,10 @@
 </head>
 <body>
 <div class="bar">
-  <span class="title">Atlas · Native Refinement r12</span><span class="tag">preview only</span>
+  <span class="title">Atlas · Native Refinement r13</span><span class="tag">preview only</span>
   <button id="refined" class="active">Refined</button><button id="current">Current</button>
   <button id="night" class="active">Night</button><button id="day">Day</button>
-  <span class="note">Unified boundless system · no settings saved</span>
+  <span class="note">Current contrast + quieter edges + stronger glass</span>
 </div>
 <iframe id="atlas" src="../../index.html" title="Atlas refinement preview"></iframe>
 <script>
@@ -24,14 +24,15 @@ let refined=true,mode='night',bootPoll=null,themeGuard=null;
 function setPreviewTheme(doc){if(!doc?.body)return;if(mode==='night')doc.body.dataset.theme='night';else delete doc.body.dataset.theme}
 function ensureAssets(doc){
   const defs=[
-    ['atlas-native-refinement-preview','./prototypes/native-refinement/theme-system.css?v=12'],
-    ['atlas-native-refinement-r10','./prototypes/native-refinement/theme-r10.css?v=12'],
-    ['atlas-native-refinement-r11','./prototypes/native-refinement/theme-r11.css?v=12'],
-    ['atlas-native-refinement-r12','./prototypes/native-refinement/theme-r12.css?v=12']
+    ['atlas-native-refinement-preview','./prototypes/native-refinement/theme-system.css?v=13'],
+    ['atlas-native-refinement-r10','./prototypes/native-refinement/theme-r10.css?v=13'],
+    ['atlas-native-refinement-r11','./prototypes/native-refinement/theme-r11.css?v=13'],
+    ['atlas-native-refinement-r12','./prototypes/native-refinement/theme-r12.css?v=13'],
+    ['atlas-native-refinement-r13','./prototypes/native-refinement/theme-r13.css?v=13']
   ];
   const links=defs.map(([id,href])=>{let link=doc.getElementById(id);if(!link){link=doc.createElement('link');link.id=id;link.rel='stylesheet';link.href=href;doc.head.appendChild(link)}return link});
   links.forEach(link=>doc.head.appendChild(link));
-  let script=doc.getElementById('atlas-window-drag-preview');if(!script){script=doc.createElement('script');script.id='atlas-window-drag-preview';script.src='./prototypes/native-refinement/window-drag.js?v=12';doc.body.appendChild(script)}
+  let script=doc.getElementById('atlas-window-drag-preview');if(!script){script=doc.createElement('script');script.id='atlas-window-drag-preview';script.src='./prototypes/native-refinement/window-drag.js?v=13';doc.body.appendChild(script)}
   return links;
 }
 function apply(){const doc=frame.contentDocument;if(!doc?.body)return;const links=ensureAssets(doc);links.forEach(link=>link.disabled=!refined);setPreviewTheme(doc);const terrain=doc.querySelector('.atlas-lock-terrain');if(refined&&terrain)terrain.style.display='none';else if(terrain)terrain.style.removeProperty('display');refinedBtn.classList.toggle('active',refined);currentBtn.classList.toggle('active',!refined);nightBtn.classList.toggle('active',mode==='night');dayBtn.classList.toggle('active',mode==='day')}
