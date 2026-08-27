@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Atlas Native Refinement Preview</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#080b0e;color:#d9e0e5;font-family:Inter,system-ui,-apple-system,sans-serif}body{display:grid;grid-template-rows:44px minmax(0,1fr);overflow:hidden}.bar{display:flex;align-items:center;gap:8px;padding:0 10px;border-bottom:1px solid #29323a;background:#0d1115;font-size:11px}.title{font-weight:700;margin-right:auto}.tag{font:700 8px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.08em;color:#7f8e9a}.bar button{border:1px solid #34414b;background:#111820;color:#aeb9c2;border-radius:4px;padding:6px 9px;font:700 8px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.06em}.bar button.active{border-color:#6f8da0;background:#1a2832;color:#e6eef3}.bar button:hover{color:#fff}.note{color:#788690;font:600 8px ui-monospace,SFMono-Regular,Menlo,monospace;margin-left:5px}iframe{width:100%;height:100%;border:0;background:#090b0d}@media(max-width:700px){.tag,.note{display:none}.bar{gap:5px;padding:0 6px}.bar button{padding:6px 7px}}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="title">Atlas · Native Refinement</span><span class="tag">preview only</span>
+  <button id="refined" class="active">Refined</button><button id="current">Current</button>
+  <button id="night" class="active">Night</button><button id="day">Day</button>
+  <span class="note">No preview settings are saved</span>
+</div>
+<iframe id="atlas" src="../../index.html" title="Atlas refinement preview"></iframe>
+<script>
+const frame=document.getElementById('atlas');
+const refinedBtn=document.getElementById('refined'),currentBtn=document.getElementById('current');
+const nightBtn=document.getElementById('night'),dayBtn=document.getElementById('day');
+let refined=true,mode='night';
+function apply(){
+  const doc=frame.contentDocument;if(!doc)return;
+  let link=doc.getElementById('atlas-native-refinement-preview');
+  if(refined&&!link){link=doc.createElement('link');link.id='atlas-native-refinement-preview';link.rel='stylesheet';link.href='./prototypes/native-refinement/theme-system.css?v=1';doc.head.appendChild(link)}
+  if(link)link.disabled=!refined;
+  if(mode==='night')doc.body.dataset.theme='night';else delete doc.body.dataset.theme;
+  refinedBtn.classList.toggle('active',refined);currentBtn.classList.toggle('active',!refined);nightBtn.classList.toggle('active',mode==='night');dayBtn.classList.toggle('active',mode==='day');
+}
+frame.addEventListener('load',()=>{setTimeout(apply,180)});
+refinedBtn.onclick=()=>{refined=true;apply()};currentBtn.onclick=()=>{refined=false;apply()};nightBtn.onclick=()=>{mode='night';apply()};dayBtn.onclick=()=>{mode='day';apply()};
+</script>
+</body>
+</html>
