@@ -1,0 +1,220 @@
+/* Atlas native refinement r17 · production visual system.
+   Preserves layout/data/graph behaviour; standardises material, contrast and boundless surfaces. */
+
+:root,
+body:not([data-theme="night"]){
+  --atlas-canvas:#b3b8bb;
+  --atlas-surface:#d9dddf;
+  --atlas-surface-raised:#e3e6e7;
+  --atlas-surface-muted:#cbd0d3;
+  --atlas-text:#25282b;
+  --atlas-text-muted:#596168;
+  --atlas-border:#98a2a9;
+  --atlas-border-strong:#7f8b93;
+  --atlas-accent:#4f6d80;
+  --atlas-accent-strong:#365b72;
+  --atlas-pane:rgba(224,228,230,.30);
+  --atlas-pane-raised:rgba(232,235,237,.46);
+  --atlas-pane-header:rgba(232,235,237,.16);
+  --atlas-field-glass:rgba(239,242,243,.50);
+  --atlas-control-glass:rgba(228,232,234,.48);
+  --atlas-menu-glass:rgba(233,236,238,.56);
+  --atlas-float-glass:rgba(229,233,235,.32);
+  --atlas-float-head:rgba(235,238,239,.10);
+  --atlas-select-bg:#d9dddf;
+  --atlas-select-bg-hover:#cbd1d5;
+  --atlas-select-text:#25282b;
+  --atlas-shadow:inset 0 1px 0 rgba(255,255,255,.18),-8px 10px 18px -14px rgba(30,38,43,.13),-24px 30px 50px -32px rgba(30,38,43,.24);
+  --bg:var(--atlas-canvas)!important;
+  --surface-1:var(--atlas-surface)!important;
+  --surface-2:var(--atlas-surface-muted)!important;
+  --surface-3:var(--atlas-surface-raised)!important;
+  --paper:var(--atlas-surface)!important;
+  --paper2:var(--atlas-surface-muted)!important;
+  --ink:var(--atlas-text)!important;
+  --muted:var(--atlas-text-muted)!important;
+  --line:var(--atlas-border)!important;
+  --line-strong:var(--atlas-border-strong)!important;
+  --accent:var(--atlas-accent)!important;
+  --green:var(--atlas-accent)!important;
+  --green2:var(--atlas-accent-strong)!important;
+  --blue:var(--atlas-accent)!important;
+  --sand:#7f8d95!important;
+  --shadow:var(--atlas-shadow)!important;
+}
+
+body[data-theme="night"]{
+  --atlas-canvas:#080a0c;
+  --atlas-surface:#111519;
+  --atlas-surface-raised:#171c20;
+  --atlas-surface-muted:#0d1114;
+  --atlas-text:#e5e4e2;
+  --atlas-text-muted:#8b9294;
+  --atlas-border:#303941;
+  --atlas-border-strong:#46525b;
+  --atlas-accent:#7894a6;
+  --atlas-accent-strong:#a0b8c7;
+  --atlas-pane:rgba(8,12,15,.30);
+  --atlas-pane-raised:rgba(8,13,17,.46);
+  --atlas-pane-header:rgba(8,13,17,.16);
+  --atlas-field-glass:rgba(5,9,12,.46);
+  --atlas-control-glass:rgba(7,12,16,.46);
+  --atlas-menu-glass:rgba(7,12,16,.54);
+  --atlas-float-glass:rgba(7,11,15,.28);
+  --atlas-float-head:rgba(8,12,16,.08);
+  --atlas-select-bg:#11171c;
+  --atlas-select-bg-hover:#1a232a;
+  --atlas-select-text:#e5e4e2;
+  --atlas-shadow:inset 0 1px 0 rgba(255,255,255,.025),-8px 10px 18px -14px rgba(0,0,0,.28),-24px 30px 50px -32px rgba(0,0,0,.50);
+  --bg:var(--atlas-canvas)!important;
+  --surface-1:var(--atlas-surface)!important;
+  --surface-2:var(--atlas-surface-raised)!important;
+  --surface-3:#1b2024!important;
+  --paper:var(--atlas-surface)!important;
+  --paper2:var(--atlas-surface-raised)!important;
+  --ink:var(--atlas-text)!important;
+  --muted:var(--atlas-text-muted)!important;
+  --line:var(--atlas-border)!important;
+  --line-strong:var(--atlas-border-strong)!important;
+  --accent:var(--atlas-accent)!important;
+  --green:var(--atlas-accent)!important;
+  --green2:var(--atlas-accent-strong)!important;
+  --blue:var(--atlas-accent)!important;
+  --sand:#82909a!important;
+  --shadow:var(--atlas-shadow)!important;
+}
+
+body:not([data-theme="night"]){background:#b3b8bb!important;color:var(--atlas-text)}
+body[data-theme="night"]{background:#080a0c!important;color:var(--atlas-text)}
+body:after{display:none!important;background:none!important}
+body:before{opacity:.12!important;background-image:linear-gradient(rgba(87,99,107,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(87,99,107,.045) 1px,transparent 1px)!important}
+body[data-theme="night"]:before{opacity:.16!important;background-image:linear-gradient(rgba(118,145,162,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(118,145,162,.035) 1px,transparent 1px)!important}
+
+/* One quiet organisational boundary per real pane/window. */
+.atlas-widget,.network-stage,.utility-pane,.panel,.modal,.atlas-note-editor-sheet,.atlas-vnote-sheet,.atlas-command-shell,.atlas-project-workspace,.prediction-inspector,.widget-position-panel,.fold{
+  color:var(--atlas-text)!important;
+  border:1px solid color-mix(in srgb,var(--atlas-border) 34%,transparent)!important;
+  border-radius:7px!important;
+  box-shadow:var(--atlas-shadow)!important;
+}
+.atlas-widget:not(.widget-floating),.network-stage,.utility-pane,.panel,.atlas-project-workspace,.fold{
+  background:var(--atlas-pane)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  transition:none!important;
+}
+
+/* Floating surfaces: real transparency, deliberately low flare. */
+.modal,.atlas-note-editor-sheet,.atlas-vnote-sheet,.atlas-command-shell,.atlas-widget.widget-floating,.prediction-inspector,.widget-position-panel,.atlas-table-menu-panel,.system-menu-panel,.profile-menu-panel,.space-menu-panel,.widget-menu-panel,[class$="-menu-panel"]{
+  background:var(--atlas-float-glass)!important;
+  background-color:var(--atlas-float-glass)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 24%,transparent)!important;
+  backdrop-filter:blur(3px)!important;
+  -webkit-backdrop-filter:blur(3px)!important;
+}
+
+/* Headers are only a subtle grab/scan rail, never an opaque slab. */
+.widget-head,.panel-head,.modal-head,.atlas-note-editor-head,.atlas-vnote-head,.network-head,.utility-pane-head,.atlas-command-input-row,.atlas-command-meta,.atlas-command-shell footer,.atlas-vnote-toolbar,.atlas-note-toolbar{
+  min-height:38px!important;
+  background:var(--atlas-pane-header)!important;
+  border-bottom-color:color-mix(in srgb,var(--atlas-border) 24%,transparent)!important;
+  box-shadow:none!important;
+}
+.modal-head,.atlas-note-editor-head,.atlas-vnote-head,.atlas-command-input-row,.atlas-command-meta,.atlas-vnote-toolbar,.atlas-note-toolbar{background:var(--atlas-float-head)!important}
+
+/* Boundless content: spacing + hairlines instead of cards within cards. */
+.modal-body,.atlas-note-editor-scroll,.atlas-vnote-scroll,.atlas-command-results,.atlas-project-workspace .project-editor,.atlas-widget.widget-floating .widget-body{background:transparent!important;background-color:transparent!important}
+.editor-section,.edit-row,.mini-row,.atlas-command-result,.widget-row,.widget-project,.widget-note,.widget-log,.widget-kpi,.atlas-project-fold{box-shadow:none!important}
+.editor-section,.edit-row{background:transparent!important;border-left:0!important;border-right:0!important;border-radius:0!important;border-color:color-mix(in srgb,var(--atlas-border) 30%,transparent)!important}
+.atlas-command-result{background:transparent!important;border-color:transparent!important;border-radius:0!important}
+.atlas-command-result:hover,.atlas-command-result.selected{background:color-mix(in srgb,var(--atlas-accent) 7%,transparent)!important}
+.atlas-note-compose,.atlas-note-preview,.atlas-vnote-body,.atlas-project-rich-field,.atlas-project-rich-body,.atlas-project-fold{background:transparent!important;box-shadow:none!important;border-left:0!important;border-right:0!important;border-radius:0!important}
+.atlas-project-fold{border-top:1px solid color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;border-bottom:0!important;margin:0!important}
+
+/* Inputs stay slightly more opaque for legibility. */
+.field input,.field select,.field textarea,.atlas-note-fields input,.atlas-note-fields select,.atlas-vnote-fields input,.atlas-vnote-fields select,.atlas-vnote-body,.atlas-project-workspace .field input,.atlas-project-workspace .field select,.quick-add input,.scratch-area{
+  min-height:34px!important;
+  background:var(--atlas-field-glass)!important;
+  color:var(--atlas-text)!important;
+  border:1px solid color-mix(in srgb,var(--atlas-border) 32%,transparent)!important;
+  border-radius:4px!important;
+  box-shadow:none!important;
+}
+
+/* Capture: exact dynamic launcher path + frameless choices. */
+#atlasCaptureLauncher{background:rgba(0,0,0,.025)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#atlasCaptureLauncher>.atlas-capture-launcher-modal,#atlasCaptureLauncher .atlas-capture-launcher-modal,#atlasCaptureLauncher section.modal{
+  background:var(--atlas-float-glass)!important;background-color:var(--atlas-float-glass)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 18%,transparent)!important;
+  backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important;
+}
+#atlasCaptureLauncher .modal-head{background:var(--atlas-float-head)!important;border-bottom-color:color-mix(in srgb,var(--atlas-border) 20%,transparent)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#atlasCaptureLauncher .modal-body,#atlasCaptureLauncher .atlas-capture-choice-grid,#atlasCaptureLauncher .atlas-capture-choice{background:transparent!important;background-color:transparent!important}
+.atlas-capture-choice-grid{gap:0!important;border-top:1px solid color-mix(in srgb,var(--atlas-border) 24%,transparent)!important}
+.atlas-capture-choice{min-height:0!important;padding:11px 9px!important;gap:3px!important;border:0!important;border-radius:0!important;border-bottom:1px solid color-mix(in srgb,var(--atlas-border) 25%,transparent)!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.atlas-capture-choice:nth-child(odd){border-right:1px solid color-mix(in srgb,var(--atlas-border) 20%,transparent)!important}
+.atlas-capture-choice strong{font-size:12px!important;font-weight:660!important;color:var(--atlas-text)!important}
+.atlas-capture-choice span{font-size:9.5px!important;line-height:1.35!important;color:var(--atlas-text-muted)!important;opacity:.9}
+.atlas-capture-choice:hover,.atlas-capture-choice:focus{background:color-mix(in srgb,var(--atlas-accent) 7%,transparent)!important;outline:none!important}
+
+/* To-do and widget text stay readable at Current Night-like contrast. */
+.atlas-widget{color:var(--atlas-text)!important}
+.atlas-widget strong,.atlas-widget .widget-ident strong,.atlas-widget .widget-row strong,.atlas-widget .widget-project strong,.atlas-widget .widget-note strong{color:var(--atlas-text)!important}
+.atlas-widget small,.atlas-widget .widget-ident span,.atlas-widget .widget-row small,.atlas-widget .widget-note p,.atlas-widget .widget-log time,.atlas-widget .utility-help{color:var(--atlas-text-muted)!important}
+.quick-todo{color:var(--atlas-text)!important;border-bottom-color:color-mix(in srgb,var(--atlas-border) 26%,transparent)!important}
+.quick-todo span{color:var(--atlas-text)!important;opacity:.96!important;font-weight:480}
+.quick-todo.done span{color:var(--atlas-text-muted)!important;opacity:.62!important;text-decoration-thickness:1px}
+.quick-todo button{color:var(--atlas-text-muted)!important;opacity:.82}
+.quick-add input::placeholder{color:var(--atlas-text-muted)!important;opacity:.82}
+
+/* Menus/dropdowns use the same restrained glass family. */
+.widget-position-panel,.atlas-table-menu-panel,.system-menu-panel,.profile-menu-panel,.space-menu-panel,.widget-menu-panel,[class$="-menu-panel"]{
+  background:var(--atlas-menu-glass)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),-8px 11px 24px -18px rgba(0,0,0,.42),-20px 26px 48px -28px rgba(0,0,0,.56)!important;
+}
+.widget-position-panel button,.atlas-table-menu-panel button,.system-menu-panel button,.profile-menu-panel button,.space-menu-panel button,.widget-menu-panel button,.system-item,[class$="-menu-panel"] button{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+.widget-position-panel button:hover,.atlas-table-menu-panel button:hover,.system-menu-panel button:hover,.profile-menu-panel button:hover,.space-menu-panel button:hover,.widget-menu-panel button:hover,.system-item:hover,[class$="-menu-panel"] button:hover{background:color-mix(in srgb,var(--atlas-accent) 8%,transparent)!important}
+
+/* Native selects align with the theme as far as each browser permits. */
+.atlas-note-editor-sheet select,.atlas-vnote-sheet select,.atlas-project-workspace select,.modal select,.field select,.header-switch select,.space-switch select,.section-switch select{
+  appearance:auto;-webkit-appearance:menulist;color:var(--atlas-select-text)!important;
+  background-color:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  border:1px solid color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;box-shadow:none!important;
+}
+.atlas-note-editor-sheet select option,.atlas-note-editor-sheet select optgroup,.atlas-vnote-sheet select option,.atlas-vnote-sheet select optgroup,.atlas-project-workspace select option,.atlas-project-workspace select optgroup,.modal select option,.modal select optgroup,.field select option,.field select optgroup,.header-switch select option,.space-switch select option,.section-switch select option{background:var(--atlas-select-bg)!important;color:var(--atlas-select-text)!important}
+.atlas-note-editor-sheet select option:checked,.atlas-vnote-sheet select option:checked,.atlas-project-workspace select option:checked,.modal select option:checked,.field select option:checked{background:var(--atlas-select-bg-hover)!important;color:var(--atlas-select-text)!important}
+body[data-theme="night"] .atlas-note-editor-sheet,body[data-theme="night"] .atlas-vnote-sheet,body[data-theme="night"] .modal,body[data-theme="night"] .atlas-project-workspace{color-scheme:dark}
+body:not([data-theme="night"]) .atlas-note-editor-sheet,body:not([data-theme="night"]) .atlas-vnote-sheet,body:not([data-theme="night"]) .modal,body:not([data-theme="night"]) .atlas-project-workspace{color-scheme:light}
+
+/* Network controls/minimap are glass instruments; graph geometry remains untouched. */
+.map-wrap .depth,.map-wrap .zoom-controls,.map-wrap .legend,.map-wrap .map-command,.map-view-toggle,.map-wrap .atlas-physics-control>summary,.map-wrap .atlas-physics-control summary,.map-wrap .atlas-physics-panel,.map-wrap .atlas-graph-control>summary,.atlas-network-minimap{
+  background:var(--atlas-control-glass)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 25%,transparent)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025),-6px 9px 18px -15px rgba(0,0,0,.42)!important;
+  backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important;
+  color:var(--atlas-text)!important;
+}
+.map-wrap .atlas-physics-panel{background:var(--atlas-menu-glass)!important}
+.map-wrap .zoom-controls button,.map-view-toggle button,.map-wrap .atlas-physics-reset,.map-wrap .atlas-physics-panel button{background:transparent!important;box-shadow:none!important;border-color:color-mix(in srgb,var(--atlas-border) 20%,transparent)!important}
+.map-wrap .zoom-controls button:hover,.map-view-toggle button:hover,.map-wrap .atlas-physics-reset:hover,.map-wrap .atlas-physics-panel button:hover{background:color-mix(in srgb,var(--atlas-accent) 8%,transparent)!important;color:var(--atlas-text)!important}
+.map-view-toggle button.active,.map-wrap .atlas-physics-control[open]>summary,.map-wrap .atlas-physics-control[open] summary{background:color-mix(in srgb,var(--atlas-accent) 10%,transparent)!important;color:var(--atlas-text)!important}
+.atlas-network-minimap{width:184px!important;height:116px!important;opacity:.92!important;padding:8px!important}
+.atlas-network-minimap .mini-node{fill:var(--atlas-text)!important;opacity:.92!important}
+.atlas-network-minimap .mini-edge{stroke:var(--atlas-text-muted)!important;stroke-width:1.15!important;opacity:.48!important}
+.atlas-network-minimap .mini-edge.cross{opacity:.32!important;stroke-dasharray:3 2!important}
+.atlas-network-minimap .mini-viewport{stroke:var(--atlas-accent-strong)!important;stroke-width:2!important;opacity:1!important}
+
+/* Backdrops retain spatial context. */
+.overlay,.atlas-note-editor-backdrop,.atlas-vnote-backdrop,.atlas-command-backdrop{background:rgba(0,0,0,.035)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+body[data-theme="night"] .overlay,body[data-theme="night"] .atlas-note-editor-backdrop,body[data-theme="night"] .atlas-vnote-backdrop,body[data-theme="night"] .atlas-command-backdrop{background:rgba(0,0,0,.055)!important}
+
+/* Shared temporary draggable-window hook. */
+.atlas-window-movable{transform:translate3d(var(--atlas-window-x,0px),var(--atlas-window-y,0px),0)!important;will-change:transform}
+.atlas-window-handle{cursor:grab!important;touch-action:none;user-select:none;-webkit-user-select:none}
+.atlas-window-dragging .atlas-window-handle{cursor:grabbing!important}
+
+/* Lock artwork removed; authentication remains untouched. */
+.atlas-lock-terrain{display:none!important}
+.lock-screen:before{display:none!important}
+
+@media(max-width:700px){.atlas-network-minimap{width:142px!important;height:90px!important}.atlas-capture-choice-grid{grid-template-columns:1fr!important}.atlas-capture-choice:nth-child(odd){border-right:0!important}}
