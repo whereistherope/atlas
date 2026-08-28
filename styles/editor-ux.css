@@ -7,4 +7,11 @@
 .atlas-vnote-body[data-editor-font="code"]{font-family:var(--atlas-code-font,"SFMono-Regular",Consolas,"Liberation Mono",monospace)}
 .atlas-vnote-body[data-editor-size="small"]{font-size:14px}.atlas-vnote-body[data-editor-size="medium"]{font-size:16px}.atlas-vnote-body[data-editor-size="large"]{font-size:19px}
 #projectOverlay .modal-head{align-items:center}#projectOverlay .modal-head>[data-direct-project-edit]{margin-left:auto}#projectOverlay .modal-head>[data-direct-project-edit]+[data-close="projectOverlay"]{margin-left:6px}
-@media(max-width:760px){.atlas-editor-prefs{margin-left:0;padding-left:4px;border-left:0;flex:0 0 auto}.atlas-editor-prefs label{font-size:7px}.atlas-editor-prefs select{min-height:34px;font-size:10px}}
+
+/* Desktop editors are work surfaces, not fixed cards. Native resize keeps the existing
+   editor internals and local header-drag behavior while allowing width/height changes. */
+@media(min-width:761px){
+  .atlas-note-editor-sheet,.atlas-vnote-sheet{resize:both;min-width:min(460px,calc(100vw - 32px));min-height:280px;max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}
+  .overlay .modal{resize:both;overflow:auto;min-width:min(360px,calc(100vw - 32px));min-height:220px;max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}
+}
+@media(max-width:760px){.atlas-editor-prefs{margin-left:0;padding-left:4px;border-left:0;flex:0 0 auto}.atlas-editor-prefs label{font-size:7px}.atlas-editor-prefs select{min-height:34px;font-size:10px}.atlas-note-editor-sheet,.atlas-vnote-sheet,.overlay .modal{resize:none!important}}

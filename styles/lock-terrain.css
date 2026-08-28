@@ -1,10 +1,29 @@
 /* Atlas lock-screen identity · artwork-free */
 .lock-screen{
   --lock-bg:#101110;--lock-ink:#efede7;--lock-muted:#777b77;--lock-line:#5a5d59;
+  z-index:2147483000!important;
   background:var(--lock-bg)!important;color:var(--lock-ink)!important;padding:0!important;overflow:hidden!important;
   align-items:stretch!important;justify-content:stretch!important;isolation:isolate;
 }
 .lock-screen.open{display:block!important}.lock-screen:before{display:none!important}
+/* Lock is an application boundary: preserve open editors in-place but remove every
+   interactive application surface from paint/hit-testing until Atlas unlocks. */
+.atlas-locked .overlay,
+.atlas-locked .atlas-note-editor-overlay,
+.atlas-locked .atlas-vnote-overlay,
+.atlas-locked .atlas-direct-create,
+.atlas-locked .atlas-command-shell,
+.atlas-locked .atlas-widget.widget-floating,
+.atlas-locked .prediction-inspector,
+.atlas-locked .widget-position-panel,
+.atlas-locked .atlas-table-menu-panel,
+.atlas-locked .system-menu-panel,
+.atlas-locked .profile-menu-panel,
+.atlas-locked .space-menu-panel,
+.atlas-locked .widget-menu-panel{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
 .lock-screen .lock-card{
   position:absolute!important;z-index:6!important;left:42%!important;top:50%!important;transform:translate(-50%,-50%)!important;
   width:min(224px,42vw)!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
