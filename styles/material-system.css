@@ -2,6 +2,37 @@
    Historical material layers are preserved below in original cascade order while
    their standalone files are retired. The final canonical paint remains last. */
 
+/* r18 stability layer, absorbed from the former standalone stylesheet. */
+.atlas-widget,
+.network-stage,
+.utility-pane,
+.panel,
+.fold,
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-project-workspace,
+.prediction-inspector,
+.widget-position-panel,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel,
+.widget-menu-panel,
+[class$="-menu-panel"],
+#atlasCaptureLauncher .atlas-capture-launcher-modal,
+.map-wrap .depth,
+.map-wrap .zoom-controls,
+.map-wrap .legend,
+.map-wrap .map-command,
+.map-view-toggle,
+.map-wrap .atlas-physics-control>summary,
+.map-wrap .atlas-physics-panel,
+.atlas-network-minimap{
+  box-shadow:none!important;
+}
+
 /* r21 compatibility layer, absorbed from the former standalone stylesheet. */
 body[data-theme="night"]{
   --atlas-pane:rgba(8,12,15,.36)!important;
