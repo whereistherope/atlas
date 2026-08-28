@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Shared Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r27';
+  const BUILD='0169r28';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -28,7 +28,6 @@
   loadStyle('./styles/network-overview.css');
   loadStyle('./styles/theme-system.css');
   loadStyle('./styles/r18-stability-hotfix.css');
-  loadStyle('./styles/r21-material-balance.css');
   loadStyle('./styles/material-system.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
