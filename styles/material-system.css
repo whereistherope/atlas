@@ -1,7 +1,87 @@
 /* Atlas canonical material system.
-   Final window/pane material and editor-field paint live here so later cleanup can
-   absorb historical material hotfix layers without changing computed behaviour. */
+   Historical r22 material/field rules are preserved first in their original source
+   order; the canonical final material follows and remains the winning paint. */
 
+/* r22 compatibility layer, absorbed from the former standalone stylesheet. */
+body[data-theme="night"]{
+  --atlas-pane:rgba(8,12,15,.43)!important;
+  --atlas-pane-raised:rgba(8,13,17,.50)!important;
+  --atlas-float-glass:rgba(7,11,15,.46)!important;
+  --atlas-pane-header:rgba(8,13,17,.16)!important;
+  --atlas-float-head:rgba(8,12,16,.13)!important;
+}
+body:not([data-theme="night"]){
+  --atlas-pane:rgba(224,228,230,.48)!important;
+  --atlas-pane-raised:rgba(232,235,237,.54)!important;
+  --atlas-float-glass:rgba(229,233,235,.50)!important;
+  --atlas-pane-header:rgba(232,235,237,.18)!important;
+  --atlas-float-head:rgba(235,238,239,.15)!important;
+}
+
+.modal,
+.atlas-note-editor-sheet,
+.atlas-vnote-sheet,
+.atlas-command-shell,
+.atlas-widget.widget-floating,
+.prediction-inspector,
+.widget-position-panel,
+.atlas-table-menu-panel,
+.system-menu-panel,
+.profile-menu-panel,
+.space-menu-panel,
+.widget-menu-panel,
+[class$="-menu-panel"],
+#atlasCaptureLauncher .atlas-capture-launcher-modal{
+  background:var(--atlas-float-glass)!important;
+  background-color:var(--atlas-float-glass)!important;
+  backdrop-filter:blur(3px)!important;
+  -webkit-backdrop-filter:blur(3px)!important;
+  box-shadow:none!important;
+}
+.atlas-widget:not(.widget-floating),
+.network-stage,
+.utility-pane,
+.panel,
+.atlas-project-workspace,
+.fold{
+  background:var(--atlas-pane)!important;
+  box-shadow:none!important;
+}
+
+:where(
+  .modal,
+  .atlas-note-editor-sheet,
+  .atlas-vnote-sheet,
+  .atlas-project-workspace
+) :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]),
+  textarea,
+  [contenteditable="true"]
+){
+  background:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  background-color:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  color:var(--atlas-select-text)!important;
+  border-color:color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;
+  box-shadow:none!important;
+}
+
+.atlas-project-rich-body,
+.atlas-note-compose,
+.atlas-vnote-body{
+  background:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  background-color:color-mix(in srgb,var(--atlas-select-bg) 74%,transparent)!important;
+  color:var(--atlas-select-text)!important;
+  border:1px solid color-mix(in srgb,var(--atlas-border) 28%,transparent)!important;
+}
+
+:where(.modal,.atlas-note-editor-sheet,.atlas-vnote-sheet,.atlas-project-workspace)
+:where(input,textarea,[contenteditable="true"]):focus{
+  border-color:color-mix(in srgb,var(--atlas-accent) 54%,transparent)!important;
+  outline:1px solid color-mix(in srgb,var(--atlas-accent) 30%,transparent)!important;
+  outline-offset:1px;
+}
+
+/* Canonical final material. */
 body[data-theme="night"]{
   --atlas-pane:rgba(8,12,15,.47)!important;
   --atlas-pane-raised:rgba(8,13,17,.55)!important;
@@ -15,7 +95,6 @@ body:not([data-theme="night"]){
   --atlas-editor-field-fill:#d9dddf;
 }
 
-/* Approved restrained floating material: enough pigment to read, only 3px frost. */
 .modal,
 .atlas-note-editor-sheet,
 .atlas-vnote-sheet,
@@ -37,7 +116,6 @@ body:not([data-theme="night"]){
   box-shadow:none!important;
 }
 
-/* One exact field material across native controls. */
 .atlas-vnote-fields input,
 .atlas-vnote-fields select,
 .atlas-note-editor-sheet input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]),
@@ -59,7 +137,6 @@ body:not([data-theme="night"]){
   box-shadow:none!important;
 }
 
-/* Rich text boxes share the exact same fill as metadata/dropdown fields. */
 .atlas-vnote-body,
 .atlas-note-compose,
 .atlas-project-rich-body,
@@ -74,7 +151,6 @@ body:not([data-theme="night"]){
   box-shadow:none!important;
 }
 
-/* Keep placeholder/empty-state contrast consistent across the shared field material. */
 .atlas-vnote-sheet input::placeholder,
 .atlas-vnote-sheet textarea::placeholder,
 .atlas-note-editor-sheet input::placeholder,
