@@ -102,8 +102,11 @@
   });
 
   // Main Capture belongs to the universal launcher. Capture phase prevents the
-  // legacy #captureBtn handler from opening a form underneath it.
+  // legacy #captureBtn handler from opening a form underneath it. The aligned
+  // launcher installed later shares this same lifecycle: dismiss it before its
+  // own action handler opens the requested editor.
   root.addEventListener('click',event=>{
+    if(event.target.closest?.('[data-atlas-aligned-capture]'))closeLauncher();
     if(event.target.closest?.('#captureBtn')){
       event.preventDefault();event.stopImmediatePropagation();openLauncher();return;
     }
