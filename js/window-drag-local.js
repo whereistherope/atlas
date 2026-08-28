@@ -64,11 +64,15 @@
   }
 
   scan();
-  new MutationObserver(records=>{
+  // Dynamic Atlas windows are mounted as top-level overlays. Watching only direct
+  // body additions catches those lifecycle mounts without observing every DOM edit
+  // inside editors, notes, widgets and the network graph.
+  const observer=new MutationObserver(records=>{
     for(const record of records){
       for(const node of record.addedNodes||[])if(node.nodeType===1)scan(node);
     }
-  }).observe(document.body,{childList:true,subtree:true});
+  });
+  observer.observe(document.body,{childList:true});
 
   root.AtlasWindowDragLocal=Object.freeze({scan,bind});
 })(window);
