@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="ATLASPAD">
+  <meta name="theme-color" content="#05080b">
+  <link rel="apple-touch-icon" href="./atlas-192.png">
+  <title>ATLASPAD // FIELD TERMINAL</title>
+  <style>
+    html, body { margin:0; width:100%; min-height:100%; background:#05080b; color:#dce9ee; font-family:Menlo,Monaco,Consolas,"Courier New",monospace; -webkit-text-size-adjust:100%; }
+    * { box-sizing:border-box; }
+    body { min-height:100vh; overflow-x:hidden; background-image:linear-gradient(rgba(126,170,190,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(126,170,190,.035) 1px,transparent 1px),radial-gradient(ellipse at 74% 62%,rgba(70,126,153,.11),rgba(5,8,11,0) 46%); background-size:34px 34px,34px 34px,100% 100%; }
+    .shell { min-height:100vh; padding:34px 38px 28px; position:relative; }
+    .shell:after { content:""; position:fixed; width:390px; height:230px; right:-42px; bottom:8px; border:1px solid rgba(132,183,207,.10); border-radius:50%; box-shadow:0 0 0 22px rgba(132,183,207,.015),0 0 0 56px rgba(132,183,207,.012),0 0 0 96px rgba(132,183,207,.008); -webkit-transform:rotate(-14deg); transform:rotate(-14deg); pointer-events:none; }
+    .topbar { display:-webkit-flex; display:flex; -webkit-justify-content:space-between; justify-content:space-between; -webkit-align-items:flex-start; align-items:flex-start; border-bottom:1px solid rgba(200,228,239,.28); padding-bottom:18px; margin-bottom:22px; }
+    .kicker { font-size:12px; letter-spacing:.22em; color:#7fa8b8; margin-bottom:8px; }
+    h1 { margin:0; font-size:24px; font-weight:500; letter-spacing:.06em; color:#edf6f8; }
+    .clock { text-align:right; min-width:190px; }
+    #time { font-size:28px; letter-spacing:.08em; color:#edf6f8; }
+    #date { margin-top:5px; font-size:11px; letter-spacing:.12em; color:#78919b; }
+    .statusbar { display:-webkit-flex; display:flex; -webkit-flex-wrap:wrap; flex-wrap:wrap; margin:0 -6px 20px; }
+    .status { border:1px solid rgba(169,204,217,.18); background:rgba(11,17,21,.62); margin:0 6px 10px; padding:10px 13px; min-width:145px; }
+    .status .label { display:block; font-size:9px; letter-spacing:.18em; color:#607c88; margin-bottom:4px; }
+    .status .value { font-size:12px; color:#c7dce3; letter-spacing:.08em; }
+    .dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:#78a9b9; margin-right:7px; vertical-align:1px; box-shadow:0 0 8px rgba(120,169,185,.45); }
+    .grid { display:-webkit-flex; display:flex; -webkit-flex-wrap:wrap; flex-wrap:wrap; margin:0 -7px; max-width:900px; }
+    .tile { -webkit-flex:1 1 42%; flex:1 1 42%; min-height:138px; margin:7px; padding:19px 20px; border:1px solid rgba(179,214,226,.22); background:rgba(8,14,18,.79); color:#e4f0f4; text-decoration:none; position:relative; -webkit-tap-highlight-color:rgba(125,178,199,.14); }
+    .tile:active { background:rgba(31,52,61,.82); border-color:rgba(185,226,240,.48); }
+    .tile .num { position:absolute; top:13px; right:14px; font-size:9px; color:#48636e; letter-spacing:.12em; }
+    .tile .title { display:block; margin-top:17px; font-size:21px; letter-spacing:.10em; }
+    .tile .desc { display:block; margin-top:10px; font-size:10px; line-height:1.55; letter-spacing:.08em; color:#708a95; }
+    .tile.disabled { opacity:.38; pointer-events:none; }
+    .footer { border-top:1px solid rgba(200,228,239,.14); margin-top:22px; padding-top:14px; font-size:9px; line-height:1.8; letter-spacing:.12em; color:#526a74; }
+    .footer strong { color:#7996a1; font-weight:normal; }
+    @media (orientation:portrait) { .shell { padding:28px 24px 26px; } h1 { font-size:20px; } #time { font-size:23px; } .clock { min-width:150px; } .tile { min-height:130px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <div class="kicker">SYS-ATLS-01 // MOBILE NODE</div>
+        <h1>ATLASPAD // FIELD TERMINAL</h1>
+      </div>
+      <div class="clock">
+        <div id="time">--:--:--</div>
+        <div id="date">---- -- --</div>
+      </div>
+    </header>
+    <section class="statusbar" aria-label="System status">
+      <div class="status"><span class="label">NODE</span><span class="value">ATLASPAD-01</span></div>
+      <div class="status"><span class="label">SYSTEM</span><span class="value">iPAD AIR / iOS 12</span></div>
+      <div class="status"><span class="label">LINK</span><span class="value"><span class="dot"></span>LOCAL READY</span></div>
+      <div class="status"><span class="label">MODE</span><span class="value">FIELD</span></div>
+    </section>
+    <nav class="grid" aria-label="AtlasPad controls">
+      <a class="tile" href="./index.html"><span class="num">01 / CORE</span><span class="title">ATLAS</span><span class="desc">OPEN THE MAIN ATLAS KNOWLEDGE SYSTEM</span></a>
+      <a class="tile" href="shortcuts://run-shortcut?name=ATLAS%20TERM"><span class="num">02 / SHELL</span><span class="title">TERMINAL</span><span class="desc">OPEN iSH VIA THE ATLAS TERM SHORTCUT</span></a>
+      <a class="tile" href="mochavnc://"><span class="num">03 / REMOTE</span><span class="title">MAC</span><span class="desc">OPEN MOCHA VNC REMOTE DESKTOP</span></a>
+      <a class="tile disabled" href="#" aria-disabled="true"><span class="num">04 / NODE</span><span class="title">SERVER</span><span class="desc">HOME SERVER CONTROL // PENDING NODE DEPLOYMENT</span></a>
+      <a class="tile disabled" href="#" aria-disabled="true"><span class="num">05 / STORAGE</span><span class="title">FILES</span><span class="desc">NAS / SHARED STORAGE // PENDING SERVER</span></a>
+      <a class="tile disabled" href="#" aria-disabled="true"><span class="num">06 / INTEL</span><span class="title">AI</span><span class="desc">LIGHTWEIGHT ATLAS AI INTERFACE // PENDING BACKEND</span></a>
+    </nav>
+    <footer class="footer"><strong>ATLASPAD-01</strong> &nbsp; // &nbsp; DISPLAY NODE ONLINE<br>TOUCH TARGETS ARE LOCAL LAUNCH CONTROLS. SERVER STATUS AND REMOTE AI WILL COME FROM THE HOME NODE.</footer>
+  </main>
+  <script>
+    (function(){
+      function pad(n){return n<10?'0'+n:''+n;}
+      function tick(){var d=new Date();document.getElementById('time').innerHTML=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());document.getElementById('date').innerHTML=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' // LOCAL';}
+      tick();setInterval(tick,1000);
+    }());
+  </script>
+</body>
+</html>
