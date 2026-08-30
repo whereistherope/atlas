@@ -1,76 +1,95 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="ATLASPAD">
-  <meta name="theme-color" content="#05080b">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AtlasPad">
+  <meta name="theme-color" content="#080a0c">
   <link rel="apple-touch-icon" href="./atlas-192.png">
-  <title>ATLASPAD // FIELD TERMINAL</title>
+  <title>AtlasPad</title>
   <style>
-    html, body { margin:0; width:100%; min-height:100%; background:#05080b; color:#dce9ee; font-family:Menlo,Monaco,Consolas,"Courier New",monospace; -webkit-text-size-adjust:100%; }
-    * { box-sizing:border-box; }
-    body { min-height:100vh; overflow-x:hidden; background-image:linear-gradient(rgba(126,170,190,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(126,170,190,.035) 1px,transparent 1px),radial-gradient(ellipse at 74% 62%,rgba(70,126,153,.11),rgba(5,8,11,0) 46%); background-size:34px 34px,34px 34px,100% 100%; }
-    .shell { min-height:100vh; padding:34px 38px 28px; position:relative; }
-    .shell:after { content:""; position:fixed; width:390px; height:230px; right:-42px; bottom:8px; border:1px solid rgba(132,183,207,.10); border-radius:50%; box-shadow:0 0 0 22px rgba(132,183,207,.015),0 0 0 56px rgba(132,183,207,.012),0 0 0 96px rgba(132,183,207,.008); -webkit-transform:rotate(-14deg); transform:rotate(-14deg); pointer-events:none; }
-    .topbar { display:-webkit-flex; display:flex; -webkit-justify-content:space-between; justify-content:space-between; -webkit-align-items:flex-start; align-items:flex-start; border-bottom:1px solid rgba(200,228,239,.28); padding-bottom:18px; margin-bottom:22px; }
-    .kicker { font-size:12px; letter-spacing:.22em; color:#7fa8b8; margin-bottom:8px; }
-    h1 { margin:0; font-size:24px; font-weight:500; letter-spacing:.06em; color:#edf6f8; }
-    .clock { text-align:right; min-width:190px; }
-    #time { font-size:28px; letter-spacing:.08em; color:#edf6f8; }
-    #date { margin-top:5px; font-size:11px; letter-spacing:.12em; color:#78919b; }
-    .statusbar { display:-webkit-flex; display:flex; -webkit-flex-wrap:wrap; flex-wrap:wrap; margin:0 -6px 20px; }
-    .status { border:1px solid rgba(169,204,217,.18); background:rgba(11,17,21,.62); margin:0 6px 10px; padding:10px 13px; min-width:145px; }
-    .status .label { display:block; font-size:9px; letter-spacing:.18em; color:#607c88; margin-bottom:4px; }
-    .status .value { font-size:12px; color:#c7dce3; letter-spacing:.08em; }
-    .dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:#78a9b9; margin-right:7px; vertical-align:1px; box-shadow:0 0 8px rgba(120,169,185,.45); }
-    .grid { display:-webkit-flex; display:flex; -webkit-flex-wrap:wrap; flex-wrap:wrap; margin:0 -7px; max-width:900px; }
-    .tile { -webkit-flex:1 1 42%; flex:1 1 42%; min-height:138px; margin:7px; padding:19px 20px; border:1px solid rgba(179,214,226,.22); background:rgba(8,14,18,.79); color:#e4f0f4; text-decoration:none; position:relative; -webkit-tap-highlight-color:rgba(125,178,199,.14); }
-    .tile:active { background:rgba(31,52,61,.82); border-color:rgba(185,226,240,.48); }
-    .tile .num { position:absolute; top:13px; right:14px; font-size:9px; color:#48636e; letter-spacing:.12em; }
-    .tile .title { display:block; margin-top:17px; font-size:21px; letter-spacing:.10em; }
-    .tile .desc { display:block; margin-top:10px; font-size:10px; line-height:1.55; letter-spacing:.08em; color:#708a95; }
-    .tile.disabled { opacity:.38; pointer-events:none; }
-    .footer { border-top:1px solid rgba(200,228,239,.14); margin-top:22px; padding-top:14px; font-size:9px; line-height:1.8; letter-spacing:.12em; color:#526a74; }
-    .footer strong { color:#7996a1; font-weight:normal; }
-    @media (orientation:portrait) { .shell { padding:28px 24px 26px; } h1 { font-size:20px; } #time { font-size:23px; } .clock { min-width:150px; } .tile { min-height:130px; } }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#080a0c;color:#e5e4e2;-webkit-text-size-adjust:100%}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background-image:linear-gradient(rgba(118,145,162,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(118,145,162,.035) 1px,transparent 1px);background-size:24px 24px}
+    a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:rgba(120,148,166,.18)}
+    .mono{font-family:Menlo,Monaco,Consolas,"Courier New",monospace;text-transform:uppercase;letter-spacing:.065em}
+    .shell{max-width:1120px;margin:0 auto;padding:22px 26px 30px}
+    .topbar{border-top:4px solid #7894a6;border-bottom:1px solid #303941;padding:9px 0 10px;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-justify-content:space-between;justify-content:space-between}
+    .brand{font-size:36px;font-weight:780;letter-spacing:-.045em;line-height:1}
+    .sub{margin-top:5px;color:#8b9294;font-size:9px;font-weight:800}
+    .clock{text-align:right;font-family:Menlo,Monaco,Consolas,monospace}
+    .clock .time{font-size:19px;font-weight:800;letter-spacing:.04em}
+    .clock .date{margin-top:4px;color:#8b9294;font-size:8px;text-transform:uppercase;letter-spacing:.06em}
+    .main{padding-top:13px}
+    .metrics{display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;margin:0 -6px 7px}
+    .metric{width:calc(25% - 12px);margin:0 6px 12px;padding:13px 14px;min-height:86px;border:1px solid rgba(48,57,65,.72);border-radius:7px;background:rgba(8,12,15,.30)}
+    .metric .tiny{font:800 8px/1 Menlo,Monaco,Consolas,monospace;text-transform:uppercase;letter-spacing:.07em;color:#7894a6}
+    .metric .value{margin-top:9px;font-size:17px;font-weight:760;letter-spacing:-.02em}
+    .metric .label{margin-top:4px;color:#8b9294;font-size:10px}
+    .panel{border:1px solid rgba(48,57,65,.78);border-radius:7px;background:rgba(8,12,15,.30);overflow:hidden}
+    .panel-head{min-height:39px;padding:12px 14px;border-bottom:1px solid rgba(48,57,65,.58);display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;-webkit-align-items:center;align-items:center}
+    .panel-head h2{margin:0;font:850 10px/1 Menlo,Monaco,Consolas,monospace;text-transform:uppercase;letter-spacing:.07em}
+    .panel-head .meta{color:#8b9294;font:750 8px/1 Menlo,Monaco,Consolas,monospace;text-transform:uppercase}
+    .actions{padding:10px}
+    .action{display:block;min-height:91px;margin-bottom:8px;padding:16px 17px;border:1px solid #303941;border-radius:5px;background:#0d1114;position:relative}
+    .action:last-child{margin-bottom:0}
+    .action:active{background:#1a232a;border-color:#7894a6}
+    .action .code{font:800 8px/1 Menlo,Monaco,Consolas,monospace;color:#7894a6;text-transform:uppercase;letter-spacing:.07em}
+    .action .title{display:block;margin-top:8px;font-size:20px;font-weight:760;letter-spacing:-.02em}
+    .action .desc{display:block;margin-top:4px;color:#8b9294;font-size:10px;line-height:1.4}
+    .action .arrow{position:absolute;right:17px;top:34px;color:#7894a6;font:800 18px Menlo,monospace}
+    .action.disabled{opacity:.34;pointer-events:none}
+    .footer{margin-top:13px;padding:9px 2px;border-top:1px solid #303941;color:#8b9294;font:750 8px/1.7 Menlo,Monaco,Consolas,monospace;text-transform:uppercase;letter-spacing:.055em}
+    @media (orientation:portrait){.shell{padding:18px 18px 26px}.brand{font-size:31px}.metric{width:calc(50% - 12px)}.action{min-height:88px}}
   </style>
 </head>
 <body>
-  <main class="shell">
+  <div class="shell">
     <header class="topbar">
       <div>
-        <div class="kicker">SYS-ATLS-01 // MOBILE NODE</div>
-        <h1>ATLASPAD // FIELD TERMINAL</h1>
+        <div class="brand">Atlas</div>
+        <div class="sub mono">Pad / Field Node · ATLASPAD-01</div>
       </div>
       <div class="clock">
-        <div id="time">--:--:--</div>
-        <div id="date">---- -- --</div>
+        <div class="time" id="time">--:--:--</div>
+        <div class="date" id="date">---- -- --</div>
       </div>
     </header>
-    <section class="statusbar" aria-label="System status">
-      <div class="status"><span class="label">NODE</span><span class="value">ATLASPAD-01</span></div>
-      <div class="status"><span class="label">SYSTEM</span><span class="value">iPAD AIR / iOS 12</span></div>
-      <div class="status"><span class="label">LINK</span><span class="value"><span class="dot"></span>LOCAL READY</span></div>
-      <div class="status"><span class="label">MODE</span><span class="value">FIELD</span></div>
-    </section>
-    <nav class="grid" aria-label="AtlasPad controls">
-      <a class="tile" href="./index.html"><span class="num">01 / CORE</span><span class="title">ATLAS</span><span class="desc">OPEN THE MAIN ATLAS KNOWLEDGE SYSTEM</span></a>
-      <a class="tile" href="shortcuts://run-shortcut?name=ATLAS%20TERM"><span class="num">02 / SHELL</span><span class="title">TERMINAL</span><span class="desc">OPEN iSH VIA THE ATLAS TERM SHORTCUT</span></a>
-      <a class="tile" href="mochavnc://"><span class="num">03 / REMOTE</span><span class="title">MAC</span><span class="desc">OPEN MOCHA VNC REMOTE DESKTOP</span></a>
-      <a class="tile disabled" href="#" aria-disabled="true"><span class="num">04 / NODE</span><span class="title">SERVER</span><span class="desc">HOME SERVER CONTROL // PENDING NODE DEPLOYMENT</span></a>
-      <a class="tile disabled" href="#" aria-disabled="true"><span class="num">05 / STORAGE</span><span class="title">FILES</span><span class="desc">NAS / SHARED STORAGE // PENDING SERVER</span></a>
-      <a class="tile disabled" href="#" aria-disabled="true"><span class="num">06 / INTEL</span><span class="title">AI</span><span class="desc">LIGHTWEIGHT ATLAS AI INTERFACE // PENDING BACKEND</span></a>
-    </nav>
-    <footer class="footer"><strong>ATLASPAD-01</strong> &nbsp; // &nbsp; DISPLAY NODE ONLINE<br>TOUCH TARGETS ARE LOCAL LAUNCH CONTROLS. SERVER STATUS AND REMOTE AI WILL COME FROM THE HOME NODE.</footer>
-  </main>
+
+    <main class="main">
+      <section class="metrics" aria-label="Node status">
+        <div class="metric"><div class="tiny">Node</div><div class="value">01</div><div class="label">iPad Air</div></div>
+        <div class="metric"><div class="tiny">System</div><div class="value">iOS 12</div><div class="label">Legacy field client</div></div>
+        <div class="metric"><div class="tiny">Shell</div><div class="value">iSH</div><div class="label">Alpine Linux</div></div>
+        <div class="metric"><div class="tiny">Mode</div><div class="value">Ready</div><div class="label">Local network</div></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>Launch</h2><div class="meta">AtlasPad controls</div></div>
+        <div class="actions">
+          <a class="action" href="./pad-atlas.html">
+            <span class="code">01 / Atlas</span><span class="title">Atlas</span><span class="desc">Open the iOS 12-compatible Atlas field view.</span><span class="arrow">›</span>
+          </a>
+          <a class="action" href="shortcuts://run-shortcut/?name=ATLAS%20TERM">
+            <span class="code">02 / Shell</span><span class="title">Terminal</span><span class="desc">Launch iSH through the ATLAS TERM Shortcut.</span><span class="arrow">›</span>
+          </a>
+          <a class="action" href="mochavnc://">
+            <span class="code">03 / Remote</span><span class="title">Mac</span><span class="desc">Open the Mac remote desktop in Mocha VNC.</span><span class="arrow">›</span>
+          </a>
+          <div class="action disabled"><span class="code">04 / Node</span><span class="title">Home Server</span><span class="desc">Reserved for the dedicated Atlas home node.</span></div>
+        </div>
+      </section>
+
+      <div class="footer">AtlasPad-01 · legacy display node<br>Full Atlas remains unchanged; this surface is a compatibility client for the 2013 iPad.</div>
+    </main>
+  </div>
   <script>
     (function(){
-      function pad(n){return n<10?'0'+n:''+n;}
-      function tick(){var d=new Date();document.getElementById('time').innerHTML=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());document.getElementById('date').innerHTML=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' // LOCAL';}
-      tick();setInterval(tick,1000);
+      function p(n){return n<10?'0'+n:String(n)}
+      function tick(){var d=new Date();document.getElementById('time').innerHTML=p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());document.getElementById('date').innerHTML=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' / local'}
+      tick();setInterval(tick,1000)
     }());
   </script>
 </body>
