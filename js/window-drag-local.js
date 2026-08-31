@@ -1,5 +1,5 @@
-// Atlas v0.16.9-r21 · local draggable windows.
-// Binds only to window headers. No document-level pointerdown interception.
+// Atlas local draggable windows.
+// Window headers move their surface directly in viewport coordinates. No grid/snap layer.
 (function(root){
   'use strict';
 
@@ -7,16 +7,32 @@
   const handleSel='.modal-head,.atlas-note-editor-head,.atlas-vnote-head,.atlas-command-input-row,[data-atlas-window-handle]';
   const interactiveSel='button,a,input,textarea,select,summary,details,[contenteditable="true"],[data-no-window-drag]';
   const margin=8;
+  let front=20;
 
-  function numeric(el,name){return parseFloat(el.style.getPropertyValue(name))||0}
-
-  function clamp(win,x,y,baseLeft,baseTop,width,height){
-    const maxX=Math.max(margin-baseLeft,innerWidth-margin-width-baseLeft);
-    const maxY=Math.max(margin-baseTop,innerHeight-margin-Math.min(height,innerHeight-margin*2)-baseTop);
+  function clampPoint(x,y,width,height){
     return {
-      x:Math.min(Math.max(x,margin-baseLeft),maxX),
-      y:Math.min(Math.max(y,margin-baseTop),maxY)
+      x:Math.min(Math.max(x,margin),Math.max(margin,innerWidth-margin-width)),
+      y:Math.min(Math.max(y,margin),Math.max(margin,innerHeight-margin-height))
     };
+  }
+
+  function promote(win){
+    front+=1;
+    win.style.zIndex=String(front);
+  }
+
+  function anchorToViewport(win,rect){
+    // Remove centring/inset constraints once the user takes control of the window.
+    win.style.setProperty('position','fixed','important');
+    win.style.setProperty('left',rect.left+'px','important');
+    win.style.setProperty('top',rect.top+'px','important');
+    win.style.setProperty('right','auto','important');
+    win.style.setProperty('bottom','auto','important');
+    win.style.setProperty('margin','0','important');
+    win.style.setProperty('transform','none','important');
+    win.style.setProperty('translate','none','important');
+    win.style.width=rect.width+'px';
+    win.style.height=rect.height+'px';
   }
 
   function bind(win){
@@ -30,17 +46,17 @@
       if(e.button!==undefined&&e.button!==0)return;
       if(e.target.closest?.(interactiveSel))return;
       const rect=win.getBoundingClientRect();
-      const startX=numeric(win,'--atlas-window-x'),startY=numeric(win,'--atlas-window-y');
-      const baseLeft=rect.left-startX,baseTop=rect.top-startY;
-      const state={id:e.pointerId,sx:e.clientX,sy:e.clientY,x:startX,y:startY,baseLeft,baseTop,width:rect.width,height:rect.height};
+      anchorToViewport(win,rect);
+      promote(win);
+      const state={id:e.pointerId,dx:e.clientX-rect.left,dy:e.clientY-rect.top,width:rect.width,height:rect.height};
       win.classList.add('atlas-window-dragging');
       try{handle.setPointerCapture(e.pointerId)}catch(_){ }
 
       const move=ev=>{
         if(ev.pointerId!==state.id)return;
-        const next=clamp(win,state.x+ev.clientX-state.sx,state.y+ev.clientY-state.sy,state.baseLeft,state.baseTop,state.width,state.height);
-        win.style.setProperty('--atlas-window-x',Math.round(next.x)+'px');
-        win.style.setProperty('--atlas-window-y',Math.round(next.y)+'px');
+        const next=clampPoint(ev.clientX-state.dx,ev.clientY-state.dy,state.width,state.height);
+        win.style.setProperty('left',next.x.toFixed(2)+'px','important');
+        win.style.setProperty('top',next.y.toFixed(2)+'px','important');
         ev.preventDefault();
       };
       const end=ev=>{
@@ -64,9 +80,6 @@
   }
 
   scan();
-  // Dynamic Atlas windows are mounted as top-level overlays. Watching only direct
-  // body additions catches those lifecycle mounts without observing every DOM edit
-  // inside editors, notes, widgets and the network graph.
   const observer=new MutationObserver(records=>{
     for(const record of records){
       for(const node of record.addedNodes||[])if(node.nodeType===1)scan(node);
