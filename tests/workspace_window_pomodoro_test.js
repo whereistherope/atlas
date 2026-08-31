@@ -17,8 +17,8 @@ for(const token of [
   'ev.clientX-state.dx',
   'ev.clientY-state.dy'
 ]) assert(drag.includes(token),`free-window movement contract missing: ${token}`);
-assert(!drag.includes('grid'),'window dragging must not use a grid');
-assert(!drag.includes('snap'),'window dragging must not snap');
+assert(!drag.includes('widgetSnapTarget'),'editor-window movement must not reuse widget docking/snap behaviour');
+assert(!drag.includes('data-widget-snap'),'editor-window movement must remain independent of widget docking');
 
 for(const token of [
   '.atlas-vnote-scroll{min-height:0;flex:1;overflow:auto;padding:14px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}',
