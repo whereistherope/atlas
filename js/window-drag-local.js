@@ -6,8 +6,9 @@
   const windowSel='.modal,.atlas-note-editor-sheet,.atlas-vnote-sheet,.atlas-command-shell';
   const handleSel='.modal-head,.atlas-note-editor-head,.atlas-vnote-head,.atlas-command-input-row,[data-atlas-window-handle]';
   const interactiveSel='button,a,input,textarea,select,summary,details,[contenteditable="true"],[data-no-window-drag]';
+  const hostSel='.overlay,.atlas-note-editor-overlay,.atlas-vnote-overlay';
   const margin=8;
-  let front=20;
+  let front=100200;
 
   function clampPoint(x,y,width,height){
     return {
@@ -18,7 +19,9 @@
 
   function promote(win){
     front+=1;
-    win.style.zIndex=String(front);
+    const host=win.closest(hostSel);
+    if(host)host.style.setProperty('z-index',String(front),'important');
+    win.style.setProperty('z-index','2','important');
   }
 
   function anchorToViewport(win,rect){
