@@ -67,8 +67,7 @@
 
   function installMenuItem(){
     if(document.querySelector('[data-widget-toggle="pomodoro"]'))return;
-    const existing=document.querySelector('[data-widget-toggle]');
-    const panel=existing?.parentElement;
+    const panel=document.getElementById('utilityRail');
     if(!panel)return;
     const button=document.createElement('button');button.type='button';button.className='system-item';button.dataset.widgetToggle='pomodoro';button.textContent='Pomodoro';panel.appendChild(button);
   }
@@ -94,6 +93,8 @@
   });
 
   installMenuItem();
+  setTimeout(installMenuItem,0);
+  root.addEventListener('load',installMenuItem,{once:true});
   setInterval(paint,250);
   root.AtlasPomodoro=Object.freeze({start,pause,reset,switchMode,getState:()=>({...timer,remaining:remaining()})});
 })(window);
