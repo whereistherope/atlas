@@ -40,8 +40,10 @@
 
 /* Project windows use the same rule: the rich text work surfaces absorb additional room. */
 #projectOverlay .modal{display:flex;flex-direction:column}
-#projectOverlay #editorPane{flex:1;min-height:0;overflow:auto}
-#projectOverlay .atlas-project-workspace .project-editor{min-height:0}
+#projectOverlay #editorPane{display:flex;flex-direction:column;flex:1;min-height:0;overflow:auto}
+#projectOverlay .atlas-project-workspace{display:flex;flex-direction:column;flex:1;min-height:100%}
+#projectOverlay .atlas-project-workspace>.editor-section-body{display:flex;flex-direction:column;flex:1;min-height:0}
+#projectOverlay .atlas-project-workspace .project-editor{display:flex!important;flex-direction:column;flex:1;min-height:0}
 #projectOverlay .atlas-project-rich-field{display:flex;flex-direction:column;min-height:120px;flex:1 1 180px}
 #projectOverlay .atlas-project-rich-body{flex:1 1 auto;min-height:80px;max-height:none}
 
