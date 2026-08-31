@@ -17,20 +17,35 @@
 .atlas-vnote-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);flex:0 0 auto}
 .atlas-vnote-head strong{display:block;margin-top:3px;font-size:15px;color:var(--ink)}
 .atlas-vnote-head-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-.atlas-vnote-scroll{min-height:0;flex:1;overflow:auto;padding:14px;-webkit-overflow-scrolling:touch}
-.atlas-vnote-fields{display:grid;grid-template-columns:minmax(180px,2fr) minmax(120px,1fr) minmax(150px,1fr) minmax(150px,1fr);gap:9px;margin-bottom:10px}
+.atlas-vnote-scroll{min-height:0;flex:1;overflow:auto;padding:14px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
+.atlas-vnote-fields{display:grid;grid-template-columns:minmax(180px,2fr) minmax(120px,1fr) minmax(150px,1fr) minmax(150px,1fr);gap:9px;margin-bottom:10px;flex:0 0 auto}
 .atlas-vnote-fields-bottom{grid-template-columns:minmax(220px,2fr) minmax(150px,1fr);margin-top:10px}
 .atlas-vnote-fields label{display:flex;flex-direction:column;gap:5px;font:700 9px/1.2 var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
 .atlas-vnote-fields input,.atlas-vnote-fields select{width:100%;min-height:38px;box-sizing:border-box;font-family:var(--atlas-ui-font,Inter,system-ui,sans-serif);color:var(--ink)}
-.atlas-vnote-toolbar{display:flex;gap:5px;align-items:center;flex-wrap:wrap;position:sticky;top:-14px;z-index:4;padding:8px 0;border-bottom:1px solid var(--line)}
+.atlas-vnote-toolbar{display:flex;gap:5px;align-items:center;flex-wrap:wrap;position:sticky;top:-14px;z-index:4;padding:8px 0;border-bottom:1px solid var(--line);flex:0 0 auto}
 .atlas-vnote-toolbar button,.atlas-table-menu summary{min-height:34px;padding:6px 9px;border:1px solid var(--line);border-radius:6px;background:transparent;color:var(--ink);font:700 10px/1 var(--atlas-ui-font,Inter,system-ui,sans-serif);cursor:pointer;box-sizing:border-box}
 .atlas-vnote-toolbar button.active{background:rgba(127,127,127,.16);border-color:currentColor}
-.atlas-vnote-body{display:block;width:100%;min-height:240px;overflow:auto;margin-top:10px;padding:16px;border:1px solid var(--line);border-radius:8px;color:var(--ink);font:400 15px/1.65 var(--atlas-ui-font,Inter,system-ui,sans-serif);outline:none;box-sizing:border-box;cursor:text}
+.atlas-vnote-body{display:block;width:100%;flex:1 1 240px;min-height:120px;max-height:none;overflow:auto;margin-top:10px;padding:16px;border:1px solid var(--line);border-radius:8px;color:var(--ink);font:400 15px/1.65 var(--atlas-ui-font,Inter,system-ui,sans-serif);outline:none;box-sizing:border-box;cursor:text}
 .atlas-vnote-body:empty:before{content:attr(data-placeholder);color:var(--muted);opacity:.78;pointer-events:none}
-.atlas-vnote-status{min-height:18px;margin-top:9px;font:700 9px/1.4 var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);color:var(--muted)}
+.atlas-vnote-status{min-height:18px;margin-top:9px;font:700 9px/1.4 var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);color:var(--muted);flex:0 0 auto}
 .atlas-table-menu{position:relative;flex:0 0 auto}.atlas-table-menu summary{display:flex;align-items:center;list-style:none;white-space:nowrap}.atlas-table-menu summary::-webkit-details-marker{display:none}
 .atlas-table-menu-panel{position:absolute;z-index:100120;top:calc(100% + 6px);right:0;display:grid;min-width:168px;padding:5px;border:1px solid var(--line);border-radius:8px;background:var(--paper,var(--panel))}
 .atlas-table-menu-panel button{width:100%;min-height:34px;text-align:left;border:0!important;border-radius:6px!important}
+
+/* Existing markdown-note editor: the compose/preview surface owns spare window height. */
+.atlas-note-editor-sheet{display:flex;flex-direction:column;overflow:hidden}
+.atlas-note-editor-scroll{display:flex;flex-direction:column;flex:1;min-height:0;overflow:auto}
+.atlas-note-compose{display:flex;flex:1 1 240px;min-height:120px}
+.atlas-note-compose textarea,.atlas-note-preview{flex:1 1 auto;width:100%;height:auto;min-height:120px;max-height:none;box-sizing:border-box}
+
+/* Project windows use the same rule: the rich text work surfaces absorb additional room. */
+#projectOverlay .modal{display:flex;flex-direction:column}
+#projectOverlay #editorPane{display:flex;flex-direction:column;flex:1;min-height:0;overflow:auto}
+#projectOverlay .atlas-project-workspace{display:flex;flex-direction:column;flex:1;min-height:100%}
+#projectOverlay .atlas-project-workspace>.editor-section-body{display:flex;flex-direction:column;flex:1;min-height:0}
+#projectOverlay .atlas-project-workspace .project-editor{display:flex!important;flex-direction:column;flex:1;min-height:0}
+#projectOverlay .atlas-project-rich-field{display:flex;flex-direction:column;min-height:120px;flex:1 1 180px}
+#projectOverlay .atlas-project-rich-body{flex:1 1 auto;min-height:80px;max-height:none}
 
 /* Desktop editors are work surfaces, not fixed cards. */
 @media(min-width:761px){
@@ -39,6 +54,6 @@
 }
 @media(max-width:760px){
   .atlas-vnote-sheet{top:8px;left:8px;transform:none;width:calc(100vw - 16px);height:calc(100dvh - 16px);min-width:0;min-height:0;max-width:none;max-height:none;border-radius:8px}
-  .atlas-vnote-head{align-items:flex-start}.atlas-vnote-head-actions{justify-content:flex-end}.atlas-vnote-scroll{padding:10px}.atlas-vnote-fields{grid-template-columns:1fr 1fr}.atlas-vnote-fields-bottom{grid-template-columns:1fr}.atlas-vnote-toolbar{top:-10px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:9px;-webkit-overflow-scrolling:touch}.atlas-vnote-toolbar button{flex:0 0 auto}.atlas-vnote-body{min-height:220px;font-size:16px;padding:14px}.atlas-table-menu-panel{position:fixed;top:116px;right:14px;left:auto;min-width:190px}
+  .atlas-vnote-head{align-items:flex-start}.atlas-vnote-head-actions{justify-content:flex-end}.atlas-vnote-scroll{padding:10px}.atlas-vnote-fields{grid-template-columns:1fr 1fr}.atlas-vnote-fields-bottom{grid-template-columns:1fr}.atlas-vnote-toolbar{top:-10px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:9px;-webkit-overflow-scrolling:touch}.atlas-vnote-toolbar button{flex:0 0 auto}.atlas-vnote-body{min-height:120px;font-size:16px;padding:14px}.atlas-table-menu-panel{position:fixed;top:116px;right:14px;left:auto;min-width:190px}
   .atlas-editor-prefs{margin-left:0;padding-left:4px;border-left:0;flex:0 0 auto}.atlas-editor-prefs label{font-size:7px}.atlas-editor-prefs select{min-height:34px;font-size:10px}.atlas-note-editor-sheet,.atlas-vnote-sheet,.overlay .modal{resize:none!important}
 }
