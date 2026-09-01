@@ -1,0 +1,7 @@
+/* Destructive item actions live at the lower-left edge of edit surfaces. */
+.atlas-item-delete-footer{display:flex;align-items:center;justify-content:flex-start;gap:10px;margin-top:14px;padding-top:10px;border-top:1px solid color-mix(in srgb,var(--line) 68%,transparent)}
+.atlas-item-delete-footer .btn.danger{margin-right:auto}
+.atlas-project-delete-footer{justify-content:space-between}
+.atlas-project-delete-footer [data-ed-action="save-project-detail"]{margin-left:auto}
+.atlas-note-delete-footer{min-height:34px}
+@media(max-width:700px){.atlas-item-delete-footer{margin-top:12px;padding-top:9px}.atlas-project-delete-footer{gap:8px;flex-wrap:wrap}.atlas-project-delete-footer [data-ed-action="save-project-detail"]{margin-left:0}}
