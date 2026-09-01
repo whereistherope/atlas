@@ -1,18 +1,20 @@
-// Atlas v0.16.9-r41: one-time Atlas Cloud setup controls in the existing Sync widget.
+// Atlas v0.16.9-r42: one-time Atlas Cloud setup controls in the existing Sync widget.
 (function(root){
   'use strict';
   if(typeof syncWidget!=='function'||!root.AtlasSyncRecovery)return;
   const baseSyncWidget=syncWidget;
   const escText=value=>typeof esc==='function'?esc(String(value??'')):String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  let uiError='';
 
   function recoveryBlock(){
     const sync=root.AtlasCloudSync?.getStatus?.()||{},recovery=root.AtlasSyncRecovery?.status?.()||{},last=recovery.lastResult||null;
-    if(!sync.recoveryRequired&&!recovery.prepared&&!last?.canonicalEpoch)return'';
+    if(!sync.recoveryRequired&&!recovery.prepared&&!last?.canonicalEpoch&&!uiError)return'';
     let detail='Atlas Cloud has not been initialised with a canonical Atlas state yet. Sync is paused until you establish it once from the current good copy.';
     if(recovery.prepared&&last?.ok)detail=`Setup preview: ${Number(last.localCount||0)} records in this browser copy; ${Number(last.remoteCount||0)} historical records currently in Atlas Cloud. Both copies will be preserved before setup.`;
     if(last?.canonicalEpoch)detail=`Atlas Cloud ready · ${Number(last.records||0)} records. This browser is now an ordinary client of the same Atlas as every other signed-in device.`;
     if(last?.error)detail=escText(last.error);
-    return `<div class="cloud-backup atlas-canonical-recovery"><div class="cloud-result ${last?.error?'error':''}"><strong>${last?.canonicalEpoch?'ATLAS CLOUD READY':'ATLAS CLOUD SETUP REQUIRED'}</strong><span>${detail}</span></div>${last?.canonicalEpoch?'':`<div class="cloud-backup-summary"><span>This is a one-time Atlas Cloud initialisation, not a master-device setup.</span><span>Run it only in a browser whose local Atlas contains the current data you want Atlas to contain.</span><span>Atlas preserves the existing cloud copy and this local setup copy before changing Atlas Cloud.</span><span>After setup, desktop, iPad, phone and other browsers are equal clients of one Atlas.</span></div><div class="utility-actions-row"><button type="button" data-sync-recovery="preview">Preview Atlas Cloud setup</button>${recovery.prepared?'<button type="button" data-sync-recovery="confirm">Establish Atlas Cloud from this copy</button>':''}</div>`}</div>`;
+    if(uiError)detail=escText(uiError);
+    return `<div class="cloud-backup atlas-canonical-recovery"><div class="cloud-result ${last?.error||uiError?'error':''}"><strong>${last?.canonicalEpoch?'ATLAS CLOUD READY':'ATLAS CLOUD SETUP REQUIRED'}</strong><span>${detail}</span></div>${last?.canonicalEpoch?'':`<div class="cloud-backup-summary"><span>This is a one-time Atlas Cloud initialisation, not a master-device setup.</span><span>Run it only in a browser whose local Atlas contains the current data you want Atlas to contain.</span><span>Atlas preserves the existing cloud copy and this local setup copy before changing Atlas Cloud.</span><span>After setup, desktop, iPad, phone and other browsers are equal clients of one Atlas.</span></div><div class="utility-actions-row"><button type="button" data-sync-recovery="preview">Preview Atlas Cloud setup</button>${recovery.prepared?'<button type="button" data-sync-recovery="confirm">Establish Atlas Cloud from this copy</button>':''}</div>`}</div>`;
   }
 
   syncWidget=function(){
@@ -20,15 +22,31 @@
     const marker='</div></section>',at=html.lastIndexOf(marker);return at>=0?html.slice(0,at)+block+html.slice(at):html;
   };
 
+  async function ensurePreviewAccess(){
+    const cloud=root.AtlasCloud,status=cloud?.getStatus?.()||{};
+    if(!status.authenticated)return true; // preview() will return the canonical sign-in error below.
+    if(status.verified)return true;
+    if(typeof cloud?.testAccess!=='function')return true;
+    const result=await cloud.testAccess();
+    if(result?.ok)return true;
+    uiError=String(result?.error||'Atlas Cloud access could not be verified.');
+    return false;
+  }
+
   document.addEventListener('click',async event=>{
     const button=event.target.closest?.('[data-sync-recovery]');if(!button)return;
-    event.preventDefault();event.stopPropagation();button.disabled=true;
+    event.preventDefault();event.stopPropagation();button.disabled=true;uiError='';
     try{
-      if(button.dataset.syncRecovery==='preview')await root.AtlasSyncRecovery.preview();
-      else if(button.dataset.syncRecovery==='confirm'){
+      if(button.dataset.syncRecovery==='preview'){
+        if(!await ensurePreviewAccess())return;
+        const result=await root.AtlasSyncRecovery.preview();
+        if(!result?.ok)uiError=String(result?.error||'Atlas Cloud setup preview failed.');
+      }else if(button.dataset.syncRecovery==='confirm'){
+        if(!await ensurePreviewAccess())return;
         const ok=root.confirm?.('Establish Atlas Cloud from the Atlas copy currently open in this browser? Atlas will preserve both the existing cloud copy and this local copy first. This does not make this device a master; it establishes the one cloud-backed Atlas used by every client.');if(!ok)return;
-        const result=await root.AtlasSyncRecovery.confirm();if(result?.ok)await root.AtlasCloudSync?.retryAfterRecovery?.();
+        const result=await root.AtlasSyncRecovery.confirm();if(result?.ok)await root.AtlasCloudSync?.retryAfterRecovery?.();else if(result?.error)uiError=String(result.error);
       }
-    }finally{if(typeof renderHome==='function'&&state?.settings?.activeTab==='home')renderHome()}
+    }catch(error){uiError=String(error?.message||'Atlas Cloud setup failed.');}
+    finally{if(typeof renderHome==='function'&&state?.settings?.activeTab==='home')renderHome()}
   },true);
 })(window);
