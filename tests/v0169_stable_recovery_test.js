@@ -66,10 +66,11 @@ assert(scriptFiles.includes('./js/sync-recovery-ui.js'),'Shared Atlas recovery c
 assert(!bootstrap.includes('SYNC_V2_ENABLED=false'),'emergency global sync pause must remain retired');
 assert(!scriptFiles.includes('./js/sync-v2.js'),'old v2 sync runtime must not boot');
 assert(!scriptFiles.includes('./js/window-drag.js'),'rejected global movable-window runtime must remain disabled');
+assert(!scriptFiles.includes('./js/network-overview.js'),'retired network minimap runtime must remain disabled');
 
 assert(productionJs.includes('[data-atlas-aligned-capture]'),'capture launcher handoff behaviour missing');
-assert(productionJs.includes('AtlasNetworkOverview'),'network overview runtime contract missing');
-assert(productionCss.includes('.atlas-network-minimap'),'network overview presentation missing');
+assert(productionJs.includes('AtlasRuntimeTelemetry'),'runtime telemetry contract missing');
+assert(productionCss.includes('.atlas-runtime-telemetry'),'runtime telemetry presentation missing');
 assert(productionCss.includes('#atlasCaptureLauncher'),'production theme must style Capture material');
 assert(productionCss.includes('backdrop-filter:blur(3px)!important'),'approved restrained 3px frost must remain');
 assert(productionCss.includes('box-shadow:none!important'),'decorative pane shadows must remain removed');
