@@ -24,6 +24,13 @@
     win.style.setProperty('z-index','2','important');
   }
 
+  function resetPlacement(win,{preserveSize=true}={}){
+    if(!win)return;
+    ['position','left','top','right','bottom','margin','transform','translate','z-index','--atlas-window-x','--atlas-window-y'].forEach(prop=>win.style.removeProperty(prop));
+    if(!preserveSize){win.style.removeProperty('width');win.style.removeProperty('height')}
+    const host=win.closest(hostSel);if(host)host.style.removeProperty('z-index');
+  }
+
   function anchorToViewport(win,rect){
     // Remove centring/inset constraints once the user takes control of the window.
     win.style.setProperty('position','fixed','important');
@@ -90,5 +97,5 @@
   });
   observer.observe(document.body,{childList:true});
 
-  root.AtlasWindowDragLocal=Object.freeze({scan,bind});
+  root.AtlasWindowDragLocal=Object.freeze({scan,bind,resetPlacement});
 })(window);
