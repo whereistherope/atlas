@@ -1,4 +1,20 @@
 /* Atlas v0.14.0 · structured document affordances */
+.atlas-table-wrap{display:block;width:100%;max-width:100%;overflow-x:auto;margin:8px 0 12px;-webkit-overflow-scrolling:touch}
+.atlas-vnote-body .atlas-table-wrap table,.atlas-project-rich-body .atlas-table-wrap table{width:100%;border-collapse:collapse;border-spacing:0;table-layout:fixed;background:transparent;color:inherit}
+.atlas-vnote-body .atlas-table-wrap th,.atlas-vnote-body .atlas-table-wrap td,.atlas-project-rich-body .atlas-table-wrap th,.atlas-project-rich-body .atlas-table-wrap td{
+  min-width:110px;
+  min-height:38px;
+  padding:9px 10px;
+  border:1px solid color-mix(in srgb,var(--atlas-border) 46%,transparent);
+  vertical-align:top;
+  text-align:left;
+  overflow-wrap:anywhere;
+  box-sizing:border-box;
+}
+.atlas-vnote-body .atlas-table-wrap th,.atlas-project-rich-body .atlas-table-wrap th{font-weight:720;background:color-mix(in srgb,var(--atlas-select-bg) 58%,transparent)}
+.atlas-vnote-body .atlas-table-wrap td,.atlas-project-rich-body .atlas-table-wrap td{background:color-mix(in srgb,var(--atlas-editor-field-fill,var(--paper2)) 70%,transparent)}
+.atlas-vnote-body .atlas-table-wrap td:empty:after,.atlas-project-rich-body .atlas-table-wrap td:empty:after{content:'\00a0';opacity:0}
+.atlas-vnote-body .atlas-table-wrap th:focus,.atlas-vnote-body .atlas-table-wrap td:focus,.atlas-project-rich-body .atlas-table-wrap th:focus,.atlas-project-rich-body .atlas-table-wrap td:focus{outline:1px solid color-mix(in srgb,var(--atlas-accent) 52%,transparent);outline-offset:-2px}
 .atlas-vnote-body table,.atlas-project-rich-body table{table-layout:fixed}
 .atlas-vnote-body th,.atlas-vnote-body td,.atlas-project-rich-body th,.atlas-project-rich-body td{overflow-wrap:anywhere}
 .atlas-vnote-body [data-indent],.atlas-project-rich-body [data-indent]{transition:margin-left .12s ease}
