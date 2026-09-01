@@ -13,7 +13,7 @@
 .atlas-network-minimap .mini-node{fill:var(--muted);opacity:.82;stroke:color-mix(in srgb,var(--bg) 72%,transparent);stroke-width:.7;vector-effect:non-scaling-stroke}
 .atlas-network-minimap .mini-node.level-2{fill:var(--ink);opacity:.96}
 .atlas-network-minimap .mini-node.level-3{opacity:.9}
-.atlas-network-minimap .mini-label{fill:var(--ink);opacity:.82;font:700 8px/1 var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);letter-spacing:.04em;pointer-events:none}
+.atlas-network-minimap .mini-label{fill:var(--ink);opacity:.84;font:700 22px/1 var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);letter-spacing:.04em;pointer-events:none}
 .atlas-network-minimap .mini-viewport{fill:color-mix(in srgb,var(--ink) 7%,transparent);stroke:var(--ink);stroke-width:1.6;opacity:.96;cursor:grab;pointer-events:all}
 .atlas-network-minimap .mini-viewport:hover{fill:color-mix(in srgb,var(--ink) 12%,transparent)}
 .atlas-network-minimap .mini-viewport.is-dragging{cursor:grabbing;fill:color-mix(in srgb,var(--ink) 15%,transparent)}
@@ -23,5 +23,5 @@
 .atlas-network-minimap.is-collapsed [data-mini-toggle]{min-width:30px}
 .split-mode .atlas-network-minimap{left:10px;bottom:10px;width:244px;height:156px}
 .split-mode .atlas-network-minimap.is-collapsed{width:40px;height:32px}
-@media(max-width:900px){.atlas-network-minimap{width:236px;height:152px;left:10px;bottom:10px}.atlas-network-minimap.is-collapsed{width:40px;height:32px}.atlas-network-minimap .mini-label{font-size:7px}}
-@media(max-width:700px){.atlas-network-minimap{width:190px;height:124px;left:9px;bottom:9px;opacity:.92}.atlas-network-minimap.is-collapsed{width:40px;height:32px}.atlas-network-minimap-head{height:29px}.atlas-network-minimap-canvas{height:calc(100% - 29px);padding:6px}.atlas-network-minimap-head>span{font-size:7px}.atlas-network-minimap-head button{height:22px}}
+@media(max-width:900px){.atlas-network-minimap{width:236px;height:152px;left:10px;bottom:10px}.atlas-network-minimap.is-collapsed{width:40px;height:32px}.atlas-network-minimap .mini-label{font-size:20px}}
+@media(max-width:700px){.atlas-network-minimap{width:190px;height:124px;left:9px;bottom:9px;opacity:.92}.atlas-network-minimap.is-collapsed{width:40px;height:32px}.atlas-network-minimap-head{height:29px}.atlas-network-minimap-canvas{height:calc(100% - 29px);padding:6px}.atlas-network-minimap-head>span{font-size:7px}.atlas-network-minimap-head button{height:22px}.atlas-network-minimap .mini-label{font-size:18px}}
