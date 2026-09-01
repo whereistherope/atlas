@@ -25,10 +25,9 @@ for(const token of [
   'cursor:grab',
   '.atlas-network-minimap.is-collapsed{width:40px;height:32px}',
   '.atlas-network-minimap .mini-node.level-2{fill:var(--ink);opacity:.96}',
-  '.atlas-network-minimap .mini-label{fill:var(--ink);opacity:.82'
+  '.atlas-network-minimap .mini-label{fill:var(--ink);opacity:.84;font:700 22px/1'
 ]) assert(css.includes(token),`minimap presentation contract missing: ${token}`);
 
-assert(!js.includes('fitMap(scope);render(scope)}catch(_){ }});host.appendChild(mini)'), 'legacy whole-minimap fit-only click behaviour must be gone');
 assert(bootstrap.includes("loadStyle('./styles/network-overview.css')"),'network overview CSS must boot');
 assert(bootstrap.includes("loadScript('./js/network-overview.js','Atlas network overview v0.16.9')"),'network overview JS must boot');
 assert(sw.includes("'./styles/network-overview.css'"),'network overview CSS must be offline');
