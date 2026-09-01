@@ -9,6 +9,7 @@
   const pad=n=>String(n).padStart(2,'0');
   const clock=()=>{const d=new Date();return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`};
   const safe=value=>String(value??'').replace(/[\r\n\t]+/g,' ').replace(/[^\x20-\x7E]/g,'').slice(0,120);
+  const syncDisplay=detail=>detail?.recoveryRequired||detail?.state==='RECOVERY REQUIRED'?'ATLAS CLOUD SETUP REQUIRED':String(detail?.state||'STATE');
   function graphHost(){const svg=document.getElementById('network');return svg?.closest?.('.network-split-map')||svg?.closest?.('.map-wrap')||null}
   function ensureHost(){
     const target=graphHost();if(!target)return null;
@@ -39,18 +40,18 @@
     const s=typeof state==='object'&&state?state:null;
     const cloud=root.AtlasCloud?.getStatus?.()||null,sync=root.AtlasCloudSync?.getStatus?.()||null,relay=root.AtlasRelayTransport?.getState?.()||null;
     const view=s?.settings?.activeTab||'home',windows=document.querySelectorAll('.atlas-window-movable,.atlas-vnote-sheet,.atlas-note-editor-sheet,.modal').length;
-    const snap=[navigator.onLine!==false?'online':'offline',view,cloud?.state||'',sync?.ready?'ready':sync?.recoveryRequired?'recovery':'local',relay?.state||'',windows,counts(),camera()].join('|');
+    const snap=[navigator.onLine!==false?'online':'offline',view,cloud?.state||'',sync?.ready?'ready':sync?.recoveryRequired?'setup':'local',relay?.state||'',windows,counts(),camera()].join('|');
     if(snap===lastSnapshot)return;lastSnapshot=snap;
     emit('SYS',`${navigator.onLine!==false?'ONLINE':'OFFLINE'} · view:${view} · windows:${windows}`);
     if(counts())emit('STATE',counts());
     if(camera())emit('GRAPH',camera());
     if(cloud?.state)emit('CLOUD',`${cloud.state}${cloud.verified?' · verified':''}`,{tone:cloud.state==='ERROR'?'warn':''});
-    if(sync)emit('SYNC',sync.recoveryRequired?'RECOVERY REQUIRED':sync.ready?'READY':'LOCAL',{tone:sync.recoveryRequired?'warn':''});
+    if(sync)emit('SYNC',sync.recoveryRequired?'ATLAS CLOUD SETUP REQUIRED':sync.ready?'READY':'LOCAL',{tone:sync.recoveryRequired?'warn':''});
     if(relay?.state)emit('RELAY',relay.state,{tone:relay.state==='OFFLINE'?'warn':''});
   }
 
   // Listen to the real subsystem status events already emitted by Atlas.
-  root.addEventListener('atlascanonicalstatus',event=>{const d=event.detail||{};emit('SYNC',`${d.state||'STATE'}${Number.isFinite(d.records)?` · records:${d.records}`:''}`,{tone:d.state==='ERROR'||d.recoveryRequired?'warn':''})});
+  root.addEventListener('atlascanonicalstatus',event=>{const d=event.detail||{};emit('SYNC',`${syncDisplay(d)}${Number.isFinite(d.records)?` · records:${d.records}`:''}`,{tone:d.state==='ERROR'||d.recoveryRequired?'warn':''})});
   root.addEventListener('atlascloudstatus',event=>{const d=event.detail||{};emit('CLOUD',`${d.state||'STATE'}${d.verified?' · verified':''}`,{tone:d.state==='ERROR'?'warn':''})});
   root.addEventListener('atlasrelaystatus',event=>{const d=event.detail||{};emit('RELAY',`${d.state||'STATE'}${d.result?.received?` · received:${d.result.received}`:''}`,{tone:d.state==='OFFLINE'?'warn':''})});
   root.addEventListener('atlasrelaycontent',event=>{const d=event.detail||{};emit('INGRESS',d.rejected?'relay rejected':d.mutated?'relay applied':'relay checked',{tone:d.rejected?'warn':''})});
@@ -69,5 +70,5 @@
 
   const start=()=>{ensureHost();emit('BOOT','runtime telemetry attached',{force:true});sample();setInterval(()=>{if(document.visibilityState!=='hidden')sample()},1800)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-  root.AtlasRuntimeTelemetry=Object.freeze({version:'0.16.9-r1',emit,sample});
+  root.AtlasRuntimeTelemetry=Object.freeze({version:'0.16.9-r2',emit,sample});
 })(window);
