@@ -21,6 +21,6 @@ for(const token of [
   "table.append(thead,tbody);wrap.append(table);insertNode(wrap)"
 ]) assert(js.includes(token),`table insertion contract missing: ${token}`);
 
-assert(bootstrap.includes("const BUILD='0169r35'"),'r35 bootstrap expected');
-assert(sw.includes("atlas-shell-0.16.9-r35"),'r35 shell expected');
+assert(bootstrap.includes("const BUILD='0169r36'"),'r36 bootstrap expected');
+assert(sw.includes("atlas-shell-0.16.9-r36"),'r36 shell expected');
 console.log('Atlas visual table contract: PASS');

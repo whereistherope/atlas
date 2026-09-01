@@ -2,6 +2,7 @@ const fs=require('fs');
 const assert=require('assert');
 const read=f=>fs.readFileSync(f,'utf8');
 const drag=read('js/window-drag-local.js');
+const capture=read('js/rich-note-capture.js');
 const ux=read('styles/editor-ux.css');
 const pomo=read('js/pomodoro-widget.js');
 const pomoCss=read('styles/pomodoro-widget.css');
@@ -15,10 +16,20 @@ for(const token of [
   "win.style.setProperty('transform','none','important')",
   "win.style.setProperty('translate','none','important')",
   'ev.clientX-state.dx',
-  'ev.clientY-state.dy'
+  'ev.clientY-state.dy',
+  'function resetPlacement',
+  "'--atlas-window-x','--atlas-window-y'",
+  'root.AtlasWindowDragLocal=Object.freeze({scan,bind,resetPlacement})'
 ]) assert(drag.includes(token),`free-window movement contract missing: ${token}`);
 assert(!drag.includes('widgetSnapTarget'),'editor-window movement must not reuse widget docking/snap behaviour');
 assert(!drag.includes('data-widget-snap'),'editor-window movement must remain independent of widget docking');
+for(const token of [
+  'function centreVisualEditor()',
+  "document.querySelector('#atlasVisualNoteEditor .atlas-vnote-sheet')",
+  'root.AtlasWindowDragLocal?.resetPlacement?.(sheet,{preserveSize:true})',
+  'root.AtlasMarkdown.openNote(draft.id);',
+  'centreVisualEditor();'
+]) assert(capture.includes(token),`centred capture contract missing: ${token}`);
 
 for(const token of [
   '.atlas-vnote-scroll{min-height:0;flex:1;overflow:auto;padding:14px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}',
@@ -42,7 +53,7 @@ assert(bootstrap.includes("loadStyle('./styles/pomodoro-widget.css')"),'Pomodoro
 assert(bootstrap.includes("loadScript('./js/pomodoro-widget.js','Atlas Pomodoro widget')"),'Pomodoro JS must boot');
 assert(sw.includes("'./styles/pomodoro-widget.css'"),'Pomodoro CSS must be offline');
 assert(sw.includes("'./js/pomodoro-widget.js'"),'Pomodoro JS must be offline');
-assert(bootstrap.includes("const BUILD='0169r35'"),'r35 bootstrap expected');
-assert(sw.includes("atlas-shell-0.16.9-r35"),'r35 shell expected');
+assert(bootstrap.includes("const BUILD='0169r36'"),'r36 bootstrap expected');
+assert(sw.includes("atlas-shell-0.16.9-r36"),'r36 shell expected');
 
-console.log('Atlas free-window / responsive-editor / Pomodoro contracts: PASS');
+console.log('Atlas free-window / centred-capture / responsive-editor / Pomodoro contracts: PASS');

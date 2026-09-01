@@ -29,6 +29,11 @@
     };
   }
 
+  function centreVisualEditor(){
+    const sheet=document.querySelector('#atlasVisualNoteEditor .atlas-vnote-sheet');
+    root.AtlasWindowDragLocal?.resetPlacement?.(sheet,{preserveSize:true});
+  }
+
   function openRichCapture(type='note', areaId=''){
     if(legacyTypes.has(type)) return legacyOpenCapture?.(type, areaId);
     if(!root.AtlasMarkdown?.openNote) return legacyOpenCapture?.(type, areaId);
@@ -46,6 +51,7 @@
     state.notes.unshift(draft);
     try{
       root.AtlasMarkdown.openNote(draft.id);
+      centreVisualEditor();
     } finally {
       const index = state.notes.findIndex(n=>n.id===draft.id);
       if(index >= 0) state.notes.splice(index,1);
