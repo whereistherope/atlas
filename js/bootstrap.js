@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Shared Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r37';
+  const BUILD='0169r38';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
