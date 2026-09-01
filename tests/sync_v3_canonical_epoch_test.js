@@ -14,11 +14,11 @@ for(const token of [
   "before Shared Atlas pull / stale-client quarantine",
   "emit('RECOVERY REQUIRED'",
   "root.addEventListener?.('atlascanonicalrecovered'",
-]) assert(sync.includes(token),`missing Shared Atlas epoch contract: ${token}`);
+]) assert(sync.includes(token),`missing canonical Atlas epoch contract: ${token}`);
 
 assert(!sync.includes('reconcileFirstContact(remote,bootRecords,local)'),'unknown/new epoch must not upload first-session local edits');
-assert(sync.includes('one Shared Atlas in the cloud'),'sync runtime must declare the one-Shared-Atlas model');
-assert(sync.includes("'Shared Atlas loaded; this browser is now aligned.'"),'stale client must rejoin Shared Atlas without becoming authoritative');
+assert(sync.includes('one Shared Atlas in the cloud'),'existing sync engine must retain its proven one-cloud reconciliation semantics');
+assert(sync.includes("'Shared Atlas loaded; this browser is now aligned.'"),'stale client must rejoin Atlas Cloud without becoming authoritative');
 
 for(const token of [
   "RECOVERY_TYPE='entity_recovery_snapshot_v1'",
@@ -28,19 +28,20 @@ for(const token of [
   'const localBackupId=await appendRecoveryMeBackup()',
   'canonicalEpoch:newEpoch',
   "recoverySource:'local_recovery_copy'",
-]) assert(recovery.includes(token),`missing Shared Atlas recovery safeguard: ${token}`);
+]) assert(recovery.includes(token),`missing Atlas Cloud setup safeguard: ${token}`);
 
-assert(ui.includes('Preview Shared Atlas recovery'),'recovery UI must preview Shared Atlas recovery');
-assert(ui.includes('Restore Shared Atlas from this copy'),'recovery UI must describe a one-time restore, not device promotion');
-assert(ui.includes('not a master-device setup'),'recovery UI must explicitly reject master-device semantics');
-assert(ui.includes('ordinary client'),'recovery UI must explain equal post-recovery device status');
-assert(ui.includes('root.confirm?.'),'Shared Atlas restore must have a final explicit confirmation');
+assert(ui.includes('Preview Atlas Cloud setup'),'setup UI must preview Atlas Cloud initialisation');
+assert(ui.includes('Establish Atlas Cloud from this copy'),'setup UI must describe a one-time cloud initialisation, not device promotion');
+assert(ui.includes('not a master-device setup'),'setup UI must explicitly reject master-device semantics');
+assert(ui.includes('equal clients of one Atlas'),'setup UI must explain equal post-setup device status');
+assert(ui.includes('root.confirm?.'),'Atlas Cloud setup must have a final explicit confirmation');
+assert(!ui.includes('Shared Atlas'),'Shared Atlas must not remain a user-facing product concept');
 assert(!ui.includes('Make this Atlas canonical'),'old device-authority label must be removed');
 assert(!ui.includes('Preview canonical promotion'),'old promotion label must be removed');
 assert(!ui.includes('trusted desktop'),'desktop must not be presented as a continuing authority');
 
-assert(docs.includes('Atlas is one shared application state in Atlas Cloud.'),'docs must define one Shared Atlas');
+assert(docs.includes('Atlas is one shared application state in Atlas Cloud.'),'docs must define one Atlas cloud state');
 assert(docs.includes('No device is a master'),'docs must reject master-device architecture');
-assert(docs.includes('There is no desktop-to-iPad or iPad-to-desktop direction.'),'docs must define equal clients of one Shared Atlas');
+assert(docs.includes('There is no desktop-to-iPad or iPad-to-desktop direction.'),'docs must define equal clients of one Atlas');
 
-console.log('Atlas Sync v3 one Shared Atlas safety: PASS');
+console.log('Atlas Sync v3 one-cloud safety: PASS');
