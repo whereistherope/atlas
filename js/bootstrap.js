@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r40';
+  const BUILD='0169r41';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -33,9 +33,9 @@
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/sync-v2-core.js','Atlas record reconciliation core'); } catch (_) {}
-  try { await loadScript('./js/sync-v2-recovery.js','Atlas Shared recovery v0.16.9-r24'); } catch (_) {}
-  try { await loadScript('./js/sync-v3.js','Atlas Shared sync v0.16.9-r24'); } catch (_) {}
-  try { await loadScript('./js/sync-recovery-ui.js','Atlas Shared recovery controls v0.16.9-r24'); } catch (_) {}
+  try { await loadScript('./js/sync-v2-recovery.js','Atlas Cloud setup engine'); } catch (_) {}
+  try { await loadScript('./js/sync-v3.js','Atlas Cloud sync engine'); } catch (_) {}
+  try { await loadScript('./js/sync-recovery-ui.js','Atlas Cloud setup controls'); } catch (_) {}
   try { await loadScript('./js/note-editor.js','Atlas note renderer'); } catch (_) {}
   if(!window.AtlasMarkdown?.openNote){try { await loadScript('./js/note-editor.js','Atlas note renderer retry',{fresh:true}); } catch (_) {}}
   try { await loadScript('./js/visual-note-editor.js','Atlas visual note editor'); } catch (_) {}
