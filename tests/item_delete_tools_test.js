@@ -16,7 +16,9 @@ for(const token of [
   "log(`Note deleted: ${title}.`)",
   "log(`Project deleted: ${title}.`)",
   "await save()",
-  "root.AtlasItemDeleteTools=Object.freeze({version:'0.16.9-r1'"
+  "root.AtlasVisualNoteEditor?.open",
+  "root.AtlasProjectWorkspace?.open",
+  "root.AtlasItemDeleteTools=Object.freeze({version:'0.16.9-r2'"
 ]) assert(js.includes(token),`item deletion contract missing: ${token}`);
 
 assert(js.indexOf("root.confirm(`Delete note")<js.indexOf('state.notes.splice(index,1)'),'note deletion must confirm before mutating state');
