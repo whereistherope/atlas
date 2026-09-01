@@ -1,11 +1,27 @@
-/* Atlas v0.16.9 · neutral network overview. No theme/skin ownership. */
+/* Atlas v0.16.9 · interactive network overview. No theme/skin ownership. */
 .map-wrap,.network-split-map{position:relative}
-.atlas-network-minimap{position:absolute;z-index:18;left:14px;bottom:14px;width:116px;height:74px;padding:6px;box-sizing:border-box;border:1px solid color-mix(in srgb,var(--line) 74%,transparent);background:color-mix(in srgb,var(--bg) 90%,transparent);opacity:.62;transition:opacity .14s ease,border-color .14s ease;cursor:pointer;touch-action:manipulation}
-.atlas-network-minimap:hover,.atlas-network-minimap:focus-visible{opacity:1;outline:none;border-color:var(--muted)}
-.atlas-network-minimap svg{display:block;width:100%;height:100%;overflow:visible}
-.atlas-network-minimap .mini-edge{stroke:var(--muted);stroke-width:.65;opacity:.26}
-.atlas-network-minimap .mini-edge.cross{stroke-dasharray:2 2;opacity:.18}
-.atlas-network-minimap .mini-node{fill:var(--muted);opacity:.6}
-.atlas-network-minimap .mini-viewport{fill:none;stroke:var(--ink);stroke-width:.8;opacity:.7}
-.split-mode .atlas-network-minimap{left:10px;bottom:10px;width:100px;height:64px}
-@media(max-width:700px){.atlas-network-minimap{width:90px;height:58px;left:10px;bottom:10px;opacity:.56}}
+.atlas-network-minimap{position:absolute;z-index:18;left:14px;bottom:14px;width:286px;height:182px;box-sizing:border-box;border:1px solid color-mix(in srgb,var(--line) 84%,transparent);background:color-mix(in srgb,var(--bg) 95%,transparent);opacity:.94;transition:opacity .14s ease,border-color .14s ease,width .16s ease,height .16s ease;overflow:hidden}
+.atlas-network-minimap:hover,.atlas-network-minimap:focus-within{opacity:1;border-color:var(--muted)}
+.atlas-network-minimap-head{height:31px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 7px 0 9px;border-bottom:1px solid color-mix(in srgb,var(--line) 74%,transparent);font:700 8px/1 var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);letter-spacing:.08em;color:var(--muted);box-sizing:border-box}
+.atlas-network-minimap-head>div{display:flex;align-items:center;gap:4px}
+.atlas-network-minimap-head button{min-width:27px;height:23px;padding:0 6px;border:1px solid color-mix(in srgb,var(--line) 76%,transparent);background:transparent;color:var(--muted);font:700 8px/1 var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);cursor:pointer}
+.atlas-network-minimap-head button:hover,.atlas-network-minimap-head button:focus-visible{color:var(--ink);border-color:var(--muted);outline:none}
+.atlas-network-minimap-canvas{height:calc(100% - 31px);padding:8px;box-sizing:border-box}
+.atlas-network-minimap svg{display:block;width:100%;height:100%;overflow:hidden;touch-action:none;cursor:crosshair}
+.atlas-network-minimap .mini-edge{stroke:var(--muted);stroke-width:1.05;opacity:.38;vector-effect:non-scaling-stroke}
+.atlas-network-minimap .mini-edge.cross{stroke-dasharray:3 3;opacity:.24}
+.atlas-network-minimap .mini-node{fill:var(--muted);opacity:.82;stroke:color-mix(in srgb,var(--bg) 72%,transparent);stroke-width:.7;vector-effect:non-scaling-stroke}
+.atlas-network-minimap .mini-node.level-2{fill:var(--ink);opacity:.96}
+.atlas-network-minimap .mini-node.level-3{opacity:.9}
+.atlas-network-minimap .mini-label{fill:var(--ink);opacity:.84;font:700 22px/1 var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);letter-spacing:.04em;pointer-events:none}
+.atlas-network-minimap .mini-viewport{fill:color-mix(in srgb,var(--ink) 7%,transparent);stroke:var(--ink);stroke-width:1.6;opacity:.96;cursor:grab;pointer-events:all}
+.atlas-network-minimap .mini-viewport:hover{fill:color-mix(in srgb,var(--ink) 12%,transparent)}
+.atlas-network-minimap .mini-viewport.is-dragging{cursor:grabbing;fill:color-mix(in srgb,var(--ink) 15%,transparent)}
+.atlas-network-minimap.is-collapsed{width:40px;height:32px}
+.atlas-network-minimap.is-collapsed .atlas-network-minimap-head{height:31px;padding:0 4px;border-bottom:0;justify-content:center}
+.atlas-network-minimap.is-collapsed .atlas-network-minimap-head>span,.atlas-network-minimap.is-collapsed [data-mini-fit],.atlas-network-minimap.is-collapsed .atlas-network-minimap-canvas{display:none}
+.atlas-network-minimap.is-collapsed [data-mini-toggle]{min-width:30px}
+.split-mode .atlas-network-minimap{left:10px;bottom:10px;width:244px;height:156px}
+.split-mode .atlas-network-minimap.is-collapsed{width:40px;height:32px}
+@media(max-width:900px){.atlas-network-minimap{width:236px;height:152px;left:10px;bottom:10px}.atlas-network-minimap.is-collapsed{width:40px;height:32px}.atlas-network-minimap .mini-label{font-size:20px}}
+@media(max-width:700px){.atlas-network-minimap{width:190px;height:124px;left:9px;bottom:9px;opacity:.92}.atlas-network-minimap.is-collapsed{width:40px;height:32px}.atlas-network-minimap-head{height:29px}.atlas-network-minimap-canvas{height:calc(100% - 29px);padding:6px}.atlas-network-minimap-head>span{font-size:7px}.atlas-network-minimap-head button{height:22px}.atlas-network-minimap .mini-label{font-size:18px}}

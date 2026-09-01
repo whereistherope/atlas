@@ -53,7 +53,7 @@ assert(bootstrap.includes("loadStyle('./styles/pomodoro-widget.css')"),'Pomodoro
 assert(bootstrap.includes("loadScript('./js/pomodoro-widget.js','Atlas Pomodoro widget')"),'Pomodoro JS must boot');
 assert(sw.includes("'./styles/pomodoro-widget.css'"),'Pomodoro CSS must be offline');
 assert(sw.includes("'./js/pomodoro-widget.js'"),'Pomodoro JS must be offline');
-assert(bootstrap.includes("const BUILD='0169r36'"),'r36 bootstrap expected');
-assert(sw.includes("atlas-shell-0.16.9-r36"),'r36 shell expected');
+assert(bootstrap.includes("const BUILD='0169r37'"),'r37 bootstrap expected');
+assert(sw.includes("atlas-shell-0.16.9-r37"),'r37 shell expected');
 
 console.log('Atlas free-window / centred-capture / responsive-editor / Pomodoro contracts: PASS');
