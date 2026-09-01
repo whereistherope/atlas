@@ -57,7 +57,7 @@
     const data=graphData(scope),nodes=data?.nodes||[],links=data?.links||[],byId=Object.fromEntries(nodes.map(n=>[n.id,n])),view=mapView(scope),box=boundsFor(nodes,view),mini=ensureMini(host);mini.dataset.scope=scope||'';
     const svg=svgEl('svg',{viewBox:`${box.x} ${box.y} ${box.w} ${box.h}`,'aria-label':'Network overview navigation','role':'img','preserveAspectRatio':'xMidYMid meet'});
     links.forEach(link=>{const a=byId[link.source],b=byId[link.target];if(!a||!b)return;svg.appendChild(svgEl('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,class:`mini-edge ${link.type==='cross'?'cross':'tree'}`}))});
-    nodes.forEach(n=>{const level=Number(n.level)||5;svg.appendChild(svgEl('circle',{cx:n.x,cy:n.y,r:level===2?7:level===3?4.7:level===4?3.2:2.4,class:`mini-node level-${level}`}));if(level===2){const label=svgEl('text',{x:(Number(n.x)||0)+10,y:(Number(n.y)||0)+3,class:'mini-label'});label.textContent=n.code||String(n.name||'').slice(0,8);svg.appendChild(label)}});
+    nodes.forEach(n=>{const level=Number(n.level)||5;svg.appendChild(svgEl('circle',{cx:n.x,cy:n.y,r:level===2?11:level===3?7:level===4?4.8:3.2,class:`mini-node level-${level}`}));if(level===2){const label=svgEl('text',{x:(Number(n.x)||0)+15,y:(Number(n.y)||0)+7,class:'mini-label'});label.textContent=n.code||String(n.name||'').slice(0,8);svg.appendChild(label)}});
     svg.appendChild(svgEl('rect',{x:view.x,y:view.y,width:view.w,height:view.h,rx:4,class:'mini-viewport','vector-effect':'non-scaling-stroke'}));
     bindMiniNavigation(svg,scope);mini.querySelector('.atlas-network-minimap-canvas').replaceChildren(svg);
   }
