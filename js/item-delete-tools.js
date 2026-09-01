@@ -28,14 +28,24 @@
 
   function trackNote(id){if(id){activeNoteId=String(id);scheduleNoteFooter()}}
   function trackProjectByIndex(index){const p=state?.projects?.[Number(index)];if(p?.id){activeProjectId=p.id;scheduleProjectFooter()}}
+  function trackProjectById(id){const p=byId(state?.projects,String(id||''));if(p){activeProjectId=p.id;scheduleProjectFooter()}}
 
-  // Cover the direct editor entry points as well as note-card clicks that open internally.
+  // Cover every editor entry point. iPad/touch paths can call the module APIs directly
+  // rather than the legacy global aliases used by desktop interactions.
   if(root.AtlasMarkdown?.openNote){
     const base=root.AtlasMarkdown,open=base.openNote;
     root.AtlasMarkdown=Object.freeze({...base,openNote(id){trackNote(id);return open.apply(this,arguments)}});
   }
+  if(root.AtlasVisualNoteEditor?.open){
+    const base=root.AtlasVisualNoteEditor,open=base.open;
+    root.AtlasVisualNoteEditor=Object.freeze({...base,open(id){trackNote(id);return open.apply(this,arguments)}});
+  }
   if(typeof root.openNoteEditor==='function'){
     const open=root.openNoteEditor;root.openNoteEditor=function(index){const n=state?.notes?.[Number(index)];if(n?.id)trackNote(n.id);return open.apply(this,arguments)};
+  }
+  if(root.AtlasProjectWorkspace?.open){
+    const base=root.AtlasProjectWorkspace,open=base.open;
+    root.AtlasProjectWorkspace=Object.freeze({...base,open(index){const p=state?.projects?.[Number(index)];if(p?.id)trackProjectById(p.id);return open.apply(this,arguments)}});
   }
   if(typeof root.openProjectEditor==='function'){
     const open=root.openProjectEditor;root.openProjectEditor=function(index){trackProjectByIndex(index);return open.apply(this,arguments)};
@@ -67,5 +77,5 @@
     if(event.target.closest?.('[data-atlas-delete-project]')){event.preventDefault();event.stopPropagation();deleteProject()}
   });
 
-  root.AtlasItemDeleteTools=Object.freeze({version:'0.16.9-r1',noteFooter,projectFooter});
+  root.AtlasItemDeleteTools=Object.freeze({version:'0.16.9-r2',noteFooter,projectFooter});
 })(window);

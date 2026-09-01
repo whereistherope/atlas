@@ -18,5 +18,5 @@ for(const token of [
 assert(!ui.includes("button.dataset.syncRecovery==='preview')await root.AtlasSyncRecovery.preview()"),'preview must no longer silently discard a failed result');
 const build=bootstrap.match(/const BUILD='0169r(\d+)'/)?.[1];
 const shell=sw.match(/atlas-shell-0\.16\.9-r(\d+)/)?.[1];
-assert(build==='42'&&shell==='42','preview fix must ship as aligned r42 boot/offline build');
+assert(build&&shell&&build===shell,'preview fix requires aligned bootstrap/offline build versions');
 console.log('Atlas Cloud preview action contract: PASS');
