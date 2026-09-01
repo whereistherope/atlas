@@ -14,7 +14,8 @@ for(const token of [
   "root.addEventListener('atlasrelaystatus'",
   "emit('IDB','state committed')",
   "emit('GRAPH',`${camera()} · ${counts()}`)",
-  "root.AtlasRuntimeTelemetry=Object.freeze({version:'0.16.9-r1',emit,sample})"
+  "ATLAS CLOUD SETUP REQUIRED",
+  "root.AtlasRuntimeTelemetry=Object.freeze({version:'0.16.9-r2',emit,sample})"
 ]) assert(js.includes(token),`runtime telemetry contract missing: ${token}`);
 
 for(const token of [
@@ -28,6 +29,7 @@ for(const token of [
 assert(css.includes('mask-image:linear-gradient(to bottom,transparent'),'telemetry should fade older trace lines');
 assert(!js.includes('n.body')&&!js.includes('note.body')&&!js.includes('project.body'),'telemetry must not expose note/project contents');
 assert(!js.includes('access_token')&&!js.includes('refresh_token')&&!js.includes('password'),'telemetry must not expose credentials or tokens');
+assert(js.includes("detail?.state==='RECOVERY REQUIRED'?'ATLAS CLOUD SETUP REQUIRED'"),'internal recovery state must be translated into Atlas Cloud setup language');
 
 assert(bootstrap.includes("loadStyle('./styles/runtime-telemetry.css')"),'telemetry CSS must boot');
 assert(bootstrap.includes("loadScript('./js/runtime-telemetry.js','Atlas live runtime telemetry')"),'telemetry JS must boot');
