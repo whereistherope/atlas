@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Shared Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r38';
+  const BUILD='0169r39';
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
   function loadStyle(src){
@@ -25,7 +25,7 @@
   loadStyle('./styles/network-layout.css');
   loadStyle('./styles/network-split.css');
   loadStyle('./styles/lock-terrain.css');
-  loadStyle('./styles/network-overview.css');
+  loadStyle('./styles/runtime-telemetry.css');
   loadStyle('./styles/theme-system.css');
   loadStyle('./styles/material-system.css');
   loadStyle('./styles/pomodoro-widget.css');
@@ -56,10 +56,10 @@
   try { await loadScript('./js/network-controls.js','Atlas unified graph controls v0.15.12'); } catch (_) {}
   try { await loadScript('./js/network-split.js','Atlas switchable split network/list view v0.15.16'); } catch (_) {}
   try { await loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r17'); } catch (_) {}
-  try { await loadScript('./js/network-overview.js','Atlas network overview v0.16.9'); } catch (_) {}
   try { await loadScript('./js/widget-visibility-hotfix.js','Atlas widget visibility hotfix v0.16.9-r20'); } catch (_) {}
   try { await loadScript('./js/pomodoro-widget.js','Atlas Pomodoro widget'); } catch (_) {}
   try { await loadScript('./js/window-drag-local.js','Atlas free movable windows'); } catch (_) {}
+  try { await loadScript('./js/runtime-telemetry.js','Atlas live runtime telemetry'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
