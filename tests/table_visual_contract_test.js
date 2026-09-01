@@ -21,6 +21,6 @@ for(const token of [
   "table.append(thead,tbody);wrap.append(table);insertNode(wrap)"
 ]) assert(js.includes(token),`table insertion contract missing: ${token}`);
 
-assert(bootstrap.includes("const BUILD='0169r37'"),'r37 bootstrap expected');
-assert(sw.includes("atlas-shell-0.16.9-r37"),'r37 shell expected');
+const build=bootstrap.match(/const BUILD='0169r(\d+)'/)?.[1],shell=sw.match(/atlas-shell-0\.16\.9-r(\d+)/)?.[1];
+assert(build&&shell&&build===shell,'bootstrap and service worker release numbers must stay aligned');
 console.log('Atlas visual table contract: PASS');
