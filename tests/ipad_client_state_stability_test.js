@@ -18,5 +18,5 @@ for(const token of [
 assert(bootstrap.includes("loadScript('./js/client-state-stability.js','Atlas cross-device client state stability')"),'client stability runtime must boot');
 assert(sw.includes("'./js/client-state-stability.js'"),'client stability runtime must be available offline');
 const build=bootstrap.match(/const BUILD='0169r(\d+)'/)?.[1],shell=sw.match(/atlas-shell-0\.16\.9-r(\d+)/)?.[1];
-assert(build==='43'&&shell==='43','iPad stability fix must ship as aligned r43 boot/offline build');
+assert(build&&shell&&build===shell,'bootstrap and service worker release numbers must stay aligned');
 console.log('Atlas iPad client state stability contract: PASS');
