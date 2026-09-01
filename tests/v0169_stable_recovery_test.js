@@ -60,9 +60,9 @@ assert.strictEqual(cacheMatch[1],expectedCacheVersion,'bootstrap and service-wor
 assert(tokens.includes('--bg:#070b10'),'Atlas night palette must remain');
 assert(tokens.includes('html:not(.atlas-ready)'),'minimal no-flash boot guard must remain');
 
-assert(scriptFiles.includes('./js/sync-v2-recovery.js'),'Shared Atlas recovery runtime must load');
-assert(scriptFiles.includes('./js/sync-v3.js'),'Shared Atlas sync runtime must load');
-assert(scriptFiles.includes('./js/sync-recovery-ui.js'),'Shared Atlas recovery controls must load');
+assert(scriptFiles.includes('./js/sync-v2-recovery.js'),'Atlas Cloud setup engine must load');
+assert(scriptFiles.includes('./js/sync-v3.js'),'Atlas Cloud sync engine must load');
+assert(scriptFiles.includes('./js/sync-recovery-ui.js'),'Atlas Cloud setup controls must load');
 assert(!bootstrap.includes('SYNC_V2_ENABLED=false'),'emergency global sync pause must remain retired');
 assert(!scriptFiles.includes('./js/sync-v2.js'),'old v2 sync runtime must not boot');
 assert(!scriptFiles.includes('./js/window-drag.js'),'rejected global movable-window runtime must remain disabled');
@@ -92,17 +92,19 @@ assert(productionJs.includes('scrollIntoView'),'widget opening must keep the vis
 assert(productionJs.includes("handle.addEventListener('pointerdown'"),'movable windows must remain handle-scoped');
 
 assert(recovery.includes("RECOVERY_TYPE='entity_recovery_snapshot_v1'"),'recovery snapshots must remain append-only records');
-assert(recovery.includes("idbBackup(Core.clone(state),'before Shared Atlas recovery')"),'local recovery copy must be backed up before restore');
-assert(recovery.includes("appendRecoverySnapshot('old-shared-atlas-before-recovery'"),'existing Shared Atlas must be preserved before restore');
-assert(recovery.includes("appendRecoverySnapshot('local-recovery-copy-before-restore'"),'local recovery copy must be preserved before restore');
-assert(recovery.includes('canonicalEpoch:newEpoch'),'Shared Atlas restore must establish a fresh revision epoch');
-assert(sync3.includes('version:3,canonicalEpoch'),'client cache base must persist acknowledged Shared Atlas epoch');
-assert(sync3.includes('Core.reconcile({},remote,local,false)'),'unknown epoch must refresh from Shared Atlas without uploading stale local state');
+assert(recovery.includes("idbBackup(Core.clone(state),'before Shared Atlas recovery')"),'local recovery copy must be backed up before cloud setup');
+assert(recovery.includes("appendRecoverySnapshot('old-shared-atlas-before-recovery'"),'existing Atlas Cloud entity copy must be preserved before setup');
+assert(recovery.includes("appendRecoverySnapshot('local-recovery-copy-before-restore'"),'local setup copy must be preserved before setup');
+assert(recovery.includes('canonicalEpoch:newEpoch'),'Atlas Cloud setup must establish a fresh revision epoch');
+assert(sync3.includes('version:3,canonicalEpoch'),'client cache base must persist acknowledged Atlas Cloud epoch');
+assert(sync3.includes('Core.reconcile({},remote,local,false)'),'unknown epoch must refresh from Atlas Cloud without uploading stale local state');
 assert(sync3.includes('before Shared Atlas pull / stale-client quarantine'),'stale-client refresh must create a local recovery backup');
-assert(recoveryUi.includes('Restore Shared Atlas from this copy'),'recovery must remain framed as a one-time Shared Atlas restore');
+assert(recoveryUi.includes('Establish Atlas Cloud from this copy'),'setup must remain an explicit one-time Atlas Cloud initialisation');
+assert(recoveryUi.includes('equal clients of one Atlas'),'setup UI must preserve the one-Atlas model');
+assert(!recoveryUi.includes('Shared Atlas'),'Shared Atlas must no longer be a user-facing product concept');
 assert(!recoveryUi.includes('Make this Atlas canonical'),'device-promotion wording must remain removed');
 
 for(const asset of ['./js/sync-v2-recovery.js','./js/sync-v3.js','./js/sync-recovery-ui.js'])assert(sw.includes(`'${asset}'`),`${asset} must be cached`);
 assert(!sw.includes("'./assets/lock-terrain.gif'"),'retired lock artwork must not remain offline-critical');
 
-console.log('Atlas stable behaviour + Shared Atlas compatibility contract: PASS');
+console.log('Atlas stable behaviour + one Atlas Cloud compatibility contract: PASS');
