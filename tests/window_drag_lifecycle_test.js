@@ -7,7 +7,8 @@ for(const token of [
   "const handleSel='.modal-head,.atlas-note-editor-head,.atlas-vnote-head,.atlas-command-input-row,[data-atlas-window-handle]'",
   "handle.addEventListener('pointerdown'",
   "observer.observe(document.body,{childList:true})",
-  'root.AtlasWindowDragLocal=Object.freeze({scan,bind})'
+  'function resetPlacement',
+  'root.AtlasWindowDragLocal=Object.freeze({scan,bind,resetPlacement})'
 ]) assert(drag.includes(token),`missing local window drag contract: ${token}`);
 
 assert(!drag.includes('subtree:true'),'window discovery must not observe the full document subtree');
