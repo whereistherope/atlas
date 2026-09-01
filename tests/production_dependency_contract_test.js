@@ -96,16 +96,23 @@ assertSubsequence(dynamicAssets.scripts,[
   './js/network-layout.js',
   './js/network-organic.js',
   './js/network-controls.js',
-  './js/network-split.js',
-  './js/network-overview.js'
+  './js/network-split.js'
 ],'network runtime');
+
+assertSubsequence(dynamicAssets.scripts,[
+  './js/widget-visibility-hotfix.js',
+  './js/pomodoro-widget.js',
+  './js/window-drag-local.js',
+  './js/runtime-telemetry.js'
+],'workspace presentation runtime');
 
 for(const rejected of [
   './js/sync-v2.js',
   './js/cloud-sync.js',
   './js/cloud-sync-hotfix.js',
   './js/sync-quarantine.js',
-  './js/window-drag.js'
+  './js/window-drag.js',
+  './js/network-overview.js'
 ]){
   assert(!production.includes(rejected),`retired runtime must not boot: ${rejected}`);
 }
