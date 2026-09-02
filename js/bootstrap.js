@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r45';
+  const BUILD='0169r46';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -31,6 +31,7 @@
   loadStyle('./styles/material-system.css');
   loadStyle('./styles/pomodoro-widget.css');
   loadStyle('./styles/item-delete-tools.css');
+  loadStyle('./styles/calendar-extras.css');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/sync-v2-core.js','Atlas record reconciliation core'); } catch (_) {}
