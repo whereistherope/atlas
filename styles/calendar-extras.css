@@ -1,0 +1,10 @@
+/* Atlas calendar time-zone and event-colour controls. */
+.calendar-event-extras{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(220px,.65fr);gap:10px}
+.calendar-zone-hint{display:block;margin-top:5px;color:var(--muted);font:700 8px/1.4 "SFMono-Regular",Consolas,monospace}
+.calendar-colour-palette{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-height:36px}
+.calendar-colour-palette button{appearance:none;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:3px;height:28px}
+.calendar-colour-clear{padding:0 8px;font:800 8px/1 "SFMono-Regular",Consolas,monospace;text-transform:uppercase}
+.calendar-colour-swatch{width:28px;padding:0;background:var(--swatch)!important;border-color:color-mix(in srgb,var(--swatch) 70%,var(--line))!important}
+.calendar-colour-palette button[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
+.cal-event{border-left-width:3px}
+@media(max-width:700px){.calendar-event-extras{grid-template-columns:1fr}.calendar-colour-palette{gap:9px}.calendar-colour-swatch{width:31px;height:31px}}
