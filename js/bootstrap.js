@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r48';
+  const BUILD='0169r49';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -33,8 +33,8 @@
   loadStyle('./styles/item-delete-tools.css');
   loadStyle('./styles/calendar-extras.css');
 
-  // Travel rendering/lookup is required because it replaces platform emoji with Atlas glyphs.
-  await loadScript('./js/travel-flight-times.js','Atlas travel flight times');
+  // Required travel-card renderer: quiet direction arrows, no platform emoji.
+  await loadScript('./js/travel-direction.js','Atlas travel direction marks');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/sync-v2-core.js','Atlas record reconciliation core'); } catch (_) {}
