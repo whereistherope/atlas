@@ -7,31 +7,42 @@
   const cleanTitle=value=>String(value||'Untitled').replace(/[\r\n]+/g,' ').trim().slice(0,100)||'Untitled';
 
   function noteFooter(){
-    const scroll=document.querySelector('#atlasVisualNoteEditor .atlas-vnote-scroll');
-    if(!scroll||scroll.querySelector('[data-atlas-delete-note]'))return;
+    const overlay=document.getElementById('atlasVisualNoteEditor');
+    const scroll=overlay?.querySelector('.atlas-vnote-scroll');
+    const existing=scroll?.querySelector('[data-atlas-delete-note]')?.closest('.atlas-item-delete-footer');
+    const note=byId(state?.notes,activeNoteId);
+    if(!overlay?.classList.contains('open')||!scroll||!note){existing?.remove();return false}
+    if(existing)return true;
     const row=document.createElement('div');row.className='atlas-item-delete-footer atlas-note-delete-footer';
     row.innerHTML='<button type="button" class="btn danger" data-atlas-delete-note>Delete Note</button>';
-    const status=scroll.querySelector('#avStatus');status?.before(row);if(!status)scroll.appendChild(row);
+    const status=scroll.querySelector('#avStatus');status?.before(row);if(!status)scroll.appendChild(row);return true;
   }
 
   function projectFooter(){
     const editor=document.querySelector('.atlas-project-workspace .project-editor');
-    if(!editor||editor.querySelector('[data-atlas-delete-project]'))return;
+    if(!editor)return false;
     const save=editor.querySelector('[data-ed-action="save-project-detail"]');
+    const index=Number(save?.dataset?.index);
+    const indexed=Number.isInteger(index)?state?.projects?.[index]:null;
+    if(indexed?.id)activeProjectId=indexed.id;
+    const project=byId(state?.projects,activeProjectId);
+    const existing=editor.querySelector('[data-atlas-delete-project]')?.closest('.atlas-item-delete-footer');
+    if(!project){existing?.remove();return false}
+    if(existing)return true;
     const row=document.createElement('div');row.className='atlas-item-delete-footer atlas-project-delete-footer';
     row.innerHTML='<button type="button" class="btn danger" data-atlas-delete-project>Delete Project</button>';
-    if(save){save.before(row);row.appendChild(save)}else editor.appendChild(row);
+    if(save){save.before(row);row.appendChild(save)}else editor.appendChild(row);return true;
   }
 
-  const scheduleNoteFooter=()=>requestAnimationFrame(()=>requestAnimationFrame(noteFooter));
-  const scheduleProjectFooter=()=>requestAnimationFrame(()=>requestAnimationFrame(projectFooter));
+  function scheduleNoteFooter(){[0,16,60,180].forEach(delay=>setTimeout(noteFooter,delay))}
+  function scheduleProjectFooter(){[0,16,60,180].forEach(delay=>setTimeout(projectFooter,delay))}
 
   function trackNote(id){if(id){activeNoteId=String(id);scheduleNoteFooter()}}
   function trackProjectByIndex(index){const p=state?.projects?.[Number(index)];if(p?.id){activeProjectId=p.id;scheduleProjectFooter()}}
   function trackProjectById(id){const p=byId(state?.projects,String(id||''));if(p){activeProjectId=p.id;scheduleProjectFooter()}}
 
-  // Cover every editor entry point. iPad/touch paths can call the module APIs directly
-  // rather than the legacy global aliases used by desktop interactions.
+  // This module intentionally boots after the final editor/document wrappers. Wrap both
+  // public APIs and legacy aliases so desktop, iPad/touch and internal editor routes converge.
   if(root.AtlasMarkdown?.openNote){
     const base=root.AtlasMarkdown,open=base.openNote;
     root.AtlasMarkdown=Object.freeze({...base,openNote(id){trackNote(id);return open.apply(this,arguments)}});
@@ -51,9 +62,13 @@
     const open=root.openProjectEditor;root.openProjectEditor=function(index){trackProjectByIndex(index);return open.apply(this,arguments)};
   }
 
-  document.addEventListener('click',event=>{
+  document.addEventListener('pointerdown',event=>{
     const noteOpen=event.target.closest?.('[data-note-open]');if(noteOpen?.dataset?.noteOpen)trackNote(noteOpen.dataset.noteOpen);
     const projectOpen=event.target.closest?.('[data-ed-action="edit-project"]');if(projectOpen)trackProjectByIndex(projectOpen.dataset.index);
+  },true);
+  document.addEventListener('focusin',event=>{
+    if(event.target.closest?.('#atlasVisualNoteEditor'))scheduleNoteFooter();
+    if(event.target.closest?.('.atlas-project-workspace'))scheduleProjectFooter();
   },true);
 
   async function deleteNote(){
@@ -77,5 +92,5 @@
     if(event.target.closest?.('[data-atlas-delete-project]')){event.preventDefault();event.stopPropagation();deleteProject()}
   });
 
-  root.AtlasItemDeleteTools=Object.freeze({version:'0.16.9-r2',noteFooter,projectFooter});
+  root.AtlasItemDeleteTools=Object.freeze({version:'0.16.9-r3',noteFooter,projectFooter});
 })(window);

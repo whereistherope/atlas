@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r49';
+  const BUILD='0169r50';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -47,13 +47,14 @@
   try { await loadScript('./js/visual-table-controls.js','Atlas visual table controls'); } catch (_) {}
   try { await loadScript('./js/rich-note-capture.js','Atlas unified note creation'); } catch (_) {}
   try { await loadScript('./js/project-workspace.js','Atlas Project Workspace'); } catch (_) {}
-  try { await loadScript('./js/item-delete-tools.js','Atlas item deletion tools'); } catch (_) {}
   try { await loadScript('./js/editor-ux.js','Atlas editor UX'); } catch (_) {}
   try { await loadScript('./js/atlas-document-r3.js','Atlas Document v1 r3'); } catch (_) {}
   try { await loadScript('./js/atlas-document-r4-ui.js','Atlas Document UI r4'); } catch (_) {}
   try { await loadScript('./js/table-width-resize.js','Atlas table width resize r6'); } catch (_) {}
   try { await loadScript('./js/capture-framework-r7.js','Atlas Capture framework r7'); } catch (_) {}
   try { await loadScript('./js/capture-polish-r8.js','Atlas Capture polish r8'); } catch (_) {}
+  // Load destructive editor controls only after all editor/document wrappers are final.
+  try { await loadScript('./js/item-delete-tools.js','Atlas item deletion tools'); } catch (_) {}
   try { await loadScript('./js/command-palette.js','Atlas Command palette v0.15'); } catch (_) {}
   try { await loadScript('./js/interaction-alignment.js','Atlas interaction alignment v0.15.1'); } catch (_) {}
   try { await loadScript('./js/workspace-actions.js','Atlas workspace actions v0.15.2'); } catch (_) {}
