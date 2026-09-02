@@ -1,7 +1,7 @@
 /* Atlas live runtime trace. Transparent, non-interactive and theme-neutral. */
 .map-wrap,.network-split-map{position:relative}
 .atlas-runtime-telemetry{position:absolute;z-index:17;left:18px;bottom:16px;width:min(470px,48%);max-height:188px;overflow:hidden;pointer-events:none;user-select:none;font-family:var(--atlas-code-font,"SFMono-Regular",Consolas,monospace);font-size:8px;line-height:1.45;letter-spacing:.035em;color:color-mix(in srgb,var(--ink) 68%,transparent);text-shadow:0 0 1px color-mix(in srgb,var(--bg) 70%,transparent)}
-.atlas-telemetry-health{display:inline-block;margin:0 0 5px;padding:3px 6px;border:1px solid color-mix(in srgb,var(--ink) 32%,transparent);background:color-mix(in srgb,var(--bg) 72%,transparent);font-weight:700;letter-spacing:.09em;opacity:.88}
+.atlas-telemetry-health{display:inline-block;margin:0 0 5px;padding:3px 6px;border:1px solid color-mix(in srgb,var(--ink) 32%,transparent);font-weight:700;letter-spacing:.09em;opacity:.88}
 .atlas-telemetry-health[hidden]{display:none}
 .atlas-telemetry-health.is-warn{border-color:color-mix(in srgb,var(--ink) 48%,transparent);opacity:1}
 .atlas-telemetry-lines{display:flex;flex-direction:column;justify-content:flex-end;min-height:150px;gap:2px;mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 18%,#000 100%)}
