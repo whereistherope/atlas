@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r50';
+  const BUILD='0169r51';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -55,6 +55,8 @@
   try { await loadScript('./js/capture-polish-r8.js','Atlas Capture polish r8'); } catch (_) {}
   // Load destructive editor controls only after all editor/document wrappers are final.
   try { await loadScript('./js/item-delete-tools.js','Atlas item deletion tools'); } catch (_) {}
+  // Profile names/status are canonical profile metadata; stable IDs remain untouched.
+  try { await loadScript('./js/profile-management.js','Atlas profile management'); } catch (_) {}
   try { await loadScript('./js/command-palette.js','Atlas Command palette v0.15'); } catch (_) {}
   try { await loadScript('./js/interaction-alignment.js','Atlas interaction alignment v0.15.1'); } catch (_) {}
   try { await loadScript('./js/workspace-actions.js','Atlas workspace actions v0.15.2'); } catch (_) {}
