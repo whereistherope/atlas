@@ -12,20 +12,20 @@ for(const token of [
   "root.addEventListener('atlascanonicalstatus'",
   "root.addEventListener('atlascloudstatus'",
   "root.addEventListener('atlasrelaystatus'",
-  "emit('IDB','state committed')",
+  "emit('IDB','local cache committed')",
   "emit('GRAPH',`${camera()} · ${counts()}`)",
   "ATLAS CLOUD SETUP REQUIRED",
-  "root.AtlasRuntimeTelemetry=Object.freeze({version:'0.16.9-r2',emit,sample})"
+  "LOCAL CACHE · CLOUD SIGN-IN REQUIRED",
+  "NOT CONFIGURED ON THIS DEVICE",
+  "root.AtlasRuntimeTelemetry=Object.freeze({version:'0.16.9-r3',emit,sample})"
 ]) assert(js.includes(token),`runtime telemetry contract missing: ${token}`);
 
 for(const token of [
   '.atlas-runtime-telemetry{position:absolute',
   'pointer-events:none',
-  'background:'
-]) {
-  if(token==='background:') assert(!css.includes(token),'runtime telemetry must stay transparent without a panel background');
-  else assert(css.includes(token),`runtime telemetry presentation missing: ${token}`);
-}
+  '.atlas-telemetry-health{display:inline-block'
+]) assert(css.includes(token),`runtime telemetry presentation missing: ${token}`);
+assert(!css.includes('background:'),'runtime telemetry must stay transparent without a panel background');
 assert(css.includes('mask-image:linear-gradient(to bottom,transparent'),'telemetry should fade older trace lines');
 assert(!js.includes('n.body')&&!js.includes('note.body')&&!js.includes('project.body'),'telemetry must not expose note/project contents');
 assert(!js.includes('access_token')&&!js.includes('refresh_token')&&!js.includes('password'),'telemetry must not expose credentials or tokens');
@@ -33,6 +33,7 @@ assert(js.includes("detail?.state==='RECOVERY REQUIRED'?'ATLAS CLOUD SETUP REQUI
 
 assert(bootstrap.includes("loadStyle('./styles/runtime-telemetry.css')"),'telemetry CSS must boot');
 assert(bootstrap.includes("loadScript('./js/runtime-telemetry.js','Atlas live runtime telemetry')"),'telemetry JS must boot');
+assert(bootstrap.includes('window.ATLAS_BUILD=BUILD'),'running build must be visible to telemetry');
 assert(!bootstrap.includes('network-overview'),'obsolete minimap must not boot');
 assert(sw.includes("'./styles/runtime-telemetry.css'"),'telemetry CSS must be offline');
 assert(sw.includes("'./js/runtime-telemetry.js'"),'telemetry JS must be offline');
