@@ -8,8 +8,8 @@ const clarity=read('js/calendar-clarity.js');
 const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 
-assert.match(boot,/const BUILD='0169r52'/,'r52 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r52/,'r52 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r53'/,'r53 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r53/,'r53 service-worker cache missing');
 for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./styles/calendar-clarity.css']){
   assert.ok(boot.includes(asset),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
@@ -28,5 +28,7 @@ assert.match(weather,/REFRESH_MS=15\*60\*1000/,'weather refresh interval missing
 assert.match(weather,/atlas_melbourne_weather_v1/,'weather cache missing');
 assert.match(weather,/host\.insertBefore\(weather,first\)/,'weather must render before MEL time');
 assert.match(weather,/condition\.textContent=labelFor/,'weather condition label missing');
+assert.match(css,/\.chrono-weather time\{[^}]*display:inline!important/,'weather condition must stay visible');
+assert.doesNotMatch(css,/@media\(max-width:850px\)\{\.chrono-weather time\{display:none\}/,'iPad must not hide weather condition');
 
 console.log('calendar weather clarity contract ok');
