@@ -1,0 +1,14 @@
+/* Atlas calendar readability + compact header weather. */
+.cal-weekday.weekend{background:color-mix(in srgb,var(--ink) 2.4%,transparent);color:color-mix(in srgb,var(--muted) 82%,transparent)}
+.cal-cell.weekend{background:color-mix(in srgb,var(--ink) 2.8%,transparent)}
+.cal-cell.weekend.out{background:color-mix(in srgb,var(--ink) 1.8%,transparent)}
+.cal-cell.today{background:color-mix(in srgb,var(--ink) 4.5%,transparent)!important;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ink) 42%,transparent);z-index:1}
+.cal-cell.today .cal-day{display:inline-grid;place-items:center;min-width:23px;height:20px;padding:0 5px;margin:-2px 0 6px -2px;border-radius:2px;background:var(--ink);color:var(--paper);font-weight:850}
+body[data-theme="night"] .cal-weekday.weekend{background:color-mix(in srgb,var(--ink) 2.2%,transparent)}
+body[data-theme="night"] .cal-cell.weekend{background:color-mix(in srgb,var(--ink) 2.6%,transparent)}
+body[data-theme="night"] .cal-cell.today{background:color-mix(in srgb,var(--ink) 4.2%,transparent)!important;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ink) 40%,transparent)}
+
+.chrono-weather{min-width:0}.chrono-weather strong{font-variant-numeric:tabular-nums}.chrono-weather time{max-width:74px;overflow:hidden;text-overflow:ellipsis}.chrono-weather[data-stale="true"]{opacity:.62}.chrono-weather[data-stale="true"]:after{content:'~';font-size:8px;color:var(--muted);margin-left:-4px}
+@media(max-width:850px){.chrono-weather time{display:none}}
+@media(max-width:560px){.chrono-weather{width:auto}.chrono-weather span{display:none}.chrono-weather strong{font-size:9px}.cal-cell.today .cal-day{min-width:25px;height:22px}}
+@media(max-width:800px){.cal-cell.weekend{background:color-mix(in srgb,var(--ink) 2.5%,transparent)}.cal-cell.today{box-shadow:inset 3px 0 0 color-mix(in srgb,var(--ink) 48%,transparent)}}
