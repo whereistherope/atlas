@@ -51,8 +51,11 @@ for(const token of [
   "if(row&&shared?.closed)row.style.display='none'"
 ]) assert(js.includes(token),`profile management contract missing: ${token}`);
 
-assert(bootstrap.includes("const BUILD='0169r51'"),'r51 bootstrap build missing');
+const build=bootstrap.match(/const BUILD='0169r(\d+)'/);
+const cache=sw.match(/const CACHE_NAME = 'atlas-shell-0\.16\.9-r(\d+)'/);
+assert(build,'bootstrap build marker missing');
+assert(cache,'service worker cache marker missing');
+assert.strictEqual(build[1],cache[1],'bootstrap and service worker releases must stay aligned');
 assert(bootstrap.includes("loadScript('./js/profile-management.js','Atlas profile management')"),'profile management must boot');
-assert(sw.includes("const CACHE_NAME = 'atlas-shell-0.16.9-r51'"),'r51 service worker cache missing');
 assert(sw.includes("'./js/profile-management.js'"),'profile management must be available offline');
 console.log('Atlas profile management contract: PASS');
