@@ -5,15 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#e9e6dc" />
   <title>Atlas House</title>
+  <style>
+    html,body{margin:0;min-height:100%;background:#e9e6dc;color:#252326;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .route-fallback{padding:24px;font-size:13px;color:#747677}
+    .route-fallback a{color:#536878}
+  </style>
 </head>
 <body>
+<div class="route-fallback">Opening Atlas House… <a id="legacyLink" href="./legacy.html?compat=r59">Compatibility view</a></div>
 <script>
 (function(){
   var ua=navigator.userAgent||'';
   var legacy=/iPad/.test(ua)&&/OS 12[_\.]/.test(ua);
-  location.replace(legacy?'./legacy.html':'../?view=house');
+
+  // Do not trust the user-agent alone. Safari can present an iPad as a desktop browser.
+  // Parse-test the syntax required by modern Atlas without putting that syntax in this script.
+  if(!legacy){
+    try{
+      new Function('var item={value:1}; return item?.value ?? 0;');
+    }catch(error){
+      legacy=true;
+    }
+  }
+
+  location.replace(legacy?'./legacy.html?compat=r59':'../?view=house');
 }());
 </script>
-<noscript><a href="../?view=house">Open Atlas House</a></noscript>
+<noscript><a href="./legacy.html?compat=r59">Open Atlas House compatibility view</a></noscript>
 </body>
 </html>
