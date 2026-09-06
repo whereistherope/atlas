@@ -13,8 +13,8 @@ const server=read('js/home-server-widget.js');
 const weather=read('js/weather-widget.js');
 const weatherSource=read('js/header-weather.js');
 
-assert.match(boot,/const BUILD='0169r56'/,'r56 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r56/,'r56 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r57'/,'r57 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r57/,'r57 service-worker cache missing');
 for(const asset of ['./js/widget-context.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js','./styles/weather-widget.css','./styles/house.css']){
   assert.ok(boot.includes(asset),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
@@ -29,8 +29,10 @@ for(const id of ['calendar','upcoming','weather','list','todo','server'])assert.
 assert.doesNotMatch(house,/HOUSE_MOCK|houseSnapshot|eventRows|checklistRows|house-panel|house-clock/,'House must not invent parallel widgets or mock household data');
 assert.doesNotMatch(css,/--bg:|--paper:|--ink:|background:radial-gradient|\.topbar[^\n]*display:none/,'House must not introduce a separate theme or hide Atlas chrome');
 assert.match(css,/grid-template-areas:"calendar calendar upcoming" "weather list todo" "server server server"/,'House 4:3 widget composition missing');
-assert.match(css,/\.house-calendar>\.atlas-widget>\.widget-body\{overflow:visible!important\}/,'House Calendar must not use an internal scrollbar');
-assert.match(css,/\.house-calendar\{min-height:300px\}/,'House Calendar must reserve full-month height');
+assert.match(css,/\.house-atlas-board \.widget-body\{overflow:hidden!important;max-height:none!important\}/,'House widgets must not use internal scrollbars');
+assert.match(css,/body\.atlas-house-view\{overflow:hidden\}/,'Landscape House surface must not page-scroll');
+assert.match(css,/height:calc\(100dvh - 120px\)/,'House board must size to the visible landscape viewport');
+assert.match(css,/\.house-calendar\{min-height:292px\}/,'House Calendar must reserve full-month height');
 assert.match(context,/todoWidget=function\(options=/,'profile-aware real To-do widget missing');
 assert.match(context,/upcomingWidget=function\(options=/,'profile-aware real Upcoming widget missing');
 assert.match(context,/calendarWidget=function\(options=/,'profile-aware real Calendar widget missing');
