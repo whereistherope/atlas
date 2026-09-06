@@ -7,10 +7,13 @@ const sw=read('sw.js');
 const house=read('js/house.js');
 const css=read('styles/house.css');
 const entry=read('house/index.html');
+const context=read('js/widget-context.js');
+const list=read('js/list-widget.js');
+const server=read('js/home-server-widget.js');
 
-assert.match(boot,/const BUILD='0169r54'/,'r54 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r54/,'r54 service-worker cache missing');
-for(const asset of ['./js/house.js','./styles/house.css']){
+assert.match(boot,/const BUILD='0169r55'/,'r55 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r55/,'r55 service-worker cache missing');
+for(const asset of ['./js/widget-context.js','./js/list-widget.js','./js/home-server-widget.js','./js/house.js','./styles/house.css']){
   assert.ok(boot.includes(asset),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
 }
@@ -18,21 +21,21 @@ for(const asset of ['./house/','./house/index.html']) assert.ok(sw.includes(asse
 
 assert.match(entry,/location\.replace\('\.\.\/\?view=house'\)/,'/house/ entry must route into the shared Atlas shell');
 assert.match(house,/\{id:'house',name:'House'\}/,'House navigation item missing');
-assert.match(house,/originalRenderAll/,'House must extend rather than replace the Atlas render pipeline');
-assert.match(house,/window\.AtlasHouse=/,'Atlas House adapter boundary missing');
-assert.match(house,/setSnapshot\(snapshot\)/,'House snapshot injection seam missing');
-assert.match(house,/label:'CPU',value:14/,'mock CPU telemetry missing');
-assert.match(house,/label:'MEMORY',value:38/,'mock memory telemetry missing');
-assert.match(house,/label:'STORAGE',value:42/,'mock storage telemetry missing');
-assert.doesNotMatch(house,/\bfetch\s*\(/,'milestone one must not call a real homelab API');
-assert.doesNotMatch(house,/\bindexedDB\b|\blocalStorage\b/,'House mock data must not create a parallel persistence layer');
-assert.doesNotMatch(house,/\b(password|secret|apiKey|api_key|accessToken|access_token)\s*[:=]/i,'frontend homelab secrets are forbidden');
-assert.doesNotMatch(house,/drawNetwork|networkPanel|graphData/,'House must not render the Atlas network graph');
+assert.match(house,/renderWidget\(id,\{profileId:HOUSE_PROFILE\}\)/,'House must compose the real Atlas widget renderer');
+assert.match(house,/HOUSE_PROFILE='us'/,'House must use the shared Us context');
+for(const id of ['calendar','upcoming','list','todo','server'])assert.ok(house.includes(`slot('${id}','${id}')`),`House ${id} widget slot missing`);
+assert.doesNotMatch(house,/HOUSE_MOCK|houseSnapshot|eventRows|checklistRows|house-panel|house-clock/,'House must not invent parallel widgets or mock household data');
+assert.doesNotMatch(css,/--bg:|--paper:|--ink:|background:radial-gradient|\.topbar[^\n]*display:none/,'House must not introduce a separate theme or hide Atlas chrome');
+assert.match(css,/\.house-widget-slot>\.atlas-widget/,'House must style existing Atlas widgets, not replacement cards');
+assert.match(context,/todoWidget=function\(options=/,'profile-aware real To-do widget missing');
+assert.match(context,/upcomingWidget=function\(options=/,'profile-aware real Upcoming widget missing');
+assert.match(context,/calendarWidget=function\(options=/,'profile-aware real Calendar widget missing');
+assert.match(list,/ATLAS_WIDGETS\.list=/,'List must be a first-class Atlas widget');
+assert.match(list,/note\.type==='list'/,'List must use synced Atlas notes rather than a parallel store');
+assert.doesNotMatch(list,/indexedDB|localStorage|fetch\s*\(/,'List widget must reuse Atlas persistence/sync');
+assert.match(server,/ATLAS_WIDGETS\.server=/,'Home Server must be a first-class Atlas widget');
+assert.doesNotMatch(server,/password|apiKey|accessToken|fetch\s*\(/i,'Home Server milestone must remain safe/read-only mock data');
+assert.match(sw,/shellNavigation/,'service worker must distinguish root shell navigation');
+assert.match(sw,/response&&response\.ok&&shellNavigation/,'/house/ navigation must not overwrite cached Atlas root shell');
 
-assert.match(css,/body\.atlas-house-mode\{[\s\S]*--bg:#070b10/,'House must use the Atlas night palette without changing persisted theme');
-assert.match(css,/\.atlas-house-mode \.topbar[\s\S]*display:none!important/,'normal Atlas chrome must be hidden in House mode');
-assert.match(css,/grid-template-areas:"today upcoming" "shopping tasks" "server server"/,'4:3 House grid contract missing');
-assert.match(css,/@media\(max-height:800px\) and \(orientation:landscape\)/,'old iPad landscape compaction missing');
-assert.match(css,/@media\(max-width:850px\) and \(orientation:portrait\)/,'portrait recovery layout missing');
-
-console.log('atlas house dashboard contract ok');
+console.log('atlas house shared widgets contract ok');

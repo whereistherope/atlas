@@ -8,8 +8,8 @@ const clarity=read('js/calendar-clarity.js');
 const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 
-assert.match(boot,/const BUILD='0169r54'/,'r54 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r54/,'r54 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r55'/,'r55 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r55/,'r55 service-worker cache missing');
 for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./styles/calendar-clarity.css']){
   assert.ok(boot.includes(asset),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
