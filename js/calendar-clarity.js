@@ -1,4 +1,4 @@
-// Atlas calendar clarity: quiet weekend treatment and a stronger current-day marker.
+// Atlas calendar clarity: quiet weekend treatment, current-day marker and visible Us linking.
 (function(root){
   'use strict';
   function decorateCalendar(){
@@ -11,10 +11,20 @@
       if(cell.classList.contains('today'))cell.setAttribute('aria-current','date');else cell.removeAttribute('aria-current');
     });
   }
+  function surfaceUsLink(){
+    const row=document.getElementById('entangleRow'),title=document.getElementById('calTitle')?.closest('.field');if(!row||!title)return;
+    title.insertAdjacentElement('afterend',row);
+    const strong=row.querySelector('strong'),small=row.querySelector('small');
+    if(strong)strong.textContent='Link to Us / House';
+    if(small)small.textContent='Keep a linked copy on the shared Us calendar and Atlas House.';
+  }
   if(typeof root.renderCalendar==='function'){
     const baseRenderCalendar=root.renderCalendar;
     root.renderCalendar=function(){const result=baseRenderCalendar.apply(this,arguments);decorateCalendar();return result};
   }
-  document.addEventListener('click',event=>{if(event.target.closest?.('[data-cal-nav]'))setTimeout(decorateCalendar,0)});
-  root.AtlasCalendarClarity=Object.freeze({version:'1',decorate:decorateCalendar});
+  document.addEventListener('click',event=>{
+    if(event.target.closest?.('[data-cal-nav]'))setTimeout(decorateCalendar,0);
+    if(event.target.closest?.('[data-cal-add],[data-cal-travel-add],[data-calendar-event]'))setTimeout(surfaceUsLink,0);
+  });
+  root.AtlasCalendarClarity=Object.freeze({version:'2',decorate:decorateCalendar,surfaceUsLink});
 })(window);
