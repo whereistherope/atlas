@@ -10,27 +10,37 @@ const entry=read('house/index.html');
 const legacy=read('house/legacy.html');
 const legacyJs=read('house/legacy.js');
 const legacyCss=read('house/legacy.css');
+const legacyCalendarJs=read('house/legacy-calendar.js');
+const legacyCalendarCss=read('house/legacy-calendar.css');
+const clarity=read('js/calendar-clarity.js');
 const context=read('js/widget-context.js');
 const list=read('js/list-widget.js');
 const server=read('js/home-server-widget.js');
 const weather=read('js/weather-widget.js');
 const weatherSource=read('js/header-weather.js');
 
-assert.match(boot,/const BUILD='0169r59'/,'r59 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r59/,'r59 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r60'/,'r60 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r60/,'r60 service-worker cache missing');
 for(const asset of ['./js/widget-context.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js','./styles/weather-widget.css','./styles/house.css']){
   assert.ok(boot.includes(asset),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
 }
-for(const asset of ['./house/','./house/index.html','./house/legacy.html','./house/legacy.css','./house/legacy.js'])assert.ok(sw.includes(asset),`${asset} route shell is not offline-cached`);
+for(const asset of ['./house/','./house/index.html','./house/legacy.html','./house/legacy.css','./house/legacy.js','./house/legacy-calendar.css','./house/legacy-calendar.js'])assert.ok(sw.includes(asset),`${asset} route shell is not offline-cached`);
 
 assert.match(entry,/new Function\('var item=\{value:1\}; return item\?\.value \?\? 0;'\)/,'/house/ must capability-test modern Atlas syntax before routing');
-assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r59':'\.\.\/\?view=house'/,'modern devices must continue into the unchanged shared Atlas House route');
+assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r60':'\.\.\/\?view=house'/,'modern devices must continue into the unchanged shared Atlas House route');
 assert.match(entry,/Compatibility view/,'House routing shell must expose a manual legacy fallback link');
-assert.match(legacy,/\.\/legacy\.css/,'legacy House CSS missing');
-assert.match(legacy,/\.\/legacy\.js/,'legacy House runtime missing');
+assert.match(legacy,/\.\/legacy\.css\?v=r60/,'legacy House CSS missing');
+assert.match(legacy,/\.\/legacy\.js\?v=r60/,'legacy House runtime missing');
+assert.match(legacy,/\.\/legacy-calendar\.css\?v=r60/,'legacy House calendar CSS missing');
+assert.match(legacy,/\.\/legacy-calendar\.js\?v=r60/,'legacy House calendar writer missing');
+assert.match(legacy,/id="houseAddTravel"/,'legacy House must expose + Travel');
+assert.match(legacy,/id="houseAddEvent"/,'legacy House must expose + Event');
+assert.match(legacy,/id="houseCalendarOverlay"/,'legacy House calendar entry overlay missing');
 assert.doesNotMatch(legacyJs,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House JavaScript must stay parseable by iOS 12 Safari');
+assert.doesNotMatch(legacyCalendarJs,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House calendar writer must stay parseable by iOS 12 Safari');
 assert.doesNotMatch(legacyCss,/color-mix\(|100dvh|100svh|100lvh/,'legacy House CSS must avoid modern-only presentation features');
+assert.doesNotMatch(legacyCalendarCss,/color-mix\(|100dvh|100svh|100lvh/,'legacy House calendar CSS must avoid modern-only presentation features');
 assert.match(legacyJs,/ENTITY_TYPE='entity_state_v2'/,'legacy House must use Shared Atlas record-level sync records');
 assert.match(legacyJs,/PROFILE='us'/,'legacy House must stay scoped to the shared Us profile');
 assert.match(legacyJs,/kind==='calendar'/,'legacy House calendar must read real Atlas calendar records');
@@ -39,6 +49,16 @@ assert.match(legacyJs,/data\.type==='list'/,'legacy House lists must use real At
 assert.match(legacyJs,/insertRecord\(value,'quickTodos'/,'legacy House must write normal Atlas To-do records');
 assert.match(legacyJs,/insertRecord\(value,'notes'/,'legacy House must write normal Atlas List records');
 assert.doesNotMatch(legacyJs,/indexedDB|deleteDatabase|canonical_state_v1/,'legacy House must not introduce a second Atlas database or stale canonical-state client');
+assert.match(legacyCalendarJs,/PROFILE='us'/,'House-created calendar items must belong to Us');
+assert.match(legacyCalendarJs,/kind:'calendar'/,'House calendar writer must create normal calendar entity records');
+assert.match(legacyCalendarJs,/record_type:ENTITY_TYPE/,'House calendar writer must use current record-level sync');
+assert.match(legacyCalendarJs,/profile:PROFILE/,'House calendar data must stay scoped to Us');
+assert.match(legacyCalendarJs,/data-house-date/,'House calendar dates must be interactive');
+assert.match(legacyCalendarJs,/openForm\('event',day\.getAttribute\('data-house-date'\)\)/,'tapping a House date must open event creation for that date');
+assert.match(legacyCalendarJs,/entryType:type/,'House calendar writer must preserve event versus travel type');
+assert.match(legacyCalendarJs,/flightNumber:type==='travel'/,'House travel creation must preserve flight details');
+assert.match(clarity,/Link to Us \/ House/,'personal calendar link control must explicitly surface Us / House');
+assert.match(clarity,/shared Us calendar and Atlas House/,'personal calendar link control must explain House propagation');
 
 assert.match(house,/\{id:'house',name:'House'\}/,'House navigation item missing');
 assert.match(house,/renderWidget\(id,\{profileId:HOUSE_PROFILE\}\)/,'House must compose the real Atlas widget renderer');
@@ -65,4 +85,4 @@ assert.doesNotMatch(weather,/fetch\s*\(|localStorage|indexedDB/,'Weather widget 
 assert.match(sw,/shellNavigation/,'service worker must distinguish root shell navigation');
 assert.match(sw,/response&&response\.ok&&shellNavigation/,'/house/ navigation must not overwrite cached Atlas root shell');
 
-console.log('atlas house shared widgets + iOS 12 compatibility contract ok');
+console.log('atlas house shared widgets + iOS 12 calendar compatibility contract ok');
