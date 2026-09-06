@@ -20,6 +20,7 @@
     app.innerHTML=`<section class="house-atlas-board" id="atlasHouseBoard" data-house-profile="${HOUSE_PROFILE}" aria-label="Atlas House household dashboard">
       ${slot('calendar','calendar')}
       ${slot('upcoming','upcoming')}
+      ${slot('weather','weather')}
       ${slot('list','list')}
       ${slot('todo','todo')}
       ${slot('server','server')}
@@ -46,5 +47,5 @@
   document.getElementById('sectionSelect')?.addEventListener('change',event=>{if(routeHouse&&event.target.value!=='house')clearHouseRoute()},{capture:true});
   window.addEventListener('popstate',()=>{routeHouse=(new URLSearchParams(location.search).get('view')||'').toLowerCase()==='house'||/\/house\/?$/.test(location.pathname);renderAll(false)});
 
-  root.AtlasHouse=Object.freeze({version:'2',render:renderHouse,isActive:houseIsActive,profileId:HOUSE_PROFILE});
+  root.AtlasHouse=Object.freeze({version:'3',render:renderHouse,isActive:houseIsActive,profileId:HOUSE_PROFILE});
 })(window);

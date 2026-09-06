@@ -2,17 +2,23 @@
 .atlas-house-view #app{min-width:0}
 .house-atlas-board{
   display:grid;
-  grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
-  grid-template-rows:minmax(230px,.95fr) minmax(190px,.78fr) minmax(170px,.62fr);
-  grid-template-areas:"calendar upcoming" "list todo" "server server";
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-rows:minmax(300px,auto) minmax(145px,.58fr) minmax(145px,.58fr);
+  grid-template-areas:"calendar calendar upcoming" "weather list todo" "server server server";
   gap:var(--workspace-gap);
   min-width:0;
   align-items:stretch;
 }
 .house-widget-slot{min-width:0;min-height:0}
-.house-calendar{grid-area:calendar}.house-upcoming{grid-area:upcoming}.house-list{grid-area:list}.house-todo{grid-area:todo}.house-server{grid-area:server}
+.house-calendar{grid-area:calendar}.house-upcoming{grid-area:upcoming}.house-weather{grid-area:weather}.house-list{grid-area:list}.house-todo{grid-area:todo}.house-server{grid-area:server}
 .house-widget-slot>.atlas-widget{height:100%;min-height:0;display:flex;flex-direction:column}
 .house-widget-slot>.atlas-widget>.widget-body{flex:1;min-height:0;overflow:auto}
+/* The real Calendar widget must be fully visible on the fixed 4:3 House display. */
+.house-calendar{min-height:300px}
+.house-calendar>.atlas-widget>.widget-body{overflow:visible!important}
+.house-calendar .mini-day{min-height:24px}
+.house-calendar .mini-calendar-head{margin-bottom:6px}
+.house-calendar .utility-actions-row{margin-top:6px!important}
 .house-atlas-board .widget-actions{display:none}
 .house-atlas-board .widget-head{cursor:default}
 .house-atlas-board .atlas-widget.widget-floating{position:relative!important;left:auto!important;top:auto!important;width:auto;max-height:none;box-shadow:0 10px 30px rgba(0,0,0,.045)!important}
@@ -31,12 +37,15 @@ body[data-theme="night"] .house-atlas-board .atlas-widget.widget-floating{box-sh
 .server-service-list .server-ok>i{background:var(--accent)}
 .server-service-list .server-warn>i{background:var(--sand)}
 .server-service-list .server-off>i{background:var(--red)}
-@media(max-width:1179px), (max-aspect-ratio:1.339/1){
-  .house-atlas-board{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(220px,.95fr) minmax(190px,.8fr) minmax(170px,.62fr)}
+@media(max-width:900px) and (orientation:landscape){
+  .house-atlas-board{grid-template-rows:minmax(292px,auto) minmax(140px,.56fr) minmax(140px,.56fr)}
+  .house-calendar{min-height:292px}
+  .house-calendar .mini-day{min-height:23px}
 }
 @media(max-width:850px) and (orientation:portrait){
-  .house-atlas-board{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"calendar" "upcoming" "list" "todo" "server"}
+  .house-atlas-board{grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"calendar" "upcoming" "weather" "list" "todo" "server"}
   .house-widget-slot>.atlas-widget{min-height:210px}
+  .house-calendar,.house-calendar>.atlas-widget{min-height:310px}
   .house-server>.atlas-widget{min-height:280px}
   .server-service-list{grid-template-columns:1fr}
   .server-service-list .widget-row{border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)}

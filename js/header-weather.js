@@ -19,6 +19,18 @@
     if([95,96,99].includes(code))return'STORM';
     return'WEATHER';
   };
+  const iconFor=code=>{
+    code=Number(code);
+    if(code===0)return'☀';
+    if([1,2].includes(code))return'◑';
+    if(code===3)return'☁';
+    if([45,48].includes(code))return'≋';
+    if([51,53,55,56,57].includes(code))return'⋰';
+    if([61,63,65,66,67,80,81,82].includes(code))return'☂';
+    if([71,73,75,77,85,86].includes(code))return'❄';
+    if([95,96,99].includes(code))return'⚡';
+    return'·';
+  };
 
   function mount(){
     const host=document.querySelector('.page-chrono');
@@ -34,12 +46,14 @@
   function readCache(){
     try{const value=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');return value&&Number.isFinite(Number(value.temperature))&&Number.isFinite(Number(value.code))&&Number.isFinite(Number(value.at))?value:null}catch(_){return null}
   }
+  function currentSnapshot(){const value=readCache();return value?{...value,label:labelFor(value.code),icon:iconFor(value.code)}:null}
   function writeCache(value){try{localStorage.setItem(CACHE_KEY,JSON.stringify(value))}catch(_){}}
   function paint(value,{stale=false}={}){
     mount();const temp=document.getElementById('weatherTemp'),condition=document.getElementById('weatherCondition');if(!temp||!condition)return;
     temp.textContent=`${Math.round(Number(value.temperature))}°`;
     condition.textContent=labelFor(value.code);
     const host=document.getElementById('atlasWeather');if(host)host.dataset.stale=stale?'true':'false';
+    try{root.dispatchEvent(new CustomEvent('atlasweather',{detail:{...value,label:labelFor(value.code),icon:iconFor(value.code),stale:!!stale}}))}catch(_){}
   }
 
   async function refresh(force=false){
@@ -57,5 +71,5 @@
 
   function start(){mount();refresh();setInterval(()=>{if(document.visibilityState!=='hidden')refresh()},REFRESH_MS);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refresh()});root.addEventListener?.('online',()=>refresh(true))}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-  root.AtlasHeaderWeather=Object.freeze({version:'1',refresh,labelFor});
+  root.AtlasHeaderWeather=Object.freeze({version:'2',refresh,labelFor,iconFor,getCurrent:currentSnapshot});
 })(window);

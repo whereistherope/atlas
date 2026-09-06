@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r55';
+  const BUILD='0169r56';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -33,6 +33,7 @@
   loadStyle('./styles/item-delete-tools.css');
   loadStyle('./styles/calendar-extras.css');
   loadStyle('./styles/calendar-clarity.css');
+  loadStyle('./styles/weather-widget.css');
   loadStyle('./styles/house.css');
 
   // Required calendar presentation helpers.
@@ -79,6 +80,7 @@
   try { await loadScript('./js/widget-context.js','Atlas widget profile context'); } catch (_) {}
   try { await loadScript('./js/list-widget.js','Atlas List widget'); } catch (_) {}
   try { await loadScript('./js/home-server-widget.js','Atlas Home Server widget'); } catch (_) {}
+  try { await loadScript('./js/weather-widget.js','Atlas Weather widget'); } catch (_) {}
   try { await loadScript('./js/house.js','Atlas House dashboard'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
