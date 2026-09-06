@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r53';
+  const BUILD='0169r54';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -33,6 +33,7 @@
   loadStyle('./styles/item-delete-tools.css');
   loadStyle('./styles/calendar-extras.css');
   loadStyle('./styles/calendar-clarity.css');
+  loadStyle('./styles/house.css');
 
   // Required calendar presentation helpers.
   await loadScript('./js/travel-direction.js','Atlas travel direction marks');
@@ -74,6 +75,8 @@
   try { await loadScript('./js/pomodoro-widget.js','Atlas Pomodoro widget'); } catch (_) {}
   try { await loadScript('./js/window-drag-local.js','Atlas free movable windows'); } catch (_) {}
   try { await loadScript('./js/runtime-telemetry.js','Atlas live runtime telemetry'); } catch (_) {}
+  // House extends the final navigation/render hooks without modifying Atlas state schema.
+  try { await loadScript('./js/house.js','Atlas House dashboard'); } catch (_) {}
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
   await load();
