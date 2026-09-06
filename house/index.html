@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#070b10" />
+  <meta name="theme-color" content="#e9e6dc" />
   <title>Atlas House</title>
 </head>
 <body>
 <script>
-  location.replace('../?view=house');
+(function(){
+  var ua=navigator.userAgent||'';
+  var legacy=/iPad/.test(ua)&&/OS 12[_\.]/.test(ua);
+  location.replace(legacy?'./legacy.html':'../?view=house');
+}());
 </script>
 <noscript><a href="../?view=house">Open Atlas House</a></noscript>
 </body>
