@@ -16,16 +16,17 @@ const server=read('js/home-server-widget.js');
 const weather=read('js/weather-widget.js');
 const weatherSource=read('js/header-weather.js');
 
-assert.match(boot,/const BUILD='0169r58'/,'r58 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r58/,'r58 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r59'/,'r59 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r59/,'r59 service-worker cache missing');
 for(const asset of ['./js/widget-context.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js','./styles/weather-widget.css','./styles/house.css']){
   assert.ok(boot.includes(asset),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
 }
 for(const asset of ['./house/','./house/index.html','./house/legacy.html','./house/legacy.css','./house/legacy.js'])assert.ok(sw.includes(asset),`${asset} route shell is not offline-cached`);
 
-assert.match(entry,/\/iPad\/\.test\(ua\)&&\/OS 12\[_\\\.\]\//,'/house/ entry must detect iOS 12 iPads before modern Atlas loads');
-assert.match(entry,/legacy\?'\.\/legacy\.html':'\.\.\/\?view=house'/,'modern devices must continue into the unchanged shared Atlas House route');
+assert.match(entry,/new Function\('var item=\{value:1\}; return item\?\.value \?\? 0;'\)/,'/house/ must capability-test modern Atlas syntax before routing');
+assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r59':'\.\.\/\?view=house'/,'modern devices must continue into the unchanged shared Atlas House route');
+assert.match(entry,/Compatibility view/,'House routing shell must expose a manual legacy fallback link');
 assert.match(legacy,/\.\/legacy\.css/,'legacy House CSS missing');
 assert.match(legacy,/\.\/legacy\.js/,'legacy House runtime missing');
 assert.doesNotMatch(legacyJs,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House JavaScript must stay parseable by iOS 12 Safari');
