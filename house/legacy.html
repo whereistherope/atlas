@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Atlas House">
+  <meta name="theme-color" content="#e9e6dc">
+  <title>Atlas · House</title>
+  <link rel="apple-touch-icon" href="../atlas-192.png">
+  <link rel="stylesheet" href="./legacy.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-block">
+      <strong class="brand">Atlas</strong>
+      <span class="surface-name">House</span>
+    </div>
+    <div class="chrono" aria-label="House status">
+      <span class="chrono-block"><b>WX</b><strong id="topWeather">--°</strong><em id="topCondition">MEL</em></span>
+      <i></i>
+      <span class="chrono-block"><b>MEL</b><strong id="melTime">--:--</strong><em id="melDate">---</em></span>
+      <i></i>
+      <span class="chrono-block"><b>UTC</b><strong id="utcTime">--:--</strong><em id="syncState">LOCAL</em></span>
+      <button class="top-action" id="themeToggle" type="button">Night</button>
+      <button class="top-action" id="refreshHouse" type="button">Refresh</button>
+      <button class="top-action" id="signOut" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main class="house-board" id="houseBoard" aria-label="Atlas House dashboard">
+    <section class="atlas-widget house-calendar" data-widget="calendar">
+      <header class="widget-head"><div class="widget-ident"><strong>Calendar</strong><span id="calendarMeta">0 Events · Us</span></div></header>
+      <div class="widget-body flush">
+        <div class="calendar-inner">
+          <div class="mini-calendar-head"><button type="button" id="calPrev" aria-label="Previous month">←</button><strong id="calendarTitle">---</strong><button type="button" id="calNext" aria-label="Next month">→</button></div>
+          <div class="mini-cal" id="miniCalendar"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="atlas-widget house-upcoming" data-widget="upcoming">
+      <header class="widget-head"><div class="widget-ident"><strong>Upcoming</strong><span id="upcomingMeta">0 / 30D · Us</span></div></header>
+      <div class="widget-body"><div class="widget-list" id="upcomingList"><div class="widget-empty">Nothing scheduled.</div></div></div>
+    </section>
+
+    <section class="atlas-widget house-weather" data-widget="weather">
+      <header class="widget-head"><div class="widget-ident"><strong>Weather</strong><span>Current · Melbourne</span></div></header>
+      <div class="widget-body"><div class="weather-readout"><div class="weather-icon" id="weatherIcon" aria-hidden="true">·</div><div class="weather-copy"><strong id="weatherTemp">--°</strong><span id="weatherCondition">Weather</span><small id="weatherDetail">Melbourne</small></div></div></div>
+    </section>
+
+    <section class="atlas-widget house-list" data-widget="list">
+      <header class="widget-head"><div class="widget-ident"><strong>List</strong><span id="listMeta">0 Lists · Us</span></div></header>
+      <div class="widget-body">
+        <div class="list-toolbar"><select id="listSelect" aria-label="Choose list"><option value="">No lists</option></select><button type="button" id="newList">+ List</button></div>
+        <div class="quick-add"><input id="listItemInput" type="text" placeholder="Add an item…" autocomplete="off"><button type="button" id="addListItem">Add</button></div>
+        <div class="quick-list" id="listItems"><div class="widget-empty">No items yet.</div></div>
+      </div>
+    </section>
+
+    <section class="atlas-widget house-todo" data-widget="todo">
+      <header class="widget-head"><div class="widget-ident"><strong>To-do</strong><span id="todoMeta">0 Open · Us</span></div></header>
+      <div class="widget-body">
+        <div class="quick-add"><input id="todoInput" type="text" placeholder="Add a quick task…" autocomplete="off"><button type="button" id="addTodo">Add</button></div>
+        <div class="quick-list" id="todoList"><div class="widget-empty">No quick tasks.</div></div>
+      </div>
+    </section>
+
+    <section class="atlas-widget house-server" data-widget="server">
+      <header class="widget-head"><div class="widget-ident"><strong>Home Server</strong><span>Mock / Read only</span></div></header>
+      <div class="widget-body server-body">
+        <div class="server-service-list">
+          <div class="widget-row server-ok"><i></i><div><strong>Proxmox</strong><small>Online</small></div><em>Online</em></div>
+          <div class="widget-row server-ok"><i></i><div><strong>Tailscale</strong><small>Connected</small></div><em>Online</em></div>
+          <div class="widget-row server-ok"><i></i><div><strong>Uptime Kuma</strong><small>Healthy</small></div><em>Online</em></div>
+          <div class="widget-row server-ok"><i></i><div><strong>Pi-hole</strong><small>Blocking</small></div><em>Online</em></div>
+        </div>
+        <div class="server-metrics"><div class="widget-kpi"><span>CPU</span><b>14%</b></div><div class="widget-kpi"><span>Memory</span><b>38%</b></div><div class="widget-kpi"><span>Storage</span><b>42%</b></div></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="rotate-note" aria-live="polite"><div><strong>Atlas House</strong><span>Rotate the iPad to landscape.</span></div></div>
+
+  <div class="auth-overlay" id="authOverlay">
+    <section class="auth-card" aria-label="Atlas Cloud sign in">
+      <div class="auth-brand"><strong>Atlas</strong><span>House · iPad compatibility</span></div>
+      <p>Sign in once to connect this iPad to the same Shared Atlas records used everywhere else.</p>
+      <label>Email<input id="email" type="email" autocomplete="username" autocapitalize="none"></label>
+      <label>Password<input id="password" type="password" autocomplete="current-password"></label>
+      <button type="button" id="signIn">Connect Atlas</button>
+      <div class="auth-error" id="authError"></div>
+      <small>This compatibility view is used only on older iPads. Modern Atlas is unchanged.</small>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="./legacy.js"></script>
+</body>
+</html>
