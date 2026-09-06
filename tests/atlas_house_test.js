@@ -32,6 +32,8 @@ assert.match(context,/upcomingWidget=function\(options=/,'profile-aware real Upc
 assert.match(context,/calendarWidget=function\(options=/,'profile-aware real Calendar widget missing');
 assert.match(list,/ATLAS_WIDGETS\.list=/,'List must be a first-class Atlas widget');
 assert.match(list,/note\.type==='list'/,'List must use synced Atlas notes rather than a parallel store');
+assert.match(list,/note=>note\.type!=='list'/,'List records must stay out of ordinary note surfaces');
+assert.match(list,/renderInbox=function\(\)\{const notes=state\.notes\.filter\(n=>profileAllows\(n\.profile\)&&n\.type!=='list'/,'Inbox must exclude List records');
 assert.doesNotMatch(list,/indexedDB|localStorage|fetch\s*\(/,'List widget must reuse Atlas persistence/sync');
 assert.match(server,/ATLAS_WIDGETS\.server=/,'Home Server must be a first-class Atlas widget');
 assert.doesNotMatch(server,/password|apiKey|accessToken|fetch\s*\(/i,'Home Server milestone must remain safe/read-only mock data');

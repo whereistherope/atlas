@@ -7,7 +7,14 @@
   const baseDefaultWidgetLayout=defaultWidgetLayout;
   defaultWidgetLayout=function(){const layout=baseDefaultWidgetLayout();layout.list=layout.list||{open:false,zone:'right',order:5};return layout};
   const baseRenderWidget=renderWidget;
+  const baseVisibleNotes=typeof visibleNotes==='function'?visibleNotes:null;
+  const baseInboxCount=typeof inboxCount==='function'?inboxCount:null;
   const composerProfiles=new Set();
+
+  // Lists use note records for existing Atlas sync, but remain a distinct UI type.
+  if(baseVisibleNotes)visibleNotes=function(scope){return baseVisibleNotes(scope).filter(note=>note.type!=='list')};
+  if(baseInboxCount)inboxCount=function(){return state.notes.filter(note=>profileAllows(note.profile)&&note.type!=='list'&&!note.areaId).length};
+  if(typeof renderInbox==='function')renderInbox=function(){const notes=state.notes.filter(n=>profileAllows(n.profile)&&n.type!=='list'&&!n.areaId).sort((a,b)=>b.createdAt-a.createdAt);document.getElementById('app').innerHTML=`<div class="workspace-head"><div class="workspace-title"><div class="crumb">ATLAS / ${esc(activeProfile().name.toUpperCase())} / INBOX</div><h2>Inbox</h2><p>Unsorted notes and ideas. Link them to an area when their home becomes clear.</p></div><button class="btn primary" data-quick-add="note">+ Capture</button></div><section class="panel"><div class="panel-head"><h3>Unsorted</h3><span class="code">${notes.length} ITEMS</span></div>${notesHtml(notes)}</section>`};
 
   function profileIdFor(target){return target?.closest?.('.atlas-widget[data-widget-profile]')?.dataset.widgetProfile||state.settings.activeProfile||'me'}
   function listNotes(profileId){return (state.notes||[]).filter(note=>(note.profile||'me')===profileId&&note.type==='list').sort((a,b)=>Number(b.updatedAt||b.createdAt||0)-Number(a.updatedAt||a.createdAt||0))}
