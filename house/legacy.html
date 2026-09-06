@@ -9,7 +9,7 @@
   <meta name="theme-color" content="#e9e6dc">
   <title>Atlas · House</title>
   <link rel="apple-touch-icon" href="../atlas-192.png">
-  <link rel="stylesheet" href="./legacy.css">
+  <link rel="stylesheet" href="./legacy.css?v=r60">
 </head>
 <body>
   <header class="topbar">
@@ -31,7 +31,10 @@
 
   <main class="house-board" id="houseBoard" aria-label="Atlas House dashboard">
     <section class="atlas-widget house-calendar" data-widget="calendar">
-      <header class="widget-head"><div class="widget-ident"><strong>Calendar</strong><span id="calendarMeta">0 Events · Us</span></div></header>
+      <header class="widget-head">
+        <div class="widget-ident"><strong>Calendar</strong><span id="calendarMeta">0 Events · Us</span></div>
+        <div class="widget-actions"><button type="button" id="houseAddTravel">+ Travel</button><button type="button" id="houseAddEvent">+ Event</button></div>
+      </header>
       <div class="widget-body flush">
         <div class="calendar-inner">
           <div class="mini-calendar-head"><button type="button" id="calPrev" aria-label="Previous month">←</button><strong id="calendarTitle">---</strong><button type="button" id="calNext" aria-label="Next month">→</button></div>
@@ -83,6 +86,41 @@
 
   <div class="rotate-note" aria-live="polite"><div><strong>Atlas House</strong><span>Rotate the iPad to landscape.</span></div></div>
 
+  <div class="calendar-overlay hidden" id="houseCalendarOverlay" role="dialog" aria-modal="true" aria-labelledby="houseCalendarHeading">
+    <section class="calendar-card">
+      <header class="calendar-card-head"><div><strong id="houseCalendarHeading">New event</strong><span>Calendar · Us / House</span></div><button type="button" id="houseCalendarClose" aria-label="Close">×</button></header>
+      <div class="calendar-form">
+        <input id="houseCalendarType" type="hidden" value="event">
+        <label class="calendar-field"><span id="houseCalendarTitleLabel">Event</span><input id="houseCalendarTitle" type="text" autocomplete="off" placeholder="Event title"></label>
+        <div class="calendar-form-row three">
+          <label class="calendar-field"><span>Date</span><input id="houseCalendarDate" type="date"></label>
+          <label class="calendar-field"><span id="houseCalendarStartLabel">Start</span><input id="houseCalendarStart" type="time"></label>
+          <label class="calendar-field"><span id="houseCalendarEndLabel">End</span><input id="houseCalendarEnd" type="time"></label>
+        </div>
+        <div class="calendar-travel-fields hidden" id="houseTravelFields">
+          <div class="calendar-form-row two">
+            <label class="calendar-field"><span>Traveller</span><input id="houseCalendarTraveler" type="text" autocomplete="off" placeholder="Fraser"></label>
+            <label class="calendar-field"><span>Flight</span><input id="houseCalendarFlight" type="text" autocomplete="off" autocapitalize="characters" placeholder="VA823"></label>
+          </div>
+          <div class="calendar-form-row two">
+            <label class="calendar-field"><span>Origin</span><input id="houseCalendarOrigin" type="text" autocomplete="off" autocapitalize="characters" placeholder="MEL"></label>
+            <label class="calendar-field"><span>Destination</span><input id="houseCalendarDestination" type="text" autocomplete="off" autocapitalize="characters" placeholder="SYD"></label>
+          </div>
+        </div>
+        <div class="calendar-form-row two">
+          <label class="calendar-field"><span id="houseCalendarZoneLabel">Time zone</span><select id="houseCalendarZone"><option value="Australia/Melbourne">Melbourne / Victoria</option><option value="Australia/Sydney">Sydney / NSW / ACT</option><option value="Australia/Brisbane">Brisbane / Queensland</option><option value="Australia/Adelaide">Adelaide / South Australia</option><option value="Australia/Perth">Perth / Western Australia</option><option value="UTC">UTC</option></select></label>
+          <label class="calendar-field"><span>Arrival time zone</span><select id="houseCalendarArrivalZone"><option value="">Same / not set</option><option value="Australia/Melbourne">Melbourne / Victoria</option><option value="Australia/Sydney">Sydney / NSW / ACT</option><option value="Australia/Brisbane">Brisbane / Queensland</option><option value="Australia/Adelaide">Adelaide / South Australia</option><option value="Australia/Perth">Perth / Western Australia</option><option value="UTC">UTC</option></select></label>
+        </div>
+        <div class="calendar-form-row two">
+          <label class="calendar-field"><span>Colour</span><select id="houseCalendarColor"><option value="">Automatic</option><option value="slate">Slate</option><option value="blue">Blue</option><option value="teal">Teal</option><option value="green">Green</option><option value="amber">Amber</option><option value="red">Red</option><option value="purple">Purple</option><option value="pink">Pink</option></select></label>
+          <label class="calendar-field"><span>Profile</span><input type="text" value="Us / House" disabled></label>
+        </div>
+        <label class="calendar-field"><span>Notes</span><textarea id="houseCalendarNotes" placeholder="Optional context"></textarea></label>
+        <div class="calendar-form-actions"><button type="button" id="houseCalendarCancel">Cancel</button><button type="button" class="primary" id="houseCalendarSave">Save Event</button></div>
+      </div>
+    </section>
+  </div>
+
   <div class="auth-overlay" id="authOverlay">
     <section class="auth-card" aria-label="Atlas Cloud sign in">
       <div class="auth-brand"><strong>Atlas</strong><span>House · iPad compatibility</span></div>
@@ -96,6 +134,6 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./legacy.js"></script>
+  <script src="./legacy.js?v=r60"></script>
 </body>
 </html>
