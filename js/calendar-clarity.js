@@ -1,6 +1,7 @@
 // Atlas calendar clarity: quiet weekend treatment, current-day marker, profile linking and event editing.
 (function(root){
   'use strict';
+  function atlasState(){try{return typeof state!=='undefined'?state:null}catch(_){return null}}
   function decorateCalendar(){
     const grid=document.querySelector('.calendar-grid');if(!grid)return;
     grid.querySelectorAll('.cal-weekday').forEach((cell,index)=>cell.classList.toggle('weekend',index===0||index===6));
@@ -14,21 +15,22 @@
   function surfaceProfileLink(){
     const row=document.getElementById('entangleRow'),title=document.getElementById('calTitle')?.closest('.field');if(!row||!title)return;
     if(title.nextElementSibling!==row)title.insertAdjacentElement('afterend',row);
-    const active=root.state?.settings?.activeProfile||'me';
-    if(active!=='us')row.style.display='flex';
+    const active=atlasState()?.settings?.activeProfile||'me';
+    if(active!=='us'&&row.style.display!=='flex')row.style.display='flex';
     const copy=row.querySelector('span');if(copy){
       let heading=copy.querySelector('[data-profile-link-heading]');
       if(!heading){heading=document.createElement('small');heading.dataset.profileLinkHeading='yes';heading.className='profile-link-heading';copy.insertBefore(heading,copy.firstChild)}
-      heading.textContent='Link to profiles';
-      const strong=copy.querySelector('strong');if(strong)strong.textContent='Us / House';
-      const smalls=copy.querySelectorAll('small');if(smalls.length)smalls[smalls.length-1].textContent='Keep a linked copy on the shared Us calendar and Atlas House.';
+      if(heading.textContent!=='Link to profiles')heading.textContent='Link to profiles';
+      const strong=copy.querySelector('strong');if(strong&&strong.textContent!=='Us / House')strong.textContent='Us / House';
+      const smalls=copy.querySelectorAll('small'),detail=smalls.length?smalls[smalls.length-1]:null;
+      if(detail&&detail!==heading&&detail.textContent!=='Keep a linked copy on the shared Us calendar and Atlas House.')detail.textContent='Keep a linked copy on the shared Us calendar and Atlas House.';
     }
   }
   function openUpcomingForEdit(event){
-    const row=event.target.closest?.('[data-calendar-id]');if(!row||typeof root.openCalendarEvent!=='function')return false;
-    const item=(root.state?.calendar||[]).find(entry=>entry.id===row.dataset.calendarId);if(!item)return false;
-    const source=item.sourceEventId&&(root.state?.calendar||[]).find(entry=>entry.id===item.sourceEventId);
-    event.preventDefault();event.stopPropagation();root.openCalendarEvent(source?.id||item.id);return true;
+    const row=event.target.closest?.('[data-calendar-id]'),current=atlasState();if(!row||!current||typeof openCalendarEvent!=='function')return false;
+    const item=(current.calendar||[]).find(entry=>entry.id===row.dataset.calendarId);if(!item)return false;
+    const source=item.sourceEventId&&(current.calendar||[]).find(entry=>entry.id===item.sourceEventId);
+    event.preventDefault();event.stopPropagation();openCalendarEvent(source?.id||item.id);return true;
   }
   if(typeof root.renderCalendar==='function'){
     const baseRenderCalendar=root.renderCalendar;
