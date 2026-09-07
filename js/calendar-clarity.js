@@ -14,6 +14,8 @@
   function surfaceProfileLink(){
     const row=document.getElementById('entangleRow'),title=document.getElementById('calTitle')?.closest('.field');if(!row||!title)return;
     if(title.nextElementSibling!==row)title.insertAdjacentElement('afterend',row);
+    const active=root.state?.settings?.activeProfile||'me';
+    if(active!=='us')row.style.display='flex';
     const copy=row.querySelector('span');if(copy){
       let heading=copy.querySelector('[data-profile-link-heading]');
       if(!heading){heading=document.createElement('small');heading.dataset.profileLinkHeading='yes';heading.className='profile-link-heading';copy.insertBefore(heading,copy.firstChild)}
