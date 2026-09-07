@@ -12,33 +12,37 @@ const legacyJs=read('house/legacy.js');
 const legacyCss=read('house/legacy.css');
 const legacyCalendarJs=read('house/legacy-calendar.js');
 const legacyCalendarCss=read('house/legacy-calendar.css');
+const legacyUpcomingEditJs=read('house/legacy-upcoming-edit.js');
 const clarity=read('js/calendar-clarity.js');
+const clarityCss=read('styles/calendar-clarity.css');
 const context=read('js/widget-context.js');
 const list=read('js/list-widget.js');
 const server=read('js/home-server-widget.js');
 const weather=read('js/weather-widget.js');
 const weatherSource=read('js/header-weather.js');
 
-assert.match(boot,/const BUILD='0169r60'/,'r60 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r60/,'r60 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r61'/,'r61 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r61/,'r61 service-worker cache missing');
 for(const asset of ['./js/widget-context.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js','./styles/weather-widget.css','./styles/house.css']){
   assert.ok(boot.includes(asset),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
 }
-for(const asset of ['./house/','./house/index.html','./house/legacy.html','./house/legacy.css','./house/legacy.js','./house/legacy-calendar.css','./house/legacy-calendar.js'])assert.ok(sw.includes(asset),`${asset} route shell is not offline-cached`);
+for(const asset of ['./house/','./house/index.html','./house/legacy.html','./house/legacy.css','./house/legacy.js','./house/legacy-calendar.css','./house/legacy-calendar.js','./house/legacy-upcoming-edit.js'])assert.ok(sw.includes(asset),`${asset} route shell is not offline-cached`);
 
 assert.match(entry,/new Function\('var item=\{value:1\}; return item\?\.value \?\? 0;'\)/,'/house/ must capability-test modern Atlas syntax before routing');
-assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r60':'\.\.\/\?view=house'/,'modern devices must continue into the unchanged shared Atlas House route');
+assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r61':'\.\.\/\?view=house'/,'modern devices must continue into the unchanged shared Atlas House route');
 assert.match(entry,/Compatibility view/,'House routing shell must expose a manual legacy fallback link');
-assert.match(legacy,/\.\/legacy\.css\?v=r60/,'legacy House CSS missing');
-assert.match(legacy,/\.\/legacy\.js\?v=r60/,'legacy House runtime missing');
-assert.match(legacy,/\.\/legacy-calendar\.css\?v=r60/,'legacy House calendar CSS missing');
-assert.match(legacy,/\.\/legacy-calendar\.js\?v=r60/,'legacy House calendar writer missing');
+assert.match(legacy,/\.\/legacy\.css\?v=r61/,'legacy House CSS missing');
+assert.match(legacy,/\.\/legacy\.js\?v=r61/,'legacy House runtime missing');
+assert.match(legacy,/\.\/legacy-calendar\.css\?v=r61/,'legacy House calendar CSS missing');
+assert.match(legacy,/\.\/legacy-calendar\.js\?v=r61/,'legacy House calendar writer missing');
+assert.match(legacy,/\.\/legacy-upcoming-edit\.js\?v=r61/,'legacy House upcoming editor missing');
 assert.match(legacy,/id="houseAddTravel"/,'legacy House must expose + Travel');
 assert.match(legacy,/id="houseAddEvent"/,'legacy House must expose + Event');
 assert.match(legacy,/id="houseCalendarOverlay"/,'legacy House calendar entry overlay missing');
 assert.doesNotMatch(legacyJs,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House JavaScript must stay parseable by iOS 12 Safari');
 assert.doesNotMatch(legacyCalendarJs,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House calendar writer must stay parseable by iOS 12 Safari');
+assert.doesNotMatch(legacyUpcomingEditJs,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House upcoming editor must stay parseable by iOS 12 Safari');
 assert.doesNotMatch(legacyCss,/color-mix\(|100dvh|100svh|100lvh/,'legacy House CSS must avoid modern-only presentation features');
 assert.doesNotMatch(legacyCalendarCss,/color-mix\(|100dvh|100svh|100lvh/,'legacy House calendar CSS must avoid modern-only presentation features');
 assert.match(legacyJs,/ENTITY_TYPE='entity_state_v2'/,'legacy House must use Shared Atlas record-level sync records');
@@ -57,8 +61,15 @@ assert.match(legacyCalendarJs,/data-house-date/,'House calendar dates must be in
 assert.match(legacyCalendarJs,/openForm\('event',day\.getAttribute\('data-house-date'\)\)/,'tapping a House date must open event creation for that date');
 assert.match(legacyCalendarJs,/entryType:type/,'House calendar writer must preserve event versus travel type');
 assert.match(legacyCalendarJs,/flightNumber:type==='travel'/,'House travel creation must preserve flight details');
-assert.match(clarity,/Link to Us \/ House/,'personal calendar link control must explicitly surface Us / House');
-assert.match(clarity,/shared Us calendar and Atlas House/,'personal calendar link control must explain House propagation');
+assert.match(legacyUpcomingEditJs,/data-house-calendar-id/,'legacy House upcoming rows must be editable targets');
+assert.match(legacyUpcomingEditJs,/updateCalendarRecord/,'legacy House upcoming editor must update normal calendar records');
+assert.match(legacyUpcomingEditJs,/sourceEventId/,'editing an entangled House event must follow its source event');
+assert.match(legacyUpcomingEditJs,/mirrorShared/,'linked House copy must be updated with its source');
+assert.match(clarity,/Link to profiles/,'personal calendar must visibly label profile linking');
+assert.match(clarity,/Us \/ House/,'profile linking must expose the Us / House destination');
+assert.match(clarity,/openUpcomingForEdit/,'normal Atlas upcoming rows must open calendar editing');
+assert.match(clarity,/row\.style\.display='flex'/,'personal profile linking must be forced visible');
+assert.match(clarityCss,/\.entangle-row/,'profile linking must have a visible calendar treatment');
 
 assert.match(house,/\{id:'house',name:'House'\}/,'House navigation item missing');
 assert.match(house,/renderWidget\(id,\{profileId:HOUSE_PROFILE\}\)/,'House must compose the real Atlas widget renderer');
