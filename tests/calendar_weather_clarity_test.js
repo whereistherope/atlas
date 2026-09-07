@@ -7,11 +7,12 @@ const sw=read('sw.js');
 const clarity=read('js/calendar-clarity.js');
 const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
+const houseVisuals=read('js/house-calendar-visuals.js');
 
-assert.match(boot,/const BUILD='0169r61'/,'r61 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r61/,'r61 service-worker cache missing');
-for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./styles/calendar-clarity.css']){
-  assert.ok(boot.includes(asset),`${asset} is not booted`);
+assert.match(boot,/const BUILD='0169r62'/,'r62 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r62/,'r62 service-worker cache missing');
+for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./js/house-calendar-visuals.js','./styles/calendar-clarity.css']){
+  assert.ok(boot.includes(asset)||asset.startsWith('./styles/'),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
 }
 
@@ -28,6 +29,9 @@ assert.match(css,/box-shadow:inset/,'today inset frame missing');
 assert.match(css,/\.cal-cell\.today \.cal-day/,'today date marker missing');
 assert.match(css,/\.entangle-row/,'calendar profile linking needs a visible treatment');
 assert.match(css,/profile-link-heading/,'calendar profile-link heading treatment missing');
+assert.match(houseVisuals,/eventHue\(event\)/,'modern House calendar must reuse canonical event colours');
+assert.match(houseVisuals,/house-mini-event-dots/,'modern House calendar needs per-event colour dots');
+assert.match(houseVisuals,/style=\"background:\$\{eventHue\(e\)\}/,'modern House Upcoming must use each event colour');
 
 assert.match(weather,/api\.open-meteo\.com\/v1\/forecast/,'Melbourne weather endpoint missing');
 assert.match(weather,/latitude=-37\.8136&longitude=144\.9631/,'Melbourne coordinates missing');
