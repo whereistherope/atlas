@@ -92,7 +92,7 @@ assert.match(legacyLinkUi,/Fraser \+ Us \/ House/,'House calendar must offer Fra
 assert.match(legacyLinkUi,/Alyssa \+ Us \/ House/,'House calendar must offer Alyssa as a linked destination');
 assert.match(legacyPerson,/fraser:'Fraser',alyssa:'Alyssa',together:'Together'/,'House event Who choices missing');
 assert.match(legacyPerson,/data\.person=LABELS\[person\]\?person:'together'/,'House event person must persist to the calendar record');
-assert.match(legacyPerson,/shared\.person=source\.person/,'House linked copy must carry the event person');
+assert.match(legacyPerson,/data\.person=source\.person/,'House linked copy must carry the event person');
 assert.match(legacyPerson,/house-event-person/,'House Upcoming must render person-first event rows');
 assert.match(legacyPerson,/saveNewEvent/,'House person-first events need a dedicated create path');
 assert.match(legacyPerson,/saveEditedEvent/,'House person-first events must stay editable');
