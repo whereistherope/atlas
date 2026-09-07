@@ -5,15 +5,17 @@
   let currentEventId='';
   let pendingPerson='';
 
+  function atlasState(){return typeof root.AtlasState==='function'?root.AtlasState():null}
   function personForProfile(profile){return profile==='alyssa'?'alyssa':profile==='us'?'together':'fraser'}
   function personValue(event){
+    const state=atlasState();
     if(event?.person&&LABELS[event.person])return event.person;
     if(event?.sourceEventId){
-      const source=(root.state?.calendar||[]).find(item=>item.id===event.sourceEventId);
+      const source=(state?.calendar||[]).find(item=>item.id===event.sourceEventId);
       if(source?.person&&LABELS[source.person])return source.person;
       if(source?.profile)return personForProfile(source.profile);
     }
-    return personForProfile(event?.profile||root.state?.settings?.activeProfile||'me');
+    return personForProfile(event?.profile||state?.settings?.activeProfile||'me');
   }
   function personLabel(event){return LABELS[personValue(event)]||'Together'}
 
@@ -43,38 +45,41 @@
   if(typeof baseOpen==='function')root.openCalendarEvent=function(id='',date='',requestedType='event'){
     currentEventId=id||'';
     const result=baseOpen.apply(this,arguments);
+    const state=atlasState();
     updatePersonField();
-    const event=id?(root.state?.calendar||[]).find(item=>item.id===id):null;
-    const profile=event?.profile||root.state?.settings?.activeProfile||'me';
+    const event=id?(state?.calendar||[]).find(item=>item.id===id):null;
+    const profile=event?.profile||state?.settings?.activeProfile||'me';
     const select=document.getElementById('calPerson');if(select)select.value=event?.person||personForProfile(profile);
     return result;
   };
 
   const baseSync=root.syncEntangledEvent;
   if(typeof baseSync==='function')root.syncEntangledEvent=function(source,enabled){
+    const state=atlasState();
     if(source&&source.entryType!=='travel'&&pendingPerson&&LABELS[pendingPerson])source.person=pendingPerson;
     const result=baseSync.apply(this,arguments);
-    const shared=source?.entangledId?(root.state?.calendar||[]).find(item=>item.id===source.entangledId):(root.state?.calendar||[]).find(item=>item.sourceEventId===source?.id&&item.profile==='us');
+    const shared=source?.entangledId?(state?.calendar||[]).find(item=>item.id===source.entangledId):(state?.calendar||[]).find(item=>item.sourceEventId===source?.id&&item.profile==='us');
     if(shared&&source?.entryType!=='travel')shared.person=source.person||personForProfile(source.profile);
     return result;
   };
 
   const baseSave=root.saveCalendarEvent;
   if(typeof baseSave==='function')root.saveCalendarEvent=function(){
+    const state=atlasState();
     const select=document.getElementById('calPerson');
     const chosen=select&&LABELS[select.value]?select.value:'';
-    const profileBefore=root.state?.settings?.activeProfile||'me';
-    const before=new Set((root.state?.calendar||[]).map(item=>item.id));
+    const profileBefore=state?.settings?.activeProfile||'me';
+    const before=new Set((state?.calendar||[]).map(item=>item.id));
     pendingPerson=chosen;
     const result=baseSave.apply(this,arguments);
     pendingPerson='';
-    let event=currentEventId?(root.state?.calendar||[]).find(item=>item.id===currentEventId):null;
-    if(!event)event=(root.state?.calendar||[]).find(item=>!before.has(item.id)&&(item.profile||'me')===profileBefore&&!item.sourceEventId);
+    let event=currentEventId?(state?.calendar||[]).find(item=>item.id===currentEventId):null;
+    if(!event)event=(state?.calendar||[]).find(item=>!before.has(item.id)&&(item.profile||'me')===profileBefore&&!item.sourceEventId);
     if(event&&event.entryType!=='travel'&&chosen){
       event.person=chosen;
-      if(event.entangledId){const shared=(root.state?.calendar||[]).find(item=>item.id===event.entangledId);if(shared)shared.person=chosen}
+      if(event.entangledId){const shared=(state?.calendar||[]).find(item=>item.id===event.entangledId);if(shared)shared.person=chosen}
       root.save?.();
-      if(root.state?.settings?.activeTab==='calendar'||root.AtlasHouse?.isActive?.())root.renderAll?.(false);
+      if(state?.settings?.activeTab==='calendar'||root.AtlasHouse?.isActive?.())root.renderAll?.(false);
     }
     currentEventId=event?.id||currentEventId;
     return result;
@@ -90,8 +95,9 @@
   };
 
   function decorateUpcoming(rootNode=document){
+    const state=atlasState();
     rootNode.querySelectorAll?.('[data-calendar-id]').forEach(row=>{
-      const id=row.dataset.calendarId,event=(root.state?.calendar||[]).find(item=>item.id===id);if(!event||event.entryType==='travel')return;
+      const id=row.dataset.calendarId,event=(state?.calendar||[]).find(item=>item.id===id);if(!event||event.entryType==='travel')return;
       const body=row.querySelector('div');if(!body)return;
       const signature=[personValue(event),event.title,event.date,event.startTime,event.timeZone].join('|');if(body.dataset.personSignature===signature)return;
       body.dataset.personSignature=signature;
