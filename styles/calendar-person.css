@@ -1,0 +1,10 @@
+/* Person-first presentation for ordinary calendar events. */
+.calendar-person-field{max-width:280px}
+.cal-person-event{display:block!important;text-align:left!important;padding:6px 7px!important;background:color-mix(in srgb,var(--event-hue,var(--green)) 8%,transparent)!important}
+.cal-person-copy{display:grid;gap:1px;min-width:0}
+.cal-person-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px;line-height:1.15}
+.cal-person-copy>span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:750;line-height:1.2}
+.cal-person-copy small{margin-top:1px!important;font:750 7.5px/1.2 "SFMono-Regular",Consolas,monospace;text-transform:uppercase;letter-spacing:.025em}
+.calendar-upcoming-person{display:block!important;font-size:10px!important;line-height:1.15!important}
+.calendar-upcoming-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:700;line-height:1.25;margin-top:1px}
+@media(max-width:700px){.calendar-person-field{max-width:none}.cal-person-event{padding:7px 8px!important}.cal-person-copy strong{font-size:9.5px}.cal-person-copy>span{font-size:10.5px}}
