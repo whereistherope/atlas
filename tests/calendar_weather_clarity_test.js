@@ -8,8 +8,8 @@ const clarity=read('js/calendar-clarity.js');
 const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 
-assert.match(boot,/const BUILD='0169r60'/,'r60 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r60/,'r60 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r61'/,'r61 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r61/,'r61 service-worker cache missing');
 for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./styles/calendar-clarity.css']){
   assert.ok(boot.includes(asset),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
@@ -17,12 +17,17 @@ for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./style
 
 assert.match(clarity,/weekday===0\|\|weekday===6/,'weekend detection missing');
 assert.match(clarity,/aria-current','date'/,'current-day accessibility marker missing');
-assert.match(clarity,/Link to Us \/ House/,'personal calendar must surface the Us / House link control');
-assert.match(clarity,/insertAdjacentElement\('afterend',row\)/,'Us / House link must be moved near the event title');
+assert.match(clarity,/Link to profiles/,'personal calendar must visibly expose profile linking');
+assert.match(clarity,/Us \/ House/,'profile linking must include the Us / House destination');
+assert.match(clarity,/insertAdjacentElement\('afterend',row\)/,'profile link must be moved near the event title');
+assert.match(clarity,/openUpcomingForEdit/,'Upcoming calendar rows must open the event editor');
+assert.match(clarity,/source\?\.id\|\|item\.id/,'linked Upcoming events must edit the personal source where available');
 assert.match(css,/\.cal-cell\.weekend/,'weekend cell treatment missing');
 assert.match(css,/\.cal-cell\.today/,'today treatment missing');
 assert.match(css,/box-shadow:inset/,'today inset frame missing');
 assert.match(css,/\.cal-cell\.today \.cal-day/,'today date marker missing');
+assert.match(css,/\.entangle-row/,'calendar profile linking needs a visible treatment');
+assert.match(css,/profile-link-heading/,'calendar profile-link heading treatment missing');
 
 assert.match(weather,/api\.open-meteo\.com\/v1\/forecast/,'Melbourne weather endpoint missing');
 assert.match(weather,/latitude=-37\.8136&longitude=144\.9631/,'Melbourne coordinates missing');
