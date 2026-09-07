@@ -15,39 +15,33 @@ const legacyCalendarCss=read('house/legacy-calendar.css');
 const legacyUpcomingEditJs=read('house/legacy-upcoming-edit.js');
 const legacyLinkColours=read('house/legacy-calendar-link-colours.js');
 const legacyLinkUi=read('house/legacy-calendar-link-ui.js');
-const legacyPerson=read('house/legacy-calendar-person.js');
-const legacyPersonCss=read('house/legacy-calendar-person.css');
 const houseVisuals=read('js/house-calendar-visuals.js');
 const clarity=read('js/calendar-clarity.js');
 const clarityCss=read('styles/calendar-clarity.css');
-const person=read('js/calendar-person.js');
-const personCss=read('styles/calendar-person.css');
 const context=read('js/widget-context.js');
 const list=read('js/list-widget.js');
 const server=read('js/home-server-widget.js');
 const weather=read('js/weather-widget.js');
 const weatherSource=read('js/header-weather.js');
 
-assert.match(boot,/const BUILD='0169r63'/,'r63 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r63/,'r63 service-worker cache missing');
-for(const asset of ['./js/widget-context.js','./js/house-calendar-visuals.js','./js/calendar-person.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js','./styles/weather-widget.css','./styles/house.css','./styles/calendar-person.css']){
+assert.match(boot,/const BUILD='0169r62'/,'r62 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r62/,'r62 service-worker cache missing');
+for(const asset of ['./js/widget-context.js','./js/house-calendar-visuals.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js','./styles/weather-widget.css','./styles/house.css']){
   assert.ok(boot.includes(asset)||asset.startsWith('./styles/'),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
 }
-for(const asset of ['./house/','./house/index.html','./house/legacy.html','./house/legacy.css','./house/legacy.js','./house/legacy-calendar.css','./house/legacy-calendar.js','./house/legacy-upcoming-edit.js','./house/legacy-calendar-link-colours.js','./house/legacy-calendar-link-ui.js','./house/legacy-calendar-person.js','./house/legacy-calendar-person.css'])assert.ok(sw.includes(asset),`${asset} route shell is not offline-cached`);
+for(const asset of ['./house/','./house/index.html','./house/legacy.html','./house/legacy.css','./house/legacy.js','./house/legacy-calendar.css','./house/legacy-calendar.js','./house/legacy-upcoming-edit.js','./house/legacy-calendar-link-colours.js','./house/legacy-calendar-link-ui.js'])assert.ok(sw.includes(asset),`${asset} route shell is not offline-cached`);
 
 assert.match(entry,/new Function\('var item=\{value:1\}; return item\?\.value \?\? 0;'\)/,'/house/ must capability-test modern Atlas syntax before routing');
-assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r63':'\.\.\/\?view=house'/,'modern devices must continue into the shared Atlas House route');
+assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r62':'\.\.\/\?view=house'/,'modern devices must continue into the shared Atlas House route');
 assert.match(entry,/Compatibility view/,'House routing shell must expose a manual legacy fallback link');
-assert.match(legacy,/\.\/legacy\.css\?v=r63/,'legacy House CSS missing');
-assert.match(legacy,/\.\/legacy\.js\?v=r63/,'legacy House runtime missing');
-assert.match(legacy,/\.\/legacy-calendar\.css\?v=r63/,'legacy House calendar CSS missing');
-assert.match(legacy,/\.\/legacy-calendar\.js\?v=r63/,'legacy House calendar writer missing');
-assert.match(legacy,/\.\/legacy-upcoming-edit\.js\?v=r63/,'legacy House upcoming editor missing');
-assert.match(legacy,/\.\/legacy-calendar-link-colours\.js\?v=r63/,'legacy House calendar colour/link writer missing');
-assert.match(legacy,/\.\/legacy-calendar-link-ui\.js\?v=r63/,'legacy House calendar profile-link UI missing');
-assert.match(legacy,/\.\/legacy-calendar-person\.js\?v=r63/,'legacy House calendar person runtime missing');
-assert.match(legacy,/\.\/legacy-calendar-person\.css\?v=r63/,'legacy House calendar person styling missing');
+assert.match(legacy,/\.\/legacy\.css\?v=r62/,'legacy House CSS missing');
+assert.match(legacy,/\.\/legacy\.js\?v=r62/,'legacy House runtime missing');
+assert.match(legacy,/\.\/legacy-calendar\.css\?v=r62/,'legacy House calendar CSS missing');
+assert.match(legacy,/\.\/legacy-calendar\.js\?v=r62/,'legacy House calendar writer missing');
+assert.match(legacy,/\.\/legacy-upcoming-edit\.js\?v=r62/,'legacy House upcoming editor missing');
+assert.match(legacy,/\.\/legacy-calendar-link-colours\.js\?v=r62/,'legacy House calendar colour/link writer missing');
+assert.match(legacy,/\.\/legacy-calendar-link-ui\.js\?v=r62/,'legacy House calendar profile-link UI missing');
 assert.match(legacy,/id="houseAddTravel"/,'legacy House must expose + Travel');
 assert.match(legacy,/id="houseAddEvent"/,'legacy House must expose + Event');
 assert.match(legacy,/id="houseCalendarOverlay"/,'legacy House calendar entry overlay missing');
@@ -56,10 +50,8 @@ assert.doesNotMatch(legacyCalendarJs,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legac
 assert.doesNotMatch(legacyUpcomingEditJs,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House upcoming editor must stay parseable by iOS 12 Safari');
 assert.doesNotMatch(legacyLinkColours,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House calendar colour/link runtime must stay parseable by iOS 12 Safari');
 assert.doesNotMatch(legacyLinkUi,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House calendar profile-link UI must stay parseable by iOS 12 Safari');
-assert.doesNotMatch(legacyPerson,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy House calendar person runtime must stay parseable by iOS 12 Safari');
 assert.doesNotMatch(legacyCss,/color-mix\(|100dvh|100svh|100lvh/,'legacy House CSS must avoid modern-only presentation features');
 assert.doesNotMatch(legacyCalendarCss,/color-mix\(|100dvh|100svh|100lvh/,'legacy House calendar CSS must avoid modern-only presentation features');
-assert.doesNotMatch(legacyPersonCss,/color-mix\(|100dvh|100svh|100lvh/,'legacy House person CSS must avoid modern-only presentation features');
 assert.match(legacyJs,/ENTITY_TYPE='entity_state_v2'/,'legacy House must use Shared Atlas record-level sync records');
 assert.match(legacyJs,/PROFILE='us'/,'legacy House must stay scoped to the shared Us profile');
 assert.match(legacyJs,/kind==='calendar'/,'legacy House calendar must read real Atlas calendar records');
@@ -90,17 +82,6 @@ assert.match(legacyLinkColours,/recordRow\(target,source\),recordRow\(target,sha
 assert.match(legacyLinkUi,/id="houseCalendarLinkProfile"/,'House calendar creation must expose profile linking');
 assert.match(legacyLinkUi,/Fraser \+ Us \/ House/,'House calendar must offer Fraser as a linked destination');
 assert.match(legacyLinkUi,/Alyssa \+ Us \/ House/,'House calendar must offer Alyssa as a linked destination');
-assert.match(legacyPerson,/fraser:'Fraser',alyssa:'Alyssa',together:'Together'/,'House event Who choices missing');
-assert.match(legacyPerson,/data\.person=LABELS\[person\]\?person:'together'/,'House event person must persist to the calendar record');
-assert.match(legacyPerson,/data\.person=source\.person/,'House linked copy must carry the event person');
-assert.match(legacyPerson,/house-event-person/,'House Upcoming must render person-first event rows');
-assert.match(legacyPerson,/saveNewEvent/,'House person-first events need a dedicated create path');
-assert.match(legacyPerson,/saveEditedEvent/,'House person-first events must stay editable');
-assert.match(person,/fraser:'Fraser',alyssa:'Alyssa',together:'Together'/,'normal Atlas event Who choices missing');
-assert.match(person,/event\.person=chosen/,'normal Atlas must persist event person');
-assert.match(person,/shared\.person=chosen/,'normal Atlas must propagate person to Us links');
-assert.match(person,/cal-person-event/,'normal Atlas calendar must use person-first event markup');
-assert.match(personCss,/\.cal-person-copy/,'normal Atlas person-first event styling missing');
 assert.match(houseVisuals,/eventHue\(event\)/,'modern House calendar must reuse canonical event colours');
 assert.match(houseVisuals,/house-mini-event-dots/,'modern House calendar must show colour markers');
 assert.match(clarity,/Link to profiles/,'personal calendar must visibly label profile linking');
@@ -134,4 +115,4 @@ assert.doesNotMatch(weather,/fetch\s*\(|localStorage|indexedDB/,'Weather widget 
 assert.match(sw,/shellNavigation/,'service worker must distinguish root shell navigation');
 assert.match(sw,/response&&response\.ok&&shellNavigation/,'/house/ navigation must not overwrite cached Atlas root shell');
 
-console.log('atlas house shared widgets + iOS 12 calendar person compatibility contract ok');
+console.log('atlas house shared widgets + iOS 12 calendar compatibility contract ok');
