@@ -1,0 +1,7 @@
+(function(){
+'use strict';
+var form=document.querySelector('#houseCalendarOverlay .calendar-form'),notes=document.getElementById('houseCalendarNotes');if(!form||!notes||document.getElementById('houseCalendarLinkProfile'))return;
+var field=document.createElement('label');field.className='calendar-field house-profile-link';field.innerHTML='<span>Link to profile</span><select id="houseCalendarLinkProfile"><option value="">Us / House only</option><option value="me">Fraser + Us / House</option><option value="alyssa">Alyssa + Us / House</option></select><small id="houseCalendarLinkHelp">Optional · creates the personal event and its linked Us / House copy together.</small>';
+notes.parentNode.insertBefore(field,notes);
+var style=document.createElement('style');style.textContent='.house-profile-link{border:1px solid var(--line-strong);background:var(--surface-2);padding:8px}.house-profile-link>span{color:var(--accent)!important}.house-profile-link small{display:block;margin-top:5px;color:var(--muted);font:600 7px/1.35 Menlo,Monaco,Consolas,"Courier New",monospace}.mini-day.has-event:after{display:none!important}.mini-event-dots{position:absolute;left:50%;bottom:3px;display:-webkit-flex;display:flex;gap:2px;-webkit-transform:translateX(-50%);transform:translateX(-50%)}.mini-event-dots i{display:block;width:4px;height:4px;border-radius:50%}.house-upcoming .widget-row>i{opacity:1}.house-upcoming .widget-row[role="button"]:active{background:var(--surface-2)}';document.head.appendChild(style);
+}());
