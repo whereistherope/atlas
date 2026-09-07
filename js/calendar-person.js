@@ -29,6 +29,8 @@
     const field=document.getElementById('calPerson')?.closest('.calendar-person-field');
     const travel=document.getElementById('calEntryType')?.value==='travel';
     if(field)field.hidden=travel;
+    const titleField=document.getElementById('calTitle')?.closest('.field'),titleLabel=titleField?.querySelector('label');
+    if(titleLabel&&!travel)titleLabel.textContent='Event / appointment';
   }
 
   const baseEnsure=root.ensureCalendarEventExtras;
