@@ -5,15 +5,13 @@ const read=p=>fs.readFileSync(p,'utf8');
 const boot=read('js/bootstrap.js');
 const sw=read('sw.js');
 const clarity=read('js/calendar-clarity.js');
-const person=read('js/calendar-person.js');
-const personCss=read('styles/calendar-person.css');
 const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 const houseVisuals=read('js/house-calendar-visuals.js');
 
-assert.match(boot,/const BUILD='0169r63'/,'r63 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r63/,'r63 service-worker cache missing');
-for(const asset of ['./js/calendar-clarity.js','./js/calendar-person.js','./js/header-weather.js','./js/house-calendar-visuals.js','./styles/calendar-clarity.css','./styles/calendar-person.css']){
+assert.match(boot,/const BUILD='0169r62'/,'r62 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r62/,'r62 service-worker cache missing');
+for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./js/house-calendar-visuals.js','./styles/calendar-clarity.css']){
   assert.ok(boot.includes(asset)||asset.startsWith('./styles/'),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
 }
@@ -25,13 +23,6 @@ assert.match(clarity,/Us \/ House/,'profile linking must include the Us / House 
 assert.match(clarity,/insertAdjacentElement\('afterend',row\)/,'profile link must be moved near the event title');
 assert.match(clarity,/openUpcomingForEdit/,'Upcoming calendar rows must open the event editor');
 assert.match(clarity,/source\?\.id\|\|item\.id/,'linked Upcoming events must edit the personal source where available');
-assert.match(person,/fraser:'Fraser',alyssa:'Alyssa',together:'Together'/,'calendar Who choices missing');
-assert.match(person,/Event \/ appointment/,'ordinary event detail label missing');
-assert.match(person,/event\.person=chosen/,'calendar person must persist on events');
-assert.match(person,/shared\.person=chosen/,'calendar person must propagate to linked Us copies');
-assert.match(person,/cal-person-event/,'ordinary events must use person-first calendar markup');
-assert.match(person,/calendar-upcoming-person/,'Upcoming must expose the event person');
-assert.match(personCss,/\.cal-person-copy/,'person-first event styling missing');
 assert.match(css,/\.cal-cell\.weekend/,'weekend cell treatment missing');
 assert.match(css,/\.cal-cell\.today/,'today treatment missing');
 assert.match(css,/box-shadow:inset/,'today inset frame missing');
@@ -53,4 +44,4 @@ assert.match(weather,/iconFor/,'header weather must expose simple weather iconog
 assert.match(css,/\.chrono-weather time\{[^}]*display:inline!important/,'weather condition must stay visible');
 assert.doesNotMatch(css,/@media\(max-width:850px\)\{\.chrono-weather time\{display:none\}/,'iPad must not hide weather condition');
 
-console.log('calendar weather + person clarity contract ok');
+console.log('calendar weather clarity contract ok');

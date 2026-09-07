@@ -1,4 +1,0 @@
-.house-calendar-person{border:1px solid var(--line-strong);background:var(--surface-2);padding:7px}
-.house-calendar-person>span{color:var(--accent)!important}
-.house-event-person{display:block!important;font-size:10px!important;font-weight:700!important;line-height:1.15!important}
-.house-event-title{display:block;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:650;line-height:1.2}

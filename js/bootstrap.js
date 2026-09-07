@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r63';
+  const BUILD='0169r62';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -33,14 +33,12 @@
   loadStyle('./styles/item-delete-tools.css');
   loadStyle('./styles/calendar-extras.css');
   loadStyle('./styles/calendar-clarity.css');
-  loadStyle('./styles/calendar-person.css');
   loadStyle('./styles/weather-widget.css');
   loadStyle('./styles/house.css');
 
   // Required calendar presentation helpers.
   await loadScript('./js/travel-direction.js','Atlas travel direction marks');
   await loadScript('./js/calendar-clarity.js','Atlas calendar clarity');
-  await loadScript('./js/calendar-person.js','Atlas calendar person labels');
   await loadScript('./js/header-weather.js','Atlas Melbourne header weather');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
