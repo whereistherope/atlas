@@ -1,9 +1,38 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r65';
+  const BUILD='0169r68';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
+
+  function bootProgress(value){
+    let host=document.getElementById('atlasSimpleLoader');
+    if(!host){
+      const style=document.createElement('style');
+      style.id='atlasSimpleLoaderStyle';
+      style.textContent='#atlasSimpleLoader{position:fixed;z-index:2147483646;inset:0;display:flex;align-items:center;justify-content:center;background:#05080c;color:#d5e3ec;font-family:"SFMono-Regular",Consolas,monospace}#atlasSimpleLoader>div{width:190px}#atlasSimpleLoader strong{display:block;margin-bottom:10px;font:800 16px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.02em;text-transform:uppercase;color:#e5e4e2}#atlasSimpleLoader .track{height:2px;background:#172630;overflow:hidden}#atlasSimpleLoader .bar{height:100%;width:0;background:#1793d1;transition:width .14s linear}#atlasSimpleLoader span{display:block;margin-top:6px;text-align:right;font-size:8px;color:#7795a8}';
+      document.head.appendChild(style);
+      host=document.createElement('div');
+      host.id='atlasSimpleLoader';
+      host.setAttribute('role','status');
+      host.setAttribute('aria-live','polite');
+      host.innerHTML='<div><strong>Atlas</strong><div class="track"><div class="bar"></div></div><span>0%</span></div>';
+      document.body.appendChild(host);
+    }
+    const progress=Math.max(0,Math.min(100,Math.round(Number(value)||0)));
+    const bar=host.querySelector('.bar'),copy=host.querySelector('span');
+    if(bar)bar.style.width=progress+'%';
+    if(copy)copy.textContent=progress+'%';
+  }
+
+  function finishBootProgress(){
+    bootProgress(100);
+    const host=document.getElementById('atlasSimpleLoader'),style=document.getElementById('atlasSimpleLoaderStyle');
+    if(host)host.remove();
+    if(style)style.remove();
+  }
+
+  bootProgress(8);
 
   function loadStyle(src){
     if(document.querySelector(`link[data-atlas-style="${src}"]`))return;
@@ -35,11 +64,13 @@
   loadStyle('./styles/calendar-clarity.css');
   loadStyle('./styles/weather-widget.css');
   loadStyle('./styles/house.css');
+  bootProgress(22);
 
   // Required calendar presentation helpers.
   await loadScript('./js/travel-direction.js','Atlas travel direction marks');
   await loadScript('./js/calendar-clarity.js','Atlas calendar clarity');
   await loadScript('./js/header-weather.js','Atlas Melbourne header weather');
+  bootProgress(36);
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/sync-v2-core.js','Atlas record reconciliation core'); } catch (_) {}
@@ -74,8 +105,12 @@
   try { await loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r17'); } catch (_) {}
   try { await loadScript('./js/widget-visibility-hotfix.js','Atlas widget visibility hotfix v0.16.9-r20'); } catch (_) {}
   try { await loadScript('./js/pomodoro-widget.js','Atlas Pomodoro widget'); } catch (_) {}
-  try { await loadScript('./js/window-drag-local.js','Atlas free movable windows'); } catch (_) {}
+  // window-drag-local.js is intentionally quarantined from startup after a real-browser
+  // smoke trace showed the renderer stopping immediately after this module loaded.
+  // Keep the module file intact for diagnosis; do not risk Atlas boot to enable dragging.
   try { await loadScript('./js/runtime-telemetry.js','Atlas live runtime telemetry'); } catch (_) {}
+  bootProgress(68);
+
   // Shared widget capabilities load before House composes them.
   try { await loadScript('./js/widget-context.js','Atlas widget profile context'); } catch (_) {}
   try { await loadScript('./js/house-calendar-visuals.js','Atlas House calendar visuals'); } catch (_) {}
@@ -83,10 +118,14 @@
   try { await loadScript('./js/home-server-widget.js','Atlas Home Server widget'); } catch (_) {}
   try { await loadScript('./js/weather-widget.js','Atlas Weather widget'); } catch (_) {}
   try { await loadScript('./js/house.js','Atlas House dashboard'); } catch (_) {}
+  bootProgress(82);
 
   try { await window.AtlasCloud?.init?.(); } catch (_) {}
+  bootProgress(91);
   await load();
+  bootProgress(98);
   document.documentElement.classList.add('atlas-ready');
+  finishBootProgress();
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load',()=>{navigator.serviceWorker.register(`./sw.js?v=${BUILD}`,{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{})});
