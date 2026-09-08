@@ -1,7 +1,7 @@
 // Start only after every classic module has established its shared bindings.
 // One Atlas in cloud + epoch-gated stale-client protection.
 (async function(){
-  const BUILD='0169r69';
+  const BUILD='0169r70';
   window.ATLAS_BUILD=BUILD;
   const versioned=src=>`${src}${src.includes('?')?'&':'?'}v=${BUILD}`;
 
@@ -10,11 +10,29 @@
     const link=document.createElement('link');link.rel='stylesheet';link.href=versioned(src);link.dataset.atlasStyle=src;document.head.appendChild(link);
   }
 
+  function preloadScript(src){
+    if(document.querySelector(`link[data-atlas-preload="${src}"]`))return;
+    const link=document.createElement('link');link.rel='preload';link.as='script';link.href=versioned(src);link.dataset.atlasPreload=src;document.head.appendChild(link);
+  }
+
   async function loadScript(src,label,{fresh=false}={}){
     await new Promise((resolve,reject)=>{
       const script=document.createElement('script');script.async=false;script.src=fresh?`${versioned(src)}&t=${Date.now()}`:versioned(src);script.onload=resolve;script.onerror=()=>reject(new Error(`${label} failed to load.`));document.head.appendChild(script);
     });
   }
+
+  // Fetch the dynamic runtime in parallel, but keep execution in the established order below.
+  // This cuts serial network wait without changing module lifecycle or Atlas data behaviour.
+  [
+    './js/travel-direction.js','./js/calendar-clarity.js','./js/header-weather.js',
+    './js/v0130-safety.js','./js/sync-v2-core.js','./js/sync-v2-recovery.js','./js/sync-v3.js','./js/sync-recovery-ui.js',
+    './js/note-editor.js','./js/visual-note-editor.js','./js/visual-table-controls.js','./js/rich-note-capture.js','./js/project-workspace.js','./js/editor-ux.js',
+    './js/atlas-document-r3.js','./js/atlas-document-r4-ui.js','./js/table-width-resize.js','./js/capture-framework-r7.js','./js/capture-polish-r8.js','./js/item-delete-tools.js',
+    './js/profile-management.js','./js/command-palette.js','./js/interaction-alignment.js','./js/workspace-actions.js','./js/graph-hierarchy-interactions.js',
+    './js/network-layout.js','./js/network-organic.js','./js/network-controls.js','./js/network-split.js','./js/client-state-stability.js','./js/lock-terrain.js',
+    './js/widget-visibility-hotfix.js','./js/pomodoro-widget.js','./js/runtime-telemetry.js','./js/widget-context.js','./js/house-calendar-visuals.js',
+    './js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js'
+  ].forEach(preloadScript);
 
   loadStyle('./styles/v0133-polish.css');
   loadStyle('./styles/editor-ux.css');
