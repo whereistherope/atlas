@@ -16,8 +16,8 @@
     if(!profileId||!isHouse())return baseUpcomingWidget(options);
     const start=todayKey(),until=new Date();until.setDate(until.getDate()+30);const end=until.toLocaleDateString('en-CA');
     const events=calendarEvents(profileId).filter(event=>event.date>=start&&event.date<=end);
-    return widgetShell('upcoming',`<div class="widget-list house-upcoming-list">${events.length?events.map(event=>`<button type="button" class="widget-row" data-calendar-id="${event.id}" style="border:0;background:transparent;color:inherit;text-align:left;width:100%"><i></i><div>${eventCopy(event)}</div><em>${esc(profileById(event.profile).name)}</em></button>`).join(''):'<div class="widget-empty">Nothing scheduled.</div>'}</div>`,`${events.length} / 30D`,options);
+    return widgetShell('upcoming',`<div class="widget-list house-upcoming-list">${events.length?events.map(event=>`<button type="button" class="widget-row" data-calendar-id="${event.id}" style="border:0;background:transparent;color:inherit;text-align:left;width:100%"><i style="background:${eventHue(event)}"></i><div>${eventCopy(event)}</div><em>${esc(profileById(event.profile).name)}</em></button>`).join(''):'<div class="widget-empty">Nothing scheduled.</div>'}</div>`,`${events.length} / 30D`,options);
   };
 
-  root.AtlasHouseUpcomingScroll=Object.freeze({version:'1'});
+  root.AtlasHouseUpcomingScroll=Object.freeze({version:'2'});
 })(window);
