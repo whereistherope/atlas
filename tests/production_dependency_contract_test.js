@@ -102,9 +102,13 @@ assertSubsequence(dynamicAssets.scripts,[
 assertSubsequence(dynamicAssets.scripts,[
   './js/widget-visibility-hotfix.js',
   './js/pomodoro-widget.js',
-  './js/window-drag-local.js',
   './js/runtime-telemetry.js'
 ],'workspace presentation runtime');
+
+// Real Chromium boot tracing showed startup stopping immediately after this module loaded.
+// Keep its source/offline copy for diagnosis, but it must not execute during Atlas startup.
+assert(!production.includes('./js/window-drag-local.js'),'quarantined window drag runtime must not boot');
+assert(shell.includes('./js/window-drag-local.js'),'quarantined window drag source should remain available offline for diagnosis');
 
 for(const rejected of [
   './js/sync-v2.js',
