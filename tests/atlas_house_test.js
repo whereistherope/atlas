@@ -40,17 +40,21 @@ for(const asset of ['./js/widget-context.js','./js/house-calendar-visuals.js','.
 for(const asset of ['./house/','./house/index.html','./house/legacy.html','./house/legacy.css','./house/legacy.js','./house/legacy-calendar.css','./house/legacy-calendar.js','./house/legacy-upcoming-edit.js','./house/legacy-calendar-link-colours.js','./house/legacy-calendar-link-ui.js','./house/legacy-calendar-person.js','./house/legacy-calendar-person.css'])assert.ok(sw.includes(asset),`${asset} route shell is not offline-cached`);
 
 assert.match(entry,/new Function\('var item=\{value:1\}; return item\?\.value \?\? 0;'\)/,'/house/ must capability-test modern Atlas syntax before routing');
-assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r65':'\.\.\/\?view=house'/,'modern devices must continue into the shared Atlas House route');
+assert.match(entry,/legacy\?'\.\/legacy\.html\?compat=r67':'\.\.\/\?view=house'/,'modern devices must continue into the shared Atlas House route');
 assert.match(entry,/Compatibility view/,'House routing shell must expose a manual legacy fallback link');
-assert.match(legacy,/\.\/legacy\.css\?v=r65/,'legacy House CSS missing');
-assert.match(legacy,/\.\/legacy\.js\?v=r65/,'legacy House runtime missing');
-assert.match(legacy,/\.\/legacy-calendar\.css\?v=r65/,'legacy House calendar CSS missing');
-assert.match(legacy,/\.\/legacy-calendar\.js\?v=r65/,'legacy House calendar writer missing');
-assert.match(legacy,/\.\/legacy-upcoming-edit\.js\?v=r65/,'legacy House upcoming editor missing');
-assert.match(legacy,/\.\/legacy-calendar-link-colours\.js\?v=r65/,'legacy House calendar colour/link writer missing');
-assert.match(legacy,/\.\/legacy-calendar-link-ui\.js\?v=r65/,'legacy House calendar profile-link UI missing');
-assert.match(legacy,/\.\/legacy-calendar-person\.js\?v=r65/,'legacy House calendar Who runtime missing');
-assert.match(legacy,/\.\/legacy-calendar-person\.css\?v=r65/,'legacy House calendar Who styling missing');
+assert.match(legacy,/\.\/legacy\.css\?v=r67/,'legacy House CSS missing');
+assert.match(legacy,/\.\/legacy\.js\?v=r67/,'legacy House runtime missing');
+assert.match(legacy,/\.\/legacy-calendar\.css\?v=r67/,'legacy House calendar CSS missing');
+assert.match(legacy,/\.\/legacy-calendar\.js\?v=r67/,'legacy House calendar writer missing');
+assert.match(legacy,/\.\/legacy-upcoming-edit\.js\?v=r67/,'legacy House upcoming editor missing');
+assert.match(legacy,/\.\/legacy-calendar-link-colours\.js\?v=r67/,'legacy House calendar colour/link writer missing');
+assert.match(legacy,/\.\/legacy-calendar-link-ui\.js\?v=r67/,'legacy House calendar profile-link UI missing');
+assert.match(legacy,/\.\/legacy-calendar-person\.js\?v=r67/,'legacy House calendar Who runtime missing');
+assert.match(legacy,/\.\/legacy-calendar-person\.css\?v=r67/,'legacy House calendar Who styling missing');
+assert.match(legacy,/id="houseBootStatus"/,'legacy House must show a visible startup monitor');
+assert.match(legacy,/Animated bar = browser responsive/,'legacy House startup monitor must explain its heartbeat');
+assert.match(legacy,/window\.__atlasHouseBoot/,'legacy House startup monitor state missing');
+assert.match(legacy,/Startup issue/,'legacy House startup errors must remain visible');
 assert.match(legacy,/id="houseAddTravel"/,'legacy House must expose + Travel');
 assert.match(legacy,/id="houseAddEvent"/,'legacy House must expose + Event');
 assert.match(legacy,/id="houseCalendarOverlay"/,'legacy House calendar entry overlay missing');
@@ -150,4 +154,4 @@ assert.doesNotMatch(weather,/fetch\s*\(|localStorage|indexedDB/,'Weather widget 
 assert.match(sw,/shellNavigation/,'service worker must distinguish root shell navigation');
 assert.match(sw,/response&&response\.ok&&shellNavigation/,'/house/ navigation must not overwrite cached Atlas root shell');
 
-console.log('atlas house shared widgets + r67 boot monitor contract ok');
+console.log('atlas house shared widgets + r67 legacy boot monitor contract ok');
