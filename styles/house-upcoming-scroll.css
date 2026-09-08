@@ -1,0 +1,17 @@
+/* House keeps a fixed 4:3 surface; Upcoming is the single bounded scroll region. */
+.house-atlas-board .house-upcoming .widget-body{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  max-height:none!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:var(--accent) transparent;
+}
+.house-atlas-board .house-upcoming .widget-body::-webkit-scrollbar{width:5px}
+.house-atlas-board .house-upcoming .widget-body::-webkit-scrollbar-track{background:transparent}
+.house-atlas-board .house-upcoming .widget-body::-webkit-scrollbar-thumb{background:var(--accent);border-radius:999px}
+.house-atlas-board .house-upcoming .widget-list{height:auto;min-height:100%;overflow:visible}
+@media(max-width:850px) and (orientation:portrait){
+  .house-atlas-board .house-upcoming .widget-body{overflow:visible!important}
+}
