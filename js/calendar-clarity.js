@@ -25,14 +25,22 @@
     const link=document.getElementById('entangleRow');
     const actions=document.getElementById('saveCalendarEvent')?.closest('.inline-actions');
     if(!title||!timeRow)return;
-    if(entryType)form.insertBefore(entryType,title);
-    if(person)title.insertAdjacentElement('beforebegin',person);
-    if(travel)title.insertAdjacentElement('afterend',travel);
-    if(meta)timeRow.insertAdjacentElement('afterend',meta);
-    if(area&&meta)meta.insertAdjacentElement('afterend',area);
-    if(notes&&area)area.insertAdjacentElement('afterend',notes);
-    if(link&&notes)notes.insertAdjacentElement('afterend',link);
-    if(actions&&link)link.insertAdjacentElement('afterend',actions);
+
+    // Keep presentation changes idempotent. The previous broad MutationObserver could
+    // repeatedly move these same nodes while the overlay was opening, starving taps
+    // and freezing the main thread on mobile browsers.
+    if(entryType){
+      if(entryType.parentNode!==form)form.insertBefore(entryType,title);
+      else if(person&&entryType.nextElementSibling!==person)form.insertBefore(entryType,person);
+      else if(!person&&entryType.nextElementSibling!==title)form.insertBefore(entryType,title);
+    }
+    if(person&&person.nextElementSibling!==title)title.insertAdjacentElement('beforebegin',person);
+    if(travel&&title.nextElementSibling!==travel)title.insertAdjacentElement('afterend',travel);
+    if(meta&&timeRow.nextElementSibling!==meta)timeRow.insertAdjacentElement('afterend',meta);
+    if(area&&meta&&meta.nextElementSibling!==area)meta.insertAdjacentElement('afterend',area);
+    if(notes&&area&&area.nextElementSibling!==notes)area.insertAdjacentElement('afterend',notes);
+    if(link&&notes&&notes.nextElementSibling!==link)notes.insertAdjacentElement('afterend',link);
+    if(actions&&link&&link.nextElementSibling!==actions)link.insertAdjacentElement('afterend',actions);
   }
   function surfaceProfileLink(){
     orderCalendarForm();
@@ -48,23 +56,22 @@
       if(detail&&detail!==heading&&detail.textContent!=='Keep a linked copy on the shared Us calendar and Atlas House.')detail.textContent='Keep a linked copy on the shared Us calendar and Atlas House.';
     }
   }
+  function scheduleCalendarPresentation(){setTimeout(surfaceProfileLink,0)}
   function openUpcomingForEdit(event){
     const row=event.target.closest?.('[data-calendar-id]'),current=atlasState();if(!row||!current||typeof openCalendarEvent!=='function')return false;
     const item=(current.calendar||[]).find(entry=>entry.id===row.dataset.calendarId);if(!item)return false;
     const source=item.sourceEventId&&(current.calendar||[]).find(entry=>entry.id===item.sourceEventId);
-    event.preventDefault();event.stopPropagation();openCalendarEvent(source?.id||item.id);return true;
+    event.preventDefault();event.stopPropagation();openCalendarEvent(source?.id||item.id);scheduleCalendarPresentation();return true;
   }
   if(typeof root.renderCalendar==='function'){
     const baseRenderCalendar=root.renderCalendar;
     root.renderCalendar=function(){const result=baseRenderCalendar.apply(this,arguments);decorateCalendar();return result};
   }
   surfaceProfileLink();
-  const overlay=document.getElementById('calendarOverlay');
-  if(overlay&&root.MutationObserver)new MutationObserver(surfaceProfileLink).observe(overlay,{attributes:true,childList:true,subtree:true});
   document.addEventListener('click',event=>{
     if(openUpcomingForEdit(event))return;
     if(event.target.closest?.('[data-cal-nav]'))setTimeout(decorateCalendar,0);
-    if(event.target.closest?.('[data-cal-add],[data-cal-travel-add],[data-calendar-event],[data-calendar-date]'))setTimeout(surfaceProfileLink,0);
+    if(event.target.closest?.('[data-cal-add],[data-cal-travel-add],[data-calendar-event],[data-calendar-date]'))scheduleCalendarPresentation();
   },true);
   root.AtlasCalendarClarity=Object.freeze({version:'4',decorate:decorateCalendar,surfaceProfileLink,orderCalendarForm,openUpcomingForEdit});
 })(window);

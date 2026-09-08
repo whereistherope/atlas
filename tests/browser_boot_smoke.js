@@ -29,8 +29,8 @@ const server=http.createServer((req,res)=>{
   }catch(error){res.writeHead(404,{'Content-Type':'text/plain'});res.end('Not found')}
 });
 
-async function checkPage(browser,url,label,verify){
-  const context=await browser.newContext();
+async function checkPage(browser,url,label,verify,contextOptions={}){
+  const context=await browser.newContext(contextOptions);
   try{
     const page=await context.newPage();
     const errors=[];
@@ -57,6 +57,37 @@ async function checkPage(browser,url,label,verify){
   }
 }
 
+async function verifyMobileCalendar(page){
+  await page.evaluate(()=>{
+    const lock=document.getElementById('lockScreen');if(lock)lock.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
+    const auth=document.querySelector('.auth-overlay');if(auth)auth.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
+    renderCalendar();
+  });
+  await page.tap('[data-cal-add]',{force:true,timeout:3000});
+  await page.waitForFunction(()=>{
+    const overlay=document.getElementById('calendarOverlay');
+    return overlay&&!overlay.classList.contains('hidden')&&document.getElementById('calPerson')&&document.getElementById('calEntryType');
+  },null,{timeout:3000});
+  const order=await page.evaluate(()=>{
+    const ids=['calEntryType','calPerson','calTitle','calDate','calTimeZone','calArea','calNotes','calEntangle','saveCalendarEvent'];
+    return ids.map(id=>{const el=document.getElementById(id);if(!el)return -1;const all=Array.from(document.querySelectorAll('#calendarOverlay *'));return all.indexOf(el)});
+  });
+  if(order.some(index=>index<0)||order.some((index,i)=>i&&index<=order[i-1]))throw new Error('Mobile new-event form is not in the required order.');
+  await page.evaluate(()=>closeOverlay('calendarOverlay'));
+
+  await page.evaluate(()=>{
+    state.calendar=(state.calendar||[]).filter(event=>event.id!=='smoke-mobile-event');
+    state.calendar.push({id:'smoke-mobile-event',profile:state.settings.activeProfile||'me',title:'Mobile smoke event',person:'fraser',date:todayKey(),startTime:'17:00',endTime:'',timeZone:'Australia/Melbourne',arrivalTimeZone:'',color:'blue',entryType:'event',traveler:'',origin:'',destination:'',flightNumber:'',areaId:'',notes:'',createdAt:Date.now(),updatedAt:Date.now()});
+    renderCalendar();
+  });
+  await page.tap('[data-calendar-event="smoke-mobile-event"]',{force:true,timeout:3000});
+  await page.waitForFunction(()=>{
+    const overlay=document.getElementById('calendarOverlay');
+    const title=document.getElementById('calTitle');
+    return overlay&&!overlay.classList.contains('hidden')&&title&&title.value==='Mobile smoke event';
+  },null,{timeout:3000});
+}
+
 (async()=>{
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const address=server.address();
@@ -70,6 +101,7 @@ async function checkPage(browser,url,label,verify){
       const houseClass=await page.evaluate(()=>document.body.classList.contains('atlas-house-view'));
       if(!houseClass)throw new Error('House route did not activate.');
     });
+    await checkPage(browser,base+'/', 'Atlas mobile calendar',verifyMobileCalendar,{viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   }finally{
     console.log('Closing browser');
     await Promise.race([browser.close(),new Promise(resolve=>setTimeout(resolve,2000))]);
