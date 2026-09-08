@@ -1,12 +1,13 @@
 /* Atlas calendar readability + compact header weather. */
-.cal-weekday.weekend{background:color-mix(in srgb,var(--ink) 2.4%,transparent);color:color-mix(in srgb,var(--muted) 82%,transparent)}
-.cal-cell.weekend{background:color-mix(in srgb,var(--ink) 2.8%,transparent)}
-.cal-cell.weekend.out{background:color-mix(in srgb,var(--ink) 1.8%,transparent)}
-.cal-cell.today{background:color-mix(in srgb,var(--ink) 4.5%,transparent)!important;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ink) 42%,transparent);z-index:1}
+/* Keep a concrete fallback before color-mix so older iPad Safari still paints these states. */
+.cal-weekday.weekend{background:rgba(32,38,40,.055);background:color-mix(in srgb,var(--ink) 5.5%,transparent);color:var(--muted);color:color-mix(in srgb,var(--muted) 88%,transparent)}
+.cal-cell.weekend:not(.today){background:rgba(32,38,40,.06)!important;background:color-mix(in srgb,var(--ink) 6%,transparent)!important}
+.cal-cell.weekend.out:not(.today){background:rgba(32,38,40,.035)!important;background:color-mix(in srgb,var(--ink) 3.5%,transparent)!important}
+.cal-cell.today{background:rgba(32,38,40,.095)!important;background:color-mix(in srgb,var(--ink) 9.5%,transparent)!important;box-shadow:inset 0 0 0 1px var(--green)!important;z-index:1}
 .cal-cell.today .cal-day{display:inline-grid;place-items:center;min-width:23px;height:20px;padding:0 5px;margin:-2px 0 6px -2px;border-radius:2px;background:var(--ink);color:var(--paper);font-weight:850}
-body[data-theme="night"] .cal-weekday.weekend{background:color-mix(in srgb,var(--ink) 2.2%,transparent)}
-body[data-theme="night"] .cal-cell.weekend{background:color-mix(in srgb,var(--ink) 2.6%,transparent)}
-body[data-theme="night"] .cal-cell.today{background:color-mix(in srgb,var(--ink) 4.2%,transparent)!important;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ink) 40%,transparent)}
+body[data-theme="night"] .cal-weekday.weekend{background:rgba(190,215,228,.045);background:color-mix(in srgb,var(--ink) 4.5%,transparent)}
+body[data-theme="night"] .cal-cell.weekend:not(.today){background:rgba(190,215,228,.055)!important;background:color-mix(in srgb,var(--ink) 5.5%,transparent)!important}
+body[data-theme="night"] .cal-cell.today{background:rgba(170,215,238,.085)!important;background:color-mix(in srgb,var(--ink) 8.5%,transparent)!important;box-shadow:inset 0 0 0 1px var(--green)!important}
 
 .entangle-row{align-items:flex-start!important;gap:10px!important;padding:10px 11px!important;border:1px solid var(--line)!important;border-left:3px solid var(--green)!important;border-radius:3px!important;background:color-mix(in srgb,var(--green) 5%,transparent)!important;margin:2px 0 3px!important;cursor:pointer}
 .entangle-row input{margin-top:3px;accent-color:var(--green)}
@@ -18,4 +19,4 @@ body[data-theme="night"] .entangle-row{background:color-mix(in srgb,var(--green)
 
 .chrono-weather{min-width:0}.chrono-weather strong{font-variant-numeric:tabular-nums}.chrono-weather time{max-width:74px;overflow:hidden;text-overflow:ellipsis;display:inline!important}.chrono-weather[data-stale="true"]{opacity:.62}.chrono-weather[data-stale="true"]:after{content:'~';font-size:8px;color:var(--muted);margin-left:-4px}
 @media(max-width:560px){.page-chrono{align-items:baseline}.chrono-weather{width:auto}.chrono-weather span{display:none}.chrono-weather strong{font-size:9px}.chrono-weather time{max-width:58px;font-size:8px}.cal-cell.today .cal-day{min-width:25px;height:22px}}
-@media(max-width:800px){.cal-cell.weekend{background:color-mix(in srgb,var(--ink) 2.5%,transparent)}.cal-cell.today{box-shadow:inset 3px 0 0 color-mix(in srgb,var(--ink) 48%,transparent)}}
+@media(max-width:800px){.cal-cell.weekend:not(.today){background:rgba(32,38,40,.06)!important;background:color-mix(in srgb,var(--ink) 6%,transparent)!important}.cal-cell.today{box-shadow:inset 3px 0 0 var(--green)!important}body[data-theme="night"] .cal-cell.weekend:not(.today){background:rgba(190,215,228,.055)!important;background:color-mix(in srgb,var(--ink) 5.5%,transparent)!important}}
