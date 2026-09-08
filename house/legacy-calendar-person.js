@@ -26,13 +26,41 @@ function personForProfile(profile){return profile==='alyssa'?'alyssa':profile===
 function personValue(event){if(event&&event.person&&LABELS[event.person])return event.person;return personForProfile(event&&event.profile||'us')}
 function personLabel(event){return LABELS[personValue(event)]||'Together'}
 
+function ensureEntryTypeField(){
+  if(byId('houseCalendarTypeSelect'))return;
+  var hidden=byId('houseCalendarType'),title=byId('houseCalendarTitle');if(!hidden||!title||!title.parentNode)return;
+  var field=document.createElement('label');field.className='calendar-field house-calendar-entry-type';field.innerHTML='<span>Entry type</span><select id="houseCalendarTypeSelect"><option value="event">Event</option><option value="travel">Travel</option></select>';
+  title.parentNode.parentNode.insertBefore(field,title.parentNode);
+}
 function ensureWhoField(){
   if(byId('houseCalendarPerson'))return;
   var title=byId('houseCalendarTitle');if(!title||!title.parentNode)return;
   var field=document.createElement('label');field.className='calendar-field house-calendar-person';field.innerHTML='<span>Who</span><select id="houseCalendarPerson"><option value="fraser">Fraser</option><option value="alyssa">Alyssa</option><option value="together">Together</option></select>';
   title.parentNode.parentNode.insertBefore(field,title.parentNode);
 }
-function syncWhoVisibility(){ensureWhoField();var field=byId('houseCalendarPerson')&&byId('houseCalendarPerson').parentNode,type=byId('houseCalendarType')&&byId('houseCalendarType').value;if(field)field.style.display=type==='travel'?'none':'block';var label=byId('houseCalendarTitleLabel');if(label&&type!=='travel')label.textContent='Event / appointment'}
+function applyType(type){
+  var travel=type==='travel',hidden=byId('houseCalendarType'),heading=byId('houseCalendarHeading'),titleLabel=byId('houseCalendarTitleLabel'),startLabel=byId('houseCalendarStartLabel'),endLabel=byId('houseCalendarEndLabel'),zoneLabel=byId('houseCalendarZoneLabel'),travelFields=byId('houseTravelFields'),arrival=byId('houseCalendarArrivalZone'),save=byId('houseCalendarSave'),text=heading?String(heading.textContent||'').toLowerCase():'';
+  if(hidden)hidden.value=travel?'travel':'event';
+  if(heading)heading.textContent=(text.indexOf('edit')===0?'Edit ':'New ')+(travel?'travel':'event');
+  if(titleLabel)titleLabel.textContent=travel?'Label (optional)':'Event / appointment';
+  if(startLabel)startLabel.textContent=travel?'Departure':'Start';if(endLabel)endLabel.textContent=travel?'Arrival':'End';if(zoneLabel)zoneLabel.textContent=travel?'Departure time zone':'Time zone';
+  if(travelFields)travelFields.className=travel?'calendar-travel-fields':'calendar-travel-fields hidden';if(arrival&&arrival.parentNode)arrival.parentNode.style.display=travel?'block':'none';
+  if(save)save.textContent=text.indexOf('edit')===0?'Save Changes':travel?'Save Travel':'Save Event';
+  syncWhoVisibility();
+}
+function layoutForm(){
+  var form=document.querySelector('#houseCalendarOverlay .calendar-form'),hidden=byId('houseCalendarType'),typeField=byId('houseCalendarTypeSelect')&&byId('houseCalendarTypeSelect').parentNode,whoField=byId('houseCalendarPerson')&&byId('houseCalendarPerson').parentNode,title=byId('houseCalendarTitle')&&byId('houseCalendarTitle').parentNode,travel=byId('houseTravelFields'),date=byId('houseCalendarDate')&&byId('houseCalendarDate').parentNode&&byId('houseCalendarDate').parentNode.parentNode,zoneField=byId('houseCalendarZone')&&byId('houseCalendarZone').parentNode,arrivalField=byId('houseCalendarArrivalZone')&&byId('houseCalendarArrivalZone').parentNode,colorField=byId('houseCalendarColor')&&byId('houseCalendarColor').parentNode,notes=byId('houseCalendarNotes')&&byId('houseCalendarNotes').parentNode,link=byId('houseCalendarLinkProfile')&&byId('houseCalendarLinkProfile').parentNode,actions=byId('houseCalendarSave')&&byId('houseCalendarSave').parentNode,meta=byId('houseCalendarMetaRow'),area=byId('houseCalendarAreaField');
+  if(!form||!title||!date)return;
+  if(!meta){meta=document.createElement('div');meta.id='houseCalendarMetaRow';meta.className='calendar-form-row two'}
+  if(zoneField)meta.appendChild(zoneField);if(colorField)meta.appendChild(colorField);
+  if(arrivalField&&travel)travel.appendChild(arrivalField);
+  if(!area){var oldProfile=form.querySelector('input[disabled][value="Us / House"]');if(oldProfile&&oldProfile.parentNode){area=oldProfile.parentNode;area.id='houseCalendarAreaField';var label=area.querySelector('span');if(label)label.textContent='Area';oldProfile.value='Unlinked';oldProfile.setAttribute('aria-label','Area is unlinked in Atlas House')}}
+  if(hidden&&typeField)hidden.insertAdjacentElement('afterend',typeField);if(typeField&&whoField)typeField.insertAdjacentElement('afterend',whoField);if(whoField)whoField.insertAdjacentElement('afterend',title);
+  if(travel)title.insertAdjacentElement('afterend',travel);if(date)travel?travel.insertAdjacentElement('afterend',date):title.insertAdjacentElement('afterend',date);
+  date.insertAdjacentElement('afterend',meta);if(area)meta.insertAdjacentElement('afterend',area);if(notes&&area)area.insertAdjacentElement('afterend',notes);else if(notes)meta.insertAdjacentElement('afterend',notes);
+  if(link&&notes)notes.insertAdjacentElement('afterend',link);if(actions&&link)link.insertAdjacentElement('afterend',actions);else if(actions&&notes)notes.insertAdjacentElement('afterend',actions);
+}
+function syncWhoVisibility(){ensureEntryTypeField();ensureWhoField();var field=byId('houseCalendarPerson')&&byId('houseCalendarPerson').parentNode,type=byId('houseCalendarType')&&byId('houseCalendarType').value,select=byId('houseCalendarTypeSelect');if(select)select.value=type==='travel'?'travel':'event';if(field)field.style.display=type==='travel'?'none':'block';var label=byId('houseCalendarTitleLabel');if(label&&type!=='travel')label.textContent='Event / appointment';layoutForm()}
 function resetForCreate(){currentHouseId='';ensureWhoField();byId('houseCalendarPerson').value='together';syncWhoVisibility()}
 
 function authHeaders(token){var headers={'apikey':KEY,'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;return headers}
@@ -77,8 +105,9 @@ function loadEditPerson(row){var id=row&&row.getAttribute('data-house-calendar-i
 function rowFromTarget(target){var list=byId('upcomingList'),node=target;while(node&&node!==list){if(node.getAttribute&&node.getAttribute('data-house-calendar-id'))return node;node=node.parentNode}return null}
 
 function bind(){
-  ensureWhoField();syncWhoVisibility();
-  var save=byId('houseCalendarSave'),baseSave=save&&save.onclick,addEvent=byId('houseAddEvent'),addTravel=byId('houseAddTravel'),calendar=byId('miniCalendar'),upcoming=byId('upcomingList');
+  ensureEntryTypeField();ensureWhoField();syncWhoVisibility();
+  var save=byId('houseCalendarSave'),baseSave=save&&save.onclick,addEvent=byId('houseAddEvent'),addTravel=byId('houseAddTravel'),calendar=byId('miniCalendar'),upcoming=byId('upcomingList'),typeSelect=byId('houseCalendarTypeSelect');
+  if(typeSelect)typeSelect.onchange=function(){applyType(this.value)};
   if(save&&baseSave)save.onclick=function(event){var type=byId('houseCalendarType').value,heading=String(byId('houseCalendarHeading').textContent||'').toLowerCase();if(type==='event'){if(event&&event.preventDefault)event.preventDefault();try{if(heading.indexOf('new event')===0)saveNewEvent();else if(heading.indexOf('edit event')===0&&currentHouseId)saveEditedEvent();else baseSave.call(save,event)}catch(error){showMessage(error.message)}return}baseSave.call(save,event)};
   if(addEvent)addEvent.addEventListener('click',function(){setTimeout(resetForCreate,0)},true);if(addTravel)addTravel.addEventListener('click',function(){setTimeout(syncWhoVisibility,0)},true);if(calendar)calendar.addEventListener('click',function(){setTimeout(resetForCreate,0)},true);
   if(upcoming){upcoming.addEventListener('click',function(event){var row=rowFromTarget(event.target||event.srcElement);if(row)setTimeout(function(){loadEditPerson(row)},0)},true);if(window.MutationObserver)new MutationObserver(function(){setTimeout(decorateUpcoming,0)}).observe(upcoming,{childList:true,subtree:true})}
