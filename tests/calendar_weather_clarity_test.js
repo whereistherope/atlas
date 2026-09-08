@@ -9,8 +9,8 @@ const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 const houseVisuals=read('js/house-calendar-visuals.js');
 
-assert.match(boot,/const BUILD='0169r62'/,'r62 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r62/,'r62 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r64'/,'r64 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r64/,'r64 service-worker cache missing');
 for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./js/house-calendar-visuals.js','./styles/calendar-clarity.css']){
   assert.ok(boot.includes(asset)||asset.startsWith('./styles/'),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
