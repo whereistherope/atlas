@@ -9,8 +9,11 @@ const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 const houseVisuals=read('js/house-calendar-visuals.js');
 
-assert.match(boot,/const BUILD='0169r65'/,'r65 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r65/,'r65 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r67'/,'r67 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r67/,'r67 service-worker cache missing');
+assert.match(boot,/id='atlasBootStatus'|id=\"atlasBootStatus\"|host\.id='atlasBootStatus'/,'visible boot monitor missing');
+assert.match(boot,/bootStage\('Loading Atlas data',92\)/,'boot monitor must surface the data-loading stage');
+assert.match(boot,/bootFailure\(error\)/,'boot failures must remain visible instead of falling through to a blank screen');
 for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./js/house-calendar-visuals.js','./styles/calendar-clarity.css']){
   assert.ok(boot.includes(asset)||asset.startsWith('./styles/'),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
@@ -52,4 +55,4 @@ assert.match(weather,/iconFor/,'header weather must expose simple weather iconog
 assert.match(css,/\.chrono-weather time\{[^}]*display:inline!important/,'weather condition must stay visible');
 assert.doesNotMatch(css,/@media\(max-width:850px\)\{\.chrono-weather time\{display:none\}/,'iPad must not hide weather condition');
 
-console.log('calendar weather clarity + r65 form order contract ok');
+console.log('calendar weather clarity + r67 boot monitor contract ok');
