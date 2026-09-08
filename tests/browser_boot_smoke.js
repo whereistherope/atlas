@@ -57,6 +57,30 @@ async function checkPage(browser,url,label,verify,contextOptions={}){
   }
 }
 
+async function verifyHouse(page){
+  await page.waitForSelector('#atlasHouseBoard',{state:'attached',timeout:4000});
+  const result=await page.evaluate(()=>{
+    if(!document.body.classList.contains('atlas-house-view'))return {error:'House route did not activate.'};
+    state.calendar=(state.calendar||[]).filter(event=>!String(event.id||'').startsWith('smoke-house-upcoming-'));
+    const base=new Date();
+    for(let i=0;i<12;i++){
+      const day=new Date(base.getFullYear(),base.getMonth(),base.getDate()+i);
+      state.calendar.push({id:'smoke-house-upcoming-'+i,profile:'us',title:'House event '+(i+1),person:'together',date:day.toLocaleDateString('en-CA'),startTime:'09:00',endTime:'',timeZone:'Australia/Melbourne',arrivalTimeZone:'',color:'blue',entryType:'event',traveler:'',origin:'',destination:'',flightNumber:'',areaId:'',notes:'',createdAt:Date.now()+i,updatedAt:Date.now()+i});
+    }
+    AtlasHouse.render();
+    const body=document.querySelector('.house-upcoming .widget-body');
+    return {
+      rows:document.querySelectorAll('.house-upcoming .widget-row').length,
+      overflow:body?getComputedStyle(body).overflowY:'',
+      module:!!window.AtlasHouseUpcomingScroll
+    };
+  });
+  if(result.error)throw new Error(result.error);
+  if(!result.module)throw new Error('House Upcoming scroll module did not load.');
+  if(result.rows<12)throw new Error('House Upcoming did not render the full 30-day event set.');
+  if(!['auto','scroll'].includes(result.overflow))throw new Error('House Upcoming is not a bounded vertical scroll region.');
+}
+
 async function verifyMobileCalendar(page){
   await page.evaluate(()=>{
     const lock=document.getElementById('lockScreen');if(lock)lock.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
@@ -88,6 +112,23 @@ async function verifyMobileCalendar(page){
   },null,{timeout:3000});
 }
 
+async function verifyTouchWidgetDrag(page){
+  const result=await page.evaluate(()=>{
+    const lock=document.getElementById('lockScreen');if(lock)lock.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
+    const auth=document.querySelector('.auth-overlay');if(auth)auth.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
+    renderHome();
+    const handle=document.querySelector('[data-widget-drag]');
+    if(!handle)return {error:'No widget drag handle rendered.'};
+    const id=handle.dataset.widgetDrag,before=widgetCfg(id).zone;
+    let prevented=false;
+    beginWidgetDrag(id,{pointerType:'touch',pointerId:91,clientX:20,clientY:20,preventDefault(){prevented=true}});
+    return {before,after:widgetCfg(id).zone,dragging:document.body.classList.contains('widget-dragging'),prevented,module:!!window.AtlasTouchWidgetDragGuard};
+  });
+  if(result.error)throw new Error(result.error);
+  if(!result.module)throw new Error('Touch widget drag guard did not load.');
+  if(result.before!==result.after||result.dragging||result.prevented)throw new Error('Touch interaction still initiated widget dragging.');
+}
+
 (async()=>{
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const address=server.address();
@@ -96,12 +137,9 @@ async function verifyMobileCalendar(page){
   const browser=await chromium.launch({headless:true});
   try{
     await checkPage(browser,base+'/', 'Atlas root');
-    await checkPage(browser,base+'/?view=house','Atlas House',async page=>{
-      await page.waitForSelector('#atlasHouseBoard',{state:'attached',timeout:4000});
-      const houseClass=await page.evaluate(()=>document.body.classList.contains('atlas-house-view'));
-      if(!houseClass)throw new Error('House route did not activate.');
-    });
+    await checkPage(browser,base+'/?view=house','Atlas House',verifyHouse);
     await checkPage(browser,base+'/', 'Atlas mobile calendar',verifyMobileCalendar,{viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+    await checkPage(browser,base+'/', 'Atlas touch widget drag',verifyTouchWidgetDrag,{viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   }finally{
     console.log('Closing browser');
     await Promise.race([browser.close(),new Promise(resolve=>setTimeout(resolve,2000))]);
