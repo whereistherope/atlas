@@ -12,10 +12,6 @@
   function explicitWidgetProfile(target){return target?.closest?.('.atlas-widget[data-widget-profile]')?.dataset.widgetProfile||''}
   function widgetProfile(options){return String(options?.profileId||state?.settings?.activeProfile||'me')}
   function renderCurrentSurface(){if(root.AtlasHouse?.isActive?.())root.AtlasHouse.render();else renderHome()}
-  function upcomingCopy(e){
-    if(e.entryType==='travel')return `<strong>${esc(e.title)}${e.entangledId||e.sourceEventId?' ↔':''}</strong><small>${esc(e.date)}${e.startTime?` · ${esc(e.startTime)}`:''}</small>`;
-    return `<strong>${esc(calendarEventPersonLabel(e))}</strong><span style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10px;font-weight:700">${esc(e.title)}${e.entangledId||e.sourceEventId?' ↔':''}</span><small>${esc(e.date)} · ${esc(calendarEventTimeMeta(e))}</small>`;
-  }
 
   widgetShell=function(id,body,meta='',options={}){
     const profileId=options?.profileId;if(!profileId)return baseWidgetShell(id,body,meta);
@@ -33,7 +29,7 @@
     const profileId=options?.profileId;if(!profileId)return baseUpcomingWidget();
     const start=todayKey(),until=new Date();until.setDate(until.getDate()+30);const end=until.toLocaleDateString('en-CA');
     const events=calendarEvents(profileId).filter(event=>event.date>=start&&event.date<=end).slice(0,8);
-    return widgetShell('upcoming',`<div class="widget-list">${events.length?events.map(e=>`<button type="button" class="widget-row" data-calendar-id="${e.id}" style="border:0;background:transparent;color:inherit;text-align:left;width:100%"><i></i><div>${upcomingCopy(e)}</div><em>${esc(profileById(e.profile).name)}</em></button>`).join(''):'<div class="widget-empty">Nothing scheduled.</div>'}</div>`,`${events.length} / 30D`,options);
+    return widgetShell('upcoming',`<div class="widget-list">${events.length?events.map(e=>`<button type="button" class="widget-row" data-calendar-id="${e.id}" style="border:0;background:transparent;color:inherit;text-align:left;width:100%"><i></i><div><strong>${esc(e.title)}${e.entangledId||e.sourceEventId?' ↔':''}</strong><small>${esc(e.date)}${e.startTime?` · ${esc(e.startTime)}`:''}${e.areaId?` · ${esc(areaById(e.areaId)?.code||'')}`:''}</small></div><em>${esc(profileById(e.profile).name)}</em></button>`).join(''):'<div class="widget-empty">Nothing scheduled.</div>'}</div>`,`${events.length} / 30D`,options);
   };
 
   calendarWidget=function(options={}){

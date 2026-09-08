@@ -12,31 +12,9 @@
       if(cell.classList.contains('today'))cell.setAttribute('aria-current','date');else cell.removeAttribute('aria-current');
     });
   }
-  function orderCalendarForm(){
-    const form=document.getElementById('calTitle')?.closest('.form');if(!form)return;
-    const title=document.getElementById('calTitle')?.closest('.field');
-    const timeRow=document.getElementById('calEnd')?.closest('.row3');
-    const entryType=document.getElementById('calEntryType')?.closest('.field');
-    const person=document.getElementById('calPersonField');
-    const travel=document.getElementById('calTravelFields');
-    const meta=document.getElementById('calTimeZone')?.closest('.calendar-event-extras');
-    const area=document.getElementById('calArea')?.closest('.field');
-    const notes=document.getElementById('calNotes')?.closest('.field');
-    const link=document.getElementById('entangleRow');
-    const actions=document.getElementById('saveCalendarEvent')?.closest('.inline-actions');
-    if(!title||!timeRow)return;
-    if(entryType)form.insertBefore(entryType,title);
-    if(person)title.insertAdjacentElement('beforebegin',person);
-    if(travel)title.insertAdjacentElement('afterend',travel);
-    if(meta)timeRow.insertAdjacentElement('afterend',meta);
-    if(area&&meta)meta.insertAdjacentElement('afterend',area);
-    if(notes&&area)area.insertAdjacentElement('afterend',notes);
-    if(link&&notes)notes.insertAdjacentElement('afterend',link);
-    if(actions&&link)link.insertAdjacentElement('afterend',actions);
-  }
   function surfaceProfileLink(){
-    orderCalendarForm();
-    const row=document.getElementById('entangleRow');if(!row)return;
+    const row=document.getElementById('entangleRow'),title=document.getElementById('calTitle')?.closest('.field');if(!row||!title)return;
+    if(title.nextElementSibling!==row)title.insertAdjacentElement('afterend',row);
     const active=atlasState()?.settings?.activeProfile||'me';
     if(active!=='us'&&row.style.display!=='flex')row.style.display='flex';
     const copy=row.querySelector('span');if(copy){
@@ -66,5 +44,5 @@
     if(event.target.closest?.('[data-cal-nav]'))setTimeout(decorateCalendar,0);
     if(event.target.closest?.('[data-cal-add],[data-cal-travel-add],[data-calendar-event],[data-calendar-date]'))setTimeout(surfaceProfileLink,0);
   },true);
-  root.AtlasCalendarClarity=Object.freeze({version:'4',decorate:decorateCalendar,surfaceProfileLink,orderCalendarForm,openUpcomingForEdit});
+  root.AtlasCalendarClarity=Object.freeze({version:'3',decorate:decorateCalendar,surfaceProfileLink,openUpcomingForEdit});
 })(window);
