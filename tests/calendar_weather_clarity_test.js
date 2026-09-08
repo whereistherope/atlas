@@ -9,8 +9,8 @@ const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 const houseVisuals=read('js/house-calendar-visuals.js');
 
-assert.match(boot,/const BUILD='0169r64'/,'r64 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r64/,'r64 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r65'/,'r65 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r65/,'r65 service-worker cache missing');
 for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./js/house-calendar-visuals.js','./styles/calendar-clarity.css']){
   assert.ok(boot.includes(asset)||asset.startsWith('./styles/'),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
@@ -20,7 +20,15 @@ assert.match(clarity,/weekday===0\|\|weekday===6/,'weekend detection missing');
 assert.match(clarity,/aria-current','date'/,'current-day accessibility marker missing');
 assert.match(clarity,/Link to profiles/,'personal calendar must visibly expose profile linking');
 assert.match(clarity,/Us \/ House/,'profile linking must include the Us / House destination');
-assert.match(clarity,/insertAdjacentElement\('afterend',row\)/,'profile link must be moved near the event title');
+assert.match(clarity,/function orderCalendarForm\(\)/,'calendar form ordering helper missing');
+assert.match(clarity,/form\.insertBefore\(entryType,title\)/,'Entry type must be first in the event form');
+assert.match(clarity,/typeField|entryType/,'calendar form must retain Entry type');
+assert.match(clarity,/title\.insertAdjacentElement\('beforebegin',person\)/,'Who must sit before event details');
+assert.match(clarity,/timeRow\.insertAdjacentElement\('afterend',meta\)/,'Time zone and Colour must sit after Date/Start/End');
+assert.match(clarity,/meta\.insertAdjacentElement\('afterend',area\)/,'Area must sit after Time zone and Colour');
+assert.match(clarity,/area\.insertAdjacentElement\('afterend',notes\)/,'Notes must sit after Area');
+assert.match(clarity,/notes\.insertAdjacentElement\('afterend',link\)/,'Link to profiles must sit after Notes');
+assert.match(clarity,/link\.insertAdjacentElement\('afterend',actions\)/,'Save actions must sit after Link to profiles');
 assert.match(clarity,/openUpcomingForEdit/,'Upcoming calendar rows must open the event editor');
 assert.match(clarity,/source\?\.id\|\|item\.id/,'linked Upcoming events must edit the personal source where available');
 assert.match(css,/\.cal-cell\.weekend/,'weekend cell treatment missing');
@@ -44,4 +52,4 @@ assert.match(weather,/iconFor/,'header weather must expose simple weather iconog
 assert.match(css,/\.chrono-weather time\{[^}]*display:inline!important/,'weather condition must stay visible');
 assert.doesNotMatch(css,/@media\(max-width:850px\)\{\.chrono-weather time\{display:none\}/,'iPad must not hide weather condition');
 
-console.log('calendar weather clarity contract ok');
+console.log('calendar weather clarity + r65 form order contract ok');
