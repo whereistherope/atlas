@@ -5,6 +5,7 @@ const {chromium}=require('playwright');
 
 const root=path.resolve(__dirname,'..');
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.svg':'image/svg+xml'};
+const hardStop=setTimeout(()=>{console.error('Browser boot smoke exceeded 45 seconds.');process.exit(124)},45000);
 
 function safePath(urlPath){
   const clean=decodeURIComponent(String(urlPath||'/').split('?')[0]);
@@ -26,22 +27,25 @@ const server=http.createServer((req,res)=>{
 
 async function checkPage(browser,url,label,verify){
   const context=await browser.newContext();
-  const page=await context.newPage();
-  const errors=[];
-  page.on('pageerror',error=>errors.push(String(error&&error.message||error)));
-  page.on('console',msg=>{if(msg.type()==='error')errors.push(msg.text())});
-  await page.route('**/*',route=>{
-    const target=new URL(route.request().url());
-    if(target.hostname==='127.0.0.1'||target.hostname==='localhost')route.continue();else route.abort();
-  });
-  await page.goto(url,{waitUntil:'domcontentloaded',timeout:15000});
-  await page.waitForFunction(()=>document.documentElement.classList.contains('atlas-ready'),null,{timeout:15000});
-  await page.waitForFunction(()=>!document.getElementById('atlasSimpleLoader'),null,{timeout:5000});
-  if(verify)await verify(page);
-  const fatal=errors.filter(message=>!message.includes('ERR_FAILED')&&!message.includes('Failed to load resource'));
-  if(fatal.length)throw new Error(label+' browser errors: '+fatal.join(' | '));
-  await context.close();
-  console.log(label+': PASS');
+  try{
+    const page=await context.newPage();
+    const errors=[];
+    page.on('pageerror',error=>errors.push(String(error&&error.message||error)));
+    page.on('console',msg=>{if(msg.type()==='error')errors.push(msg.text())});
+    await page.route('**/*',route=>{
+      const target=new URL(route.request().url());
+      if(target.hostname==='127.0.0.1'||target.hostname==='localhost')route.continue();else route.abort();
+    });
+    await page.goto(url,{waitUntil:'domcontentloaded',timeout:12000});
+    await page.waitForFunction(()=>document.documentElement.classList.contains('atlas-ready'),null,{timeout:12000});
+    await page.waitForFunction(()=>!document.getElementById('atlasSimpleLoader'),null,{timeout:3000});
+    if(verify)await verify(page);
+    const fatal=errors.filter(message=>!message.includes('ERR_FAILED')&&!message.includes('Failed to load resource'));
+    if(fatal.length)throw new Error(label+' browser errors: '+fatal.join(' | '));
+    console.log(label+': PASS');
+  }finally{
+    await context.close();
+  }
 }
 
 (async()=>{
@@ -52,12 +56,19 @@ async function checkPage(browser,url,label,verify){
   try{
     await checkPage(browser,base+'/', 'Atlas root');
     await checkPage(browser,base+'/?view=house','Atlas House',async page=>{
-      await page.waitForSelector('#atlasHouseBoard',{state:'attached',timeout:5000});
+      await page.waitForSelector('#atlasHouseBoard',{state:'attached',timeout:4000});
       const houseClass=await page.evaluate(()=>document.body.classList.contains('atlas-house-view'));
       if(!houseClass)throw new Error('House route did not activate.');
     });
   }finally{
     await browser.close();
-    await new Promise(resolve=>server.close(resolve));
   }
-})().catch(error=>{console.error(error&&error.stack||error);server.close(()=>process.exit(1));});
+  clearTimeout(hardStop);
+  server.close();
+})().catch(error=>{
+  console.error(error&&error.stack||error);
+  clearTimeout(hardStop);
+  try{server.closeAllConnections&&server.closeAllConnections()}catch(_){}
+  try{server.close()}catch(_){}
+  process.exit(1);
+});
