@@ -105,7 +105,9 @@
   try { await loadScript('./js/lock-terrain.js','Atlas lock identity v0.16.9-r17'); } catch (_) {}
   try { await loadScript('./js/widget-visibility-hotfix.js','Atlas widget visibility hotfix v0.16.9-r20'); } catch (_) {}
   try { await loadScript('./js/pomodoro-widget.js','Atlas Pomodoro widget'); } catch (_) {}
-  try { await loadScript('./js/window-drag-local.js','Atlas free movable windows'); } catch (_) {}
+  // window-drag-local.js is intentionally quarantined from startup after a real-browser
+  // smoke trace showed the renderer stopping immediately after this module loaded.
+  // Keep the module file intact for diagnosis; do not risk Atlas boot to enable dragging.
   try { await loadScript('./js/runtime-telemetry.js','Atlas live runtime telemetry'); } catch (_) {}
   bootProgress(68);
 
