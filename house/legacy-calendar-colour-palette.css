@@ -1,0 +1,5 @@
+.house-calendar-colour-palette{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:5px;min-height:30px}
+.house-calendar-colour-palette button{height:28px;min-width:28px;border:1px solid var(--line);padding:0;background:transparent;color:var(--muted);font:700 6.5px/1 Menlo,Monaco,Consolas,"Courier New",monospace;text-transform:uppercase}
+.house-calendar-colour-palette .house-calendar-colour-auto{padding:0 7px}
+.house-calendar-colour-palette .house-calendar-colour-swatch{width:28px}
+.house-calendar-colour-palette button[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px;border-color:var(--ink)}
