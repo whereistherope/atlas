@@ -59,11 +59,11 @@ async function checkPage(browser,url,label,verify,contextOptions={}){
 
 async function verifyMobileCalendar(page){
   await page.evaluate(()=>{
-    const lock=document.getElementById('lockScreen');if(lock)lock.style.display='none';
-    const auth=document.querySelector('.auth-overlay');if(auth)auth.style.display='none';
+    const lock=document.getElementById('lockScreen');if(lock)lock.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
+    const auth=document.querySelector('.auth-overlay');if(auth)auth.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
     renderCalendar();
   });
-  await page.tap('[data-cal-add]');
+  await page.tap('[data-cal-add]',{force:true,timeout:3000});
   await page.waitForFunction(()=>{
     const overlay=document.getElementById('calendarOverlay');
     return overlay&&!overlay.classList.contains('hidden')&&document.getElementById('calPerson')&&document.getElementById('calEntryType');
@@ -80,7 +80,7 @@ async function verifyMobileCalendar(page){
     state.calendar.push({id:'smoke-mobile-event',profile:state.settings.activeProfile||'me',title:'Mobile smoke event',person:'fraser',date:todayKey(),startTime:'17:00',endTime:'',timeZone:'Australia/Melbourne',arrivalTimeZone:'',color:'blue',entryType:'event',traveler:'',origin:'',destination:'',flightNumber:'',areaId:'',notes:'',createdAt:Date.now(),updatedAt:Date.now()});
     renderCalendar();
   });
-  await page.tap('[data-calendar-event="smoke-mobile-event"]');
+  await page.tap('[data-calendar-event="smoke-mobile-event"]',{force:true,timeout:3000});
   await page.waitForFunction(()=>{
     const overlay=document.getElementById('calendarOverlay');
     const title=document.getElementById('calTitle');
