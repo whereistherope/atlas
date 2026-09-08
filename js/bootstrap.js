@@ -24,7 +24,7 @@
   // Fetch the dynamic runtime in parallel, but keep execution in the established order below.
   // This cuts serial network wait without changing module lifecycle or Atlas data behaviour.
   [
-    './js/travel-direction.js','./js/calendar-clarity.js','./js/header-weather.js',
+    './js/travel-direction.js','./js/calendar-clarity.js?hotfix=r73','./js/header-weather.js',
     './js/v0130-safety.js','./js/sync-v2-core.js','./js/sync-v2-recovery.js','./js/sync-v3.js','./js/sync-recovery-ui.js',
     './js/note-editor.js','./js/visual-note-editor.js','./js/visual-table-controls.js','./js/rich-note-capture.js','./js/project-workspace.js','./js/editor-ux.js',
     './js/atlas-document-r3.js','./js/atlas-document-r4-ui.js','./js/table-width-resize.js','./js/capture-framework-r7.js','./js/capture-polish-r8.js','./js/item-delete-tools.js',
@@ -56,7 +56,7 @@
 
   // Required calendar presentation helpers.
   await loadScript('./js/travel-direction.js','Atlas travel direction marks');
-  await loadScript('./js/calendar-clarity.js','Atlas calendar clarity');
+  await loadScript('./js/calendar-clarity.js?hotfix=r73','Atlas calendar clarity');
   await loadScript('./js/header-weather.js','Atlas Melbourne header weather');
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
