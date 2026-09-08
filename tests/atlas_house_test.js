@@ -24,9 +24,10 @@ const server=read('js/home-server-widget.js');
 const weather=read('js/weather-widget.js');
 const weatherSource=read('js/header-weather.js');
 
-assert.match(boot,/const BUILD='0169r69'/,'r69 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r69/,'r69 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r70'/,'r70 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r70/,'r70 service-worker cache missing');
 assert.doesNotMatch(boot,/atlasSimpleLoader|bootProgress|finishBootProgress/,'visible boot loader must stay removed');
+assert.match(boot,/function preloadScript\(src\)/,'r70 parallel preload helper missing');
 for(const asset of ['./js/widget-context.js','./js/house-calendar-visuals.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js','./styles/weather-widget.css','./styles/house.css']){
   assert.ok(boot.includes(asset)||asset.startsWith('./styles/'),`${asset} is not booted`);
   assert.ok(sw.includes(asset),`${asset} is not offline-cached`);
@@ -116,4 +117,4 @@ assert.doesNotMatch(weather,/fetch\s*\(|localStorage|indexedDB/,'Weather widget 
 assert.match(sw,/shellNavigation/,'service worker must distinguish root shell navigation');
 assert.match(sw,/response&&response\.ok&&shellNavigation/,'/house/ navigation must not overwrite cached Atlas root shell');
 
-console.log('atlas house shared widgets + restored r62 calendar contract ok');
+console.log('atlas house shared widgets + r70 preload + restored r62 calendar contract ok');
