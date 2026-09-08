@@ -32,8 +32,8 @@
   upcomingWidget=function(options={}){
     const profileId=options?.profileId;if(!profileId)return baseUpcomingWidget();
     const start=todayKey(),until=new Date();until.setDate(until.getDate()+30);const end=until.toLocaleDateString('en-CA');
-    const events=calendarEvents(profileId).filter(event=>event.date>=start&&event.date<=end).slice(0,8);
-    return widgetShell('upcoming',`<div class="widget-list">${events.length?events.map(e=>`<button type="button" class="widget-row" data-calendar-id="${e.id}" style="border:0;background:transparent;color:inherit;text-align:left;width:100%"><i></i><div>${upcomingCopy(e)}</div><em>${esc(profileById(e.profile).name)}</em></button>`).join(''):'<div class="widget-empty">Nothing scheduled.</div>'}</div>`,`${events.length} / 30D`,options);
+    const allEvents=calendarEvents(profileId).filter(event=>event.date>=start&&event.date<=end),events=root.AtlasHouse?.isActive?.()?allEvents:allEvents.slice(0,8);
+    return widgetShell('upcoming',`<div class="widget-list">${events.length?events.map(e=>`<button type="button" class="widget-row" data-calendar-id="${e.id}" style="border:0;background:transparent;color:inherit;text-align:left;width:100%"><i></i><div>${upcomingCopy(e)}</div><em>${esc(profileById(e.profile).name)}</em></button>`).join(''):'<div class="widget-empty">Nothing scheduled.</div>'}</div>`,`${allEvents.length} / 30D`,options);
   };
 
   calendarWidget=function(options={}){
