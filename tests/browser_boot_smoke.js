@@ -90,13 +90,12 @@ async function verifyMobileCalendar(page){
   await page.tap('[data-cal-add]',{force:true,timeout:3000});
   await page.waitForFunction(()=>{
     const overlay=document.getElementById('calendarOverlay');
-    return overlay&&!overlay.classList.contains('hidden')&&document.getElementById('calPerson')&&document.getElementById('calEntryType');
-  },null,{timeout:3000});
-  const order=await page.evaluate(()=>{
+    if(!overlay||overlay.classList.contains('hidden'))return false;
     const ids=['calEntryType','calPerson','calTitle','calDate','calTimeZone','calArea','calNotes','calEntangle','saveCalendarEvent'];
-    return ids.map(id=>{const el=document.getElementById(id);if(!el)return -1;const all=Array.from(document.querySelectorAll('#calendarOverlay *'));return all.indexOf(el)});
-  });
-  if(order.some(index=>index<0)||order.some((index,i)=>i&&index<=order[i-1]))throw new Error('Mobile new-event form is not in the required order.');
+    const all=Array.from(document.querySelectorAll('#calendarOverlay *'));
+    const order=ids.map(id=>{const el=document.getElementById(id);return el?all.indexOf(el):-1});
+    return order.every(index=>index>=0)&&order.every((index,i)=>!i||index>order[i-1]);
+  },null,{timeout:3000});
   await page.evaluate(()=>closeOverlay('calendarOverlay'));
 
   await page.evaluate(()=>{
