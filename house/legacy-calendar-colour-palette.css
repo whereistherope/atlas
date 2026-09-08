@@ -1,5 +1,13 @@
 .house-calendar-colour-palette{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:5px;min-height:30px}
-.house-calendar-colour-palette button{height:28px;min-width:28px;border:1px solid var(--line);padding:0;background:transparent;color:var(--muted);font:700 6.5px/1 Menlo,Monaco,Consolas,"Courier New",monospace;text-transform:uppercase}
+.house-calendar-colour-palette button{-webkit-appearance:none;appearance:none;height:28px;min-width:28px;border:1px solid var(--line);padding:0;background:transparent;color:var(--muted);font:700 6.5px/1 Menlo,Monaco,Consolas,"Courier New",monospace;text-transform:uppercase;box-shadow:none}
 .house-calendar-colour-palette .house-calendar-colour-auto{padding:0 7px}
 .house-calendar-colour-palette .house-calendar-colour-swatch{width:28px}
+.house-calendar-colour-swatch[data-house-calendar-colour="slate"]{background:#7f898d!important}
+.house-calendar-colour-swatch[data-house-calendar-colour="blue"]{background:#6689a5!important}
+.house-calendar-colour-swatch[data-house-calendar-colour="teal"]{background:#5f918b!important}
+.house-calendar-colour-swatch[data-house-calendar-colour="green"]{background:#76916b!important}
+.house-calendar-colour-swatch[data-house-calendar-colour="amber"]{background:#ae8954!important}
+.house-calendar-colour-swatch[data-house-calendar-colour="red"]{background:#a66767!important}
+.house-calendar-colour-swatch[data-house-calendar-colour="purple"]{background:#88749b!important}
+.house-calendar-colour-swatch[data-house-calendar-colour="pink"]{background:#a67689!important}
 .house-calendar-colour-palette button[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px;border-color:var(--ink)}
