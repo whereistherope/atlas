@@ -9,8 +9,8 @@ const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 const houseVisuals=read('js/house-calendar-visuals.js');
 
-assert.match(boot,/const BUILD='0169r72'/,'r72 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r72/,'r72 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r73'/,'r73 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r73/,'r73 service-worker cache missing');
 assert.doesNotMatch(boot,/atlasSimpleLoader|bootProgress|finishBootProgress/,'visible boot loader must stay removed');
 assert.match(boot,/function preloadScript\(src\)/,'parallel preload helper missing');
 for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./js/house-calendar-visuals.js','./styles/calendar-clarity.css']){
@@ -35,7 +35,9 @@ assert.match(clarity,/openUpcomingForEdit/,'Upcoming calendar rows must open the
 assert.match(clarity,/source\?\.id\|\|item\.id/,'linked Upcoming events must edit the personal source where available');
 assert.match(css,/\.cal-cell\.weekend/,'weekend cell treatment missing');
 assert.match(css,/\.cal-cell\.today/,'today treatment missing');
-assert.match(css,/box-shadow:inset/,'today inset frame missing');
+assert.match(css,/rgba\(32,38,40,\.06\)/,'weekend needs a concrete non-color-mix fallback for older Safari');
+assert.match(css,/rgba\(32,38,40,\.095\)/,'today needs a concrete non-color-mix fallback for older Safari');
+assert.match(css,/box-shadow:inset[^}]*var\(--green\)/,'today marker should remain visibly distinct');
 assert.match(css,/\.cal-cell\.today \.cal-day/,'today date marker missing');
 assert.match(css,/\.entangle-row/,'calendar profile linking needs a visible treatment');
 assert.match(css,/profile-link-heading/,'calendar profile-link heading treatment missing');
@@ -54,4 +56,4 @@ assert.match(weather,/iconFor/,'header weather must expose simple weather iconog
 assert.match(css,/\.chrono-weather time\{[^}]*display:inline!important/,'weather condition must stay visible');
 assert.doesNotMatch(css,/@media\(max-width:850px\)\{\.chrono-weather time\{display:none\}/,'iPad must not hide weather condition');
 
-console.log('calendar weather clarity + r72 Who + form order contract ok');
+console.log('calendar weather clarity + r73 visible calendar states contract ok');
