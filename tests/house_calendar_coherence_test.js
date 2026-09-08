@@ -7,6 +7,7 @@ const legacy=read('house/legacy-upcoming-scroll.js');
 const legacyHtml=read('house/legacy.html');
 const palette=read('house/legacy-calendar-colour-palette.js');
 const paletteCss=read('house/legacy-calendar-colour-palette.css');
+const calendarCss=read('styles/calendar-extras.css');
 const sw=read('sw.js');
 
 assert.match(modern,/eventHue\(event\)/,'modern House Upcoming must preserve canonical event colours');
@@ -21,14 +22,21 @@ assert.match(legacy,/String\(event\.person\|\|''\)/,'legacy Upcoming signature m
 assert.doesNotMatch(legacy,/slice\(0,5\)|limit=5/,'legacy House Upcoming must not truncate the 30-day list');
 assert.doesNotMatch(legacy,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy Upcoming must stay parseable by iOS 12 Safari');
 
-assert.match(legacyHtml,/legacy-calendar-colour-palette\.css\?v=r72&hotfix=r75/,'legacy House must load the colour swatch styling with a cache-busting hotfix token');
-assert.match(legacyHtml,/legacy-calendar-colour-palette\.js\?v=r72&hotfix=r75/,'legacy House must load the colour swatch runtime with a cache-busting hotfix token');
-assert.match(legacyHtml,/legacy-upcoming-scroll\.js\?v=r72&hotfix=r75/,'legacy House Upcoming runtime must be cache-busted with the coherence hotfix');
+assert.match(legacyHtml,/legacy-calendar-colour-palette\.css\?v=r72&hotfix=r76/,'legacy House must load the visible colour swatch styling with the latest cache-busting token');
+assert.match(legacyHtml,/legacy-calendar-colour-palette\.js\?v=r72&hotfix=r76/,'legacy House must load the colour swatch runtime with the latest cache-busting token');
+assert.match(legacyHtml,/legacy-upcoming-scroll\.js\?v=r72&hotfix=r75/,'legacy House Upcoming runtime must retain the coherence hotfix');
 assert.match(palette,/data-house-calendar-colour/,'legacy editor must expose colour swatch controls');
 assert.match(palette,/select\.style\.display='none'/,'legacy colour select must be replaced visually by the swatch palette');
+assert.match(paletteCss,/-webkit-appearance:none/,'legacy swatches must neutralise native iOS button appearance');
+for(const [name,hex] of Object.entries({slate:'#7f898d',blue:'#6689a5',teal:'#5f918b',green:'#76916b',amber:'#ae8954',red:'#a66767',purple:'#88749b',pink:'#a67689'})){
+  assert.ok(paletteCss.includes(`[data-house-calendar-colour="${name}"]{background:${hex}!important}`),`legacy ${name} swatch must have an explicit visible colour`);
+  assert.ok(calendarCss.includes(`[data-cal-colour="${name}"]{background:${hex}!important}`),`normal Atlas ${name} swatch must have an explicit visible colour`);
+}
 assert.match(paletteCss,/aria-pressed="true"/,'selected legacy colour swatch must have a visible state');
+assert.match(calendarCss,/-webkit-appearance:none!important/,'normal Atlas swatches must neutralise native iOS button appearance');
+assert.match(calendarCss,/aria-pressed="true"/,'selected normal Atlas colour swatch must have a visible state');
 assert.doesNotMatch(palette,/\?\.|\?\?|=>|\basync\b|\bawait\b|`/,'legacy colour palette must stay parseable by iOS 12 Safari');
 assert.ok(sw.includes('./house/legacy-calendar-colour-palette.js'),'legacy colour palette runtime must be offline-cached');
 assert.ok(sw.includes('./house/legacy-calendar-colour-palette.css'),'legacy colour palette styling must be offline-cached');
 
-console.log('House calendar coherence checks passed.');
+console.log('House calendar coherence and event colour palette checks passed.');
