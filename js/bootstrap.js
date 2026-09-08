@@ -24,14 +24,14 @@
   // Fetch the dynamic runtime in parallel, but keep execution in the established order below.
   // This cuts serial network wait without changing module lifecycle or Atlas data behaviour.
   [
-    './js/travel-direction.js','./js/calendar-clarity.js','./js/header-weather.js',
+    './js/travel-direction.js','./js/calendar-clarity.js','./js/header-weather.js','./js/touch-widget-drag-guard.js',
     './js/v0130-safety.js','./js/sync-v2-core.js','./js/sync-v2-recovery.js','./js/sync-v3.js','./js/sync-recovery-ui.js',
     './js/note-editor.js','./js/visual-note-editor.js','./js/visual-table-controls.js','./js/rich-note-capture.js','./js/project-workspace.js','./js/editor-ux.js',
     './js/atlas-document-r3.js','./js/atlas-document-r4-ui.js','./js/table-width-resize.js','./js/capture-framework-r7.js','./js/capture-polish-r8.js','./js/item-delete-tools.js',
     './js/profile-management.js','./js/command-palette.js','./js/interaction-alignment.js','./js/workspace-actions.js','./js/graph-hierarchy-interactions.js',
     './js/network-layout.js','./js/network-organic.js','./js/network-controls.js','./js/network-split.js','./js/client-state-stability.js','./js/lock-terrain.js',
     './js/widget-visibility-hotfix.js','./js/pomodoro-widget.js','./js/runtime-telemetry.js','./js/widget-context.js','./js/house-calendar-visuals.js',
-    './js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js'
+    './js/house-upcoming-scroll.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js'
   ].forEach(preloadScript);
 
   loadStyle('./styles/v0133-polish.css');
@@ -53,11 +53,13 @@
   loadStyle('./styles/calendar-clarity.css');
   loadStyle('./styles/weather-widget.css');
   loadStyle('./styles/house.css');
+  loadStyle('./styles/house-upcoming-scroll.css');
 
   // Required calendar presentation helpers.
   await loadScript('./js/travel-direction.js','Atlas travel direction marks');
   await loadScript('./js/calendar-clarity.js','Atlas calendar clarity');
   await loadScript('./js/header-weather.js','Atlas Melbourne header weather');
+  try { await loadScript('./js/touch-widget-drag-guard.js','Atlas touch widget drag guard'); } catch (_) {}
 
   try { await loadScript('./js/v0130-safety.js','Atlas v0.13.0 safety module'); } catch (_) {}
   try { await loadScript('./js/sync-v2-core.js','Atlas record reconciliation core'); } catch (_) {}
@@ -99,6 +101,7 @@
   // Shared widget capabilities load before House composes them.
   try { await loadScript('./js/widget-context.js','Atlas widget profile context'); } catch (_) {}
   try { await loadScript('./js/house-calendar-visuals.js','Atlas House calendar visuals'); } catch (_) {}
+  try { await loadScript('./js/house-upcoming-scroll.js','Atlas House Upcoming scroll'); } catch (_) {}
   try { await loadScript('./js/list-widget.js','Atlas List widget'); } catch (_) {}
   try { await loadScript('./js/home-server-widget.js','Atlas Home Server widget'); } catch (_) {}
   try { await loadScript('./js/weather-widget.js','Atlas Weather widget'); } catch (_) {}
