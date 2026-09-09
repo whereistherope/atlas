@@ -62,6 +62,9 @@ async function verifyHouse(page){
   const result=await page.evaluate(()=>{
     if(!document.body.classList.contains('atlas-house-view'))return {error:'House route did not activate.'};
     state.calendar=(state.calendar||[]).filter(event=>!String(event.id||'').startsWith('smoke-house-upcoming-'));
+    state.notes=(state.notes||[]).filter(note=>note.id!=='smoke-house-list');
+    state.notes.unshift({id:'smoke-house-list',profile:'us',space:'personal',areaId:'',topicId:'',type:'list',title:'Smoke list',body:'',tags:['List'],createdAt:Date.now(),updatedAt:Date.now(),showOnMap:false,listItems:[]});
+    state.settings=state.settings||{};state.settings.listWidgetSelection=state.settings.listWidgetSelection||{};state.settings.listWidgetSelection.us='smoke-house-list';
     const base=new Date();
     for(let i=0;i<12;i++){
       const day=new Date(base.getFullYear(),base.getMonth(),base.getDate()+i);
@@ -78,15 +81,63 @@ async function verifyHouse(page){
       calendarHeight:calendar?Math.round(calendar.getBoundingClientRect().height):0,
       upcomingHeight:upcoming?Math.round(upcoming.getBoundingClientRect().height):0,
       clientHeight:body?body.clientHeight:0,
-      scrollHeight:body?body.scrollHeight:0
+      scrollHeight:body?body.scrollHeight:0,
+      hasFilter:!!document.querySelector('.house-upcoming [data-upcoming-filter]')
     };
   });
   if(result.error)throw new Error(result.error);
   if(!result.module)throw new Error('House Upcoming scroll module did not load.');
+  if(result.hasFilter)throw new Error('House Upcoming must stay an unfiltered household view.');
   if(result.rows<12)throw new Error('House Upcoming did not render the full 30-day event set.');
   if(!['auto','scroll'].includes(result.overflow))throw new Error('House Upcoming is not a bounded vertical scroll region.');
   if(Math.abs(result.calendarHeight-result.upcomingHeight)>1)throw new Error(`House Upcoming height ${result.upcomingHeight}px does not match Calendar row ${result.calendarHeight}px.`);
   if(!(result.scrollHeight>result.clientHeight))throw new Error(`House Upcoming content is not overflowing internally (${result.scrollHeight}px <= ${result.clientHeight}px).`);
+
+  await page.focus('#atlasHouseBoard #widgetTodoInput');
+  await page.fill('#atlasHouseBoard #widgetTodoInput','unsaved house todo');
+  await page.evaluate(()=>AtlasHouse.render());
+  await page.waitForFunction(()=>{const input=document.querySelector('#atlasHouseBoard #widgetTodoInput');return input&&input.value==='unsaved house todo'&&document.activeElement===input},null,{timeout:3000});
+
+  await page.focus('#atlasHouseBoard [data-list-item-input]');
+  await page.fill('#atlasHouseBoard [data-list-item-input]','unsaved list item');
+  await page.evaluate(()=>AtlasHouse.render());
+  await page.waitForFunction(()=>{const input=document.querySelector('#atlasHouseBoard [data-list-item-input]');return input&&input.value==='unsaved list item'&&document.activeElement===input},null,{timeout:3000});
+}
+
+async function verifyNormalUpcoming(page){
+  const initial=await page.evaluate(()=>{
+    const lock=document.getElementById('lockScreen');if(lock)lock.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
+    const auth=document.querySelector('.auth-overlay');if(auth)auth.setAttribute('style','display:none!important;pointer-events:none!important;visibility:hidden!important');
+    state.settings.activeProfile='me';
+    state.calendar=(state.calendar||[]).filter(event=>!String(event.id||'').startsWith('smoke-normal-upcoming-'));
+    const base=new Date();
+    for(let i=0;i<12;i++){
+      const day=new Date(base.getFullYear(),base.getMonth(),base.getDate()+i);
+      const travel=i===11,work=i<9;
+      state.calendar.push({id:'smoke-normal-upcoming-'+i,profile:'me',space:work?'work':'personal',title:travel?'Smoke travel':'Smoke event '+(i+1),person:'fraser',date:day.toLocaleDateString('en-CA'),startTime:'09:00',endTime:'',timeZone:'Australia/Melbourne',arrivalTimeZone:'',color:i===0?'amber':'blue',entryType:travel?'travel':'event',traveler:travel?'Fraser':'',origin:travel?'MEL':'',destination:travel?'SYD':'',flightNumber:travel?'VA999':'',areaId:'',notes:'',createdAt:Date.now()+i,updatedAt:Date.now()+i});
+    }
+    document.getElementById('app').innerHTML=upcomingWidget();
+    const select=document.querySelector('[data-upcoming-filter]');
+    const first=document.querySelector('.atlas-widget[data-widget="upcoming"] .widget-row');
+    return {
+      rows:document.querySelectorAll('.atlas-widget[data-widget="upcoming"] .widget-row').length,
+      options:select?Array.from(select.options).map(option=>option.value):[],
+      firstWho:first?.querySelector('strong')?.textContent||'',
+      firstMarker:first?.querySelector('i')?.style.background||''
+    };
+  });
+  if(initial.rows!==12)throw new Error(`Normal Upcoming should show the full 30-day set, got ${initial.rows}.`);
+  if(initial.options.join(',')!=='all,work,personal,travel')throw new Error('Normal Upcoming filters are incomplete.');
+  if(initial.firstWho!=='Fraser')throw new Error('Normal Upcoming is not using the House person-first row presentation.');
+  if(!initial.firstMarker)throw new Error('Normal Upcoming is not using calendar event colours.');
+
+  await page.selectOption('[data-upcoming-filter]','work');
+  const workRows=await page.locator('.atlas-widget[data-widget="upcoming"] .widget-row').count();
+  if(workRows!==9)throw new Error(`Work Upcoming filter expected 9 rows, got ${workRows}.`);
+  await page.selectOption('[data-upcoming-filter]','travel');
+  const travel=await page.evaluate(()=>({rows:document.querySelectorAll('.atlas-widget[data-widget="upcoming"] .widget-row').length,text:document.querySelector('.atlas-widget[data-widget="upcoming"] .widget-row strong')?.textContent||''}));
+  if(travel.rows!==1||!travel.text.includes('Smoke travel'))throw new Error('Travel Upcoming filter did not isolate the travel event.');
+  await page.selectOption('[data-upcoming-filter]','all');
 }
 
 async function verifyMobileCalendar(page){
@@ -143,7 +194,7 @@ async function verifyTouchWidgetDrag(page){
   console.log('Browser smoke server: '+base);
   const browser=await chromium.launch({headless:true});
   try{
-    await checkPage(browser,base+'/', 'Atlas root');
+    await checkPage(browser,base+'/', 'Atlas root',verifyNormalUpcoming);
     await checkPage(browser,base+'/?view=house','Atlas House',verifyHouse,{viewport:{width:1440,height:900}});
     await checkPage(browser,base+'/', 'Atlas mobile calendar',verifyMobileCalendar,{viewport:{width:390,height:844},isMobile:true,hasTouch:true});
     await checkPage(browser,base+'/', 'Atlas touch widget drag',verifyTouchWidgetDrag,{viewport:{width:390,height:844},isMobile:true,hasTouch:true});
