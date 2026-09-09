@@ -3,9 +3,8 @@
 .house-atlas-board{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  /* Track minima stay at zero so widget content cannot enlarge a row. Calendar's
-     explicit min-height below supplies the intended first-row floor instead. */
-  grid-template-rows:minmax(0,1.55fr) minmax(0,.78fr) minmax(0,1fr);
+  /* The first row is sized to the Calendar, never to Upcoming content. */
+  grid-template-rows:292px minmax(0,.78fr) minmax(0,1fr);
   grid-template-areas:"calendar calendar upcoming" "weather list todo" "server server server";
   gap:var(--workspace-gap);
   min-width:0;
@@ -16,7 +15,7 @@
 .house-calendar{grid-area:calendar}.house-upcoming{grid-area:upcoming;min-height:0;overflow:hidden}.house-weather{grid-area:weather}.house-list{grid-area:list}.house-todo{grid-area:todo}.house-server{grid-area:server}
 .house-widget-slot>.atlas-widget{height:100%;min-height:0;display:flex;flex-direction:column}
 .house-widget-slot>.atlas-widget>.widget-body{flex:1;min-height:0}
-/* House is a fixed glanceable surface: widgets never become their own scroll containers. */
+/* House is a fixed glanceable surface; Upcoming is the one internal scroll region. */
 .house-atlas-board .widget-body{overflow:hidden!important;max-height:none!important}
 /* The real Calendar widget must be fully visible on the fixed 4:3 House display. */
 .house-calendar{min-height:292px}
@@ -47,7 +46,7 @@ body[data-theme="night"] .house-atlas-board .atlas-widget.widget-floating{box-sh
   .house-atlas-board{height:calc(100vh - 120px);height:calc(100dvh - 120px)}
 }
 @media(max-width:900px) and (orientation:landscape){
-  .house-atlas-board{grid-template-rows:minmax(0,1.5fr) minmax(0,.78fr) minmax(0,.95fr)}
+  .house-atlas-board{grid-template-rows:280px minmax(0,.78fr) minmax(0,.95fr)}
   .house-calendar{min-height:280px}
   .house-calendar .mini-day{min-height:22px}
 }
