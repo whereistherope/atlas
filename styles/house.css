@@ -3,8 +3,8 @@
 .house-atlas-board{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  /* The first row is sized to the Calendar, never to Upcoming content. */
-  grid-template-rows:292px minmax(0,.78fr) minmax(0,1fr);
+  /* Calendar/Upcoming stay fixed; the task row grows with content, then the server takes the remainder. */
+  grid-template-rows:292px auto minmax(112px,1fr);
   grid-template-areas:"calendar calendar upcoming" "weather list todo" "server server server";
   gap:var(--workspace-gap);
   min-width:0;
@@ -15,8 +15,21 @@
 .house-calendar{grid-area:calendar}.house-upcoming{grid-area:upcoming;min-height:0;overflow:hidden}.house-weather{grid-area:weather}.house-list{grid-area:list}.house-todo{grid-area:todo}.house-server{grid-area:server}
 .house-widget-slot>.atlas-widget{height:100%;min-height:0;display:flex;flex-direction:column}
 .house-widget-slot>.atlas-widget>.widget-body{flex:1;min-height:0}
-/* House is a fixed glanceable surface; Upcoming is the one internal scroll region. */
+/* House is a fixed glanceable surface. Upcoming, List and To-do own their bounded scroll regions. */
 .house-atlas-board .widget-body{overflow:hidden!important;max-height:none!important}
+.house-list .widget-body,.house-todo .widget-body{overflow:visible!important}
+.house-list .atlas-list-items,.house-todo .quick-list{
+  max-height:224px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:var(--accent) transparent;
+}
+.house-list .atlas-list-items::-webkit-scrollbar,.house-todo .quick-list::-webkit-scrollbar{width:5px}
+.house-list .atlas-list-items::-webkit-scrollbar-track,.house-todo .quick-list::-webkit-scrollbar-track{background:transparent}
+.house-list .atlas-list-items::-webkit-scrollbar-thumb,.house-todo .quick-list::-webkit-scrollbar-thumb{background:var(--accent);border-radius:999px}
 /* The real Calendar widget must be fully visible on the fixed 4:3 House display. */
 .house-calendar{min-height:292px}
 .house-calendar .mini-day{min-height:23px}
@@ -46,15 +59,18 @@ body[data-theme="night"] .house-atlas-board .atlas-widget.widget-floating{box-sh
   .house-atlas-board{height:calc(100vh - 120px);height:calc(100dvh - 120px)}
 }
 @media(max-width:900px) and (orientation:landscape){
-  .house-atlas-board{grid-template-rows:280px minmax(0,.78fr) minmax(0,.95fr)}
+  .house-atlas-board{grid-template-rows:280px auto minmax(86px,1fr)}
   .house-calendar{min-height:280px}
   .house-calendar .mini-day{min-height:22px}
+  /* Preserve the old-iPad glanceable surface: roughly six task rows before internal scroll. */
+  .house-list .atlas-list-items,.house-todo .quick-list{max-height:144px}
 }
 @media(max-width:850px) and (orientation:portrait){
   .house-atlas-board{height:auto;grid-template-columns:minmax(0,1fr);grid-template-rows:none;grid-template-areas:"calendar" "upcoming" "weather" "list" "todo" "server"}
   .house-widget-slot{overflow:visible}
   .house-widget-slot>.atlas-widget{height:auto;min-height:210px}
   .house-atlas-board .widget-body{overflow:visible!important}
+  .house-list .atlas-list-items,.house-todo .quick-list{max-height:224px;overflow-y:auto}
   .house-calendar,.house-calendar>.atlas-widget{min-height:310px}
   .house-server>.atlas-widget{min-height:280px}
   .server-service-list{grid-template-columns:1fr}
