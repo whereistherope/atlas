@@ -13,7 +13,13 @@ assert.match(upcoming,/calendarEventPersonLabel\(event\)/,'Upcoming ordinary eve
 assert.match(upcoming,/if\(options\?\.profileId&&isHouse\(\)\)return houseUpcoming\(options\)/,'House must keep its full shared Upcoming mode');
 assert.match(upcoming,/if\(!options\?\.profileId\)return normalUpcoming\(\)/,'normal Atlas must use filterable Upcoming mode');
 assert.match(upcoming,/normalFilter='all'/,'normal Upcoming must default to All without persisting a hidden preference');
+assert.match(upcoming,/normal-upcoming-list/,'normal Upcoming must expose a bounded scroll list');
+assert.match(upcoming,/data-widget-action=\"add-todo\"/,'House To-do Add button focus guard missing');
+assert.match(upcoming,/data-list-action=\"add-item\"/,'House List Add button focus guard missing');
+assert.match(upcoming,/event\.preventDefault\(\)/,'House Add pointer-down must preserve input focus until click');
 assert.match(css,/\.atlas-upcoming-filterbar/,'normal Upcoming filter styling missing');
+assert.match(css,/max-height:calc\(var\(--upcoming-row-height\) \* 4\)/,'normal Upcoming must cap its visible list at four rows');
+assert.match(css,/\.normal-upcoming-list\{[\s\S]*overflow-y:auto/,'normal Upcoming list must scroll internally');
 
 assert.match(house,/function houseDraftSnapshot\(\)/,'House draft snapshot protection missing');
 assert.match(house,/persist===false&&houseDraftSnapshot\(\)/,'background sync redraws must defer while a House input is focused');
