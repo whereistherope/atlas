@@ -52,10 +52,12 @@ async function ready(page,url){
     await house.fill('#atlasHouseBoard #widgetTodoInput','button todo works');
     await house.click('#atlasHouseBoard [data-widget-action="add-todo"]');
     await house.waitForFunction(()=>state.quickTodos.some(t=>t.profile==='us'&&t.text==='button todo works'),null,{timeout:3000});
+    await house.waitForFunction(()=>{const input=document.querySelector('#atlasHouseBoard #widgetTodoInput');return input&&input.value===''},null,{timeout:3000});
 
     await house.fill('#atlasHouseBoard [data-list-item-input]','button list works');
     await house.click('#atlasHouseBoard [data-list-action="add-item"]');
     await house.waitForFunction(()=>{const n=(state.notes||[]).find(note=>note.id==='house-button-list');return !!n?.listItems?.some(item=>item.text==='button list works')},null,{timeout:3000});
+    await house.waitForFunction(()=>{const input=document.querySelector('#atlasHouseBoard [data-list-item-input]');return input&&input.value===''},null,{timeout:3000});
     await house.close();
 
     console.log('Upcoming scroll + House Add button browser regression: PASS');
