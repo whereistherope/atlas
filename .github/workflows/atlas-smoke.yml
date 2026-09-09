@@ -42,7 +42,7 @@ jobs:
           set -euo pipefail
           for test in tests/*_test.js; do
             case "$test" in
-              tests/js_syntax_smoke.js|tests/browser_boot_smoke.js|tests/upcoming_scroll_house_buttons_browser_test.js) continue ;;
+              tests/js_syntax_smoke.js|tests/browser_boot_smoke.js|tests/upcoming_scroll_house_buttons_browser_test.js|tests/house_list_todo_scroll_browser_test.js) continue ;;
             esac
             echo "==> $test"
             node "$test"
@@ -58,3 +58,6 @@ jobs:
 
       - name: Upcoming and House button browser regression
         run: node tests/upcoming_scroll_house_buttons_browser_test.js
+
+      - name: House List and To-do scroll regression
+        run: node tests/house_list_todo_scroll_browser_test.js
