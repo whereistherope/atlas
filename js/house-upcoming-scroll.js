@@ -36,7 +36,7 @@
   }
   function normalUpcoming(){
     const profileId=state?.settings?.activeProfile||'me',all=upcomingEvents(profileId),events=all.filter(event=>matchesFilter(event,normalFilter));
-    const list=`<div class="widget-list atlas-upcoming-list">${events.length?events.map(eventRow).join(''):'<div class="widget-empty">Nothing scheduled for this filter.</div>'}</div>`;
+    const list=`<div class="widget-list atlas-upcoming-list normal-upcoming-list">${events.length?events.map(eventRow).join(''):'<div class="widget-empty">Nothing scheduled for this filter.</div>'}</div>`;
     return widgetShell('upcoming',filterToolbar()+list,`${events.length} / ${all.length} · 30D`);
   }
   function houseUpcoming(options){
@@ -56,5 +56,5 @@
     const widget=select.closest('.atlas-widget[data-widget="upcoming"]');if(widget)widget.outerHTML=normalUpcoming();
   });
 
-  root.AtlasHouseUpcomingScroll=Object.freeze({version:'3',filters:FILTERS,currentFilter:()=>normalFilter,eventSpace,matchesFilter});
+  root.AtlasHouseUpcomingScroll=Object.freeze({version:'4',filters:FILTERS,currentFilter:()=>normalFilter,eventSpace,matchesFilter});
 })(window);
