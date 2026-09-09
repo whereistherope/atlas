@@ -50,16 +50,16 @@
 
   document.addEventListener('keydown',event=>{
     if(event.key!=='Enter')return;
-    if(event.target.matches?.('[data-list-name-input]')){event.preventDefault();const value=event.target.value;if(createList(profileIdFor(event.target),value))event.target.value='';return}
-    if(event.target.matches?.('[data-list-item-input]')){event.preventDefault();const widget=event.target.closest('.atlas-widget'),note=findList(widget?.querySelector('[data-list-action="add-item"]')?.dataset.listId),value=event.target.value;if(addItem(note,value))event.target.value=''}
+    if(event.target.matches?.('[data-list-name-input]')){event.preventDefault();const value=event.target.value.trim();if(!value)return;event.target.value='';createList(profileIdFor(event.target),value);return}
+    if(event.target.matches?.('[data-list-item-input]')){event.preventDefault();const value=event.target.value.trim();if(!value)return;const widget=event.target.closest('.atlas-widget'),note=findList(widget?.querySelector('[data-list-action="add-item"]')?.dataset.listId);if(!note)return;event.target.value='';addItem(note,value)}
   });
 
   document.addEventListener('click',event=>{
     const action=event.target.closest?.('[data-list-action]');if(action){const profileId=profileIdFor(action),kind=action.dataset.listAction;
       if(kind==='new-list'){composerProfiles.add(profileId);rerender();return}
       if(kind==='cancel-list'){composerProfiles.delete(profileId);rerender();return}
-      if(kind==='create-list'){const input=action.closest('.atlas-widget')?.querySelector('[data-list-name-input]'),value=input?.value||'';if(createList(profileId,value)&&input)input.value='';return}
-      if(kind==='add-item'){const input=action.closest('.atlas-widget')?.querySelector('[data-list-item-input]'),value=input?.value||'';if(addItem(findList(action.dataset.listId),value)&&input)input.value='';return}
+      if(kind==='create-list'){const input=action.closest('.atlas-widget')?.querySelector('[data-list-name-input]'),value=(input?.value||'').trim();if(!value)return;if(input)input.value='';createList(profileId,value);return}
+      if(kind==='add-item'){const input=action.closest('.atlas-widget')?.querySelector('[data-list-item-input]'),value=(input?.value||'').trim(),note=findList(action.dataset.listId);if(!value||!note)return;if(input)input.value='';addItem(note,value);return}
     }
     const del=event.target.closest?.('[data-list-delete-item]');if(del){const note=findList(del.dataset.listId);if(!note)return;note.listItems=listItems(note).filter(item=>item.id!==del.dataset.listDeleteItem);updateList(note)}
   });
