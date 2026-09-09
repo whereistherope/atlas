@@ -1,0 +1,131 @@
+/* Atlas Night glass refinement.
+   Night-only material depth: translucent panes, restrained blur, soft edges and
+   quiet highlights. Day mode is deliberately untouched. */
+
+body[data-theme="night"]{
+  --atlas-night-glass-pane:rgba(9,14,18,.66);
+  --atlas-night-glass-pane-raised:rgba(9,14,18,.76);
+  --atlas-night-glass-float:rgba(8,13,17,.72);
+  --atlas-night-glass-head:rgba(122,154,176,.035);
+  --atlas-night-glass-border:rgba(123,153,173,.20);
+  --atlas-night-glass-border-soft:rgba(123,153,173,.14);
+  --atlas-night-glass-highlight:rgba(255,255,255,.045);
+  --atlas-night-glass-shadow:0 12px 34px rgba(0,0,0,.24),inset 0 1px 0 var(--atlas-night-glass-highlight);
+  --atlas-night-glass-shadow-float:0 18px 48px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.055);
+}
+
+body[data-theme="night"] .atlas-widget,
+body[data-theme="night"] .network-stage,
+body[data-theme="night"] .utility-pane,
+body[data-theme="night"] .panel,
+body[data-theme="night"] .fold,
+body[data-theme="night"] .atlas-project-workspace{
+  background:var(--atlas-night-glass-pane)!important;
+  background-color:var(--atlas-night-glass-pane)!important;
+  border-color:var(--atlas-night-glass-border-soft)!important;
+  box-shadow:var(--atlas-night-glass-shadow)!important;
+  backdrop-filter:blur(9px) saturate(112%)!important;
+  -webkit-backdrop-filter:blur(9px) saturate(112%)!important;
+}
+
+body[data-theme="night"] .modal,
+body[data-theme="night"] .atlas-note-editor-sheet,
+body[data-theme="night"] .atlas-vnote-sheet,
+body[data-theme="night"] .atlas-command-shell,
+body[data-theme="night"] .atlas-widget.widget-floating,
+body[data-theme="night"] .prediction-inspector,
+body[data-theme="night"] .widget-position-panel,
+body[data-theme="night"] .atlas-table-menu-panel,
+body[data-theme="night"] .system-menu-panel,
+body[data-theme="night"] .profile-menu-panel,
+body[data-theme="night"] .space-menu-panel,
+body[data-theme="night"] .widget-menu-panel,
+body[data-theme="night"] [class$="-menu-panel"],
+body[data-theme="night"] #atlasCaptureLauncher .atlas-capture-launcher-modal{
+  background:var(--atlas-night-glass-float)!important;
+  background-color:var(--atlas-night-glass-float)!important;
+  border-color:var(--atlas-night-glass-border)!important;
+  box-shadow:var(--atlas-night-glass-shadow-float)!important;
+  backdrop-filter:blur(14px) saturate(118%)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(118%)!important;
+}
+
+body[data-theme="night"] .widget-head,
+body[data-theme="night"] .panel-head,
+body[data-theme="night"] .modal-head,
+body[data-theme="night"] .atlas-note-editor-head,
+body[data-theme="night"] .atlas-vnote-head,
+body[data-theme="night"] .network-head,
+body[data-theme="night"] .utility-pane-head,
+body[data-theme="night"] .atlas-command-input-row,
+body[data-theme="night"] .atlas-command-meta,
+body[data-theme="night"] .atlas-command-shell footer,
+body[data-theme="night"] .atlas-vnote-toolbar,
+body[data-theme="night"] .atlas-note-toolbar{
+  background:var(--atlas-night-glass-head)!important;
+  border-bottom-color:var(--atlas-night-glass-border-soft)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+
+body[data-theme="night"] .modal-head,
+body[data-theme="night"] .atlas-note-editor-head,
+body[data-theme="night"] .atlas-vnote-head,
+body[data-theme="night"] .atlas-command-input-row,
+body[data-theme="night"] .atlas-command-meta,
+body[data-theme="night"] .atlas-vnote-toolbar,
+body[data-theme="night"] .atlas-note-toolbar,
+body[data-theme="night"] #atlasCaptureLauncher .modal-head{
+  background:rgba(122,154,176,.045)!important;
+}
+
+/* Keep editable content more opaque than its surrounding glass. */
+body[data-theme="night"] .modal input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]),
+body[data-theme="night"] .modal select,
+body[data-theme="night"] .modal textarea,
+body[data-theme="night"] .atlas-note-editor-sheet input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]),
+body[data-theme="night"] .atlas-note-editor-sheet select,
+body[data-theme="night"] .atlas-note-editor-sheet textarea,
+body[data-theme="night"] .atlas-vnote-sheet input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]),
+body[data-theme="night"] .atlas-vnote-sheet select,
+body[data-theme="night"] .atlas-vnote-sheet textarea,
+body[data-theme="night"] .atlas-project-workspace input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="button"]):not([type="submit"]),
+body[data-theme="night"] .atlas-project-workspace select,
+body[data-theme="night"] .atlas-project-workspace textarea{
+  background:#11171c!important;
+  background-color:#11171c!important;
+  border-color:rgba(123,153,173,.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.018)!important;
+}
+
+/* Modal dimming gets softer while still clearly separating the active surface. */
+body[data-theme="night"] .overlay,
+body[data-theme="night"] .modal-overlay,
+body[data-theme="night"] .dialog-backdrop{
+  background-color:rgba(3,6,8,.44)!important;
+  backdrop-filter:blur(4px)!important;
+  -webkit-backdrop-filter:blur(4px)!important;
+}
+
+/* House inherits the same modern material without changing its fixed layout. */
+body[data-theme="night"].atlas-house-view .house-atlas-board .atlas-widget{
+  background:var(--atlas-night-glass-pane-raised)!important;
+  box-shadow:0 12px 32px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+
+@media (prefers-reduced-transparency:reduce){
+  body[data-theme="night"] .atlas-widget,
+  body[data-theme="night"] .network-stage,
+  body[data-theme="night"] .utility-pane,
+  body[data-theme="night"] .panel,
+  body[data-theme="night"] .fold,
+  body[data-theme="night"] .atlas-project-workspace,
+  body[data-theme="night"] .modal,
+  body[data-theme="night"] .atlas-note-editor-sheet,
+  body[data-theme="night"] .atlas-vnote-sheet,
+  body[data-theme="night"] .atlas-command-shell,
+  body[data-theme="night"] .atlas-widget.widget-floating{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    background:#0e1317!important;
+  }
+}
