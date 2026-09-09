@@ -4,7 +4,7 @@ const path=require('path');
 const {chromium}=require('playwright');
 
 const root=path.resolve(__dirname,'..');
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.svg':'image/svg+xml'};
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.webmanifest':'application/manifest+json','.png':'image/png','.svg+xml':'image/svg+xml'};
 const hardStop=setTimeout(()=>{console.error('Browser boot smoke exceeded 45 seconds.');process.exit(124)},45000);
 let requestCount=0;
 
@@ -68,17 +68,25 @@ async function verifyHouse(page){
       state.calendar.push({id:'smoke-house-upcoming-'+i,profile:'us',title:'House event '+(i+1),person:'together',date:day.toLocaleDateString('en-CA'),startTime:'09:00',endTime:'',timeZone:'Australia/Melbourne',arrivalTimeZone:'',color:'blue',entryType:'event',traveler:'',origin:'',destination:'',flightNumber:'',areaId:'',notes:'',createdAt:Date.now()+i,updatedAt:Date.now()+i});
     }
     AtlasHouse.render();
+    const calendar=document.querySelector('.house-calendar');
+    const upcoming=document.querySelector('.house-upcoming');
     const body=document.querySelector('.house-upcoming .widget-body');
     return {
       rows:document.querySelectorAll('.house-upcoming .widget-row').length,
       overflow:body?getComputedStyle(body).overflowY:'',
-      module:!!window.AtlasHouseUpcomingScroll
+      module:!!window.AtlasHouseUpcomingScroll,
+      calendarHeight:calendar?Math.round(calendar.getBoundingClientRect().height):0,
+      upcomingHeight:upcoming?Math.round(upcoming.getBoundingClientRect().height):0,
+      clientHeight:body?body.clientHeight:0,
+      scrollHeight:body?body.scrollHeight:0
     };
   });
   if(result.error)throw new Error(result.error);
   if(!result.module)throw new Error('House Upcoming scroll module did not load.');
   if(result.rows<12)throw new Error('House Upcoming did not render the full 30-day event set.');
   if(!['auto','scroll'].includes(result.overflow))throw new Error('House Upcoming is not a bounded vertical scroll region.');
+  if(Math.abs(result.calendarHeight-result.upcomingHeight)>1)throw new Error(`House Upcoming height ${result.upcomingHeight}px does not match Calendar row ${result.calendarHeight}px.`);
+  if(!(result.scrollHeight>result.clientHeight))throw new Error(`House Upcoming content is not overflowing internally (${result.scrollHeight}px <= ${result.clientHeight}px).`);
 }
 
 async function verifyMobileCalendar(page){
@@ -136,7 +144,7 @@ async function verifyTouchWidgetDrag(page){
   const browser=await chromium.launch({headless:true});
   try{
     await checkPage(browser,base+'/', 'Atlas root');
-    await checkPage(browser,base+'/?view=house','Atlas House',verifyHouse);
+    await checkPage(browser,base+'/?view=house','Atlas House',verifyHouse,{viewport:{width:1440,height:900}});
     await checkPage(browser,base+'/', 'Atlas mobile calendar',verifyMobileCalendar,{viewport:{width:390,height:844},isMobile:true,hasTouch:true});
     await checkPage(browser,base+'/', 'Atlas touch widget drag',verifyTouchWidgetDrag,{viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   }finally{
