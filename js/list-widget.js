@@ -41,7 +41,7 @@
 
   function createList(profileId,name){name=String(name||'').trim();if(!name)return null;const note={id:uid('n'),profile:profileId,space:'personal',areaId:'',topicId:'',type:'list',title:name,body:'',tags:['List'],createdAt:now(),updatedAt:now(),showOnMap:false,listItems:[]};state.notes.unshift(note);ensureSelections();state.settings.listWidgetSelection[profileId]=note.id;composerProfiles.delete(profileId);log(`List created: ${name}.`,profileId);save();rerender();return note}
   function findList(id){return (state.notes||[]).find(note=>note.id===id&&note.type==='list')||null}
-  function addItem(note,text){text=String(text||'').trim();if(!note||!text)return;listItems(note).push({id:uid('li'),text,done:false,createdAt:now(),updatedAt:now()});updateList(note)}
+  function addItem(note,text){text=String(text||'').trim();if(!note||!text)return false;listItems(note).push({id:uid('li'),text,done:false,createdAt:now(),updatedAt:now()});updateList(note);return true}
 
   document.addEventListener('change',event=>{
     const select=event.target.closest?.('[data-list-select]');if(select){const profileId=profileIdFor(select);ensureSelections();state.settings.listWidgetSelection[profileId]=select.value;save();rerender();return}
@@ -50,19 +50,19 @@
 
   document.addEventListener('keydown',event=>{
     if(event.key!=='Enter')return;
-    if(event.target.matches?.('[data-list-name-input]')){event.preventDefault();createList(profileIdFor(event.target),event.target.value);return}
-    if(event.target.matches?.('[data-list-item-input]')){event.preventDefault();const widget=event.target.closest('.atlas-widget'),note=findList(widget?.querySelector('[data-list-action="add-item"]')?.dataset.listId);addItem(note,event.target.value)}
+    if(event.target.matches?.('[data-list-name-input]')){event.preventDefault();const value=event.target.value.trim();if(!value)return;event.target.value='';createList(profileIdFor(event.target),value);return}
+    if(event.target.matches?.('[data-list-item-input]')){event.preventDefault();const value=event.target.value.trim();if(!value)return;const widget=event.target.closest('.atlas-widget'),note=findList(widget?.querySelector('[data-list-action="add-item"]')?.dataset.listId);if(!note)return;event.target.value='';addItem(note,value)}
   });
 
   document.addEventListener('click',event=>{
     const action=event.target.closest?.('[data-list-action]');if(action){const profileId=profileIdFor(action),kind=action.dataset.listAction;
       if(kind==='new-list'){composerProfiles.add(profileId);rerender();return}
       if(kind==='cancel-list'){composerProfiles.delete(profileId);rerender();return}
-      if(kind==='create-list'){const input=action.closest('.atlas-widget')?.querySelector('[data-list-name-input]');createList(profileId,input?.value||'');return}
-      if(kind==='add-item'){const input=action.closest('.atlas-widget')?.querySelector('[data-list-item-input]');addItem(findList(action.dataset.listId),input?.value||'');return}
+      if(kind==='create-list'){const input=action.closest('.atlas-widget')?.querySelector('[data-list-name-input]'),value=(input?.value||'').trim();if(!value)return;if(input)input.value='';createList(profileId,value);return}
+      if(kind==='add-item'){const input=action.closest('.atlas-widget')?.querySelector('[data-list-item-input]'),value=(input?.value||'').trim(),note=findList(action.dataset.listId);if(!value||!note)return;if(input)input.value='';addItem(note,value);return}
     }
     const del=event.target.closest?.('[data-list-delete-item]');if(del){const note=findList(del.dataset.listId);if(!note)return;note.listItems=listItems(note).filter(item=>item.id!==del.dataset.listDeleteItem);updateList(note)}
   });
 
-  root.AtlasLists=Object.freeze({version:'1',listNotes,selectedList,createList});
+  root.AtlasLists=Object.freeze({version:'2',listNotes,selectedList,createList});
 })(window);

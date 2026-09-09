@@ -52,6 +52,7 @@
   document.addEventListener('keydown',event=>{
     const profileId=explicitWidgetProfile(event.target);if(!profileId||event.target.id!=='widgetTodoInput'||event.key!=='Enter')return;
     event.preventDefault();event.stopImmediatePropagation();const text=event.target.value.trim();if(!text)return;
+    event.target.value='';
     state.quickTodos.unshift({id:uid('qt'),profile:profileId,text,done:false,createdAt:now()});save();renderCurrentSurface();
   },true);
 
@@ -67,11 +68,12 @@
     const action=event.target.closest('[data-widget-action]');
     if(action?.dataset.widgetAction==='add-todo'){
       event.preventDefault();event.stopImmediatePropagation();const widget=action.closest('.atlas-widget'),input=widget?.querySelector('#widgetTodoInput'),text=(input?.value||'').trim();if(!text)return;
+      input.value='';
       state.quickTodos.unshift({id:uid('qt'),profile:profileId,text,done:false,createdAt:now()});save();renderCurrentSurface();return;
     }
     const nav=event.target.closest('[data-widget-cal-nav]');
     if(nav){event.preventDefault();event.stopImmediatePropagation();const d=monthCursorDate();d.setMonth(d.getMonth()+(nav.dataset.widgetCalNav==='next'?1:-1));setCalendarCursor(new Date(d.getFullYear(),d.getMonth(),1));save();renderCurrentSurface()}
   },true);
 
-  root.AtlasWidgetContext=Object.freeze({version:'1',render:(id,profileId)=>renderWidget(id,{profileId}),profileForTarget:explicitWidgetProfile,activeProfile:widgetProfile});
+  root.AtlasWidgetContext=Object.freeze({version:'2',render:(id,profileId)=>renderWidget(id,{profileId}),profileForTarget:explicitWidgetProfile,activeProfile:widgetProfile});
 })(window);
