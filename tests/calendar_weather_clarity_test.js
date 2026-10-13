@@ -9,8 +9,8 @@ const weather=read('js/header-weather.js');
 const css=read('styles/calendar-clarity.css');
 const houseVisuals=read('js/house-calendar-visuals.js');
 
-assert.match(boot,/const BUILD='0169r72'/,'r72 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r72/,'r72 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r73'/,'r73 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r73/,'r73 service-worker cache missing');
 assert.doesNotMatch(boot,/atlasSimpleLoader|bootProgress|finishBootProgress/,'visible boot loader must stay removed');
 assert.match(boot,/function preloadScript\(src\)/,'parallel preload helper missing');
 for(const asset of ['./js/calendar-clarity.js','./js/header-weather.js','./js/house-calendar-visuals.js','./styles/calendar-clarity.css']){

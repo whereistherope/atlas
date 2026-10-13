@@ -1,6 +1,12 @@
 /* Atlas calendar time-zone, event-colour and travel controls. */
 .calendar-event-additions{display:grid;gap:10px}
 .calendar-entry-type,.calendar-person-field{max-width:260px}
+.calendar-span-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,.55fr);gap:10px;align-items:start}
+.calendar-span-toggle{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);padding:10px;border-radius:4px;background:color-mix(in srgb,var(--paper2) 78%,transparent);cursor:pointer;min-height:58px}
+.calendar-span-toggle input{margin-top:2px;accent-color:var(--green)}
+.calendar-span-toggle strong{display:block;font:800 9px/1.2 "SFMono-Regular",Consolas,monospace;text-transform:uppercase}
+.calendar-span-toggle small{display:block;color:var(--muted);font-size:9px;line-height:1.35;margin-top:4px}
+.calendar-end-date[hidden]{display:none!important}
 .calendar-person-field[hidden]{display:none!important}
 .calendar-travel-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px;border:1px solid var(--line);border-radius:3px;background:color-mix(in srgb,var(--paper2) 78%,transparent)}
 .calendar-travel-fields[hidden]{display:none!important}
@@ -31,4 +37,16 @@
 .cal-travel-event:hover .cal-travel-icon{opacity:.62}
 .atlas-travel-arrow{display:block;width:20px;height:19px;color:inherit;overflow:visible}
 .atlas-travel-arrow path{fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-@media(max-width:700px){.calendar-event-extras,.calendar-travel-fields{grid-template-columns:1fr}.calendar-colour-palette{gap:9px}.calendar-colour-swatch{width:31px;height:31px}.calendar-entry-type,.calendar-person-field{max-width:none}.cal-travel-icon{width:26px;height:23px}.atlas-travel-arrow{width:21px;height:20px}}
+@media(max-width:700px){.calendar-event-extras,.calendar-travel-fields,.calendar-span-row{grid-template-columns:1fr}.calendar-colour-palette{gap:9px}.calendar-colour-swatch{width:31px;height:31px}.calendar-entry-type,.calendar-person-field{max-width:none}.cal-travel-icon{width:26px;height:23px}.atlas-travel-arrow{width:21px;height:20px}}
+
+.cal-event.cal-span{position:relative;overflow:visible}
+.cal-event.cal-span:before,.cal-event.cal-span:after{content:"";position:absolute;top:0;bottom:0;width:8px;background:color-mix(in srgb,var(--event-hue,var(--green)) 14%,var(--paper));pointer-events:none}
+.cal-event.cal-span-start:not(.cal-span-week-end):after,.cal-event.cal-span-middle:not(.cal-span-week-end):after{right:-8px}
+.cal-event.cal-span-middle:not(.cal-span-week-start):before,.cal-event.cal-span-end:not(.cal-span-week-start):before{left:-8px}
+.cal-event.cal-span-middle{border-radius:0!important;border-left-color:transparent!important}
+.cal-event.cal-span-end{border-radius:0 2px 2px 0!important;border-left-color:transparent!important}
+.cal-event.cal-span-start:not(.cal-span-week-end){border-radius:2px 0 0 2px!important}
+.cal-event.cal-span-week-start{border-left-color:var(--event-hue,var(--green))!important;border-radius:2px 0 0 2px!important}
+.cal-event.cal-span-week-end{border-radius:0 2px 2px 0!important}
+.cal-event.cal-span-start.cal-span-week-end,.cal-event.cal-span-end.cal-span-week-start{border-radius:2px!important}
+@media(max-width:800px){.cal-event.cal-span:before,.cal-event.cal-span:after{display:none}.cal-event.cal-span-start,.cal-event.cal-span-middle,.cal-event.cal-span-end{border-left-color:var(--event-hue,var(--green))!important;border-radius:2px!important}}

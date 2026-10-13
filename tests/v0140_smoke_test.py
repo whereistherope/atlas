@@ -38,7 +38,7 @@ def main():
     for contract in [
         "DB_NAME='atlas_personal_os'", "DB_STORE='state'", "BACKUP_STORE='backups'",
         "AUTH_STORE='auth'", "AUTH_KEY='atlas-lock'", "DB_KEY='atlas-v1'",
-        "FALLBACK_KEY='atlas_v1_fallback'", "DB_VERSION=3", "DATA_VERSION=8",
+        "FALLBACK_KEY='atlas_v1_fallback'", "DB_VERSION=3", "DATA_VERSION=9",
     ]:
         require(db, contract, 'persisted storage contract')
     require(db, "{id:'me'", 'Me profile id')

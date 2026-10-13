@@ -9,7 +9,7 @@
 
   function isHouse(){return !!root.AtlasHouse?.isActive?.()}
   function eventCopy(event){
-    if(event.entryType==='travel')return `<strong>${esc(event.title)}${event.entangledId||event.sourceEventId?' ↔':''}</strong><small>${esc(event.date)}${event.startTime?` · ${esc(event.startTime)}`:''}</small>`;
+    if(event.entryType==='travel')return `<strong>${esc(event.title)}${event.entangledId||event.sourceEventId?' ↔':''}</strong><small>${esc(calendarEventDateRangeLabel(event))}${event.startTime?` · ${esc(event.startTime)}`:''}</small>`;
     return `<strong>${esc(calendarEventPersonLabel(event))}</strong><span class="atlas-upcoming-title">${esc(event.title)}${event.entangledId||event.sourceEventId?' ↔':''}</span><small>${esc(event.date)} · ${esc(calendarEventTimeMeta(event))}</small>`;
   }
   function eventRow(event){
@@ -17,7 +17,7 @@
   }
   function upcomingEvents(profileId){
     const start=todayKey(),until=new Date();until.setDate(until.getDate()+30);const end=until.toLocaleDateString('en-CA');
-    return calendarEvents(profileId).filter(event=>event.date>=start&&event.date<=end);
+    return calendarEvents(profileId).filter(event=>calendarEventRangeOverlaps(event,start,end));
   }
   function eventSpace(event){
     if(event?.space==='work'||event?.space==='personal')return event.space;
