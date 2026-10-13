@@ -42,6 +42,29 @@ const CALENDAR_TRAVEL_PLACES=Object.freeze({
 function calendarDeviceTimeZone(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(_){return''}}
 function validCalendarTimeZone(value){if(!value)return'';try{new Intl.DateTimeFormat('en-AU',{timeZone:value}).format(new Date());return value}catch(_){return''}}
 function calendarColourValue(value){return CALENDAR_COLOURS[value]||''}
+function calendarDateFromKey(value){const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value||''));return match?new Date(Number(match[1]),Number(match[2])-1,Number(match[3]),12):null}
+function calendarShiftDate(value,days=1){const date=calendarDateFromKey(value);if(!date)return'';date.setDate(date.getDate()+days);return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}
+function calendarEventEndDate(event){const start=String(event?.date||''),end=String(event?.endDate||'');return start&&end>start?end:start}
+function calendarEventSpansDates(event){return !!event?.date&&calendarEventEndDate(event)!==event.date}
+function calendarEventIncludesDate(event,date){const start=String(event?.date||''),end=calendarEventEndDate(event);return !!start&&start<=date&&end>=date}
+function calendarEventRangeOverlaps(event,start,end){const first=String(event?.date||''),last=calendarEventEndDate(event);return !!first&&first<=end&&last>=start}
+function calendarEventDateRangeLabel(event){
+  const start=calendarDateFromKey(event?.date),endKey=calendarEventEndDate(event),end=calendarDateFromKey(endKey);if(!start)return String(event?.date||'');if(!end||endKey===event?.date)return new Intl.DateTimeFormat('en-AU',{day:'numeric',month:'short',year:'numeric'}).format(start);
+  const sameYear=start.getFullYear()===end.getFullYear(),sameMonth=sameYear&&start.getMonth()===end.getMonth(),month=d=>new Intl.DateTimeFormat('en-AU',{month:'short'}).format(d);
+  if(sameMonth)return `${start.getDate()}–${end.getDate()} ${month(start)} ${start.getFullYear()}`;
+  if(sameYear)return `${start.getDate()} ${month(start)}–${end.getDate()} ${month(end)} ${start.getFullYear()}`;
+  return `${start.getDate()} ${month(start)} ${start.getFullYear()}–${end.getDate()} ${month(end)} ${end.getFullYear()}`;
+}
+function calendarEventSpanClass(event,date){
+  if(!calendarEventSpansDates(event)||!calendarEventIncludesDate(event,date))return'';
+  const end=calendarEventEndDate(event),position=date===event.date?'start':date===end?'end':'middle',day=calendarDateFromKey(date)?.getDay();
+  return ['cal-span',`cal-span-${position}`,day===0&&date!==event.date?'cal-span-week-start':'',day===6&&date!==end?'cal-span-week-end':''].filter(Boolean).join(' ');
+}
+function calendarEventDayMeta(event,date){
+  if(!calendarEventSpansDates(event)||!date||date===event.date)return calendarEventSpansDates(event)&&date===event.date?(event.startTime?`Starts ${calendarEventTimeMeta(event)}`:'Starts'):calendarEventTimeMeta(event);
+  if(date===calendarEventEndDate(event))return event.endTime?`Ends ${event.endTime}`:'Ends';
+  return'Continues';
+}
 function calendarPersonForProfile(profile){return profile==='alyssa'?'alyssa':profile==='us'?'together':'fraser'}
 function calendarEventPersonValue(e){if(e?.person&&CALENDAR_PEOPLE[e.person])return e.person;if(e?.sourceEventId){const source=state?.calendar?.find?.(item=>item.id===e.sourceEventId);if(source?.person&&CALENDAR_PEOPLE[source.person])return source.person;if(source?.profile)return calendarPersonForProfile(source.profile)}return calendarPersonForProfile(e?.profile||state?.settings?.activeProfile||'me')}
 function calendarEventPersonLabel(e){return CALENDAR_PEOPLE[calendarEventPersonValue(e)]||'Together'}
@@ -94,8 +117,8 @@ function refreshCalendarTimeZoneHint(){
   const hint=document.getElementById('calTimeZoneHint'),date=document.getElementById('calDate')?.value,time=document.getElementById('calStart')?.value,zone=document.getElementById('calTimeZone')?.value||'',entryType=document.getElementById('calEntryType')?.value||'event';
   if(!hint)return;
   if(entryType==='travel'){
-    const end=document.getElementById('calEnd')?.value||'',arrivalZone=document.getElementById('calArrivalTimeZone')?.value||'';
-    const depInstant=calendarZoneParts(date,time,zone),arrInstant=calendarZoneParts(date,end,arrivalZone);
+    const end=document.getElementById('calEnd')?.value||'',arrivalZone=document.getElementById('calArrivalTimeZone')?.value||'',arrivalDate=document.getElementById('calSpansDates')?.checked?(document.getElementById('calEndDate')?.value||date):date;
+    const depInstant=calendarZoneParts(date,time,zone),arrInstant=calendarZoneParts(arrivalDate,end,arrivalZone);
     const dep=time?`${time}${zone?` ${calendarZoneShort(zone,depInstant)}`:''}`:'departure time not set';
     const arr=end?`${end}${arrivalZone?` ${calendarZoneShort(arrivalZone,arrInstant)}`:''}`:'arrival time not set';
     hint.textContent=`Departure ${dep} · Arrival ${arr}`;return;
@@ -120,13 +143,21 @@ function setCalendarColour(value=''){
   const valid=calendarColourValue(value)?value:'',input=document.getElementById('calColor');if(input)input.value=valid;
   document.querySelectorAll('[data-cal-colour]').forEach(button=>button.setAttribute('aria-pressed',button.dataset.calColour===valid?'true':'false'));
 }
+function updateCalendarSpanUI(seedEnd=false){
+  const toggle=document.getElementById('calSpansDates'),field=document.getElementById('calEndDateField'),input=document.getElementById('calEndDate'),start=document.getElementById('calDate')?.value||todayKey(),travel=document.getElementById('calEntryType')?.value==='travel';
+  if(!toggle||!field||!input)return;
+  const label=document.getElementById('calSpanLabel'),hint=document.getElementById('calSpanHint'),endLabel=document.getElementById('calEndDateLabel'),minimum=calendarShiftDate(start,1)||start;
+  if(label)label.textContent=travel?'Arrives on another date':'Spans multiple days';if(hint)hint.textContent=travel?'Use when arrival is on a later calendar date.':'Show one event across a date range.';if(endLabel)endLabel.textContent=travel?'Arrival date':'End date';
+  field.hidden=!toggle.checked;input.min=minimum;
+  if(toggle.checked&&(seedEnd||!input.value||input.value<=start))input.value=minimum;
+}
 function updateCalendarTravelUI(){
   const travel=document.getElementById('calEntryType')?.value==='travel',panel=document.getElementById('calTravelFields'),personField=document.getElementById('calPersonField');if(panel)panel.hidden=!travel;if(personField)personField.hidden=travel;
   const form=document.getElementById('calTitle')?.closest('.field'),titleLabel=form?.querySelector('label');if(titleLabel)titleLabel.textContent=travel?'Label (optional)':'Event / appointment';
   const startLabel=document.getElementById('calStart')?.closest('.field')?.querySelector('label'),endLabel=document.getElementById('calEnd')?.closest('.field')?.querySelector('label'),zoneLabel=document.getElementById('calTimeZoneLabel');
   if(startLabel)startLabel.textContent=travel?'Departure':'Start';if(endLabel)endLabel.textContent=travel?'Arrival':'End';if(zoneLabel)zoneLabel.textContent=travel?'Departure time zone':'Time zone';
   if(travel&&!document.getElementById('calTraveler')?.value)document.getElementById('calTraveler').value=activeProfile().name||'';
-  refreshCalendarTimeZoneHint();
+  updateCalendarSpanUI(false);refreshCalendarTimeZoneHint();
 }
 function updateTravelZonesFromPlaces(targetId=''){
   if(document.getElementById('calEntryType')?.value!=='travel')return;
@@ -135,19 +166,19 @@ function updateTravelZonesFromPlaces(targetId=''){
   refreshCalendarTimeZoneHint();
 }
 document.addEventListener('click',event=>{const button=event.target.closest?.('[data-cal-colour]');if(button){setCalendarColour(button.dataset.calColour||'');return}const travel=event.target.closest?.('[data-cal-travel-add]');if(travel)openCalendarEvent('',travel.dataset.calTravelAdd||todayKey(),'travel')});
-document.addEventListener('change',event=>{if(event.target?.id==='calEntryType')updateCalendarTravelUI();if(['calOrigin','calDestination'].includes(event.target?.id))updateTravelZonesFromPlaces(event.target.id);if(['calDate','calStart','calEnd','calTimeZone','calArrivalTimeZone'].includes(event.target?.id))refreshCalendarTimeZoneHint()});
-document.addEventListener('input',event=>{if(['calOrigin','calDestination'].includes(event.target?.id))updateTravelZonesFromPlaces(event.target.id);if(['calDate','calStart','calEnd'].includes(event.target?.id))refreshCalendarTimeZoneHint()});
+document.addEventListener('change',event=>{if(event.target?.id==='calEntryType')updateCalendarTravelUI();if(event.target?.id==='calSpansDates')updateCalendarSpanUI(true);if(event.target?.id==='calDate')updateCalendarSpanUI(false);if(['calOrigin','calDestination'].includes(event.target?.id))updateTravelZonesFromPlaces(event.target.id);if(['calDate','calEndDate','calStart','calEnd','calTimeZone','calArrivalTimeZone'].includes(event.target?.id))refreshCalendarTimeZoneHint()});
+document.addEventListener('input',event=>{if(['calOrigin','calDestination'].includes(event.target?.id))updateTravelZonesFromPlaces(event.target.id);if(event.target?.id==='calDate')updateCalendarSpanUI(false);if(['calDate','calEndDate','calStart','calEnd'].includes(event.target?.id))refreshCalendarTimeZoneHint()});
 
 function monthCursorDate(){const raw=state.settings.calendarCursor;if(raw&&/^\d{4}-\d{2}$/.test(raw)){const[y,m]=raw.split('-').map(Number);return new Date(y,m-1,1)}const d=new Date();return new Date(d.getFullYear(),d.getMonth(),1)}
 function setCalendarCursor(d){state.settings.calendarCursor=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 function calendarEvents(profile=state.settings.activeProfile){return state.calendar.filter(e=>(e.profile||'me')===profile).sort((a,b)=>(a.date+a.startTime).localeCompare(b.date+b.startTime))}
 function eventHue(e){const chosen=calendarColourValue(e?.color);if(chosen)return chosen;const a=areaById(e.areaId);return a?domainHueFor({id:a.id}):(e.profile==='us'?'#8e887e':'#7f898d')}
-function calendarEventMarkup(e){
-  const shared=e.entangledId||e.sourceEventId?'cal-entangled':'';
-  if(e.entryType==='travel')return `<button class="cal-event cal-travel-event ${shared}" style="--event-hue:${eventHue(e)}" data-calendar-event="${e.id}"><span class="cal-travel-copy"><strong>${esc(e.traveler||profileById(e.profile||'me').name||'Traveller')}</strong><span>${esc(calendarTravelPlace(e)||'Travel')}</span><small>${esc(calendarTravelTimeLine(e))}</small></span><span class="cal-travel-icon" aria-hidden="true">${calendarTravelIcon(e)}</span></button>`;
-  return `<button class="cal-event cal-person-event ${shared}" style="--event-hue:${eventHue(e)}" data-calendar-event="${e.id}"><span class="cal-person-copy"><strong>${esc(calendarEventPersonLabel(e))}</strong><span>${esc(e.title)}</span><small>${esc(calendarEventTimeMeta(e))}${e.areaId?` · ${esc(areaById(e.areaId)?.code||'')}`:e.sourceAreaLabel?` · ${esc(makeNodeCode(e.sourceAreaLabel))}`:''}</small></span></button>`;
+function calendarEventMarkup(e,displayDate=e.date){
+  const shared=e.entangledId||e.sourceEventId?'cal-entangled':'',span=calendarEventSpanClass(e,displayDate);
+  if(e.entryType==='travel')return `<button class="cal-event cal-travel-event ${shared} ${span}" style="--event-hue:${eventHue(e)}" data-calendar-event="${e.id}"><span class="cal-travel-copy"><strong>${esc(e.traveler||profileById(e.profile||'me').name||'Traveller')}</strong><span>${esc(calendarTravelPlace(e)||'Travel')}</span><small>${esc(calendarTravelTimeLine(e))}</small></span><span class="cal-travel-icon" aria-hidden="true">${calendarTravelIcon(e)}</span></button>`;
+  return `<button class="cal-event cal-person-event ${shared} ${span}" style="--event-hue:${eventHue(e)}" data-calendar-event="${e.id}"><span class="cal-person-copy"><strong>${esc(calendarEventPersonLabel(e))}</strong><span>${esc(e.title)}</span><small>${esc(calendarEventDayMeta(e,displayDate))}${e.areaId?` · ${esc(areaById(e.areaId)?.code||'')}`:e.sourceAreaLabel?` · ${esc(makeNodeCode(e.sourceAreaLabel))}`:''}</small></span></button>`;
 }
-function renderCalendar(){const d=monthCursorDate(),year=d.getFullYear(),month=d.getMonth(),first=new Date(year,month,1),start=new Date(year,month,1-first.getDay());const events=calendarEvents();let cells='';for(let i=0;i<42;i++){const day=new Date(start);day.setDate(start.getDate()+i);const key=day.toLocaleDateString('en-CA'),out=day.getMonth()!==month,today=key===todayKey();const ev=events.filter(e=>e.date===key);cells+=`<div class="cal-cell ${out?'out':''} ${today?'today':''}" data-calendar-date="${key}"><div class="cal-day">${day.getDate()}</div>${ev.map(calendarEventMarkup).join('')}</div>`}const monthTitle=new Intl.DateTimeFormat('en-AU',{month:'long',year:'numeric'}).format(first);document.getElementById('app').innerHTML=`<div class="calendar-head"><div><div class="crumb">ATLAS / ${esc(activeProfile().name.toUpperCase())} / CALENDAR</div><h2>${esc(monthTitle)}</h2></div><div class="calendar-toolbar"><button class="btn small" data-cal-nav="prev">←</button><button class="btn small" data-cal-nav="today">Today</button><button class="btn small" data-cal-nav="next">→</button><button class="btn" data-cal-travel-add="${todayKey()}">+ Travel</button><button class="btn primary" data-cal-add="${todayKey()}">+ Event</button></div></div><div class="calendar-grid">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div class="cal-weekday">${x}</div>`).join('')}${cells}</div>`}
+function renderCalendar(){const d=monthCursorDate(),year=d.getFullYear(),month=d.getMonth(),first=new Date(year,month,1),start=new Date(year,month,1-first.getDay());const events=calendarEvents();let cells='';for(let i=0;i<42;i++){const day=new Date(start);day.setDate(start.getDate()+i);const key=day.toLocaleDateString('en-CA'),out=day.getMonth()!==month,today=key===todayKey();const ev=events.filter(e=>calendarEventIncludesDate(e,key));cells+=`<div class="cal-cell ${out?'out':''} ${today?'today':''}" data-calendar-date="${key}"><div class="cal-day">${day.getDate()}</div>${ev.map(e=>calendarEventMarkup(e,key)).join('')}</div>`}const monthTitle=new Intl.DateTimeFormat('en-AU',{month:'long',year:'numeric'}).format(first);document.getElementById('app').innerHTML=`<div class="calendar-head"><div><div class="crumb">ATLAS / ${esc(activeProfile().name.toUpperCase())} / CALENDAR</div><h2>${esc(monthTitle)}</h2></div><div class="calendar-toolbar"><button class="btn small" data-cal-nav="prev">←</button><button class="btn small" data-cal-nav="today">Today</button><button class="btn small" data-cal-nav="next">→</button><button class="btn" data-cal-travel-add="${todayKey()}">+ Travel</button><button class="btn primary" data-cal-add="${todayKey()}">+ Event</button></div></div><div class="calendar-grid">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div class="cal-weekday">${x}</div>`).join('')}${cells}</div>`}
 let activeCalendarEventId='';
 function populateCalendarArea(value=''){const sel=document.getElementById('calArea');sel.innerHTML=`<option value="">Unlinked</option>`+profileAreas().filter(a=>a.level>=2&&spaceAllows(a.space)).sort((a,b)=>a.name.localeCompare(b.name)).map(a=>`<option value="${a.id}" ${a.id===value?'selected':''}>${esc(a.name)} · ${esc(a.code)}</option>`).join('')}
 function openCalendarEvent(id='',date='',requestedType='event'){
@@ -155,6 +186,7 @@ function openCalendarEvent(id='',date='',requestedType='event'){
   ensureCalendarEventExtras();
   document.getElementById('calendarEventHeading').textContent=e?'Edit event':requestedType==='travel'?'New travel':'New event';document.getElementById('calendarEventCode').textContent=`CALENDAR / ${profileById(profile).name.toUpperCase()}`;
   document.getElementById('calTitle').value=e?.title||'';document.getElementById('calDate').value=e?.date||date||todayKey();document.getElementById('calStart').value=e?.startTime||'';document.getElementById('calEnd').value=e?.endTime||'';
+  const span=!!e&&calendarEventSpansDates(e),spanToggle=document.getElementById('calSpansDates'),endDateInput=document.getElementById('calEndDate');if(spanToggle)spanToggle.checked=span;if(endDateInput)endDateInput.value=span?calendarEventEndDate(e):'';
   const entryType=e?.entryType==='travel'?'travel':requestedType==='travel'?'travel':'event';document.getElementById('calEntryType').value=entryType;
   const personSelect=document.getElementById('calPerson');if(personSelect)personSelect.value=e?.person&&CALENDAR_PEOPLE[e.person]?e.person:calendarEventPersonValue(e||{profile});
   document.getElementById('calTraveler').value=e?.traveler||profileById(profile).name||'';document.getElementById('calOrigin').value=e?.origin||'';document.getElementById('calDestination').value=e?.destination||'';document.getElementById('calFlight').value=e?.flightNumber||'';
@@ -167,14 +199,16 @@ function openCalendarEvent(id='',date='',requestedType='event'){
   updateCalendarTravelUI();refreshCalendarTimeZoneHint();openOverlay('calendarOverlay');setTimeout(()=>document.getElementById(entryType==='travel'?'calDestination':'calTitle').focus(),60)
 }
 function linkedUsEvent(source){return source.entangledId?state.calendar.find(e=>e.id===source.entangledId):state.calendar.find(e=>e.sourceEventId===source.id&&e.profile==='us')}
-function syncEntangledEvent(source,enabled){let shared=linkedUsEvent(source);if(!enabled){if(shared)state.calendar=state.calendar.filter(e=>e.id!==shared.id);source.entangledId='';return}if(!shared){shared={id:uid('cal'),profile:'us',sourceEventId:source.id,createdAt:now()};state.calendar.push(shared);source.entangledId=shared.id}Object.assign(shared,{title:source.title,person:source.entryType==='travel'?'':source.person||calendarPersonForProfile(source.profile),date:source.date,startTime:source.startTime,endTime:source.endTime,timeZone:source.timeZone||'',arrivalTimeZone:source.arrivalTimeZone||'',color:source.color||'',entryType:source.entryType||'event',traveler:source.traveler||'',origin:source.origin||'',destination:source.destination||'',flightNumber:source.flightNumber||'',areaId:'',sourceAreaLabel:areaById(source.areaId)?.name||'',notes:source.notes,updatedAt:now(),sourceEventId:source.id,profile:'us'})}
+function syncEntangledEvent(source,enabled){let shared=linkedUsEvent(source);if(!enabled){if(shared)state.calendar=state.calendar.filter(e=>e.id!==shared.id);source.entangledId='';return}if(!shared){shared={id:uid('cal'),profile:'us',sourceEventId:source.id,createdAt:now()};state.calendar.push(shared);source.entangledId=shared.id}Object.assign(shared,{title:source.title,person:source.entryType==='travel'?'':source.person||calendarPersonForProfile(source.profile),date:source.date,endDate:source.endDate||'',startTime:source.startTime,endTime:source.endTime,timeZone:source.timeZone||'',arrivalTimeZone:source.arrivalTimeZone||'',color:source.color||'',entryType:source.entryType||'event',traveler:source.traveler||'',origin:source.origin||'',destination:source.destination||'',flightNumber:source.flightNumber||'',areaId:'',sourceAreaLabel:areaById(source.areaId)?.name||'',notes:source.notes,updatedAt:now(),sourceEventId:source.id,profile:'us'})}
 function saveCalendarEvent(){
   const entryType=document.getElementById('calEntryType')?.value==='travel'?'travel':'event';let title=document.getElementById('calTitle').value.trim();
   const traveler=document.getElementById('calTraveler')?.value.trim()||'',origin=document.getElementById('calOrigin')?.value.trim()||'',destination=document.getElementById('calDestination')?.value.trim()||'',flightNumber=document.getElementById('calFlight')?.value.trim().toUpperCase()||'',person=document.getElementById('calPerson')?.value||'';
   if(entryType==='event'&&!title)return toast('Add an event title');if(entryType==='travel'&&!destination)return toast('Add a travel destination');
+  const date=document.getElementById('calDate').value||todayKey(),spansDates=!!document.getElementById('calSpansDates')?.checked;let endDate=spansDates?(document.getElementById('calEndDate')?.value||''):'';
+  if(spansDates&&!endDate)return toast(entryType==='travel'?'Add an arrival date':'Add an end date');if(endDate&&endDate<date)return toast(entryType==='travel'?'Arrival date cannot be before departure':'End date cannot be before start date');if(endDate===date)endDate='';
   let e=activeCalendarEventId?state.calendar.find(x=>x.id===activeCalendarEventId):null;if(!e){e={id:uid('cal'),profile:state.settings.activeProfile||'me',createdAt:now()};state.calendar.push(e)}
   const travelDraft={traveler,origin,destination,flightNumber};if(entryType==='travel'&&!title)title=calendarTravelAutoTitle(travelDraft);
-  Object.assign(e,{title,person:entryType==='travel'?'':CALENDAR_PEOPLE[person]?person:calendarPersonForProfile(e.profile),date:document.getElementById('calDate').value||todayKey(),startTime:document.getElementById('calStart').value,endTime:document.getElementById('calEnd').value,timeZone:validCalendarTimeZone(document.getElementById('calTimeZone')?.value||''),arrivalTimeZone:entryType==='travel'?validCalendarTimeZone(document.getElementById('calArrivalTimeZone')?.value||''):'',color:calendarColourValue(document.getElementById('calColor')?.value)?document.getElementById('calColor').value:'',entryType,traveler:entryType==='travel'?traveler:'',origin:entryType==='travel'?origin:'',destination:entryType==='travel'?destination:'',flightNumber:entryType==='travel'?flightNumber:'',areaId:document.getElementById('calArea').value,notes:document.getElementById('calNotes').value.trim(),updatedAt:now()});
+  Object.assign(e,{title,person:entryType==='travel'?'':CALENDAR_PEOPLE[person]?person:calendarPersonForProfile(e.profile),date,endDate,startTime:document.getElementById('calStart').value,endTime:document.getElementById('calEnd').value,timeZone:validCalendarTimeZone(document.getElementById('calTimeZone')?.value||''),arrivalTimeZone:entryType==='travel'?validCalendarTimeZone(document.getElementById('calArrivalTimeZone')?.value||''):'',color:calendarColourValue(document.getElementById('calColor')?.value)?document.getElementById('calColor').value:'',entryType,traveler:entryType==='travel'?traveler:'',origin:entryType==='travel'?origin:'',destination:entryType==='travel'?destination:'',flightNumber:entryType==='travel'?flightNumber:'',areaId:document.getElementById('calArea').value,notes:document.getElementById('calNotes').value.trim(),updatedAt:now()});
   if(entryType==='travel'&&!e.timeZone)e.timeZone=calendarTravelTimeZone(origin);if(entryType==='travel'&&!e.arrivalTimeZone)e.arrivalTimeZone=calendarTravelTimeZone(destination);
   if(e.profile!=='us'&&!e.sourceEventId)syncEntangledEvent(e,document.getElementById('calEntangle').checked);log(`${entryType==='travel'?'Travel':'Calendar event'} saved: ${e.title}.`);save();closeOverlay('calendarOverlay');renderAll();toast(e.entangledId?'Event entangled with Us':entryType==='travel'?'Travel saved':'Calendar saved')
 }
