@@ -28,8 +28,8 @@ const server=read('js/home-server-widget.js');
 const weather=read('js/weather-widget.js');
 const weatherSource=read('js/header-weather.js');
 
-assert.match(boot,/const BUILD='0169r72'/,'r72 build marker missing');
-assert.match(sw,/atlas-shell-0\.16\.9-r72/,'r72 service-worker cache missing');
+assert.match(boot,/const BUILD='0169r73'/,'r73 build marker missing');
+assert.match(sw,/atlas-shell-0\.16\.9-r73/,'r73 service-worker cache missing');
 assert.doesNotMatch(boot,/atlasSimpleLoader|bootProgress|finishBootProgress/,'visible boot loader must stay removed');
 assert.match(boot,/function preloadScript\(src\)/,'parallel preload helper missing');
 for(const asset of ['./js/widget-context.js','./js/house-calendar-visuals.js','./js/list-widget.js','./js/home-server-widget.js','./js/weather-widget.js','./js/house.js','./styles/weather-widget.css','./styles/house.css']){
