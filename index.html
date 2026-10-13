@@ -131,6 +131,10 @@
           <div class="field"><label>Start</label><input id="calStart" type="time" /></div>
           <div class="field"><label>End</label><input id="calEnd" type="time" /></div>
         </div>
+        <div class="calendar-span-row">
+          <label class="calendar-span-toggle"><input id="calSpansDates" type="checkbox" /><span><strong id="calSpanLabel">Spans multiple days</strong><small id="calSpanHint">Show one event across a date range.</small></span></label>
+          <div class="field calendar-end-date" id="calEndDateField" hidden><label id="calEndDateLabel">End date</label><input id="calEndDate" type="date" /></div>
+        </div>
         <div class="field"><label>Area</label><select id="calArea"></select></div>
         <div class="field"><label>Notes</label><textarea id="calNotes" placeholder="Optional context"></textarea></div>
         <label class="entangle-row" id="entangleRow"><input id="calEntangle" type="checkbox"/><span><strong>Entangle with Us</strong><small>Keep a linked copy on the shared Us calendar.</small></span></label>
