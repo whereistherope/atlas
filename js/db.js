@@ -1,5 +1,5 @@
 // Persistent state, schema migrations and backups. Storage identifiers are compatibility contracts.
-const APP_VERSION='0.12.8'; const DATA_VERSION=8; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
+const APP_VERSION='0.12.8'; const DATA_VERSION=9; const DB_NAME='atlas_personal_os'; const DB_VERSION=3; const DB_STORE='state'; const BACKUP_STORE='backups'; const AUTH_STORE='auth'; const AUTH_KEY='atlas-lock'; const AUTH_FALLBACK_KEY='atlas_lock_config_v1'; const DB_KEY='atlas-v1'; const FALLBACK_KEY='atlas_v1_fallback'; const SVG_NS='http://www.w3.org/2000/svg';
 const now=()=>Date.now(); const uid=(p='id')=>`${p}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`;
 const clone=v=>JSON.parse(JSON.stringify(v));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -309,6 +309,14 @@ function migrateData(s){
     if(!s.relayLedger||typeof s.relayLedger!=='object'||Array.isArray(s.relayLedger))s.relayLedger={};
     (s.relayReceipts||[]).filter(r=>r?.relayId&&r.status==='accepted').forEach(r=>{
       if(!s.relayLedger[r.relayId])s.relayLedger[r.relayId]={relayId:r.relayId,fingerprint:r.fingerprint||'',profileId:r.profileId||'',operation:r.operation||'',recordId:r.recordId||'',time:r.time||0};
+    });
+  }
+  if(from<9){
+    // Calendar date ranges are additive. Existing one-day events remain one-day
+    // events; only a valid later endDate creates a multi-day span.
+    (s.calendar||[]).forEach(event=>{
+      if(typeof event.endDate!=='string')event.endDate='';
+      if(event.endDate&&(!event.date||event.endDate<=event.date))event.endDate='';
     });
   }
   s.version=DATA_VERSION;
