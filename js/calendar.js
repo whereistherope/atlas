@@ -55,15 +55,10 @@ function calendarEventDateRangeLabel(event){
   if(sameYear)return `${start.getDate()} ${month(start)}–${end.getDate()} ${month(end)} ${start.getFullYear()}`;
   return `${start.getDate()} ${month(start)} ${start.getFullYear()}–${end.getDate()} ${month(end)} ${end.getFullYear()}`;
 }
-function calendarEventSpanClass(event,date){
+function calendarEventSpanMarker(event,date){
   if(!calendarEventSpansDates(event)||!calendarEventIncludesDate(event,date))return'';
-  const end=calendarEventEndDate(event),position=date===event.date?'start':date===end?'end':'middle',day=calendarDateFromKey(date)?.getDay();
-  return ['cal-span',`cal-span-${position}`,day===0&&date!==event.date?'cal-span-week-start':'',day===6&&date!==end?'cal-span-week-end':''].filter(Boolean).join(' ');
-}
-function calendarEventDayMeta(event,date){
-  if(!calendarEventSpansDates(event)||!date||date===event.date)return calendarEventSpansDates(event)&&date===event.date?(event.startTime?`Starts ${calendarEventTimeMeta(event)}`:'Starts'):calendarEventTimeMeta(event);
-  if(date===calendarEventEndDate(event))return event.endTime?`Ends ${event.endTime}`:'Ends';
-  return'Continues';
+  if(date===calendarEventEndDate(event))return '<span class="cal-span-marker cal-span-end-dot" aria-hidden="true"></span>';
+  return '<span class="cal-span-marker cal-span-next" aria-hidden="true"><svg class="atlas-span-arrow" viewBox="0 0 12 12"><path d="M2 6h7M6.5 2.5 10 6 6.5 9.5"/></svg></span>';
 }
 function calendarPersonForProfile(profile){return profile==='alyssa'?'alyssa':profile==='us'?'together':'fraser'}
 function calendarEventPersonValue(e){if(e?.person&&CALENDAR_PEOPLE[e.person])return e.person;if(e?.sourceEventId){const source=state?.calendar?.find?.(item=>item.id===e.sourceEventId);if(source?.person&&CALENDAR_PEOPLE[source.person])return source.person;if(source?.profile)return calendarPersonForProfile(source.profile)}return calendarPersonForProfile(e?.profile||state?.settings?.activeProfile||'me')}
@@ -174,9 +169,9 @@ function setCalendarCursor(d){state.settings.calendarCursor=`${d.getFullYear()}-
 function calendarEvents(profile=state.settings.activeProfile){return state.calendar.filter(e=>(e.profile||'me')===profile).sort((a,b)=>(a.date+a.startTime).localeCompare(b.date+b.startTime))}
 function eventHue(e){const chosen=calendarColourValue(e?.color);if(chosen)return chosen;const a=areaById(e.areaId);return a?domainHueFor({id:a.id}):(e.profile==='us'?'#8e887e':'#7f898d')}
 function calendarEventMarkup(e,displayDate=e.date){
-  const shared=e.entangledId||e.sourceEventId?'cal-entangled':'',span=calendarEventSpanClass(e,displayDate);
-  if(e.entryType==='travel')return `<button class="cal-event cal-travel-event ${shared} ${span}" style="--event-hue:${eventHue(e)}" data-calendar-event="${e.id}"><span class="cal-travel-copy"><strong>${esc(e.traveler||profileById(e.profile||'me').name||'Traveller')}</strong><span>${esc(calendarTravelPlace(e)||'Travel')}</span><small>${esc(calendarTravelTimeLine(e))}</small></span><span class="cal-travel-icon" aria-hidden="true">${calendarTravelIcon(e)}</span></button>`;
-  return `<button class="cal-event cal-person-event ${shared} ${span}" style="--event-hue:${eventHue(e)}" data-calendar-event="${e.id}"><span class="cal-person-copy"><strong>${esc(calendarEventPersonLabel(e))}</strong><span>${esc(e.title)}</span><small>${esc(calendarEventDayMeta(e,displayDate))}${e.areaId?` · ${esc(areaById(e.areaId)?.code||'')}`:e.sourceAreaLabel?` · ${esc(makeNodeCode(e.sourceAreaLabel))}`:''}</small></span></button>`;
+  const shared=e.entangledId||e.sourceEventId?'cal-entangled':'',marker=calendarEventSpanMarker(e,displayDate);
+  if(e.entryType==='travel')return `<button class="cal-event cal-travel-event ${shared}" style="--event-hue:${eventHue(e)}" data-calendar-event="${e.id}"><span class="cal-travel-copy"><strong>${esc(e.traveler||profileById(e.profile||'me').name||'Traveller')}</strong><span>${esc(calendarTravelPlace(e)||'Travel')}</span><small>${esc(calendarTravelTimeLine(e))}</small></span><span class="cal-travel-icon" aria-hidden="true">${calendarTravelIcon(e)}</span>${marker}</button>`;
+  return `<button class="cal-event cal-person-event ${shared}" style="--event-hue:${eventHue(e)}" data-calendar-event="${e.id}"><span class="cal-person-copy"><strong>${esc(calendarEventPersonLabel(e))}</strong><span>${esc(e.title)}</span><small>${esc(calendarEventTimeMeta(e))}${e.areaId?` · ${esc(areaById(e.areaId)?.code||'')}`:e.sourceAreaLabel?` · ${esc(makeNodeCode(e.sourceAreaLabel))}`:''}</small></span>${marker}</button>`;
 }
 function renderCalendar(){const d=monthCursorDate(),year=d.getFullYear(),month=d.getMonth(),first=new Date(year,month,1),start=new Date(year,month,1-first.getDay());const events=calendarEvents();let cells='';for(let i=0;i<42;i++){const day=new Date(start);day.setDate(start.getDate()+i);const key=day.toLocaleDateString('en-CA'),out=day.getMonth()!==month,today=key===todayKey();const ev=events.filter(e=>calendarEventIncludesDate(e,key));cells+=`<div class="cal-cell ${out?'out':''} ${today?'today':''}" data-calendar-date="${key}"><div class="cal-day">${day.getDate()}</div>${ev.map(e=>calendarEventMarkup(e,key)).join('')}</div>`}const monthTitle=new Intl.DateTimeFormat('en-AU',{month:'long',year:'numeric'}).format(first);document.getElementById('app').innerHTML=`<div class="calendar-head"><div><div class="crumb">ATLAS / ${esc(activeProfile().name.toUpperCase())} / CALENDAR</div><h2>${esc(monthTitle)}</h2></div><div class="calendar-toolbar"><button class="btn small" data-cal-nav="prev">←</button><button class="btn small" data-cal-nav="today">Today</button><button class="btn small" data-cal-nav="next">→</button><button class="btn" data-cal-travel-add="${todayKey()}">+ Travel</button><button class="btn primary" data-cal-add="${todayKey()}">+ Event</button></div></div><div class="calendar-grid">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div class="cal-weekday">${x}</div>`).join('')}${cells}</div>`}
 let activeCalendarEventId='';
