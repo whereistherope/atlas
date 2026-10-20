@@ -39,14 +39,10 @@
 .atlas-travel-arrow path{fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 @media(max-width:700px){.calendar-event-extras,.calendar-travel-fields,.calendar-span-row{grid-template-columns:1fr}.calendar-colour-palette{gap:9px}.calendar-colour-swatch{width:31px;height:31px}.calendar-entry-type,.calendar-person-field{max-width:none}.cal-travel-icon{width:26px;height:23px}.atlas-travel-arrow{width:21px;height:20px}}
 
-.cal-event.cal-span{position:relative;overflow:visible}
-.cal-event.cal-span:before,.cal-event.cal-span:after{content:"";position:absolute;top:0;bottom:0;width:8px;background:color-mix(in srgb,var(--event-hue,var(--green)) 14%,var(--paper));pointer-events:none}
-.cal-event.cal-span-start:not(.cal-span-week-end):after,.cal-event.cal-span-middle:not(.cal-span-week-end):after{right:-8px}
-.cal-event.cal-span-middle:not(.cal-span-week-start):before,.cal-event.cal-span-end:not(.cal-span-week-start):before{left:-8px}
-.cal-event.cal-span-middle{border-radius:0!important;border-left-color:transparent!important}
-.cal-event.cal-span-end{border-radius:0 2px 2px 0!important;border-left-color:transparent!important}
-.cal-event.cal-span-start:not(.cal-span-week-end){border-radius:2px 0 0 2px!important}
-.cal-event.cal-span-week-start{border-left-color:var(--event-hue,var(--green))!important;border-radius:2px 0 0 2px!important}
-.cal-event.cal-span-week-end{border-radius:0 2px 2px 0!important}
-.cal-event.cal-span-start.cal-span-week-end,.cal-event.cal-span-end.cal-span-week-start{border-radius:2px!important}
-@media(max-width:800px){.cal-event.cal-span:before,.cal-event.cal-span:after{display:none}.cal-event.cal-span-start,.cal-event.cal-span-middle,.cal-event.cal-span-end{border-left-color:var(--event-hue,var(--green))!important;border-radius:2px!important}}
+.cal-event{position:relative}
+.cal-span-marker{position:absolute;right:4px;bottom:3px;display:grid;place-items:center;pointer-events:none;z-index:2;color:var(--event-hue,var(--green))}
+.cal-span-next{width:11px;height:11px}
+.atlas-span-arrow{display:block;width:11px;height:11px;overflow:visible}
+.atlas-span-arrow path{fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.cal-span-end-dot{width:5px;height:5px;border-radius:50%;background:currentColor;right:6px;bottom:5px}
+.cal-person-copy,.cal-travel-copy{padding-right:10px}
