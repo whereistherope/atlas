@@ -18,7 +18,7 @@ const sw=fs.readFileSync('sw.js','utf8');
 
 for(const token of [
   'calendarEventEndDate','calendarEventIncludesDate','calendarEventRangeOverlaps',
-  'calendarEventDateRangeLabel','calendarEventSpanClass','updateCalendarSpanUI',
+  'calendarEventDateRangeLabel','calendarEventSpanMarker','updateCalendarSpanUI',
   "endDate:source.endDate||''",'calSpansDates','calEndDate'
 ]) assert(calendar.includes(token),`multi-day calendar contract missing: ${token}`);
 
@@ -37,15 +37,17 @@ assert.strictEqual(context.calendarEventRangeOverlaps(trip,'2026-10-17','2026-10
 assert.strictEqual(context.calendarEventRangeOverlaps(trip,'2026-10-19','2026-10-25'),false);
 assert.strictEqual(context.calendarEventDateRangeLabel(trip),'16–18 Oct 2026');
 assert.strictEqual(context.calendarShiftDate('2026-10-31',1),'2026-11-01');
-assert.match(context.calendarEventSpanClass(trip,'2026-10-16'),/cal-span-start/);
-assert.match(context.calendarEventSpanClass(trip,'2026-10-17'),/cal-span-middle/);
-assert.match(context.calendarEventSpanClass(trip,'2026-10-17'),/cal-span-week-end/);
-assert.match(context.calendarEventSpanClass(trip,'2026-10-18'),/cal-span-end/);
-assert.match(context.calendarEventSpanClass(trip,'2026-10-18'),/cal-span-week-start/);
+assert.match(context.calendarEventSpanMarker(trip,'2026-10-16'),/atlas-span-arrow/);
+assert.match(context.calendarEventSpanMarker(trip,'2026-10-17'),/atlas-span-arrow/);
+assert.match(context.calendarEventSpanMarker(trip,'2026-10-18'),/cal-span-end-dot/);
+assert.strictEqual(context.calendarEventSpanMarker(trip,'2026-10-19'),'');
 
 assert(index.includes('id="calSpansDates"'),'calendar editor span toggle missing');
 assert(index.includes('id="calEndDate"'),'calendar editor end-date field missing');
-assert(css.includes('.cal-event.cal-span'),'multi-day event connector styling missing');
+assert(css.includes('.cal-span-marker'),'multi-day event marker styling missing');
+assert(!css.includes('.cal-event.cal-span:before'),'legacy grey span connector styling must stay removed');
+assert(!calendar.includes("return'Continues'"),'multi-day cards must not show Continues copy');
+assert(!calendar.includes('`Starts ${calendarEventTimeMeta(event)}`'),'multi-day cards must not show Starts copy');
 assert(css.includes('.calendar-span-row'),'multi-day editor styling missing');
 assert(app.includes('calendarEventRangeOverlaps(e,today,max)'),'quick Upcoming must include ongoing spans');
 assert(upcoming.includes('calendarEventRangeOverlaps(event,start,end)'),'shared Upcoming must include ongoing spans');
@@ -56,7 +58,7 @@ assert(backup.includes("'date','endDate','startTime'"),'manual cloud backup must
 assert(restore.includes("'date','endDate','startTime'"),'manual cloud restore must preserve endDate');
 assert(db.includes('DATA_VERSION=9'),'multi-day calendar requires data version 9');
 assert(db.includes('if(from<9)'),'data version 9 migration missing');
-assert(bootstrap.includes("const BUILD='0169r73'"),'calendar multi-day release build must be r73');
-assert(sw.includes("atlas-shell-0.16.9-r73"),'service worker cache must match r73');
+assert(bootstrap.includes("const BUILD='0169r74'"),'calendar span marker release build must be r74');
+assert(sw.includes("atlas-shell-0.16.9-r74"),'service worker cache must match r74');
 
 console.log('Atlas multi-day calendar contracts: PASS');
