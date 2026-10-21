@@ -9,7 +9,7 @@
     projects:['id','profile','space','areaId','topicId','code','title','status','objective','next','tags','createdAt'],
     notes:['id','profile','space','areaId','topicId','type','title','body','tags','createdAt','updatedAt','showOnMap'],
     daily:['id','profile','date','createdAt','updatedAt','text','areaId'],
-    calendar:['id','profile','title','date','endDate','startTime','endTime','areaId','notes','createdAt','updatedAt'],
+    calendar:['id','profile','title','date','endDate','startTime','endTime','timeZone','arrivalTimeZone','arrivalDate','returnTrip','returnDate','returnFlightNumber','returnStartTime','returnEndTime','returnTimeZone','returnArrivalTimeZone','returnArrivalDate','color','entryType','traveler','origin','destination','flightNumber','areaId','sourceAreaLabel','notes','createdAt','updatedAt'],
     quickTodos:['id','profile','text','done','createdAt','updatedAt']
   };
   const own=(value,key)=>Object.prototype.hasOwnProperty.call(value||{},key);
