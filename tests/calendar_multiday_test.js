@@ -58,7 +58,7 @@ assert(backup.includes("'date','endDate','startTime'"),'manual cloud backup must
 assert(restore.includes("'date','endDate','startTime'"),'manual cloud restore must preserve endDate');
 assert(db.includes('DATA_VERSION=9'),'multi-day calendar requires data version 9');
 assert(db.includes('if(from<9)'),'data version 9 migration missing');
-assert(bootstrap.includes("const BUILD='0169r74'"),'calendar span marker release build must be r74');
-assert(sw.includes("atlas-shell-0.16.9-r74"),'service worker cache must match r74');
+assert(bootstrap.includes("const BUILD='0169r75'"),'calendar return-trip release build must be r75');
+assert(sw.includes("atlas-shell-0.16.9-r75"),'service worker cache must match r75');
 
 console.log('Atlas multi-day calendar contracts: PASS');

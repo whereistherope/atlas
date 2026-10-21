@@ -17,9 +17,13 @@ for(const token of [
   'arrivalTimeZone:',
   'calendarTravelPlace',
   'calendarTravelTimeLine',
+  'calendarTravelReturnDate',
+  'calendarTravelLegForDate',
+  'returnFlightNumber:',
+  'returnDate:',
   'data-cal-travel-add',
   'calArrivalTimeZone'
-]) assert(js.includes(token),`calendar travel contract missing: ${token}`);
+]) assert(js.includes(token),`calendar travel/return contract missing: ${token}`);
 
 const context={Intl,Date,console,document:{addEventListener(){}}};
 vm.createContext(context);vm.runInContext(js,context);
@@ -31,6 +35,12 @@ assert.strictEqual(context.calendarTravelTimeZone('Adelaide'),'Australia/Adelaid
 assert.strictEqual(context.calendarTravelPlace({origin:'MEL',destination:'Sydney'}),'Sydney');
 assert.strictEqual(context.calendarTravelPlace({origin:'Sydney',destination:'MEL'}),'Sydney');
 assert.strictEqual(context.calendarTravelTimeLine({flightNumber:'va823',startTime:'08:30',endTime:'09:55'}),'VA823 · 08:30–09:55');
+const returnTrip={date:'2026-11-09',endDate:'2026-11-13',returnTrip:true,returnDate:'2026-11-13',origin:'MEL',destination:'PER',flightNumber:'va679',startTime:'09:00',endTime:'10:10',returnFlightNumber:'va680',returnStartTime:'17:00',returnEndTime:'22:30'};
+assert.strictEqual(context.calendarTravelReturnDate(returnTrip),'2026-11-13');
+assert.strictEqual(context.calendarTravelTimeLine(returnTrip,'2026-11-09'),'VA679 · 09:00–10:10');
+assert.strictEqual(context.calendarTravelTimeLine(returnTrip,'2026-11-13'),'VA680 · 17:00–22:30');
+assert.strictEqual(context.calendarTravelLegForDate(returnTrip,'2026-11-13').origin,'PER');
+assert.strictEqual(context.calendarTravelLegForDate(returnTrip,'2026-11-13').destination,'MEL');
 assert.strictEqual(context.calendarTravelAutoTitle({traveler:'Fraser',origin:'MEL',destination:'Sydney',flightNumber:'va823'}),'Fraser · Sydney · VA823');
 
 assert(directionJs.includes('atlas-travel-arrow'),'minimal travel arrow renderer missing');
